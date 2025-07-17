@@ -1,0 +1,123 @@
+/** 예약하기 버튼 ============================================== */
+
+ /* 버튼을 감싸는 컨테이너 스타일 */
+.reservation-buttons {
+  display: flex;
+  justify-content: center; /* 버튼들을 가운데 정렬 */
+  gap: 15px; /* 버튼 사이의 간격 */
+  padding: 20px; /* 컨테이너 주변의 여백 */
+}
+
+/* 공통 버튼 스타일 */
+.paymentBtn_rent, .paymentBtn_stay {
+  color: white; /* 글자색 */
+  border: none; /* 테두리 없음 */
+  padding: 12px 28px; /* 내부 여백 (상하, 좌우) */
+  text-align: center; /* 텍스트 가운데 정렬 */
+  text-decoration: none; /* 텍스트 밑줄 없음 */
+  display: inline-block;
+  font-size: 16px; /* 글자 크기 */
+  font-weight: bold; /* 글자 굵기 */
+  cursor: pointer; /* 마우스 오버 시 커서 모양 변경 */
+  border-radius: 8px; /* 버튼 모서리 둥글게 */
+  transition: background-color 0.3s ease, transform 0.1s ease; /* 부드러운 색상 및 크기 변경 효과 */
+}
+
+/* 대실 예약 버튼 스타일 */
+.paymentBtn_rent {
+  background-color: #6366F1; /* 배경색 (인디고) */
+}
+
+/* 숙박 예약 버튼 스타일 */
+.paymentBtn_stay {
+  background-color: #EC4899; /* 배경색 (핑크) */
+}
+
+/* 마우스 오버 시 버튼 스타일 */
+.paymentBtn_rent:hover, .paymentBtn_stay:hover {
+   filter: brightness(110%); /* 살짝 밝아지는 효과 */
+}
+
+/* 클릭 시 버튼 스타일 */
+paymentBtn_rent:active, .paymentBtn_stay:active {
+  transform: scale(0.98); /* 살짝 작아지는 효과 */
+}
+
+/** 예약하기 버튼 ============================================== */
+
+
+/* 공통 디자인 ============================================== */
+  .container {
+    width: 100%;
+    max-width: 500px;
+    background: #fff;
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    overflow: hidden;
+  }
+  .header {
+    background-color: #007bff;
+    color: white;
+    padding: 20px;
+    text-align: center;
+  }
+  .header h1 {
+    margin: 0;
+    font-size: 24px;
+  }
+  .content {
+    padding: 30px;
+  }
+  .info-box {
+    background-color: #f8f9fa;
+    border: 1px solid #dee2e6;
+    border-radius: 6px;
+    padding: 20px;
+    margin-bottom: 20px;
+  }
+  .info-box h2 {
+    margin-top: 0;
+    font-size: 18px;
+    border-bottom: 1px solid #e9ecef;
+    padding-bottom: 10px;
+    margin-bottom: 15px;
+  }
+  .info-item {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 10px;
+    font-size: 16px;
+  }
+  .info-item .label {
+    color: #6c757d;
+  }
+  .info-item .value {
+    font-weight: 600;
+    color: #343a40;
+  }
+  #payment-widget {
+    width: 100%;
+  }
+  .button-container {
+    margin-top: 20px;
+  }
+  #payment-button {
+    width: 100%;
+    padding: 15px;
+    font-size: 18px;
+    font-weight: 600;
+    color: #fff;
+    background-color: #007bff;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: background-color 0.2s;
+  }
+  #payment-button:hover {
+    background-color: #0056b3;
+  }
+  #payment-button:disabled {
+    background-color: #a0a0a0;
+    cursor: not-allowed;
+  }
+/* 공통 디자인 fin ============================================== */

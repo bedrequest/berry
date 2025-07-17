@@ -50,7 +50,8 @@ public class Reservation {
   private int guestsAmount;
 
   // 예약 상태, default = 'PENDING'
-  @Column(name="booking_status", columnDefinition = "PENDING")
+  @Column(name="booking_status",
+      columnDefinition = "VARCHAR(20) DEFAULT 'PENDING'")
   private String bookingStatus;
 
   // 예약 타입 - 숙박 (stay) 인지 대실 (rent) 인지

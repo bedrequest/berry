@@ -34,15 +34,22 @@ public class PaymentBeforePayment {
 
   // 쿠폰 사용 시 적용된 쿠폰 ID
   @Column(name="cupon_id", length = 200)
-  private String cuponId;
+  private long cuponId;
+
+  @Column(length = 50)
+  private String method;
 
   // 쿠폰 사용 시 쿠폰이 적용된 가격
   @Column(name="cupon_price")
-  private Integer cuponPrice;
+  private Long cuponPrice;
 
-  // 상품 (숙소) 원래의 가격 (최종 결제 금액)
+  // 상품 (숙소) 원래의 가격
   @Column(name="strike_price", nullable = false)
-  private int strikePrice;
+  private long strikePrice;
+
+  // 총 결제 가격
+  @Column(name="pbp_total_amount", nullable=false)
+  private long pbpTotalAmount;
 
   // 숙소 이름
   @Column(name="order_name")

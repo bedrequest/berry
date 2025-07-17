@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import lombok.*;
 
 import java.time.LocalDateTime;
+import java.time.OffsetDateTime;
 
 @Table(name="payment_cancel")
 @Entity
@@ -36,8 +37,8 @@ public class PaymentCancel {
   private int cancelAmount;
 
   // 결제 취소 시각
-  @Column(name="canceled_at")
-  private LocalDateTime canceledAt;
+  @Column(name="canceled_at", columnDefinition = "TIMESTAMP")
+  private OffsetDateTime canceledAt;
 
   // 원본 데이터
   @Lob

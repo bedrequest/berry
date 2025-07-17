@@ -1,0 +1,114 @@
+:root {
+  /* Berry 그라데이션 */
+  --berry-grad: linear-gradient(
+    to right,
+    rgba(231, 75, 96, 1) 0%,
+    rgba(231, 60, 135, 1) 50%,
+    rgba(169, 67, 154, 1) 100%
+  );
+  --success-green: #28a745;
+  --text-dark: #333;
+  --bg-light: #fafafa;
+}
+
+* { margin:0; padding:0; box-sizing:border-box; }
+.suceessWrapper {
+  font-family: 'Noto Sans KR', sans-serif;
+  background: var(--bg-light);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+}
+
+.container {
+  width: 90%;
+  max-width: 1200px;
+  background: #fff;
+  border-radius: 8px;
+  box-shadow: 0 6px 18px rgba(0,0,0,0.1);
+  overflow: hidden;
+}
+
+.header {
+  background: var(--berry-grad);
+  color: #fff;
+  padding: 20px;
+  text-align: center;
+}
+.header h1 {
+  font-size: 1.8rem;
+  margin: 0;
+}
+
+.content {
+  padding: 24px;
+  text-align: center;
+}
+
+.message {
+  font-size: 1.2rem;
+  color: var(--text-dark);
+  margin-bottom: 20px;
+}
+.message .icon {
+  display: inline-block;
+  font-size: 3rem;
+  color: var(--success-green);
+  vertical-align: middle;
+  margin-right: 8px;
+}
+
+.info-box {
+  background: #f1f1f1;
+  border-radius: 6px;
+  padding: 16px;
+  margin-bottom: 24px;
+  text-align: left;
+}
+.info-box h2 {
+  font-size: 1rem;
+  margin-bottom: 12px;
+  border-bottom: 1px solid #ddd;
+  padding-bottom: 6px;
+  color: var(--text-dark);
+}
+.info-item {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 8px;
+  font-size: 0.95rem;
+  color: var(--text-dark);
+}
+.info-item .label { color: #666; }
+.info-item .value { font-weight: 600; }
+
+.btns {
+  display: flex;
+  gap: 12px;
+  justify-content: center;
+}
+.btn {
+  flex: 1;
+  padding: 12px;
+  font-size: 1rem;
+  font-weight: 600;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+.btn-primary {
+  background: var(--berry-grad);
+  color: #fff;
+}
+.btn-primary:hover {
+  opacity: 0.9;
+}
+.btn-secondary {
+  background: #e0e0e0;
+  color: var(--text-dark);
+}
+.btn-secondary:hover {
+  background: #d5d5d5;
+}
