@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.next.nz/thymeleaf/layout"
+      layout:decorate="~{layout/layout}">
+<section layout:fragment="customStyle">
+  <link rel="stylesheet" th:href="@{/css/lodge/detail.css}" />
+</section>
+<div layout:fragment="content">
+
+  <script th:inline="javascript">
+    window.lodgeDTO = /*[[${lodgeDTO}]]*/;
+  </script>
+  <div th:insert="~{fragments/search :: search}"></div>
+
+  <div class="navBar">
+    <ul>
+      <li><a href="#lodgeImageArea">개요</a></li>
+      <li><a href="#roomArea">객실</a></li>
+      <li><a href="#facility">서비스 및 부대시설</a></li>
+      <li><a href="#location">위치</a></li>
+      <li><a href="#reviewArea">리뷰</a></li>
+    </ul>
+
+
+  </div>
+
+  <div class="container">
+    <div id="lodgeImageArea" th:with="images=${lodgeDTO.lodgeImages}">
+      <div class="bigImage" th:style="'background-image: url(' + ${images.get(0)} + ');'"></div>
+      <div class="smallImage" th:each="i:${#numbers.sequence(1, 4)}"
+           th:style="'background-image:url(' + ${images.get(i)} + ');'"></div>
+    </div>
+
+    <div id="titleArea">
+      <span th:text="${lodgeDTO.lodgeType}"></span>
+      <div class="titleAndPrice">
+        <span th:text="${lodgeDTO.lodgeName}"></span>
+        <span>[[${lodgeDTO.cheapestPrice}]]</span>
+      </div>
+    </div>
+
+    <div id="roomArea">
+
+    </div>
+
+    <div id="lodgeIntro"></div>
+    <div id="facility"></div>
+    <div id="description"></div>
+    <div id="location"></div>
+    <div id="reviewArea"></div>
+
+  </div>
+
+</div>
