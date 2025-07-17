@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.next.nz/thymeleaf/layout"
+      layout:decorate="~{layout/layout}">
+<head>
+  <meta charset="UTF-8">
+  <link rel="stylesheet" th:href="@{/css/user/userSignup.css}">
+  <!-- flatpickr CSS -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+  <link rel="stylesheet" type="text/css" href="https://npmcdn.com/flatpickr/dist/themes/material_red.css">
+  <!-- flatpickr JS -->
+  <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+</head>
+<div layout:fragment="content">
+
+  <!-- 처음 회원가입을 누르기 전에 개인정보 활용 동의 및 마케팅 수신동의를 요구하는 창을 먼저 띄우고 그걸 완료 해야만 입력 가능(modal 이용) -->
+  <!-- 모바일 인증같은 경우에는 일단 마이페이지에서만 구현하기. -->
+  <!-- 이메일 인증도 같은 case -->
+  <!-- 이메일 인증은 비밀번호 확인용 -->
+  <!-- 모바일 인증은 숙소 예약을 위한 확인용 -->
+  <div class="signup-container">
+    <!-- 왼쪽 안내 영역 -->
+    <div class="left-panel">
+      <img th:src="@{/image/Berry_logo.png}" alt="로고" class="logo" />
+      <h2>회원가입하고<br>다양한 혜택을 누리세요!</h2>
+    </div>
+
+    <!-- 오른쪽 입력 영역 -->
+    <div class="right-panel">
+      <h2>회원가입</h2>
+
+      <form th:action="@{/user/signup}" method="post">
+        <input type="hidden" name="userTermOption" th:value="${userTermOption}">
+        <div class="form-group">
+          <label for="user_email">이메일</label>
+          <input class="user-input" type="email" id="user_email" name="userEmail" placeholder="example@domain.com" required>
+          <p id="okText"></p>
+        </div>
+
+        <div class="form-group">
+          <label for="user_name">이름</label>
+          <input class="user-input" type="text" id="user_name" name="userName" placeholder="홍길동" required>
+        </div>
+
+        <div class="form-group">
+          <label for="user_password">비밀번호</label>
+          <input class="user-input" type="password" id="user_password" name="password" placeholder="8자 이상, 영어, 특수문자" required>
+        </div>
+
+        <div class="form-group">
+          <label for="user_confirmPassword">비밀번호 확인</label>
+          <input class="user-input" type="password" id="user_confirmPassword" placeholder="비밀번호 재입력" required disabled>
+        </div>
+        <div class="form-group">
+          <label for="user_birthday">생년월일</label>
+          <input class="user-input" type="date" id="user_birthday" name="birthday" required>
+        </div>
+
+        <div class="form-group">
+          <label for="user_phone">휴대폰 번호</label>
+          <input class="user-input" type="text" id="user_phone" name="userPhone" placeholder="01012345678">
+        </div>
+
+        <button type="submit" class="signup-btn" id="signupButton" disabled>가입하기</button>
+      </form>
+
+      <div class="login-link">
+        <p>이미 계정이 있으신가요? <a th:href="@{/user/login}">로그인</a></p>
+      </div>
+    </div>
+  </div>
+
+  <script th:src="@{/js/user/userSignupValidation.js}"></script>
+</div>
