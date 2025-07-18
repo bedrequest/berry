@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout/layout}">
+
+<link rel="stylesheet" th:href="@{/css/qna/detail.css}">
+<head>
+  <meta charset="UTF-8">
+  <title>문의내용</title>
+</head>
+<body>
+<div class="container">
+  <h2 class="page-title">문의내용</h2>
+
+  <!-- category + title -->
+  <div class="form-group">
+    <label for="c">카테고리</label>
+    <input type="text" id="c" class="input-box short" readonly>
+  </div>
+
+  <input type="hidden" name="bno" th:value="${boardDTO.bno}">
+  <div class="form-group">
+    <label for="t">제목</label>
+    <input type="text" class="input-box"
+           name="title" th:value="${boardDTO.title}" id="t" readonly>
+  </div>
+
+  <!-- writer + regDate -->
+  <div class="form-group-inline aligned">
+    <div class="form-item">
+      <label for="w">작성자</label>
+      <input type="text" class="input-box small"
+             name="writer" th:value="${boardDTO.writer}" id="w" readonly>
+    </div>
+
+    <div class="form-item">
+      <label for="r">작성일</label>
+      <input type="text" class="input-box small"
+             th:value="${boardDTO.regDate}" id="r" readonly>
+    </div>
+  </div>
+
+  <!-- content -->
+  <div class="form-group">
+    <textarea type="text" class="form-control"
+              name="content" id="con" cols="30" rows="10" readonly placeholder="문의 내용을 표시합니다.">[[${boardDTO.content}]]</textarea>
+  </div>
+
+  <!-- 파일첨부 -->
+  <div class="file-upload">
+    <input type="text" class="upload-name" placeholder="선택된 파일 없음" disabled="disabled">
+    <label for="ex_filename">업로드</label>
+    <input type="file" id="ex_filename" class="upload-hidden" multiple>
+  </div>
+
+  <!-- 버튼 -->
+  <div class="button-row">
+    <button type="button" id="modBtn" class="btn btn-warning">Modify</button>
+    <button type="button" id="delBtn" class="btn btn-danger">Remove</button>
+    <button type="button" id="listBtn" class="btn btn-primary">List</button>
+  </div>
+</div>
+
+
+<script>
+  const realUpload = document.getElementById('ex_filename');
+  const uploadName = document.querySelector('.upload-name');
+
+  realUpload.addEventListener('change', function () {
+    const files = Array.from(this.files);
+    if (files.length > 0) {
+      const names = files.map(file => file.name).join(', ');
+      uploadName.value = names;
+    } else {
+      uploadName.value = '선택된 파일 없음';
+    }
+  });
+</script>
+</body>
+</html>
