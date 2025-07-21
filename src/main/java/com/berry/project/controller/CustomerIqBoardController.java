@@ -1,7 +1,7 @@
 package com.berry.project.controller;
 
-import com.berry.project.entity.dto.CustomerIqBoardDTO;
-import com.berry.project.entity.service.CustomerIqBoardService;
+import com.berry.project.dto.CustomerIqBoardDTO;
+import com.berry.project.service.CustomerIqBoardService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -14,6 +14,7 @@ public class CustomerIqBoardController {
     private final CustomerIqBoardService service;
 
     public CustomerIqBoardController(CustomerIqBoardService service) {
+
         this.service = service;
     }
 
