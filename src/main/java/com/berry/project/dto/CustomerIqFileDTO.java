@@ -1,7 +1,6 @@
 package com.berry.project.dto;
 
 import lombok.*;
-import org.eclipse.jdt.internal.compiler.ClassFile;
 
 import java.time.LocalDateTime;
 
@@ -22,8 +21,5 @@ public class CustomerIqFileDTO {
   private LocalDateTime regDate;
   private LocalDateTime modDate;
 
-  public static ClassFile builder() {
-    return null;
-  }
 }
 

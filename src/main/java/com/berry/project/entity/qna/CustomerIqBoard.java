@@ -5,12 +5,13 @@ import lombok.*;
 
 import java.time.LocalDateTime;
 
+@Table(name = "customeriqboard")
+@Entity
 @Getter
 @Setter
+@Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@Entity
-@Table(name = "customer_iq_board")
 public class CustomerIqBoard {
 
     @Id
@@ -49,6 +50,8 @@ public class CustomerIqBoard {
         this.regDate = LocalDateTime.now();
         this.modDate = LocalDateTime.now();
     }
+
+
 
     @PreUpdate
     protected void onUpdate() {

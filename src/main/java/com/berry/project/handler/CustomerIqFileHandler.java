@@ -15,7 +15,6 @@ import java.util.UUID;
 @Slf4j
 @Component
 public class CustomerIqFileHandler {
-  /* 파일을 폴더에 저장하고, fileList를 리턴하는 클래스 */
 
   private final String UP_DIR = "D:\\berry_file\\";
 
