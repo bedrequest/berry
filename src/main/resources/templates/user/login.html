@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.next.nz/thymeleaf/layout"
+      layout:decorate="~{layout/layout}">
+<head>
+  <meta charset="UTF-8">
+  <link rel="stylesheet" th:href="@{/css/user/userLogin.css}">
+</head>
+
+<div layout:fragment="content">
+
+  <div class="content-inner">
+    <div class="login-container">
+
+      <img class="login-logo" th:src="@{/image/Berry_logo_login.png}" width="48" height="56">
+
+      <!-- 좌측: 로그인 입력 -->
+      <div class="left-section">
+        <h2>
+          로그인
+        </h2>
+        <form th:action="@{/user/login}" method="post">
+          <div class="user-input-group">
+            <input type="text" name="userEmail" placeholder="이메일(example@domain.com)" required>
+          </div>
+          <div class="user-input-group">
+            <input type="password" name="password" placeholder="비밀번호" required>
+          </div>
+          <button type="submit" class="login-btn">로그인</button>
+        </form>
+        <div class="signup-link">
+          <p>아직 회원이 아니신가요?
+            <a th:href="@{/user/signup}" id="webSignBtn">회원가입</a>
+          </p>
+        </div>
+      </div>
+
+      <!-- 우측: 소셜 로그인 -->
+      <!-- 소셜로그인을 누르면 모달을 띄워주고 소셜로그인 id 를 설정해서 js 로 챙겨간 id 를 확인해서 그 a 태그의 click 이벤트를 활성화 하기 -->
+      <div class="right-section">
+        <h2>간편 로그인</h2>
+        <a th:href="@{/oauth2/authorization/kakao}">
+          <button type="button" class="social-btn kakao-btn">
+            <span>카카오 로그인</span>
+          </button>
+        </a>
+        <a th:href="@{/oauth2/authorization/naver}">
+          <button type="button" class="social-btn naver-btn">
+            <span>네이버 로그인</span>
+          </button>
+        </a>
+        <a th:href="@{/oauth2/authorization/google}">
+          <button type="button" class="social-btn google-btn">
+            <span>구글 로그인</span>
+          </button>
+        </a>
+      </div>
+    </div>
+
+    <!-- 개인정보 활용동의 및 마케팅 정보 수신동의 모달창-->
+    <div class="modal" id="personalInfoModal">
+      <div class="modal-body">
+        <div class="logo-position-div">
+          <img class="modal-logo" src="/image/Berry_logo.png" alt="로고">
+        </div>
+        <h2 class="modal-main-tit">개인정보 활용 동의</h2>
+
+        <div class="modal-content">
+          <p>서비스 이용을 위해 아래의 개인정보 수집 및 마케팅 정보 수신에 동의해 주세요.</p>
+
+          <div class="checkbox-group">
+            <label>
+              <input type="checkbox" id="agreePersonal">
+              <span class="personal-tit">[필수] 개인정보 수집 및 이용 동의</span>
+            </label>
+            <label>
+              <input type="checkbox" id="agreeMarketing">
+              <span>[선택] 마케팅 정보 수신 동의</span>
+            </label>
+          </div>
+        </div>
+
+        <div class="modal-actions">
+          <button type="button" id="modalSubBtn" disabled>제출하기</button>
+          <button type="button" id="closeModal">닫기</button>
+        </div>
+      </div>
+    </div>
+    <!--#e74b60, #e73c8, #a9439a -->
+
+
+  </div>
+
+  <script th:src="@{/js/user/userLoginModal.js}"></script>
+
+</div>
