@@ -27,6 +27,7 @@ public class LodgeServiceImpl implements LodgeService {
   private final WaysRepository waysRepository;
   private final RoomRepository roomRepository;
   private final RoomImgRepository roomImgRepository;
+  private final LodgeDescriptionRepository lodgeDescriptionRepository;
 
   private final FacilityMaskDecoder facilityMaskDecoder;
 
@@ -35,7 +36,10 @@ public class LodgeServiceImpl implements LodgeService {
     Optional<Lodge> optionalLodge = lodgeRepository.findById(lodgeId);
     if (optionalLodge.isEmpty()) return null;
 
-    LodgeDTO lodgeDTO = convertEntityToDto(optionalLodge.get(), facilityMaskDecoder);
+    LodgeDTO lodgeDTO = convertEntityToDto(
+        optionalLodge.get(),
+        facilityMaskDecoder,
+        lodgeDescriptionRepository.findByLodgeId(optionalLodge.get().getLodgeId()));
     fillImages(lodgeDTO);
     fillRooms(lodgeDTO, true);
 
@@ -52,7 +56,10 @@ public class LodgeServiceImpl implements LodgeService {
     Pageable pageable = PageRequest.of(pageNo - 1, 10);
 
     Page<LodgeDTO> result = lodgeRepository.searchLodges(listOptionDTO, lodgeOptionDTO, pageable)
-        .map(entry -> convertEntityToDto(entry, facilityMaskDecoder));
+        .map(entry -> convertEntityToDto(
+            entry,
+            facilityMaskDecoder,
+            lodgeDescriptionRepository.findByLodgeId(entry.getLodgeId())));
 
     for (LodgeDTO lodgeDTO : result) {
       fillImages(lodgeDTO);

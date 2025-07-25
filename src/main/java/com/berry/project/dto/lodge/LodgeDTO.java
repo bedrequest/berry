@@ -4,6 +4,7 @@ import lombok.*;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 
 @Getter
 @Setter
@@ -18,7 +19,7 @@ public class LodgeDTO {
   private String lodgeAddr;
   private List<String> facilities;
   private String intro;
-  private String description;
+  private List<LodgeDescriptionDTO> description;
   private String businessCall;
   private double latitude;
   private double longitude;

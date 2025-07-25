@@ -19,7 +19,7 @@ public class FacilityMaskDecoder {
   };
 
   /**
-   * 옵션들을 받아서 int로 변환
+   * 옵션들을 받아서 int로 변환<br>
    * 크롤링/테스트 용도
    * */
   public int encode(List<String> options) {
@@ -32,7 +32,7 @@ public class FacilityMaskDecoder {
   }
 
   /**
-   * int를 옵션 List로 변환
+   * int를 옵션 List로 변환<br>
    * entity -> DTO 변환 과정에서 사용
    * */
   public List<String> decode(int mask) {
