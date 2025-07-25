@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.next.nz/thymeleaf/layout"
+      layout:decorate="~{layout/layout}">
+<head>
+  <link rel="stylesheet" th:href="@{/css/payment/paymentFail.css}">
+</head>
+
+<div layout:fragment="content">
+  <div class="container">
+    <div class="header">
+      <h1>결제 실패</h1>
+    </div>
+    <div class="content">
+      <div class="info-box" style="text-align:center;">
+        <img th:src="@{/image/Berry_logo.png}" style="width:100%">
+      </div>
+
+      <div class="info-box">
+        <!-- 에러 코드 -->
+        <div class="info-item">ERROR CODE : [[${e_code}]]</div>
+
+        <!-- 에러 메시지 -->
+        <div class="info-item">[[${e_msg]]</div>
+      </div>
+
+      <div class="btns">
+        <button class="btn btn-secondary" onclick="location.href='/'">
+          홈으로
+        </button>
+      </div>
+    </div>
+  </div>
+  </div>
+</div>
+

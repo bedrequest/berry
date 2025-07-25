@@ -1,0 +1,66 @@
+<!-- src/main/resources/templates/review-test.html -->
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <title>리뷰 테스트 페이지</title>
+</head>
+<body>
+<h1>리뷰 등록 & 태그 테스트</h1>
+
+<form id="reviewForm" onsubmit="submitReview(); return false;">
+  <input type="hidden" id="userId" value="1"/>
+  <input type="hidden" id="lodgeId" value="42"/>
+
+  <label>별점:
+    <input type="number" id="rating" min="1" max="5" value="5"/>
+  </label><br/>
+
+  <label>내용:<br/>
+    <textarea id="content" rows="4" cols="50">테스트 리뷰입니다!</textarea>
+  </label><br/>
+
+  <div>
+    <strong>태그 (최대 3개):</strong><br/>
+    <span th:each="tag : ${tags}">
+        <label>
+          <input type="checkbox" class="tagCheckbox" th:value="${tag.tagName}"/>
+          <span th:text="${tag.tagName}"></span>
+        </label><br/>
+      </span>
+  </div>
+
+  <button type="submit">등록</button>
+</form>
+
+<h2>Response</h2>
+<pre id="response" style="background:#f0f0f0; padding:1em;"></pre>
+
+<script>
+  function submitReview() {
+    const selected = Array.from(document.querySelectorAll('.tagCheckbox:checked'))
+                          .map(cb => cb.value);
+    const payload = {
+      userId: +document.getElementById('userId').value,
+      lodgeId: +document.getElementById('lodgeId').value,
+      rating: +document.getElementById('rating').value,
+      content: document.getElementById('content').value,
+      tagNames: selected
+    };
+
+    fetch('/review-test/create', {
+      method: 'POST',
+      headers: {'Content-Type': 'application/json'},
+      body: JSON.stringify(payload)
+    })
+    .then(res => res.json())
+    .then(json => {
+      document.getElementById('response').textContent = JSON.stringify(json, null, 2);
+    })
+    .catch(err => {
+      document.getElementById('response').textContent = err;
+    });
+  }
+</script>
+</body>
+</html>

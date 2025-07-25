@@ -7,3 +7,15 @@ create user 'berryuser'@'localhost' identified by 'mysql';
 -- 권한 부여
 grant all privileges on berrydb.* to 'berryuser'@'localhost';
 flush privileges;
+
+-- kms
+insert into review_tag (tag_name) values
+ ('깨끗해요'),
+ ('경치가 좋아요'),
+ ('인테리어가 좋아요'),
+ ('친절해요'),
+ ('방음이 좋아요'),
+ ('대중교통이 편해요'),
+ ('아이와 가기 좋아요'),
+ ('즐길거리가 많아요'),
+ ('조용히 쉬기 좋아요');

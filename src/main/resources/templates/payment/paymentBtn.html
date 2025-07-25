@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.next.nz/thymeleaf/layout"
+      layout:decorate="~{layout/layout}">
+<div layout:fragment="content">
+
+<head>
+  <link rel="stylesheet" th:href="@{/css/payment/paymentBtn.css}">
+</head>
+  <h1>Berry Project - paymentBtn</h1>
+
+  <!-- 결제 페이지 이동 버튼 -->
+  <div class="reservation-buttons">
+    <button type="button" class="paymentBtn_rent">대실 예약</button>
+    <button type="button" class="paymentBtn_stay">숙박 예약</button>
+  </div>
+
+  <!-- 결제 환불 -->
+  <div>
+    <button type="button" class="payment-cancel">환불</button>
+  </div>
+
+
+  <script th:src="@{/js/payment/paymentBtn.js}"></script>
+  <script th:src="@{/js/payment/paymentCancel.js}"></script>
+</div>

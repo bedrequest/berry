@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+<!-- thymeleaf 나중에 추가 -->
+
+<div class="container-md" layout:fragment="content">
+<h1>고객문의</h1>
+<br>
+<p>
+  안내문구
+</p>
+
+<!-- 조회기간 -->
+<input
+        type="date"
+        id="start"
+        name="trip-start"
+        value="2018-07-22"
+        min="2018-01-01"
+        max="2018-12-31" />
+
+<input
+        type="date"
+        id="end"
+        name="trip-start"
+        value="2018-07-22"
+        min="2018-01-01"
+        max="2018-12-31" />
+
+
+<!-- 게시판 메인 -->
+  <form action="board/list" class="d-flex align-items-center gap-2" role="search">
+    <label for="type" class="form-label mb-0">카테고리</label>
+    <select id="type" class="form-select" name="type" aria-label="카테고리 선택">
+      <option value="">선택</option>
+      <option value="notice">공지</option>
+      <option value="payment">결제</option>
+      <option value="refund">환불</option>
+      <option value="facility">시설</option>
+      <option value="service">서비스</option>
+      <option value="etc">기타</option>
+    </select>
+    <input class="form-control me-2" name="keyword" th:value="${ph.keyword}" type="search" placeholder="Search" aria-label="Search" />
+    <input type="hidden" name="pageNo" th:value="1" />
+    <button type="submit" class="btn btn-primary">Search</button>
+  </form>
+
+    <table class="table">
+      <thead>
+        <tr>
+          <th scope="col">No</th>
+          <th scope="col" colspan="2">카테고리</th>
+          <th scope="col">제목</th>
+          <th scope="col">작성자</th>
+          <th scope="col">작성일</th>
+          <th scope="col">진행</th>
+        </tr>
+      </thead>
+<!--  파일 만들어지면 그때 추가 -->
+
+    </table>
+
+<!-- 글 작성 버튼 -> write로 이동 -->
+  <a th:href="@{board/write}"><button type="button" class="btn btn-primary">작성</button></a>
+
+<!-- 페이지네이션 PagingHandler 있다 침 -->
+  <nav aria-label="Page navigation example">
+    <ul class="pagination justify-content-center">
+      <li class="page-item" th:classappend="${ph.hasPrev eq false ? 'disabled' : ''}">
+        <a class="page-link" th:href="@{/board/list(pageNo=${ph.startPage-1}, type=${ph.type}, keyword=${ph.keyword})}" aria-label="Previous">
+          <span aria-hidden="true">&laquo;</span>
+        </a>
+      </li>
+      <!--/* begin end 옵션이 없음. ${#numbers.sequence(from, to)} */-->
+      <th:block th:each="i:${#numbers.sequence(ph.startPage, ph.endPage)}">
+        <li class="page-item" th:classappend="${ph.pageNo eq i ? 'active' : ''}">
+          <a class="page-link" th:href="@{/board/list(pageNo=${i}, type=${ph.type}, keyword=${ph.keyword})}">[[${i}]]</a>
+        </li>
+      </th:block>
+
+      <li class="page-item" th:classappend="${ph.hasNext eq false ? 'disabled' : ''}">
+        <a class="page-link" th:href="@{/board/list(pageNo=${ph.endPage+1}, type=${ph.type}, keyword=${ph.keyword})}" aria-label="Next">
+          <span aria-hidden="true">&raquo;</span>
+        </a>
+      </li>
+    </ul>
+  </nav>
+
+
+
+</div>

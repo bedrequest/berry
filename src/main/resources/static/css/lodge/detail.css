@@ -1,0 +1,47 @@
+/* 1. container */
+.container {
+  width: 1200px;
+  margin: auto;
+}
+
+/* 2. lodgeImageArea */
+#lodgeImageArea {
+  width: 100%;
+  height: 512px;
+
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  grid-template-rows: 1fr 1fr;
+  gap: 8px;
+}
+#lodgeImageArea>div {
+  position: relative;
+
+  background-size: cover;
+
+  cursor: pointer;
+}
+#lodgeImageArea>div:hover::before {
+  content: "";
+  position: absolute;
+  top: 0; left: 0;
+  width: 100%; height: 100%;
+
+  background-color: rgba(0, 0, 0, 0.22);
+  z-index: 1;
+
+  border-radius: inherit;
+}
+#lodgeImageArea>.bigImage {
+  grid-column: 1/3;
+  grid-row: 1/3;
+
+  border-top-left-radius: 10px;
+  border-bottom-left-radius: 10px;
+}
+.smallImage:nth-of-type(3) {
+  border-top-right-radius: 10px;
+}
+.smallImage:nth-of-type(5) {
+  border-bottom-right-radius: 10px;
+}

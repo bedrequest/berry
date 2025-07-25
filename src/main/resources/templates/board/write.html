@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+
+
+<!-- 보류 -->
+
+
+
+
+
+<h1>문의내용</h1>
+
+<form>
+  <div class="row">
+    <!-- 카테고리와 닉네임 -->
+    <div class="col-3">
+      <label for="type" class="form-label">카테고리</label>
+    </div>
+    <div class="col-9">
+      <label for="type" class="form-label" style="margin-left: -4px;">닉네임</label>
+    </div>
+
+    <!-- 입력 -->
+    <div class="col-3">
+      <select id="type" class="form-select" name="type" aria-label="카테고리 선택">
+        <option value="">--선택--</option>
+        <option value="notice">공지</option>
+        <option value="payment">결제</option>
+        <option value="refund">환불</option>
+        <option value="facility">시설</option>
+        <option value="service">서비스</option>
+        <option value="etc">기타</option>
+      </select>
+    </div>
+    <div class="col-9">
+      <input type="text" class="form-control"
+             name="nickName" id="nk"
+             placeholder="닉네임을 입력해주세요">
+    </div>
+
+  <div class="form-check">
+    <input class="form-check-input" type="checkbox" value="" id="checkDefault">
+    <label class="form-check-label" for="checkDefault">
+      비밀글 체크
+    </label>
+  </div>
+
+  </div>
+
+  <div class="mb-3">
+    <label for="t" class="form-label">제목</label>
+    <input type="text" class="form-control"
+           name="title" id="t"
+           placeholder="제목을 입력해주세요">
+  </div>
+
+
+  <div class="mb-3">
+  <textarea type="text" class="form-control"
+            name="content" id="c" cols="30" rows="10" readonly>[[${}]]</textarea>
+  </div>
+
+  <!--/* file 추가 라인 */-->
+  <div class="mb-3">
+    <input type="file" class="form-control" name="files" id="file" multiple style="display:none;">
+    <button type="button" class="btn btn-outline-primary" id="trigger">file upload</button>
+  </div>
+  <!--/* file 출력 라인 */-->
+  <div class="mb-3" id="fileZone"></div>
+
+  <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+    <button type="button" id="listBtn" class="btn btn-primary">List</button>
+    <button type="button" id="modBtn" class="btn btn-primary">등록</button>
+
+  </div>
+
+
+</form>
