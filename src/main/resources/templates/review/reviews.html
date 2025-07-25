@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="ko"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout/layout}">
+
+<head>
+  <link rel="stylesheet" th:href="@{/css/reset.css}" />
+  <link rel="stylesheet" th:href="@{/css/common.css}" />
+  <link rel="stylesheet" th:href="@{/css/review/reviews.css}" />
+</head>
+
+<div layout:fragment="content" class="container my-5">
+  <h1 class="mb-4 text-center">리얼 리뷰</h1>
+
+  <div class="review-list mx-auto">
+    <div th:if="${#lists.isEmpty(reviews)}" class="text-center text-muted">
+      등록된 리뷰가 없습니다.
+    </div>
+
+    <div th:each="review : ${reviews}" class="review-item">
+      <div class="review-header">
+        <div class="profile-img">
+          <img src="/img/profile-default.png" alt="프로필 이미지">
+        </div>
+        <div class="user-info">
+          <span class="nickname" th:text="|${review.userId}|">작성자</span> <!-- 작성자 useremail 로 나중에 변경-->
+          <span class="review-date" th:text="${#temporals.format(review.createdAt, 'yyyy-MM-dd')}">2025-07-24</span>
+        </div>
+      </div>
+
+      <div class="review-body">
+        <div class="review-rating">
+          <span th:each="i : ${#numbers.sequence(1,5)}"
+        th:text="${i <= review.rating} ? '★' : '☆'"></span>
+        </div>
+        <p class="review-content" th:text="${review.content}">리뷰 내용</p>
+        <span class="toggle-more" onclick="toggleContent(this)" style="display: none;">더보기</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- 페이징 바 -->
+  <nav aria-label="페이지 네비게이션" class="mt-4">
+    <ul class="pagination d-flex flex-column align-items-center">
+      <!-- 이전 그룹 -->
+      <li class="page-item" th:if="${hasPrev}">
+        <a class="page-link"
+           th:href="@{|/reviews?lodgeId=${lodgeId}&page=${startPage - 1}|}">
+          &laquo;
+        </a>
+      </li>
+
+      <!-- 페이지 번호 -->
+      <div class="d-flex gap-1">
+        <li class="page-item"
+            th:each="i : ${#numbers.sequence(startPage, endPage)}"
+            th:classappend="${i == currentPage} ? 'active'">
+          <a class="page-link"
+             th:href="@{|/reviews?lodgeId=${lodgeId}&page=${i}|}"
+             th:text="${i}">1</a>
+        </li>
+      </div>
+
+      <!-- 다음 그룹 -->
+      <li class="page-item" th:if="${hasNext}">
+        <a class="page-link"
+           th:href="@{|/reviews?lodgeId=${lodgeId}&page=${endPage + 1}|}">
+          &raquo;
+        </a>
+      </li>
+    </ul>
+  </nav>
+
+  <script th:src="@{/js/review/reviews.js}"></script>
+</div>
+
+</html>

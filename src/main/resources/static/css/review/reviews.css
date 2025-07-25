@@ -1,0 +1,124 @@
+.review-list {
+  max-width: 700px;
+  margin: 0 auto;
+}
+
+.review-item {
+  border-bottom: 1px solid #e0e0e0;
+  padding: 24px 0;
+}
+
+.review-header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 12px;
+}
+
+.profile-img img {
+  width: 42px;
+  height: 42px;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+.user-info {
+  display: flex;
+  flex-direction: column;
+}
+
+.nickname {
+  font-weight: 600;
+  font-size: 0.95rem;
+  color: #333;
+}
+
+.review-date {
+  font-size: 0.8rem;
+  color: #888;
+}
+
+.review-body .review-rating {
+  color: #f9a825;
+  font-size: 1.05rem;
+  font-weight: 700;
+  margin-bottom: 8px;
+}
+
+.review-body .review-content {
+  font-size: 0.95rem;
+  color: #444;
+  line-height: 1.6;
+  white-space: pre-line;
+  overflow: hidden;
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  transition: all 0.3s ease;
+}
+
+.review-content.collapsed {
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.review-content:not(.collapsed) {
+  -webkit-line-clamp: unset;
+  display: block;
+}
+
+.toggle-more {
+  color: #E74B60;
+  font-size: 0.9rem;
+  cursor: pointer;
+  margin-top: 6px;
+  display: inline-block;
+}
+
+
+nav[aria-label="페이지 네비게이션"] {
+  display: flex;
+  justify-content: center;
+  margin-top: 20px;
+  padding-bottom: 40px;
+}
+
+.pagination {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 4px;
+  list-style: none;
+  padding-left: 0;
+  margin: 0;
+}
+
+.page-item {
+  display: inline-block;
+  margin: 2px;
+}
+
+.page-link {
+  display: inline-block;
+  padding: 6px 12px;
+  text-align: center;
+  text-decoration: none;
+  color: #E74B60;
+  border: 1px solid #E74B60;
+  border-radius: 4px;
+  background-color: #fff;
+  transition: background-color 0.2s, color 0.2s;
+}
+
+.page-link:hover {
+  background-color: #E74B60;
+  color: #fff;
+}
+
+.page-item.active .page-link {
+  background-color: #E74B60;
+  color: #fff;
+  border-color: #E74B60;
+}
