@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="en"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.next.nz/thymeleaf/layout"
+      layout:decorate="~{layout/layout}">
+<section layout:fragment="customStyle">
+  <link rel="stylesheet" th:href="@{/css/lodge/list.css}" />
+</section>
+<div layout:fragment="content">
+  <div th:insert="~{fragments/search :: search}"
+       th:with="listOption=${pagingHandler.listOptionDTO}"></div>
+  <div class="container">
+    <div class="filter">
+      <span class="title">필터</span>
+      <div class="lodgeTypeArea">
+        <span class="filterName">숙소유형</span>
+        <div class="lodgeType">
+          <div class="customRadioBtn" th:classappend="${pagingHandler.listOptionDTO.lodgeType eq null ? 'selected' : ''}"></div>
+          <span>전체</span>
+        </div>
+        <div class="lodgeType" th:each="type : ${lodgeTypes}">
+          <div class="customRadioBtn" th:classappend="${pagingHandler.listOptionDTO.lodgeType eq type ? 'selected' : ''}"></div>
+          <span th:text="${type}"></span>
+        </div>
+      </div>
+      <div class="priceRange">
+        <div class="filterName">
+          <span>가격</span>
+          <span>1박 기준</span>
+        </div>
+      </div>
+
+      <div class="favorites">
+        <span class="filterName">#태그</span>
+        <div class="favorite divBtn" th:each="favorite, status : ${favorites}"
+             th:data-index="${status.index}" th:text="${favorite}"
+             th:classappend="${selectedFavorites.contains(favorite) ? 'selected' : ''}">
+        </div>
+      </div>
+
+      <div class="facilities">
+        <span class="filterName">시설</span>
+        <div class="facilityType">
+          <span class="subTitle">공용시설</span>
+          <div th:each="facility, status:${publicFacilities}"
+               class="facilityBtn facility1 divBtn" th:text="${facility}" th:data-index="${status.index}"
+               th:classappend="${facilities.contains(facility) ? 'selected' : ''}">
+          </div>
+        </div>
+        <div class="facilityType">
+          <span class="subTitle">객실 내 시설</span>
+          <div th:each="facility, status:${innerFacilities}"
+               class="facilityBtn facility2 divBtn" th:text="${facility}" th:data-index="${status.index}"
+               th:classappend="${facilities.contains(facility) ? 'selected' : ''}">
+          </div>
+        </div>
+        <div class="facilityType">
+          <span class="subTitle">기타시설</span>
+          <div th:each="facility, status:${otherFacilities}"
+               class="facilityBtn facility3 divBtn" th:text="${facility}" th:data-index="${status.index}"
+               th:classappend="${facilities.contains(facility) ? 'selected' : ''}">
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="list">
+      <div class="stat">
+        <span>'[[${pagingHandler.listOptionDTO.keyword}]]' 검색 결과 [[${pagingHandler.totalCount}]]개</span>
+        <select id="sort" name="sort" aria-label="정렬">
+          <option>정렬</option>
+          <option value="reviewRank">평점높은순</option>
+          <option value="reviewCount">리뷰많은순</option>
+          <option value="priceAsc">낮은가격순</option>
+          <option value="priceDesc">높은가격순</option>
+          <option value="distance">거리순</option>
+        </select>
+      </div>
+      <div class="listBody">
+        <ul>
+          <li th:each="lodge:${pagingHandler.list}">
+            <div class="bookmark">
+              <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="#999999" class="bi bi-heart-fill" viewBox="0 0 16 16">
+                <path fill-rule="evenodd" d="M8 1.314C12.438-3.248 23.534 4.735 8 15-7.534 4.736 3.562-3.248 8 1.314"/>
+              </svg>
+            </div>
+            <a th:href="@{/lodge/detail/{id}(
+             id=${lodge.lodgeId},
+             checkIn=${lodgeOption.checkIn},
+             checkOut=${lodgeOption.checkOut},
+             adult=${lodgeOption.adult},
+             child=${lodgeOption.child})}">
+              <div class="lodgePreview">
+                <div class="lodgePreviewImg" th:style="'background-image: url(' + ${lodge.lodgeImages.get(0)} + ');'"></div>
+                <div class="lodgePreviewTexts">
+                  <div class="lodgeInfo">
+                    <span class="lodgeType" th:text="${lodge.lodgeType}"></span>
+                    <span class="lodgeName" th:text="${lodge.lodgeName}"></span>
+                    <span class="lodgeAddr" th:text="${lodge.shortAddress}"></span>
+                    <div class="lodgeReviewStatusArea">별점 영역</div>
+                  </div>
+                  <div class="lodgePrice">
+                    <p class="rent time" th:if="${lodge.cheapestRent != null}">
+                      <span class="timeTitle">대실</span>
+                      <span class="timeValue">[[${lodge.cheapestRent.rentTime}]]</span>
+                    </p>
+                    <p class="rent price" th:if="${lodge.cheapestRent != null}">
+                      [[${lodge.cheapestRent.rentPrice}]]원
+                    </p>
+                    <p class="stay time" th:if="${lodge.cheapestStay != null}">
+                      <span class="timeTitle">숙박</span>
+                      <span class="timeValue">[[${lodge.cheapestStay.stayTime}]]</span>
+                    </p>
+                    <p class="stay price" th:if="${lodge.cheapestStay != null}">
+                      [[${lodge.cheapestStay.stayPrice}]]원
+                    </p>
+                  </div>
+                </div>
+              </div>
+            </a>
+          </li>
+        </ul>
+
+        <div class="pagingArea">
+          <ul>
+            <li class="page-item prev" th:data-pageno="${pagingHandler.startPage - 1}"
+                th:classappend="${pagingHandler.hasPrev ? '' : 'disabled'}" >
+              <div class="page-link">&laquo;</div>
+            </li>
+            <th:block th:each="i:${#numbers.sequence(pagingHandler.startPage, pagingHandler.endPage)}"
+                      th:if="${pagingHandler.totalCount > 0}">
+              <li class="page-item" th:data-pageno="${i}"
+                  th:classappend="${pagingHandler.pageNo eq i ? 'active' : ''}">
+                <div class="page-link" th:text="${i}"></div>
+              </li>
+            </th:block>
+            <li class="page-item next" th:data-pageno="${pagingHandler.endPage + 1}"
+                th:classappend="${pagingHandler.hasNext ? '' : 'disabled'}">
+              <div class="page-link" th:href="@{/}">&raquo;</div>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+  <script th:inline="javascript">
+    const pagingHandler = /*[[${pagingHandler}]]*/;
+    const lodgeOption = /*[[${lodgeOption}]]*/;
+    const publicFacilityCount = /*[[${publicFacilities.size()}]]*/;
+    const innerFacilityCount = /*[[${innerFacilities.size()}]]*/;
+  </script>
+  <script th:src="@{/js/lodge/list.js}"></script>
+</div>
