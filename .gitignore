@@ -38,3 +38,7 @@ out/
 
 ### API 키
 /src/main/resources/external-api.properties
+
+### gemini
+/src/main/.gemini
+gemini-mcp

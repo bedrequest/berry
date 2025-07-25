@@ -1,0 +1,27 @@
+package com.berry.project.dto.lodge;
+
+import lombok.*;
+
+import java.util.List;
+
+@Getter
+@Setter
+@ToString
+@NoArgsConstructor
+@AllArgsConstructor
+@Builder
+public class RoomDTO {
+  private Long roomId;
+  private long lodgeId;
+  private String roomName;
+  private String info;
+  private Integer rentPrice;
+  private String rentTime;
+  private int stayPrice;
+  private String stayOption;
+  private String stayTime;
+  private int stockCount;
+  private int standardCount;
+  private int maxCount;
+  private List<String> roomImageUrls;
+}

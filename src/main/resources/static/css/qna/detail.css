@@ -1,0 +1,231 @@
+/* 전체 레이아웃 설정 */
+body {
+  font-family: 'Noto Sans KR', sans-serif;
+  background-color: #f9f9f9;
+  margin: 0;
+  padding: 40px 0;
+  display: flex;
+  justify-content: center;
+}
+
+/* 메인 컨테이너 */
+.container {
+  width: 1200px;
+  background-color: #ffffff;
+  padding: 40px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+  border-radius: 8px;
+  box-sizing: border-box;
+}
+
+/* 페이지 제목 */
+.page-title {
+  font-size: 28px;
+  font-weight: 600;
+  margin-bottom: 30px;
+  border-bottom: 2px solid #eee;
+  padding-bottom: 10px;
+}
+
+/* 공통 form-group: label + input */
+.form-group {
+  display: flex;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.form-group label {
+  width: 100px;
+  font-weight: 500;
+  color: #333;
+  margin-right: 10px;
+}
+
+.input-box {
+  flex: 1;
+  padding: 10px 14px;
+  font-size: 15px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  background-color: #fefefe;
+  color: #333;
+  box-sizing: border-box;
+  height: 42px; /* 통일된 높이 */
+}
+
+.input-box.short {
+  max-width: 300px;
+}
+
+/* 작성자, 작성일 줄 */
+.form-group-inline {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  margin-bottom: 20px;
+  gap: 20px;
+}
+
+.form-item {
+  display: flex;
+  align-items: center;
+  flex: 1 1 300px;
+  min-width: 250px;
+}
+
+.form-item label {
+  width: 100px;
+  margin-right: 10px;
+  font-weight: 500;
+  color: #333;
+}
+
+.input-box.small {
+  flex: 1;
+  padding: 10px 14px;
+  height: 42px;
+  font-size: 15px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  background-color: #fefefe;
+  color: #333;
+  box-sizing: border-box;
+}
+
+/* textarea 영역 */
+textarea.form-control {
+  width: 100%;
+  min-height: 200px;
+  padding: 14px;
+  font-size: 15px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  resize: none;
+  background-color: #fefefe;
+  color: #333;
+  margin-bottom: 24px;
+  box-sizing: border-box;
+}
+
+/* 파일 첨부 줄 */
+.file-upload {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 30px;
+}
+
+.file-upload label {
+  display: inline-block;
+  padding: .5em .75em;
+  color: #999;
+  font-size: inherit;
+  line-height: normal;
+  vertical-align: middle;
+  background-color: #fdfdfd;
+  cursor: pointer;
+  border: 1px solid #ebebeb;
+  border-bottom-color: #e2e2e2;
+  border-radius: .25em;
+}
+
+.file-upload input[type="file"] {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0,0,0,0);
+  border: 0;
+}
+
+.file-upload .upload-name {
+  flex: 1;
+  padding: .5em .75em;
+  font-size: inherit;
+  font-family: inherit;
+  line-height: normal;
+  vertical-align: middle;
+  background-color: #f5f5f5;
+  border: 1px solid #ebebeb;
+  border-bottom-color: #e2e2e2;
+  border-radius: .25em;
+  height: 42px;
+  box-sizing: border-box;
+}
+
+/* 하단 버튼 */
+.button-row {
+  display: flex;
+  justify-content: flex-end;
+  gap: 12px;
+}
+
+.action-btn,
+.btn {
+  padding: 10px 20px;
+  background-color: #007bff;
+  color: white;
+  font-size: 15px;
+  font-weight: 500;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.btn-warning {
+  background-color: #ffc107;
+  color: #212529;
+}
+
+.btn-danger {
+  background-color: #dc3545;
+}
+
+.btn-primary {
+  background-color: #007bff;
+}
+
+.btn:hover,
+.action-btn:hover {
+  opacity: 0.9;
+}
+
+/* 반응형: 화면 너비가 좁을 때 처리 */
+@media (max-width: 768px) {
+  .container {
+    width: 90%;
+    padding: 20px;
+  }
+
+  .form-group-inline {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .form-item {
+    width: 100%;
+    margin-right: 0;
+    margin-bottom: 10px;
+  }
+
+  .form-item label {
+    width: auto;
+    margin-bottom: 5px;
+  }
+
+  .input-box.small {
+    width: 100%;
+  }
+
+  .file-upload {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .file-upload .upload-name {
+    width: 100%;
+  }
+}

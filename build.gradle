@@ -24,6 +24,8 @@ repositories {
 }
 
 dependencies {
+	// duropeb, https://mvnrepository.com/artifact/com.fasterxml.jackson.datatype/jackson-datatype-jsr310
+	implementation 'com.fasterxml.jackson.datatype:jackson-datatype-jsr310'
 	implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
 	implementation 'org.springframework.boot:spring-boot-starter-thymeleaf'
 	implementation 'org.springframework.boot:spring-boot-starter-web'
@@ -35,13 +37,13 @@ dependencies {
 	implementation 'net.coobird:thumbnailator:0.4.20'
 	implementation 'org.jsoup:jsoup:1.21.1'
 	implementation 'com.googlecode.json-simple:json-simple:1.1'
-
-	// --- Selenium & WebDriverManager (크롤링) --- kms
+  	// --- Selenium & WebDriverManager (크롤링) --- kms
 	implementation 'org.seleniumhq.selenium:selenium-java:4.10.0'
 	implementation 'io.github.bonigarcia:webdrivermanager:5.4.0'
 	//  --- Bean Validation(@Valid, @NotNull 등)을 위한 의존성 --- kms
 	implementation 'org.springframework.boot:spring-boot-starter-validation'
-
+  	// 이유현(2025-07-21) : https://github.com/crizin/korean-utils
+	implementation 'io.github.crizin:korean-utils:0.0.1'
 	compileOnly 'org.projectlombok:lombok'
 	developmentOnly 'org.springframework.boot:spring-boot-devtools'
 	runtimeOnly 'com.mysql:mysql-connector-j'

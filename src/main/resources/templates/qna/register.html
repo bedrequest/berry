@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout/layout}">
+<head>
+<link rel="stylesheet" th:href="@{/css/qna/register.css}">
+  <meta charset="UTF-8">
+  <title>문의 내용</title>
+</head>
+<body>
+
+<div class="container">
+  <h1>문의내용</h1>
+
+  <form action="/qna/register" method="post" enctype="multipart/form-data">
+
+    <div style="display: flex; align-items: center; gap: 20px;">
+      <label for="category">카테고리</label>
+      <select id="category" name="category">
+        <option >--선택--</option>
+        <option th:value="p">결제</option>
+        <option th:value="r">환불</option>
+        <option th:value="f">시설</option>
+        <option th:value="s">서비스</option>
+        <option th:value="e">기타</option>
+      </select>
+
+      <label style="display: flex; align-items: center; gap: 5px;">
+        <input type="checkbox" id="secret" name="secret">
+        비밀글 설정
+      </label>
+    </div>
+
+    <br><br>
+
+    <label for="title">제목</label>
+    <input type="text" id="title" name="title" placeholder="제목을 입력해주세요">
+
+    <br><br>
+
+    <label for="nickname">닉네임</label>
+    <input type="text" id="nickname" name="nickname" placeholder="닉네임을 입력해주세요">
+
+    <br><br>
+
+    <label for="content">문의 내용</label><br>
+    <textarea id="content" name="content" rows="10" cols="50" placeholder="문의 내용을 입력해주세요"></textarea>
+
+    <br><br>
+
+
+    <!--/* file 추가 라인 */-->
+    <div class="file-upload preview-image">
+      <input type="text" class="upload-name" value="파일선택" disabled="disabled">
+      <label for="input-file">업로드</label>
+      <input type="file" id="input-file" class="upload-hidden">
+    </div>
+
+
+    <br><br>
+
+    <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+      <button type="button" id="listBtn" class="btn btn-primary me-md-2">List</button>
+      <button type="submit" id="regBtn" class="btn btn-primary">등록</button>
+    </div>
+
+  </form>
+  <script th:src="@{/js/boardRegister.js}"></script>
+</div>
+
+
+<script>
+  function updateFileName(input) {
+    const fileName = input.files.length > 0 ? input.files[0].name : '파일선택';
+    input.closest('.file-upload').querySelector('.upload-name').value = fileName;
+  }
+</script>
+
+</body>
+</html>
