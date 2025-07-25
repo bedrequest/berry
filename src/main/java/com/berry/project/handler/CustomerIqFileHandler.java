@@ -1,6 +1,6 @@
 package com.berry.project.handler;
 
-import com.berry.project.dto.CustomerIqFileDTO;
+import com.berry.project.dto.qna.CustomerIqFileDTO;
 import lombok.extern.slf4j.Slf4j;
 import net.coobird.thumbnailator.Thumbnails;
 import org.springframework.stereotype.Component;

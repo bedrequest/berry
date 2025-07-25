@@ -1,18 +1,19 @@
 package com.berry.project.entity.qna;
 
+import com.berry.project.entity.TimeBase;
 import jakarta.persistence.*;
 import lombok.*;
 
 import java.time.LocalDateTime;
 
-@Table(name = "customeriqboard")
 @Entity
 @Getter
 @Setter
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class CustomerIqBoard {
+@Table(name = "customer_iq_board")
+public class CustomerIqBoard extends TimeBase {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -33,28 +34,9 @@ public class CustomerIqBoard {
     @Column(name = "is_secret")
     private Boolean isSecret; // 비밀글 여부
 
-    @Column(name = "reg_date", updatable = false)
-    private LocalDateTime regDate; // 작성 시간
-
-    @Column(name = "mod_date")
-    private LocalDateTime modDate; // 수정 시간
-
     @Column(columnDefinition = "TEXT")
     private String comment;        // 코멘트(답글)
 
     @Column(name = "comment_reg_date")
     private LocalDateTime commentRegDate; // 코멘트 작성 시간
-
-    @PrePersist
-    protected void onCreate() {
-        this.regDate = LocalDateTime.now();
-        this.modDate = LocalDateTime.now();
-    }
-
-
-
-    @PreUpdate
-    protected void onUpdate() {
-        this.modDate = LocalDateTime.now();
-    }
 }

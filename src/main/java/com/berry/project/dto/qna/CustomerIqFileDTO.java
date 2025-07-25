@@ -1,4 +1,4 @@
-package com.berry.project.dto;
+package com.berry.project.dto.qna;
 
 import lombok.*;
 
