@@ -36,8 +36,8 @@ public class Review {
     private String aiSummary;
 
     @Column(name = "created_at")
-    private LocalDateTime createdAt = LocalDateTime.now();
+    @Builder.Default private LocalDateTime createdAt = LocalDateTime.now();
 
     @Column(name = "reported_count")
-    private Integer reportedCount = 0;
+    @Builder.Default private Integer reportedCount = 0;
 }
