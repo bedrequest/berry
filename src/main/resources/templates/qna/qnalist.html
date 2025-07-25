@@ -3,6 +3,14 @@
       xmlns:th="http://www.thymeleaf.org"
       xmlns:layout="http://www.ultraq.next.nz/thymeleaf/layout"
       layout:decorate="~{layout/layout}">
+
 <div layout:fragment="content">
-   <div th:insert="~{fragments/search :: search}"></div>
+  <h1>Berry list </h1>
+<!--  [[${list}]]-->
+  <th:block th:each="bvo:${list}">
+    [[${bvo}]]
+    <br>
+
+  </th:block>
+
 </div>

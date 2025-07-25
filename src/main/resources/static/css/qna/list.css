@@ -1,0 +1,158 @@
+/* 전체 컨테이너 정리 */
+.container-md {
+  width: 1200px;
+  margin: 0 auto;
+  padding: 40px 20px;
+  background-color: #f9f9f9;
+  border-radius: 16px;
+}
+
+/* 제목 스타일 */
+h1 {
+  text-align: center;
+  font-size: 32px;
+  font-weight: 700;
+  margin-bottom: 20px;
+  color: #333;
+}
+
+/* 안내문구 */
+p {
+  color: #555;
+  font-size: 16px;
+  text-align: center;
+}
+
+/* 날짜 선택기 스타일 */
+input[type="date"] {
+  padding: 6px 10px;
+  width: 200px;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  font-size: 15px;
+  background-color: #fff;
+  transition: border 0.3s;
+}
+
+input[type="date"]:focus {
+  border-color: #0d6efd;
+  outline: none;
+}
+
+/* 검색 폼 */
+form[role="search"] {
+  display: flex;
+  justify-content: flex-start;
+  gap: 10px;
+  margin-top: 20px;
+  margin-bottom: 30px;
+}
+
+form[role="search"] select,
+form[role="search"] input[type="search"] {
+  height: 38px;
+  font-size: 15px;
+  border-radius: 8px;
+  padding: 0 10px;
+}
+
+form[role="search"] .btn {
+  padding: 6px 16px;
+  border-radius: 8px;
+  font-size: 15px;
+}
+
+/* 테이블 스타일 */
+.table {
+  margin-top: 30px;
+  background-color: #fff;
+  border-collapse: collapse;
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.05);
+  table-layout: fixed;
+  width: 100%;
+}
+
+.table thead {
+  background-color: #f1f1f1;
+}
+
+.table thead th {
+  text-align: center;
+  vertical-align: middle;
+  font-weight: 600;
+  font-size: 15px;
+  padding: 12px;
+}
+
+.table tbody td,
+.table tbody th {
+  vertical-align: middle;
+  text-align: center;
+  font-size: 14px;
+  padding: 12px 10px;
+  word-break: break-word;
+}
+
+.table a {
+  text-decoration: none;
+  color: #0d6efd;
+}
+
+.table a:hover {
+  text-decoration: underline;
+}
+
+/* 배지 스타일 */
+.badge {
+  font-size: 12px;
+  margin-left: 4px;
+}
+
+/* 작성 버튼 */
+a > button.btn-primary {
+  display: block;
+  margin: 30px auto 10px;
+  padding: 10px 30px;
+  border-radius: 12px;
+  font-size: 16px;
+  font-weight: 600;
+}
+
+/* 페이지네이션 */
+.pagination {
+  margin-top: 20px;
+  justify-content: center;
+}
+
+.page-link {
+  color: #0d6efd;
+  border-radius: 8px !important;
+  font-size: 14px;
+  padding: 8px 14px;
+}
+
+.page-item.active .page-link {
+  background-color: #0d6efd;
+  border-color: #0d6efd;
+  color: white;
+}
+
+.page-item.disabled .page-link {
+  color: #ccc;
+}
+
+/* 안내문구 박스 스타일 추가 */
+.notice-box {
+  background-color: #e9ecef;
+  padding: 24px;
+  margin: 30px auto;
+  border-radius: 12px;
+  font-size: 16px;
+  color: #333;
+  width: 100%;
+  max-width: 1000px;
+  text-align: center;
+  box-shadow: 0 0 8px rgba(0, 0, 0, 0.03);
+}
