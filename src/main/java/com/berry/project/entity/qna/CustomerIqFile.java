@@ -24,7 +24,7 @@ public class CustomerIqFile {
   private String fileName; // 원본 파일 이름
 
   @Column(name = "file_type", columnDefinition = "TINYINT(1) DEFAULT 0")
-  private Integer fileType = 0; // 파일 타입 (0: 일반, 1: 썸네일 등)
+  @Builder.Default private Integer fileType = 0; // 파일 타입 (0: 일반, 1: 썸네일 등)
 
   @Column(nullable = false)
   private Long bno; // 연결된 게시글 번호

@@ -121,7 +121,7 @@ searchKeywordInput.addEventListener('input', debounce(() => {
     }
     console.log(suggestions);
   });
-}, 300));
+}, 500));
 /* ------------------------------------------- */
 
 /* 2. 여행 첫날, 마지막날 */
