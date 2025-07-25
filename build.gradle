@@ -24,6 +24,8 @@ repositories {
 }
 
 dependencies {
+	// duropeb, https://mvnrepository.com/artifact/com.fasterxml.jackson.datatype/jackson-datatype-jsr310
+	implementation 'com.fasterxml.jackson.datatype:jackson-datatype-jsr310'
 	implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
 	implementation 'org.springframework.boot:spring-boot-starter-thymeleaf'
 	implementation 'org.springframework.boot:spring-boot-starter-web'
@@ -43,6 +45,8 @@ dependencies {
 	implementation 'org.jsoup:jsoup:1.21.1'
 	// https://mvnrepository.com/artifact/com.googlecode.json-simple/json-simple
 	implementation 'com.googlecode.json-simple:json-simple:1.1'
+	// 이유현(2025-07-21) : https://github.com/crizin/korean-utils
+	implementation 'io.github.crizin:korean-utils:0.0.1'
 	compileOnly 'org.projectlombok:lombok'
 	developmentOnly 'org.springframework.boot:spring-boot-devtools'
 	runtimeOnly 'com.mysql:mysql-connector-j'

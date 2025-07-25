@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="ko"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout/layout}">
+
+<head>
+  <!-- CSS -->
+  <link rel="stylesheet" th:href="@{/css/payment/paymentRentAndStay.css}">
+
+  <!-- 토스페이먼츠 SDK 로드 -->
+  <script src="https://js.tosspayments.com/v2/standard"></script>
+</head>
+
+<div layout:fragment="content">
+  <div class="payment-container" style="width: 1200px;">
+    <div class="payment-title-container" style="display: flex; justify-content: center;">
+      <img th:src="@{/image/Berry_logo.png}"
+           alt="Berry Logo"
+           style="width: 150px; height: 50px;">
+
+      <h1 class="payment-title" style="line-height: 50px;">
+        숙박 예약 결제
+      </h1>
+    </div>
+
+    <!-- 'payment_info'가 없는 경우를 대비한 메시지 -->
+    <!--<div th:if="${payment_info == null}" class="info-box">
+        결제 정보를 불러올 수 없습니다. 다시 시도해주세요.
+    </div>-->
+
+
+    <!-- 정보가 있는 경우, <div th:if="${payment_info != null}">-->
+    <div>
+      <!-- 이용 시간 -->
+      <div class="section">
+        <h2 class="section-title">이용 정보</h2>
+        <div class="info-box">
+          <div class="info-item">
+            <span class="label">숙소명</span>
+            <span class="lodgeDetails roomName">KORIT 디럭스 룸</span>
+          </div>
+          <div class="info-item">
+            <span class="label">예약 일시</span>
+            <span class="lodgeDetails stayTime">07.21 (월) 11:00 ~ 07.22(화) 12:00</span>
+          </div>
+        </div>
+      </div>
+
+
+      <!-- 예약자 정보 -->
+      <div class="section">
+        <h2 class="section-title">예약자 정보</h2>
+        <div class="info-box">
+          <div class="info-item">
+            <span class="label">예약자명</span>
+            <span class="lodgeDetails userName">Lee</span>
+          </div>
+          <div class="info-item">
+            <span class="label">연락처</span>
+            <span class="lodgeDetails userPhone">010-1111-1111</span>
+          </div>
+          <div class="info-item">
+            <span class="label">숙박 인원</span>
+            <span class="lodgeDetails guestsAmount">2</span>
+          </div>
+        </div>
+      </div>
+
+
+      <!-- 쿠폰 사용 여부 -->
+      <div class="section">
+        <h2 class="section-title">할인 적용</h2>
+
+        <div class="coupon-select-section" style="margin-bottom: 30px;">
+          <label for="coupon-select" class="coupon-label">사용 가능한 쿠폰 : ?장</label>
+          <select id="coupon-select" class="coupon-select">
+            <option value="">-- 쿠폰을 선택하세요 --</option>
+            <option value="coupon1">신규가입 3,000원 할인</option>
+            <option value="coupon2">실버 3,000 원 쿠폰</option>
+          </select>
+        </div>
+
+        <div class="coupon-box">
+          <div class="info-item">
+            <span class="label">쿠폰 할인</span>
+            <span class="lodgeDetails usingCupon">- 3000 원</span>
+          </div>
+        </div>
+      </div>
+
+
+      <!-- 결제 금액 -->
+      <div class="section">
+        <h2 class="section-title">최종 결제 금액</h2>
+        <div class="info-box amount-box">
+          <div class="info-item">
+            <span class="label">주문 금액</span>
+            <span class="lodgeDetails strikePrice">5,000 원</span> <!-- 임시 금액 -->
+          </div>
+          <div class="info-item discount">
+            <span class="label">할인 금액</span>
+            <span class="lodgeDetails cuponPrice">- 3000 원</span>
+          </div>
+          <hr class="divider">
+          <div class="info-item total">
+            <span id="label">총 결제 금액</span>
+            <span class="lodgeDetails pbpTotalAmount">2,000 원</span> <!-- 임시 금액 -->
+          </div>
+        </div>
+      </div>
+
+      <!-- 약관 동의 -->
+      <div class="section">
+        <h2 class="section-title">약관 동의</h2>
+        <div class="terms-box">
+          <div class="term">
+            <input type="checkbox" id="terms-all" name="terms-all">
+            <label for="terms-all">전체 동의</label>
+          </div>
+          <hr class="divider">
+          <div class="term">
+            <input type="checkbox" id="terms-1" name="terms-1" class="terms-req">
+            <label for="terms-1">[필수] 숙소이용규칙 및 취소/환불규정 동의</label>
+          </div>
+          <div class="term">
+            <input type="checkbox" id="terms-2" name="terms-2" class="terms-req">
+            <label for="terms-2">[필수] 개인정보 수집 및 이용 동의</label>
+          </div>
+        </div>
+      </div>
+
+
+      <!-- 결제 수단 -->
+      <div class="section">
+        <h2 class="section-title">결제 수단</h2>
+
+        <div class="payment-methods">
+          <input type="radio" id="pay-card" name="payment" value="CARD" checked>
+          <label for="pay-card">신용/체크카드</label>
+
+          <input type="radio" id="pay-virtual" name="payment" value="VIRTUAL_ACCOUNT">
+          <label for="pay-virtual">가상 계좌<br /></label>
+
+          <input type="radio" id="pay-transfer" name="payment" value="TRANSFER">
+          <label for="pay-transfer">계좌이체<br /></label>
+
+          <input type="radio" id="pay-mobile" name="payment" value="MOBILE_PHONE">
+          <label for="pay-mobile">휴대폰 결제<br /></label>
+
+          <input type="radio" id="pay-culture" name="payment" value="CULTURE_GIFT_CERTIFICATE">
+          <label for="pay-culture">상품권<br /></label>
+        </div>
+
+<!--        <div class="save-for-later">-->
+<!--          <input type="checkbox" id="save-method" name="save-method">-->
+<!--          <label for="save-method">이 결제 수단을 다음에도 사용</label>-->
+<!--        </div>-->
+      </div>
+
+      <!-- 결제 하기 버튼 -->
+      <div class="payment-button-container">
+        <button type="button" id="payment-button" class="payment-button" disabled>2,000원 결제하기</button>
+      </div>
+    </div>
+  </div>
+
+
+  <!-- Script -->
+
+  <script th:inline="javascript">
+    const tossClientKey = [[${tossClientKey}]]
+
+    const tossPayments = TossPayments(tossClientKey);
+  </script>
+
+  <script th:src="@{/js/payment/paymentStay.js}"></script>
+</div>
