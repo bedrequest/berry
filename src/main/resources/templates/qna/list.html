@@ -24,12 +24,17 @@
     여기에 안내문구를 입력하세요.
   </div>
 
+
+  <!-- 검색 폼을 가운데 정렬하는 div로 감싸기 -->
+  <div style="display: flex; justify-content: center;">
+    <form action="/qna/list" class="d-flex align-items-center gap-2" role="search" style="text-align: left; width: auto;">
+
   <p style="text-align:center; margin-bottom: 30px;">
     <span style="display: inline-block; text-align: left;">
     <input
             type="date"
             id="start"
-            name="trip-start"
+            name="tripStart"
             value="2025-06-01"
             min="2025-06-01"
             max="2026-06-01" />
@@ -37,28 +42,25 @@
     <input
             type="date"
             id="end"
-            name="trip-end"
+            name="tripEnd"
             value="2025-01-01"
             min="2025-06-01"
             max="2026-06-01" />
   </span>
   </p>
 
-  <!-- 검색 폼을 가운데 정렬하는 div로 감싸기 -->
-  <div style="display: flex; justify-content: center;">
-<!--    <form action="board/list" class="d-flex align-items-center gap-2" role="search" style="text-align: left; width: auto;">-->
-<!--      <select class="form-select" name="type" aria-label="Select Category" style="width: 150px;">-->
-<!--        <option th:selected="${ph.type == null ? true : false}">&#45;&#45;선택&#45;&#45;</option>-->
-<!--        <option th:value="p" th:selected="${ph.type == 'p' ? true : false}">결제</option>-->
-<!--        <option th:value="r" th:selected="${ph.type == 'r' ? true : false}">환불</option>-->
-<!--        <option th:value="f" th:selected="${ph.type == 'f' ? true : false}">시설</option>-->
-<!--        <option th:value="s" th:selected="${ph.type == 's' ? true : false}">서비스</option>-->
-<!--        <option th:value="e" th:selected="${ph.type == 'e' ? true : false}">기타</option>-->
-<!--      </select>-->
-<!--      <input class="form-control me-2" name="keyword" th:value="${ph.keyword}" type="search" placeholder="Search" aria-label="Search" />-->
-<!--      <input type="hidden" name="pageNo" th:value="1" />-->
-<!--      <button type="submit" class="btn btn-primary">Search</button>-->
-<!--    </form>-->
+      <select class="form-select" name="type" aria-label="Select Category" style="width: 150px;">
+        <option th:selected="${ph.type == null ? true : false}">--선택--</option>
+        <option th:value="p" th:selected="${ph.type == 'p' ? true : false}">결제</option>
+        <option th:value="r" th:selected="${ph.type == 'r' ? true : false}">환불</option>
+        <option th:value="f" th:selected="${ph.type == 'f' ? true : false}">시설</option>
+        <option th:value="s" th:selected="${ph.type == 's' ? true : false}">서비스</option>
+        <option th:value="e" th:selected="${ph.type == 'e' ? true : false}">기타</option>
+      </select>
+      <input class="form-control me-2" name="keyword" th:value="${ph.keyword}" type="search" placeholder="Search" aria-label="Search" />
+      <input type="hidden" name="pageNo" th:value="1" />
+      <button type="submit" class="btn btn-primary">Search</button>
+    </form>
   </div>
 
   <table class="table">

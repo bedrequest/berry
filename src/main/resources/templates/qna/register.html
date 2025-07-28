@@ -4,7 +4,7 @@
       xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
       layout:decorate="~{layout/layout}">
 <head>
-<link rel="stylesheet" th:href="@{/css/qna/register.css}">
+  <link rel="stylesheet" th:href="@{/css/qna/register.css}">
   <meta charset="UTF-8">
   <title>문의 내용</title>
 </head>
@@ -15,9 +15,9 @@
 
   <form action="/qna/register" method="post" enctype="multipart/form-data">
 
-    <div style="display: flex; align-items: center; gap: 20px;">
-      <label for="category">카테고리</label>
-      <select id="category" name="category">
+    <div class="form-inline-group"> <!-- 이 div에 클래스를 추가해주세요 -->
+      <label for="category" class="form-label-inline">카테고리</label> <!-- label에도 클래스 추가 -->
+      <select id="category" name="category" class="form-select-inline"> <!-- select에도 클래스 추가 -->
         <option >--선택--</option>
         <option th:value="p">결제</option>
         <option th:value="r">환불</option>

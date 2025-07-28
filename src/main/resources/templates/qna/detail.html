@@ -26,19 +26,18 @@
            name="title" th:value="${boardDTO.title}" id="t" readonly>
   </div>
 
-  <!-- writer + regDate -->
-  <div class="form-group-inline aligned">
-    <div class="form-item">
-      <label for="w">작성자</label>
-      <input type="text" class="input-box small"
-             name="writer" th:value="${boardDTO.writer}" id="w" readonly>
-    </div>
+  <!-- writer: form-group-vertical 클래스 추가 -->
+  <div class="form-group form-group-vertical">
+    <label for="w">작성자</label>
+    <input type="text" class="input-box small"
+           name="writer" th:value="${boardDTO.writer}" id="w" readonly>
+  </div>
 
-    <div class="form-item">
-      <label for="r">작성일</label>
-      <input type="text" class="input-box small"
-             th:value="${boardDTO.regDate}" id="r" readonly>
-    </div>
+  <!-- regDate: form-group-vertical 클래스 추가 -->
+  <div class="form-group form-group-vertical">
+    <label for="r">작성일</label>
+    <input type="text" class="input-box small"
+           th:value="${boardDTO.regDate}" id="r" readonly>
   </div>
 
   <!-- content -->
@@ -61,7 +60,6 @@
     <button type="button" id="listBtn" class="btn btn-primary">List</button>
   </div>
 </div>
-
 
 <script>
   const realUpload = document.getElementById('ex_filename');

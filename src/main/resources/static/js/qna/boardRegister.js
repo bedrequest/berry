@@ -2,7 +2,7 @@ console.log("boardRegister.js in");
 
 // 리스트 버튼 이동
 document.getElementById('listBtn').addEventListener('click', () => {
-    location.href = "/board/list";
+    location.href = "/qna/list";
 });
 
 // 등록 버튼 유효성 검사
