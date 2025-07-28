@@ -60,4 +60,6 @@ public class PaymentReceipt {
   @Lob
   @Column(name="raw_data", columnDefinition = "TEXT")
   private String rawData;
+
+
 }

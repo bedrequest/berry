@@ -6,6 +6,9 @@ import lombok.*;
 
 import java.time.LocalDateTime;
 import java.time.OffsetDateTime;
+import java.time.ZoneId;
+import java.time.ZoneOffset;
+import java.time.format.DateTimeFormatter;
 
 @Getter
 @Setter
@@ -49,4 +52,34 @@ public class PaymentReceiptDTO {
 
   // payment 객체의 원본을 문자열로 저장
   private String rawData;
+
+
+  /** getReqWithKSTFormatted() - HTMl 에서 UTC 기준 시각으로 출력되는 것을 해결하기위한 메서드 */
+  public String getReqWithKSTFormatted(){
+    if(this.requestedAt == null) { return null; }
+
+    // 로컬존 (한국 시간) 으로 설정
+    ZoneId kstZone = ZoneId.of("Asia/Seoul");
+
+    // KST 로 변환후 포맷팅
+    return this.requestedAt
+        .atZoneSameInstant(kstZone)
+        .format(DateTimeFormatter.ofPattern(("yyyy-MM-dd HH:mm:ss")));
+
+  }
+
+
+  /** getAppWithKSTFormatted() - HTMl 에서 UTC 기준 시각으로 출력되는 것을 해결하기위한 메서드 */
+  public String getAppWithKSTFormatted(){
+    if(this.approvedAt == null) { return null; }
+
+    // 로컬존 (한국 시간) 으로 설정
+    ZoneId kstZone = ZoneId.of("Asia/Seoul");
+
+    // KST 로 변환후 포맷팅
+    return this.requestedAt
+        .atZoneSameInstant(kstZone)
+        .format(DateTimeFormatter.ofPattern(("yyyy-MM-dd HH:mm:ss")));
+
+  }
 }

@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.next.nz/thymeleaf/layout"
+      layout:decorate="~{layout/layout}">
+<section layout:fragment="customStyle">
+  <link rel="stylesheet" th:href="@{/css/admin/adminMain.css}"/>
+</section>
+<div layout:fragment="content">
+  <!-- 전체 div (body) -->
+  <div class="admin-body">
+
+    <!-- side bar + list container -->
+    <div class="admin-container">
+
+      <!-- side bar container -->
+      <div class="side-bar-container">
+
+        <!-- Header 느낌 -->
+        <div class="admin-title">
+          <h2 class="sidebar-header" style="color: #E74B60;">관리 내역</h2>
+        </div>
+
+        <!-- 유저 카테고리, sectionNum = 1 -->
+        <div class="category-all-user category">
+          <h2 class="tit-txt">멤버 관리</h2>
+
+          <ul class="category-subtopic">
+            <li class="subtopic-li" id="all-user">전체 유저 보기</li>
+            <!--<li class="subtopic-li" id="marketing-phone">마케팅 정보 이메일 전체 발송</li>
+            <li class="subtopic-li" id="marketing-email">마케팅 정보 핸드폰 전체 발송</li>-->
+          </ul>
+        </div>
+
+
+        <!-- 고객문의 카테고리, sectionNum = 2 -->
+        <div class="category-qna category">
+          <h2 class="tit-txt">고객 문의 관리</h2>
+
+          <ul class="category-subtopic">
+            <li class="subtopic-li qna-payment">결제</li>
+            <li class="subtopic-li qna-cancel">환불</li>
+            <li class="subtopic-li qna-facilities">시설</li>
+            <li class="subtopic-li qna-service">서비스</li>
+            <li class="subtopic-li qna-others">기타</li>
+          </ul>
+        </div>
+
+
+        <!-- 결제 카테고리, sectionNum = 3 -->
+        <div class="category-payment category">
+          <h2 class="tit-txt">결제 관리</h2>
+
+          <ul class="category-subtopic">
+            <!-- PaymentReceipt 에서 추출 -->
+            <li class="subtopic-li payment-completed">결제 완료 내역</li>
+            <!-- 현재 시간으로부터 1시간 이내 정보만 출력, <li class="subtopic-li payment-wait">미 결제 내역</li> -->
+            <li class="subtopic-li payment-cancel">환불 완료 내역</li>
+          </ul>
+        </div>
+
+
+        <!-- 신고 카테고리, sectionNum = 4 -->
+        <div class="category-report category">
+          <h2 class="tit-txt">리뷰 관리</h2>
+
+          <ul class="category-subtopic">
+            <!-- 블러 처리 -->
+            <li class="subtopic-li review-report">신고 내역</li>
+          </ul>
+        </div>
+
+
+        <!-- 예약 카테고리, sectionNum = 5 -->
+        <div class="category-reservation category">
+          <h2 class="tit-txt">예약 내역 관리</h2>
+
+          <ul class="category-subtopic">
+            <!-- bookinStatus = Done 인 내역 만  -->
+            <li class="subtopic-li reservation-order">예약 완료 내역</li>
+
+            <!-- 숙소명, 전화번호, 위치 출력 -->
+            <li class="subtopic-li reservation-lodge">숙소 별 정보</li>
+          </ul>
+        </div>
+
+
+        <!-- 쿠폰 카테고리, sectionNum = 6 -->
+        <div class="category-cupon category">
+          <h2 class="tit-txt">쿠폰 관리</h2>
+
+          <ul class="category-subtopic cupon-ul">
+            <!-- 기본 메뉴 -->
+            <li class="subtopic-li" id="cupon-generate">쿠폰 생성</li>
+            <li class="subtopic-li" id="cupon-delete">쿠폰 발급 및 삭제</li>
+
+            <!-- 추가 목록 예시 -->
+            <!--<li class="subtopic-li" id="cupon-issuance">쿠폰 발급</li>-->
+            <!--<li class="subtopic-li">신규 회원 가입 쿠폰 관리</li>
+            <li class="subtopic-li">Gold 등급 업 쿠폰 관리</li>
+            <li class="subtopic-li">Platinum 등급 업 쿠폰 관리</li>-->
+          </ul>
+        </div>
+      </div>
+
+      <!-- Hidden input for frag / filterType / keyword 의 value 를 페이지네이션 요소 클릭 시
+         (검색 버튼, 페이지 번호, 이전, 다음, 정렬) 클릭 시 마다 여기서 값을 가져감 -->
+      <input id="frag-input" type="hidden" name="frag">
+      <input id="filterType-input" type="hidden" name="filterType">
+      <input id="keyword" type="hidden" name="keyword">
+
+      <!-- list container -->
+      <div class="list-container">
+      </div> <!-- list container fin -->
+    </div> <!-- side bar + list container fin -->
+  </div> <!-- 전체 div (body) -->
+
+  <script th:src="@{/js/admin/adminMain.js}"></script>
+</div>

@@ -1,8 +1,11 @@
 package com.berry.project.repository.lodge;
 
+import com.berry.project.dto.admin.AdminLodgeDTO;
 import com.berry.project.dto.lodge.ListOptionDTO;
 import com.berry.project.dto.lodge.LodgeOptionDTO;
 import com.berry.project.entity.lodge.Lodge;
+import com.querydsl.core.types.dsl.BooleanExpression;
+import com.querydsl.jpa.impl.JPAQueryFactory;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.Query;
 import lombok.extern.slf4j.Slf4j;
@@ -12,13 +15,24 @@ import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+
+// duorpeb, JpaQueryFactory 초기화
+import static com.berry.project.entity.lodge.QLodge.lodge;
 
 @Slf4j
 public class LodgeCustomRepositoryImpl implements LodgeCustomRepository {
 
   @Autowired
   private EntityManager entityManager;
+
+  // duorpeb, JPAQueryFactory 를 사용하기 위한 초기화
+  private JPAQueryFactory queryFactory;
+
+  public LodgeCustomRepositoryImpl(EntityManager entityManager){
+    this.queryFactory = new JPAQueryFactory(entityManager);
+  }
 
   @Override
   public Page<Lodge> searchLodges(ListOptionDTO listOptionDTO, LodgeOptionDTO lodgeOptionDTO, Pageable pageable) {
@@ -99,4 +113,45 @@ public class LodgeCustomRepositoryImpl implements LodgeCustomRepository {
     return new PageImpl<Lodge>(query.getResultList(), pageable, (long) totalCount.getSingleResult());
   }
 
+
+  /** duorpeb, pageLodge() - 관리자 페이지에서 숙소 별 정보 클릭 시 사용하는 메서드 */
+  @Override
+  public Page<Lodge> pageLodge(Pageable pageable, String keyword) {
+    // 검색
+    BooleanExpression predicate = anyOfNotNull(
+      lodge.lodgeName.containsIgnoreCase(keyword),
+      lodge.lodgeAddr.containsIgnoreCase(keyword),
+      lodge.businessCall.containsIgnoreCase(keyword)
+    );
+
+    // 쿼리 및 페이징 적용
+    List<Lodge> result = queryFactory
+        .selectFrom(lodge)
+        .where(predicate)
+        .orderBy(lodge.lodgeId.desc())
+        .offset(pageable.getOffset())
+        .limit(pageable.getPageSize())
+        .fetch();
+
+    // 필터링된 전체 데이터 개수 조회
+    Long total = queryFactory
+        .select(lodge.count())
+        .from(lodge)
+        .where(predicate)
+        .fetchOne();
+
+    return new PageImpl<>(result, pageable, (total == null) ? 0 : total);
+  }
+
+
+  /* duorpeb, anyOfNotNull() - 여러 BooleanExpression 을 OR 로 묶되 Null 이 있다면 건너뜀 */
+  private BooleanExpression anyOfNotNull(BooleanExpression ...vargs){
+    BooleanExpression cond = null;
+
+    for(BooleanExpression b : vargs){
+      if(b != null){ cond = (cond == null) ? b : cond.or(b); }
+    }
+
+    return cond;
+  }
 }

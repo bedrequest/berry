@@ -1,4 +1,4 @@
-package com.berry.project.service.payment;
+package com.berry.project.handler.payment;
 
 import org.springframework.stereotype.Component;
 import java.util.UUID;

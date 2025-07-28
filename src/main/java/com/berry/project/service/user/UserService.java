@@ -15,82 +15,82 @@ public interface UserService {
 
   default User oauthConvertUserDTOToUserEntity(UserDTO userDTO) {
     return User.builder()
-        .userId(userDTO.getUserId())
-        .userEmail(userDTO.getUserEmail())
-        .password(userDTO.getPassword())
-        .userPhone(userDTO.getUserPhone())
-        .userName(userDTO.getUserName())
-        .userUid(userDTO.getUserUid())
-        .provider(userDTO.getProvider())
-        .birthday(userDTO.getBirthday())
-        .customerKey(userDTO.getCustomerKey())
-        .isAdult(userDTO.isAdult())
-        .lastLogin(userDTO.getLastLogin())
-        .isEmailCertified(userDTO.isEmailCertified())
-        .isMobileCertified(userDTO.isMobileCertified())
-        .userTermOption(userDTO.isUserTermOption())
-        .userGrade("silver")
+    .userId(userDTO.getUserId())
+      .userEmail(userDTO.getUserEmail())
+      .password(userDTO.getPassword())
+      .userPhone(userDTO.getUserPhone())
+      .userName(userDTO.getUserName())
+      .userUid(userDTO.getUserUid())
+      .provider(userDTO.getProvider())
+      .birthday(userDTO.getBirthday())
+      .customerKey(userDTO.getCustomerKey())
+      .isAdult(userDTO.isAdult())
+      .lastLogin(userDTO.getLastLogin())
+      .isEmailCertified(userDTO.isEmailCertified())
+      .isMobileCertified(userDTO.isMobileCertified())
+      .userTermOption(userDTO.isUserTermOption())
+      .userGrade("silver")
         .build();
-  }
+}
 
-  default AuthUser convertUserDTOToAuthEntity(UserDTO userDTO) {
-    return AuthUser.builder()
-        .userId(userDTO.getUserId())
-        .authRole("USER_ROLE")
-        .build();
-  }
+default AuthUser convertUserDTOToAuthEntity(UserDTO userDTO) {
+  return AuthUser.builder()
+      .userId(userDTO.getUserId())
+      .authRole("USER_ROLE")
+      .build();
+}
 
-  default AuthUserDTO convertEntityToAuthDTO(AuthUser authUser) {
-    return AuthUserDTO.builder()
-        .authId(authUser.getAuthId())
-        .userId(authUser.getUserId())
-        .authRole(authUser.getAuthRole())
-        .build();
-  }
+default AuthUserDTO convertEntityToAuthDTO(AuthUser authUser) {
+  return AuthUserDTO.builder()
+      .authId(authUser.getAuthId())
+      .userId(authUser.getUserId())
+      .authRole(authUser.getAuthRole())
+      .build();
+}
 
-  default UserDTO convertEntityToUserDTO(User user, List<AuthUserDTO> authUserDTOList) {
-    return UserDTO.builder()
-        .userId(user.getUserId())
-        .userEmail(user.getUserEmail())
-        .password(user.getPassword())
-        .userUid(user.getUserUid())
-        .userGrade(user.getUserGrade())
-        .userName(user.getUserName())
-        .userFavoriteTag(user.getUserFavoriteTag())
-        .userPhone(user.getUserPhone())
-        .userTermOption(user.isUserTermOption())
-        .regDate(user.getRegDate())
-        .lastLogin(user.getLastLogin())
-        .modDate(user.getModDate())
-        .provider(user.getProvider())
-        .birthday(user.getBirthday())
-        .authList(authUserDTOList)
-        .isAdult(user.isAdult())
-        .isMobileCertified(user.isMobileCertified())
-        .customerKey(user.getCustomerKey())
-        .isEmailCertified(user.isEmailCertified())
-        .build();
-  }
-  // 해찬
-  /** Reservation -> ReservationDTO */
-  default MyPageReservationDTO printConvertReservationEntityToReservationDto(Reservation reservation){
-    if(reservation == null) { return null; }
+default UserDTO convertEntityToUserDTO(User user, List<AuthUserDTO> authUserDTOList) {
+  return UserDTO.builder()
+      .userId(user.getUserId())
+      .userEmail(user.getUserEmail())
+      .password(user.getPassword())
+      .userUid(user.getUserUid())
+      .userGrade(user.getUserGrade())
+      .userName(user.getUserName())
+      .userFavoriteTag(user.getUserFavoriteTag())
+      .userPhone(user.getUserPhone())
+      .userTermOption(user.isUserTermOption())
+      .regDate(user.getRegDate())
+      .lastLogin(user.getLastLogin())
+      .modDate(user.getModDate())
+      .provider(user.getProvider())
+      .birthday(user.getBirthday())
+      .authList(authUserDTOList)
+      .isAdult(user.isAdult())
+      .isMobileCertified(user.isMobileCertified())
+      .customerKey(user.getCustomerKey())
+      .isEmailCertified(user.isEmailCertified())
+      .build();
+}
+// 해찬
+/** Reservation -> ReservationDTO */
+default MyPageReservationDTO printConvertReservationEntityToReservationDto(Reservation reservation){
+  if(reservation == null) { return null; }
 
-    return
-        MyPageReservationDTO.builder()
-            .reservationId(reservation.getReservationId())
-            .roomId(reservation.getRoomId())
-            .userId(reservation.getUserId())
-            .orderId(reservation.getOrderId())
-            .startDate(reservation.getStartDate().toLocalDateTime())
-            .bookingStatus(reservation.getBookingStatus())
-            .endDate(reservation.getEndDate().toLocalDateTime())
-            .totalAmount(reservation.getTotalAmount())
-            .guestsAmount(reservation.getGuestsAmount())
-            .reservationType(reservation.getReservationType())
-            .reservationRegDate(reservation.getReservationRegDate().toLocalDateTime())
-            .build();
-  }
+  return
+      MyPageReservationDTO.builder()
+          .reservationId(reservation.getReservationId())
+          .roomId(reservation.getRoomId())
+          .userId(reservation.getUserId())
+          .orderId(reservation.getOrderId())
+          .startDate(reservation.getStartDate().toLocalDateTime())
+          .bookingStatus(reservation.getBookingStatus())
+          .endDate(reservation.getEndDate().toLocalDateTime())
+          .totalAmount(reservation.getTotalAmount())
+          .guestsAmount(reservation.getGuestsAmount())
+          .reservationType(reservation.getReservationType())
+          .reservationRegDate(reservation.getReservationRegDate().toLocalDateTime())
+          .build();
+}
 
   default MyPageReservationDTO printConvertLodgeEntityToReservationDto(Room room){
     if(room == null) { return null; }

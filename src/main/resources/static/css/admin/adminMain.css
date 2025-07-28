@@ -1,0 +1,1070 @@
+/* 공통 요소 설정 --------------------------------------------------------------------------------------- */
+:root {
+  --theme-color: #E74B60;
+  --theme-color-light: #fde2e8;
+  --theme-backcolor: #E74B60;
+  /* --sidebar-color: #666a73; */
+  --sidebar-color: white;
+}
+
+/** invisible
+
+  > display: none 은 애니메이션이 불가능해서 토글할 때 부드럽게 사라지게 하려면 opacity, height(max-height) 
+    등의 애니메이트가 가능한 속성을 써야 함
+
+  > max-height는 height:auto처럼 동적 높이를 직접 트랜지션할 수 없으니 목록의 최대 예상 높이 (예: 500px) 
+    정도로 잡아두고 .invisible 일 때 max-height: 0 으로 주면 높이가 0 까지 부드럽게 접히면서 사라짐
+*/
+.invisible{ 
+  opacity: 0;
+  max-height: 0; 
+}
+
+.display-hidden{ 
+  display: none !important;
+}
+
+/* 선택 요소 */
+.selected-el {
+  color: black !important;
+}
+
+/* Pagination */
+  .pagination-container{
+    margin: 24px 0 8px;
+    display: flex;
+    justify-content: center;
+  }
+
+  .pagination{
+    list-style: none;
+    margin: 0;
+    padding: 8px;
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+
+    background: #fff;
+    border: 1px solid #eee;
+    border-radius: 12px;
+    box-shadow:
+      0 6px 16px rgba(231,75,96,.08),
+      inset 0 1px 0 rgba(255,255,255,.85);
+  }
+
+  .page-item{ display: contents; } /* li 자체 레이아웃 영향 제거 */
+
+  .page-link{
+    --accent: var(--theme-color, #E74B60);
+    --accent-weak: var(--theme-color-light, #fde2e8);
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    min-width: 16px;
+    height: 32px;
+    padding: 0 12px;
+
+    text-decoration: none;
+    font-weight: 700;
+    color: var(--accent);
+
+    background: transparent;
+    border: 1px solid var(--accent-weak);
+    border-radius: 9999px;
+
+    transition:
+      background .2s ease,
+      color .2s ease,
+      border-color .2s ease,
+      transform .05s ease;
+  }
+
+  .page-link:hover{
+    background: var(--accent-weak);
+    border-color: var(--accent);
+  }
+
+  .page-link:active{
+    transform: translateY(1px);
+  }
+
+  /* 활성 페이지 */
+  .page-item.active .page-link{
+    color: #fff;
+    border-color: var(--accent);
+    background: linear-gradient(180deg, #F36B7B 0%, var(--accent) 100%);
+    box-shadow:
+      0 8px 18px rgba(231,75,96,.25),
+      inset 0 2px 0 rgba(255,255,255,.22);
+  }
+
+  /* 비활성(예비) 상태도 대비 */
+  .page-item.disabled .page-link{
+    pointer-events: none;
+    opacity: .45;
+    color: #999;
+    border-color: #eee;
+    background: #f7f7f7;
+  }
+
+  /* 접근성 포커스 */
+  .page-link:focus-visible{
+    outline: none;
+    box-shadow:
+      0 0 0 3px rgba(255,255,255,.9),
+      0 0 0 6px rgba(231,75,96,.55);
+  }
+
+  /* 이전/다음 버튼 살짝 넉넉하게 */
+  .pagination .page-item:first-child .page-link,
+  .pagination .page-item:last-child .page-link{
+    padding: 0 14px;
+    /* min-width: 42px; */
+  }
+
+  /* 모바일 최적화 */
+  @media (max-width: 600px){
+    .pagination{ gap: 6px; padding: 6px; }
+    .page-link{
+      min-width: 16px;
+      height: 32px;
+      padding: 0 10px;
+      font-size: 14px;
+    }
+  }
+
+  /* 이전/다음 화살표: 마스크 SVG + currentColor 로 테마 색 자동 동기화 */
+  .pagination .page-item.is-prev .page-link::before,
+  .pagination .page-item.is-next .page-link::after{
+    content:"";
+    display:inline-block;
+    width:18px; height:18px;
+    flex:0 0 18px;
+    background-color: currentColor;        /* 아이콘 색 = 글자색 */
+    -webkit-mask-repeat:no-repeat;
+            mask-repeat:no-repeat;
+    -webkit-mask-position:center;
+            mask-position:center;
+    -webkit-mask-size:18px 18px;
+            mask-size:18px 18px;
+  }
+
+  /* ← 아이콘 */
+  .pagination .page-item.is-prev .page-link::before{
+    margin-right:6px;
+    -webkit-mask-image:url("data:image/svg+xml;utf8,\<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'>\<path d='M15 18l-6-6 6-6' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'/></svg>");
+            mask-image:url("data:image/svg+xml;utf8,\<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'>\<path d='M15 18l-6-6 6-6' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'/></svg>");
+  }
+
+  /* → 아이콘 */
+  .pagination .page-item.is-next .page-link::after{
+    margin-left:6px;
+    -webkit-mask-image:url("data:image/svg+xml;utf8,\<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'>\<path d='M9 6l6 6-6 6' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'/></svg>");
+            mask-image:url("data:image/svg+xml;utf8,\<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'>\<path d='M9 6l6 6-6 6' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'/></svg>");
+  }
+/* Pagination fin */
+
+/* basic-img-div */
+
+/* 기본 이미지 */
+#basic-img{
+  max-width: 100%;
+  width: auto;
+  height: auto;
+}
+
+/* 공통 요소 설정 fin --------------------------------------------------------------------------------------- */
+
+
+
+/* 화면 속성 설정 ------------------------------------------------------------------------------------------ */
+.admin-body{
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.admin-container{
+  width:1200px;
+
+  display: flex;
+  justify-content: space-around;
+  gap: 60px;
+}
+
+.side-bar-container{
+  margin : 30px 0 50px 100px;
+  width: 20%;
+}
+
+.list-container{
+  margin-right: 30px;
+  width: 65%;
+}
+
+.search-sort-container{
+  margin: 30px 0 30px 0;
+  display: flex;
+  justify-content: space-between;
+}
+
+/* 카테고리 별 컨텐츠가 출력되는 div 의 container */
+.list-up-container{
+  display: center;
+  justify-content: center;
+  align-items: center;
+}
+
+/* 카테고리 별 컨텐츠 출력 div */
+.category-list-content{
+  display: center;
+}
+
+/* 화면 속성 설정 fin --------------------------------------------------------------------------------------- */
+
+
+
+/* side-bar (카테고리) ------------------------------------------------------------------------------------------------- */
+.admin-title{
+  border: 2px solid #E74B60;
+  border-bottom: none;
+}
+
+.sidebar-header{
+  font-size: 24px;
+}
+
+/* */
+.admin-title>h2{
+  padding: 13px 0 13px 13px;
+  color: white;
+}
+
+.category{
+  background-color: var(--theme-backcolor);
+
+  transition: max-height 0.8s ease; 
+}
+
+.category-topic-title{
+  display: flex;
+  justify-content: space-between;
+}
+
+.category-subtopic {
+  /* padding: 0 1rem; */
+  
+  max-height: 500px; /* 목록 길이에 맞춰 조정 */
+
+  color: white;
+  
+  transition: 
+    opacity 0.4s ease, 
+    max-height 0.4s ease;
+}
+
+
+.tit-txt{
+  padding: 13px 0 13px 24px;
+  color:white;
+  cursor: pointer;
+}
+
+.subtopic-li{
+  padding: 6px 0 11px 34px;
+
+  color: var(--sidebar-color);
+
+  cursor: pointer;
+
+  transition: color 0.4s ease; /* 요소의 글자 색상(color) 이 바뀔 때, 부드럽게 전환되도록 설정 */
+}
+
+ul>li:last-child{
+  padding-bottom: 20px;
+
+  border-bottom: 2px solid white;
+}
+
+.last-li{
+  padding-bottom : 20px;
+
+  border-bottom: none !important; 
+}
+/* side-bar (카테고리) fin  ------------------------------------------------------------------------------------------------- */
+
+
+/** search-sort-container (검색과 정렬 요소가 포함된 div) -------------------------------------------------------------- */
+.search-input{
+  --accent:#E74B60;
+  position:relative;
+  display:block;
+  max-width:560px;
+  padding:14px 56px 14px 18px; /* 우측 버튼 공간 확보 */
+  border-radius:18px;
+  background:linear-gradient(180deg,#F36B7B 0%, var(--accent) 100%);
+  box-shadow:
+    0 14px 28px rgba(231,75,96,.28),
+    inset 0 2px 0 rgba(255,255,255,.28),
+    inset 0 -2px 0 rgba(0,0,0,.06);
+}
+
+/* 밝은 테두리 하이라이트 */
+.search-input::before{
+  content:"";
+  position:absolute; inset:0;
+  border-radius:inherit;
+  box-shadow: inset 0 0 0 2px rgba(255,255,255,.45);
+  pointer-events:none; opacity:.6;
+}
+
+.search-input label{ display:block; margin:0; }
+
+.search-input input{
+  width:100%;
+  border:0; outline:0;
+  background:transparent;
+  color:#fff;
+  font-size:18px; font-weight:600; line-height:1.2;
+  letter-spacing:.2px;
+  caret-color:#fff;
+}
+.search-input input::placeholder{
+  color:rgba(255,255,255,.92);
+  font-weight:500;
+}
+
+.search-input:focus-within{
+  box-shadow:
+    0 16px 32px rgba(231,75,96,.35),
+    inset 0 2px 0 rgba(255,255,255,.35),
+    inset 0 -2px 0 rgba(0,0,0,.08);
+}
+
+/* 크롬 자동완성 색상 */
+.search-input input:-webkit-autofill{
+  -webkit-text-fill-color:#fff !important;
+  transition: background-color 9999s ease-out 0s;
+}
+
+/* ========= 클릭 가능한 검색 버튼 ========= */
+.search-btn{
+  position:absolute;
+  top:50%; right:16px;
+  transform:translateY(-50%);
+  width:32px; height:32px;
+  border:none; outline:0;
+  background:transparent;
+  cursor:pointer;
+  background-repeat:no-repeat;
+  background-position:center;
+  background-size:28px 28px;
+  /* 흰색 돋보기 SVG 아이콘 */
+  background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23fff' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'><circle cx='11' cy='11' r='7'/><path d='M21 21L15.8 15.8'/></svg>");
+  transition: transform .06s ease, opacity .2s ease, filter .2s ease;
+}
+.search-btn:hover{ filter:brightness(1.05); }
+.search-btn:active{ transform:translateY(-50%) scale(.96); }
+/* 키보드 접근성 포커스 링 */
+.search-btn:focus-visible{
+  box-shadow:0 0 0 3px rgba(255,255,255,.6), 0 0 0 6px rgba(231,75,96,.8);
+  border-radius:50%;
+}
+/** search-sort-container (검색과 정렬 요소가 포함된 div) fin -------------------------------------------------------------- */
+
+
+
+/* 전체 유저 보기 (<li id="all-user">) ------------------------------------------------------------- */
+.user-list-wrap{
+  --accent:#E74B60;
+  --accent-weak:#FFE7EB;
+  --line:#eee;
+  margin-top: 12px;
+  display:flex; flex-direction:column; gap:12px;
+}
+.user-list-header{
+  display:flex; align-items:center; justify-content:space-between;
+}
+.user-list-title{ font-size:1.25rem; font-weight:700; }
+.user-list-header .badge{
+  display:inline-flex; align-items:center;
+  padding:4px 10px; border-radius:9999px;
+  background:var(--accent-weak); color:var(--accent); font-weight:700;
+}
+
+/* 테이블 */
+.user-table-scroll{
+  overflow:auto; background:#fff; border:1px solid var(--line); border-radius:12px;
+}
+.user-table{
+  width:100%;
+  min-width: 1080px;                 /* 컬럼 여백 확보 */
+  border-collapse:separate; border-spacing:0;
+}
+.user-table thead th{
+  position:sticky; top:0; z-index:1;
+  background:#ffe5e8; color:var(--accent);
+  text-align:center; font-weight:700; padding:12px 14px;
+  border-bottom:2px solid var(--accent);
+  white-space:nowrap;
+}
+.user-table tbody td{
+  padding:12px 14px;
+  border-bottom:1px solid var(--line);
+  text-align:center;
+  vertical-align:middle;
+}
+.user-table tbody tr:hover{ background:#FFF5F6; }
+
+/* 유틸리티 */
+.nowrap{ white-space:nowrap; }
+.ellipsis{
+  max-width: 220px;                  /* 필요 시 조정 */
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.muted{ color:#8a8a8a; font-size:.85em; margin-left:6px; }
+
+/* 상태/등급 칩 */
+.pill{
+  display:inline-flex; align-items:center; justify-content:center;
+  height: 24px; padding:0 8px;
+  border-radius:9999px; font-size:.82rem; font-weight:700;
+  border:1px solid transparent; background:#f6f6f6; color:#444;
+}
+.pill.ok{
+  color:#fff;
+  background: linear-gradient(180deg, #F36B7B 0%, var(--accent) 100%);
+  box-shadow: inset 0 2px 0 rgba(255,255,255,.22);
+}
+.pill.off{
+  color:#64748b; background:#eef2f6; border-color:#e5e7eb;
+}
+.pill.grade{ background:#fff; border-color:#ffd6db; color:#E74B60; }
+.pill.grade.bronze{ background:#fff3e8; border-color:#ffd9b5; color:#c56a2a; }
+.pill.grade.silver{ background:#eef2f6; border-color:#d6dee6; color:#5b6470; }
+.pill.grade.gold{ background:#fff7d6; border-color:#f6e39c; color:#8a6a00; }
+.pill.grade.platinum{ background:#edf7ff; border-color:#cfe8ff; color:#2d6da8; }
+
+/* 권한 칩 */
+.roles{ display:flex; gap:6px; justify-content:center; flex-wrap:wrap; }
+.role-chip{
+  display:inline-flex; align-items:center; justify-content:center;
+  height:24px; padding:0 8px; border-radius:9999px;
+  background:#fff; border:1px solid #f2b8bf; color:#E74B60;
+  font-weight:700; font-size:.82rem; white-space:nowrap;
+}
+
+/* 액션 버튼(작은 사이즈) */
+.btn-compact{ height:28px; padding:0 10px; font-size:.85rem; }
+
+/* 반응형: 좁은 화면에서 ID/액션 숨김 */
+@media (max-width: 880px){
+  .user-table{ min-width: 0; }
+  .user-table thead .col-id,
+  .user-table tbody .col-id,
+  .user-table thead .col-actions,
+  .user-table tbody .col-actions{ display:none; }
+}
+
+/* 빈 상태 */
+.no-users{
+  text-align:center; color:#777; padding:32px 0; margin-top: 8px;
+  background:#fff; border:1px dashed #f1a7b0; border-radius:12px;
+}
+/* list-up-container (리스트 출력 div) - 전체 유저 보기 fin ------------------------------------------------------------- */
+
+
+
+/* sort-detail (셀렉트 박스) ---------------------------------------------------------------------------------*/
+.sort{
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.sort-detail {
+  padding: 6px 10px;
+  border: 1px solid var(--theme-color);
+  border-radius: 4px;
+  background-color: #fff;
+  color: var(--theme-color);
+  font-weight: bold;
+  transition: border 0.2s ease;
+}
+
+.sort-detail:focus {
+  outline: none;
+  border-color: #c0392b;
+}
+
+/* 옵션 항목 스타일 */
+.sort-option {
+  color: #333;
+}
+
+.filter-container{
+  display: flex;
+  justify-content: left;
+  gap: 50px;
+}
+/* sort-detail (셀렉트 박스) ---------------------------------------------------------------------------------*/
+
+
+
+/* 쿠폰 생성 (th:fragment="cupon-generate") ------------------------------------------------------------------------------------ */
+/* Wrapper */
+.cupon-wrapper {
+  max-width: 960px;
+  margin: 40px auto;
+  padding: 20px;
+  font-family: 'Segoe UI', sans-serif;
+}
+
+/* Form */
+.create-form fieldset {
+  border: 2px solid #E74B60;
+  border-radius: 6px;
+  padding: 24px;
+  background-color: #fff9f9;
+}
+
+.create-form legend {
+  font-size: 20px;
+  font-weight: bold;
+  color: #E74B60;
+  margin-bottom: 16px;
+}
+
+/* Form Label + Input */
+.create-form label {
+  margin: 20px 0px 30px 0px;
+  display: flex;
+  gap: 30px;
+  align-items: center;
+  font-weight: 600;
+  font-size: 15px;
+  color: #333;
+}
+
+.create-form input {
+  width: 70%;
+  padding: 10px 12px;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  font-size: 14px;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.create-form input:focus {
+  border-color: #E74B60;
+  box-shadow: 0 0 0 2px rgba(231, 75, 96, 0.2);
+  outline: none;
+}
+
+/* Placeholder */
+.create-form input::placeholder {
+  color: #aaa;
+  font-style: italic;
+}
+
+/* Required  */
+.create-form input:required {
+  background-color: #fff;
+}
+
+/* 이미지 파일 input */
+#cupon-img-input{
+  display: none;
+}
+
+/* 유효 기간의 input (input type="datetime-local") */
+
+/* 유효 기간의 input (input type="datetime-local") fin */
+
+
+/* 파일 선택 Button */
+#cupon-file-btn{
+  padding: 0;
+  
+  width: 80px;
+  height: 30px;
+  
+  display: inline-flex;            /* 가운데 정렬 */
+  justify-content: center;
+  
+  line-height:30px;
+  
+  font-size: 16px;                  /* 기본 텍스트 크기 16px */
+  font-weight: 600;                 /* 살짝 굵은 텍스트 */
+  color: #ffffff;                   /* 텍스트 색상: 흰색 */
+  background-color: #3b82f6;        /* 배경 색상: 파란색 계열 */
+  border: none;                     /* 기본 테두리 제거 */
+  border-radius: 0.375rem;          /* 모서리 둥글게 (6px) */
+  cursor: pointer;                  /* 마우스 포인터 변경 */
+  transition:
+  background-color 0.2s ease,    /* 배경색 전환 애니메이션 */
+  transform 0.1s ease;            /* 클릭 시 축소 애니메이션 */
+}
+
+/* 호버(마우스 오버) 시 배경색 진하게 */
+#cupon-file-btn:hover {
+  background-color: #2563eb;
+}
+
+/* 클릭(Active) 시 약간 축소 효과 */
+#cupon-file-btn:active {
+  transform: scale(0.98);
+}
+
+/* 포커스(키보드 접근) 시 아웃라인 추가 */
+#cupon-file-btn:focus {
+  outline: 2px solid rgba(59, 130, 246, 0.5);
+  outline-offset: 2px;
+}
+/* 파일 선택 Button fin */
+
+/* cupon-img-preview */
+  .cupon-img-preview{
+    margin-top: 30px;
+  }
+
+  .preview-img{
+    width: 300px; height : 200px;
+  }
+/* cupon-img-preview */
+
+
+
+/* 쿠폰 생성 Button */
+  .cupon-generate-btn-container{
+    display: flex;
+    justify-content: right;
+  }
+
+  #cupon-generate-btn,
+  .delete-btn {
+    padding: 10px 18px;
+    border: none;
+    border-radius: 4px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+  }
+
+  #cupon-generate-btn {
+    background-color: #E74B60;
+    color: #fff;
+    margin-top: 16px;
+  }
+
+  #cupon-generate-btn:hover {
+    background-color: #c44153;
+  }
+/* 쿠폰 생성 Button fin */
+
+/* 쿠폰 생성 (th:fragment="cupon-generate") fin ------------------------------------------------------------------------------------ */
+
+
+
+/* 쿠폰 발급 및 삭제 (th:fragment="cupon-delete") -------------------------------------------------------------------------------------------*/
+.delete-btn {
+  background-color: #fff;
+  color: #E74B60;
+  border: 1px solid #E74B60;
+}
+
+.delete-btn:hover {
+  background-color: #E74B60;
+  color: #fff;
+}
+
+/* Coupon Table */
+.cupon-template-table {
+  width: 100%;
+  margin-top: 32px;
+  border-collapse: collapse;
+  font-size: 14px;
+}
+
+.cupon-template-table th,
+.cupon-template-table td {
+  padding: 12px;
+  border: 1px solid #eee;
+  text-align: center;
+  /* 모든 요소 정중앙 위치를 위한 속성 */
+  vertical-align: middle;
+}
+
+.cupon-template-table thead {
+  background-color: #ffe5e8;
+  color: #E74B60;
+}
+
+.cupon-template-table tbody tr:nth-child(even) {
+  background-color: #fafafa;
+}
+.cupon-template-table tbody tr:hover {
+  background-color: #fceced;
+}
+
+/* Coupon Image */
+.cupon-img {
+  display: block;
+  margin: 0 auto;
+  max-width: 80px;
+  max-height: 60px;
+  object-fit: contain;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+
+/* form 이 block 이라 왼쪽으로 붙는 문제 해결을 위한 속성 (버튼 가로 가운데) */
+.cupon-template-table td form{
+  display: inline-block;    /* 또는 inline-flex; */
+}
+
+/* 삭제 버튼 중앙 정렬 */
+.cupon-template-table td .delete-btn{
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Empty State */
+.no-coupons {
+  margin-top: 24px;
+  padding: 20px;
+  background-color: #fff3f3;
+  color: #E74B60;
+  text-align: center;
+  border-radius: 6px;
+  font-weight: 500;
+}
+
+/* 이전/다음 화살표: 마스크 SVG + currentColor 로 테마 색 자동 동기화 */
+.pagination .page-item.is-prev .page-link::before,
+.pagination .page-item.is-next .page-link::after{
+  content:"";
+  display:inline-block;
+  width:18px; height:18px;
+  flex:0 0 18px;
+  background-color: currentColor;        /* 아이콘 색 = 글자색 */
+  -webkit-mask-repeat:no-repeat;
+          mask-repeat:no-repeat;
+  -webkit-mask-position:center;
+          mask-position:center;
+  -webkit-mask-size:18px 18px;
+          mask-size:18px 18px;
+}
+
+/* ← 아이콘 */
+.pagination .page-item.is-prev .page-link::before{
+  margin-right:6px;
+  -webkit-mask-image:url("data:image/svg+xml;utf8,\<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'>\<path d='M15 18l-6-6 6-6' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'/></svg>");
+          mask-image:url("data:image/svg+xml;utf8,\<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'>\<path d='M15 18l-6-6 6-6' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'/></svg>");
+}
+
+/* → 아이콘 */
+.pagination .page-item.is-next .page-link::after{
+  margin-left:6px;
+  -webkit-mask-image:url("data:image/svg+xml;utf8,\<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'>\<path d='M9 6l6 6-6 6' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'/></svg>");
+          mask-image:url("data:image/svg+xml;utf8,\<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'>\<path d='M9 6l6 6-6 6' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'/></svg>");
+}
+
+/* 쿠폰 삭제/발급 버튼 공통(작게, 동일 크기, 가로 텍스트 유지) */
+.cupon-template-table .cupon-delete-btn,
+.cupon-template-table .all-issuance{
+  /* 사이즈 통일 */
+  --h: 32px;           /* 버튼 높이 (더 작게 원하면 28px 정도) */
+  --px: 12px;          /* 좌우 패딩 */
+  height: var(--h);
+  padding: 0 var(--px);
+  min-width: 72px;     /* 텍스트 눌림 방지 */
+  font-size: 14px;
+  line-height: 1;      /* 수직 중앙 맞춤에 유리 */
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+
+  /* 텍스트가 세로로 꺾이는 현상 방지 */
+  white-space: nowrap; 
+  word-break: keep-all;
+
+  /* 혹시 다른 규칙에서 고정 폭/높이를 줬다면 무시 */
+  width: auto !important;
+}
+
+/* 모양(테마 유지) */
+.cupon-template-table .cupon-delete-btn{
+  border-radius: 10px;                 /* 사각형 느낌 유지 */
+}
+
+.cupon-template-table .all-issuance{
+  border-radius: 9999px;               /* 알약형 */
+  /* 원형이 되지 않도록 가로폭이 높이보다 넓게 유지되며, 위 공통 규칙이 이를 보장 */
+}
+
+/* 버튼이 있는 열은 내용 폭만 차지하도록(불필요한 줄바꿈 방지) */
+.cupon-template-table td:last-child,
+.cupon-template-table td:nth-last-child(2){
+  white-space: nowrap;
+  width: 1%;
+}
+/* 쿠폰 발급 및 삭제 (th:fragment="cupon-delete") -------------------------------------------------------------------------------------------*/
+
+
+
+/* 생성된 쿠폰 조회 (th:fragment="cupon-manage") -----------------------------------------------------------------------------------------*/
+/* 쿠폰 사용 내역  */
+.cupon-usage-wrap{
+  --accent:#E74B60;
+  --accent-weak:#FFE7EB;
+  --line:#eee;
+  --bg:#fff;
+  margin-top: 12px;
+  display:flex; flex-direction:column; gap:12px;
+}
+
+.cupon-usage-header{
+  display:flex; align-items:center; justify-content:space-between;
+}
+.cupon-usage-title{ font-size:1.25rem; font-weight:700; }
+.cupon-usage-header .badge{
+  display:inline-flex; align-items:center;
+  padding:4px 10px; border-radius:9999px;
+  background: var(--accent-weak); color: var(--accent); font-weight:700;
+}
+
+/* 테이블 컨테이너 */
+.cupon-usage-table-scroll{
+  overflow:auto; background:#fff; border:1px solid var(--line); border-radius:12px;
+}
+
+/* 테이블 */
+.cupon-usage-table{
+  width:100%; border-collapse:separate; border-spacing:0;
+}
+.cupon-usage-table thead th{
+  position:sticky; top:0; z-index:1;
+  background:#ffe5e8; color: var(--accent);
+  text-align:center; font-weight:700; padding:12px 14px;
+  border-bottom:2px solid var(--accent);
+}
+.cupon-usage-table tbody td{
+  padding:12px 14px;
+  border-bottom:1px solid var(--line);
+  text-align:center;               /* 가로 가운데 */
+  vertical-align:middle;           /* 세로 가운데 */
+}
+.cupon-usage-table tbody tr:hover{ background:#FFF5F6; }
+
+/* 행 상태 톤 다운(선택) */
+.cupon-usage-table tbody tr.is-expired{ opacity:.92; }
+.cupon-usage-table tbody tr.is-used{ opacity:.92; }
+
+/* 상태 Pill */
+.status-pill{
+  display:inline-flex; align-items:center; justify-content:center;
+  min-width:72px; height:28px; padding:0 10px;
+  border-radius:9999px; font-weight:700; font-size:.875rem;
+  border:1px solid transparent;
+}
+.status-pill.ok{
+  color:#fff;
+  background: linear-gradient(180deg, #F36B7B 0%, var(--accent) 100%);
+  box-shadow: inset 0 2px 0 rgba(255,255,255,.22);
+}
+.status-pill.expired{
+  color:#64748b; background:#eef2f6; border-color:#e5e7eb;
+}
+.status-pill.used{
+  color:#c61f35; background:#ffecef; border-color:#ffb4be;
+}
+
+/* 액션 버튼 영역도 중앙 정렬 유지 */
+.usage-actions{
+  display:flex; align-items:center; justify-content:center; gap:8px;
+}
+
+/* 빈 상태 */
+.no-usage{
+  margin-top: 30px;
+
+  text-align:center; color:#777; padding:32px 0;
+  background:#fff; border:1px dashed #f1a7b0; border-radius:12px;
+}
+
+/* 쿠폰 발급 */
+  .cupon-issue-bar{
+    margin: 6px 0 8px;
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    gap: 16px;
+  }
+
+  /* 공통 .btn은 기존 것을 사용, 채워진 프라이머리 버튼만 추가 */
+  .btn-primary{
+    color:#fff;
+    border: none;
+    background-color: #3b82f6;
+    box-shadow:
+      0 10px 20px rgba(231,75,96,.22),
+      inset 0 2px 0 rgba(255,255,255,.22);
+  }
+  .btn-primary:hover{
+    filter: brightness(1.02);
+    box-shadow:
+      0 12px 24px rgba(231,75,96,.28),
+      inset 0 2px 0 rgba(255,255,255,.28);
+  }
+
+  .btn-primary:active{ transform: translateY(1px); }
+
+  .btn-primary:disabled{ opacity:.6; cursor:not-allowed; }
+
+  /* 버튼 크기/아이콘 */
+  .issue-btn{
+    padding: 10px 14px;
+    border-radius: 9999px;
+    font-weight: 700;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .issue-btn .ico{
+    width:18px; height:18px; display:inline-block; flex:0 0 18px;
+    background-color: currentColor; /* 아이콘 = 글자색(흰색) */
+    -webkit-mask-repeat:no-repeat; mask-repeat:no-repeat;
+    -webkit-mask-position:center;  mask-position:center;
+    -webkit-mask-size:18px 18px;   mask-size:18px 18px;
+    /* + 아이콘 (stroke) */
+    -webkit-mask-image:url("data:image/svg+xml;utf8,\<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'>\<path d='M12 5v14M5 12h14' fill='none' stroke='black' stroke-width='2' stroke-linecap='round'/></svg>");
+            mask-image:url("data:image/svg+xml;utf8,\<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'>\<path d='M12 5v14M5 12h14' fill='none' stroke='black' stroke-width='2' stroke-linecap='round'/></svg>");
+  }
+
+  /* 키보드 포커스 접근성 */
+  .issue-btn:focus-visible{
+    outline: none;
+    box-shadow:
+      0 0 0 3px rgba(255,255,255,.9),
+      0 0 0 6px rgba(231,75,96,.55);
+  }
+/* 쿠폰 발급 */
+/* 생성된 쿠폰 조회 (th:fragment="cupon-manage") fin -----------------------------------------------------------------------------------------*/
+
+
+/* 고객 문의 (th:fragment="qna") --------------------------------------------------------------------------------------------------------------- */
+.iq-table-scroll{
+  overflow:auto;
+  background:#fff;
+  border:1px solid #eee;
+  border-radius:12px;
+}
+
+.iq-table{
+  width:100%;
+  min-width:1080px;               /* 필요 시 조정 */
+  border-collapse:separate;
+  border-spacing:0;
+}
+.iq-table thead th{
+  position:sticky; top:0; z-index:1;
+  background:#ffe5e8;             /* 테마 연동 */
+  color:#E74B60;
+  text-align:center;
+  font-weight:700;
+  padding:12px 14px;
+  border-bottom:2px solid #E74B60;
+  white-space:nowrap;
+}
+.iq-table tbody td{
+  padding:12px 14px;
+  border-bottom:1px solid #eee;
+  text-align:center;
+  vertical-align:middle;
+}
+.iq-table tbody tr:hover{ background:#FFF5F6; }
+
+
+.title-cell.ellipsis{ max-width: 420px; } /* 제목 최대폭 */
+@media (max-width: 1200px){ .title-cell.ellipsis{ max-width: 320px; } }
+
+
+/* 액션 버튼 묶음 */
+.iq-list-header{
+  margin-bottom: 14px;
+
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.iq-title-row{
+  display: flex;
+  justify-content: flex-start;
+  gap: 22px;
+}
+
+.iq-list-title{
+  font-size: 1.25rem;
+  font-weight: 700;
+
+  align-items: center;
+  line-height: 25px;
+}
+
+/* 헤더의 "미등록된 답변 보기" 버튼: 테마 톤 + 콤팩트 사이즈 */
+.iq-list-header .btn-primary{
+  height:28px;
+  padding:0 12px;
+  border-radius:9999px;
+  font-size:.85rem;
+  font-weight:700;
+  color:#fff;
+  border:1px solid #E74B60;
+  background: linear-gradient(180deg, #F36B7B 0%, #E74B60 100%);
+  box-shadow:
+    0 10px 20px rgba(231,75,96,.18),
+    inset 0 2px 0 rgba(255,255,255,.22);
+}
+.iq-list-header .btn-primary:hover{
+  filter:brightness(1.02);
+  box-shadow:
+    0 12px 24px rgba(231,75,96,.24),
+    inset 0 2px 0 rgba(255,255,255,.28);
+}
+.iq-list-header .btn-primary:active{ transform: translateY(1px); }
+.iq-list-header .btn-primary:focus-visible{
+  outline:none;
+  box-shadow:
+    0 0 0 3px rgba(255,255,255,.9),
+    0 0 0 6px rgba(231,75,96,.55);
+}
+
+/* 답변상태 Pill: 미답변 컬러(공통 .pill 기반) */
+.pill.pending{
+  color:#c61f35;
+  background:#ffecef;
+  border-color:#ffb4be;
+}
+
+.iq-badge{
+  display:inline-flex; align-items:center;
+  padding:4px 10px; border-radius:9999px;
+  background:#FFE7EB; color:#E74B60; font-weight:700;
+}
+
+/* 반응형: ID/액션 숨김(이미 보유한 규칙 유지) */
+@media (max-width: 880px){
+  .iq-table{ min-width:0; }
+  .iq-table thead .col-id,
+  .iq-table tbody .col-id,
+  .iq-table thead .col-actions,
+  .iq-table tbody .col-actions{ display:none; }
+}
+/* 고객 문의 (th:fragment="qna") fin --------------------------------------------------------------------------------------------------------------- */

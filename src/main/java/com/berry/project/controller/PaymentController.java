@@ -2,11 +2,12 @@ package com.berry.project.controller;
 
 import com.berry.project.api.TossApi;
 import com.berry.project.dto.cupon.CuponDTO;
+import com.berry.project.dto.cupon.CuponTemplateDTO;
 import com.berry.project.dto.payment.*;
 import com.berry.project.entity.lodge.Room;
 import com.berry.project.entity.user.User;
 import com.berry.project.handler.payment.TossPaymentsAPIHandler;
-import com.berry.project.service.payment.OrderIdGenerator;
+import com.berry.project.handler.payment.OrderIdGenerator;
 import com.berry.project.service.payment.PaymentService;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
@@ -483,5 +484,20 @@ public class PaymentController {
     }
 
     return result;
+  }
+
+  /** cuponInfo() - 쿠폰 타입으로 쿠폰 정보 조회 */
+  @GetMapping("/cupon-info")
+  @ResponseBody
+  public CuponTemplateDTO cuponInfo(@RequestParam(name="cupon-type") String cuponType){
+    try {
+      return paymentservice.getCuponTemplate(cuponType);
+    }
+      // CuponTemplate 에 해당 CuponType 과 일치하는 Record 가 없는 경우
+      catch (EntityNotFoundException e) {
+
+        log.warn("CuponTemplate not found for cuponType: {}", cuponType);
+        return null;
+    }
   }
 }

@@ -10,7 +10,7 @@ import java.util.List;
 import java.util.Optional;
 
 
-public interface PaymentReceiptRepository extends JpaRepository<PaymentReceipt, String> {
+public interface PaymentReceiptRepository extends JpaRepository<PaymentReceipt, String>, PaymentReceiptCustomRepository {
     
     /** findByOrderId(String orderId) - orderId로 결제 영수증 조회
      *
@@ -59,4 +59,6 @@ public interface PaymentReceiptRepository extends JpaRepository<PaymentReceipt, 
      *  - 결제 타입별 조회
      */
     List<PaymentReceipt> findByTypeOrderByApprovedAtDesc(String type);
+
+
 }

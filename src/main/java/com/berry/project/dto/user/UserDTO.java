@@ -1,5 +1,6 @@
 package com.berry.project.dto.user;
 
+import jakarta.persistence.Column;
 import lombok.*;
 
 import java.time.LocalDateTime;
@@ -38,6 +39,12 @@ public class UserDTO {
    *
    */
   private int userGradePoint;
+
+
+  /** duorpeb, boolean - userBan : review 밴 관련 변수
+   *
+   */
+  private boolean userBan;
 
   public String convertRegDate(){
     String dateTime = regDate.toString().substring(0, regDate.toString().indexOf("T"));

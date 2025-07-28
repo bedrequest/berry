@@ -17,9 +17,8 @@ public class CustomerIqBoardDTO {
   private String title;
   private String userEmail;
   private String content;
-  private Boolean isSecret;
+  private Boolean secret;
   private String comment;
   private LocalDateTime commentRegDate;
   private LocalDateTime regDate,modDate;
-
 }

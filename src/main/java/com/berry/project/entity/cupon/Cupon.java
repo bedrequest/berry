@@ -37,4 +37,5 @@ public class Cupon {
 
   @Column(name="is_valid", columnDefinition = "BOOLEAN DEFAULT TRUE")
   private boolean isValid;
+
 }

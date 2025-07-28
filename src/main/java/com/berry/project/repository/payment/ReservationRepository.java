@@ -11,7 +11,7 @@ import java.util.List;
 import java.util.Optional;
 
 
-public interface ReservationRepository extends JpaRepository<Reservation, Long> {
+public interface ReservationRepository extends JpaRepository<Reservation, Long>, ReservationCustomRepository {
     
     /** findByOrderId(String orderId) - orderId 로 예약 정보 조회
      *

@@ -3,6 +3,7 @@ package com.berry.project.service.user;
 import com.berry.project.dto.user.MyPageReservationDTO;
 import com.berry.project.dto.user.UserDTO;
 import com.berry.project.entity.cupon.Cupon;
+import com.berry.project.handler.payment.CuponHandler;
 import com.berry.project.repository.payment.CuponRepository;
 import com.berry.project.entity.lodge.Lodge;
 import com.berry.project.entity.lodge.Room;
@@ -33,12 +34,13 @@ public class UserServiceimpl implements UserService {
 
   private final UserRepository userRepository;
   private final AuthUserRepository authUserRepository;
-  // YSL, 쿠폰 발급을 위한 초기화
-  private final CuponRepository cuponRepository;
   private final ReservationRepository reservationRepository;
   private final RoomRepository roomRepository;
   private final RoomImgRepository roomImgRepository;
   private final LodgeRepository lodgeRepository;
+   // YSL, 쿠폰 발급을 위한 초기화
+  private final CuponRepository cuponRepository;
+  private final CuponHandler cuponHandler;
 
   // 소셜로그인 중복검사
   @Transactional
@@ -74,14 +76,17 @@ public class UserServiceimpl implements UserService {
     if(userId > 0){
       authUserRepository.save(convertUserDTOToAuthEntity(userDTO));
 
-      // duorpeb, 쿠폰 발급
-      Cupon registerCupon
-          = Cupon.builder()
-          .userId(userId)
-          .cuponType(1)
-          .cuponEndDate(OffsetDateTime.now().plusDays(180))
-          .isValid(true)
-          .build();
+      // duorpeb, 쿠폰 발급 - 변경 전
+//      Cupon registerCupon
+//          = Cupon.builder()
+//          .userId(userId)
+//          .cuponType(1)
+//          .cuponEndDate(OffsetDateTime.now().plusDays(180))
+//          .isValid(true)
+//          .build();
+
+      // duorpeb, 쿠폰 발급 - 변경 후
+      Cupon registerCupon = cuponHandler.callCuponGenerate(1, userId);
 
       cuponRepository.save(registerCupon);
     }
@@ -160,14 +165,17 @@ public class UserServiceimpl implements UserService {
     if(userId > 0){
       authUserRepository.save(convertUserDTOToAuthEntity(userDTO));
 
-      // duorpeb, 쿠폰 발급
-      Cupon registerCupon
-          = Cupon.builder()
-                 .userId(userId)
-                 .cuponType(1)
-                 .cuponEndDate(OffsetDateTime.now().plusDays(180))
-                 .isValid(true)
-                 .build();
+      // duorpeb, 쿠폰 발급 - 변경 전
+//      Cupon registerCupon
+//          = Cupon.builder()
+//                 .userId(userId)
+//                 .cuponType(1)
+//                 .cuponEndDate(OffsetDateTime.now().plusDays(180))
+//                 .isValid(true)
+//                 .build();
+
+      // duorpeb, 쿠폰 발급 - 변경 후
+      Cupon registerCupon = cuponHandler.callCuponGenerate(1, userId);
 
       cuponRepository.save(registerCupon);
     }
