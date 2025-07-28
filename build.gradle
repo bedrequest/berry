@@ -50,6 +50,8 @@ dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter-security'
 	// https://mvnrepository.com/artifact/org.springframework.security/spring-security-oauth2-jose
 	implementation 'org.springframework.security:spring-security-oauth2-jose:6.5.1'
+	// coolSms SDK
+	implementation 'net.nurigo:sdk:4.2.7'
 
 	// thymeleaf security
 	// https://mvnrepository.com/artifact/org.thymeleaf.extras/thymeleaf-extras-springsecurity6

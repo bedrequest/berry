@@ -41,7 +41,7 @@
             <div class="user-info-right"><p>✔️</p></div>
           </li>
         </ul>
-        <button class="user-info-btn" type="button" th:if="${!userDTO.isMobileCertified}">휴대전화 인증</button>
+        <button class="user-info-btn" type="button" id="certifiedPhoneBtn" th:if="${!userDTO.isMobileCertified}">휴대전화 인증</button>
         <button class="user-info-btn" type="button" th:if="${!userDTO.isEmailCertified}">이메일 인증</button>
         <button class="user-info-btn" type="button" th:if="${userDTO.provider == 'web'}">비밀번호 변경</button>
       </div>
@@ -185,10 +185,37 @@
     </div>
   </div>
 
+  <!-- 휴대폰 인증 modal -->
+  <div class="modal" id="certifiedUserPhone">
+    <div class="modal-body">
+      <div class="logo-position-div">
+        <img class="modal-logo" src="/image/Berry_logo.png" alt="로고">
+      </div>
+      <h2 class="modal-main-tit">휴대폰 인증</h2>
 
+      <div class="modal-content">
 
+        <form th:action="@{/user/deactivatedTransferUser}" method="post">
 
+          <div class="modal-input-group">
+            <input type="hidden" name="userId" th:value="${userDTO.userId}">
+            <div class="modal-input-group">
+              <p>인증번호</p><input type="text" name="certifiedNumber" id="certifiedNumber">
+            </div>
+          </div>
 
+          <div class="modal-actions">
+            <div class="modal-action-left">
+            </div>
+            <div class="modal-action-right">
+              <button type="submit" class="modal-sub-btn" id="certifiedUserPhoneSubBtn">인증</button>
+              <button type="button" class="modal-close-btn" id="certifiedUserPhoneModalClose">닫기</button>
+            </div>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
 
 
 
