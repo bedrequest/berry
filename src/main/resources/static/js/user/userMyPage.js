@@ -1,14 +1,14 @@
 console.log("userMyPage in");
 console.log(myPageUserId);
 
-const inputUserName = document.getElementById("userName");
-const inputuserPhone = document.getElementById("userPhone");
-
-const inputs = [inputUserName, inputuserPhone];
 
 // 기능 =====================================================================
 
 // 회원정보 수정 모달 ========================================================
+const inputUserName = document.getElementById("userName");
+const inputuserPhone = document.getElementById("userPhone");
+
+const inputs = [inputUserName, inputuserPhone];
 let valid = false; // validation 변수
 
 // 기존에 입력된 이름 값 저장
@@ -88,8 +88,16 @@ document.getElementById("wmMembership").addEventListener("click", () => {
 
 // 회원정보 수정 모달 =====================================================end
 
+// 휴대폰 인증 모달 =========================================================
 
-
+// 휴대폰 인증 버튼 클릭
+document.getElementById("certifiedPhoneBtn").addEventListener("click", () => {
+    document.getElementById("certifiedUserPhone").style.display = "block"
+})
+// 휴대폰 인증 닫기 버튼 클릭
+document.getElementById("certifiedUserPhoneModalClose").addEventListener("click", () => {
+    document.getElementById("certifiedUserPhone").style.display = "none"
+})
 
 
 
