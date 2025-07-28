@@ -306,7 +306,7 @@ public class LodgeInsertTest {
         places3 = {"경기", "제주도", "충남", "경남"},
         places4 = {"전북", "강원", "경북", "전남", "충북"};
 
-    String base = "https://www.yeogi.com/domestic-accommodations?category=0&keyword=%s&page=2";
+    String base = "https://www.yeogi.com/domestic-accommodations?category=0&keyword=%s&page=1";
 
     for (String place : places2) {
       String src = String.format(base, place);
