@@ -3,32 +3,31 @@ console.log(tossClientKey);
 console.log(isBeforeInfo);
 console.log(isTodayInfo);
 console.log(rentNum);
+console.log(userIdInfo);
+console.log(roomIdInfo);
+console.log(startDateInfo);
+console.log(endDateInfo);
+
+
 
 // 초기화
+ // csrf Token
+// const csrfToken  = document.querySelector('meta[name="_csrf"]').getAttribute('content');
+// const csrfHeader = document.querySelector('meta[name="_csrf_header"]').getAttribute('content');
+ // 대실 이용 시간
+let useTime = Number(rentNum);
+ // 쿠폰 id 를 저장할 변수
+let dataSetcuponId;
+ // 이용 시작 시간
+let startTimeInfo;
+ // 이용 종료 시간
+let endTimeInfo;
  // 결제 버튼 
 const paymentButton = document.getElementById('payment-button');
  // 약관 - 전체 동의
 const allAgree = document.getElementById('terms-all');
  // 약관 - 필수 약관 
 const requiredAgrees = document.querySelectorAll('.terms-req');
- // payment_info 객체를 JavaScript에서 사용하기 쉽게 변수에 할당
-const paymentInfo = /*[[${payment_info}]]*/ null;
-
-
-/** document 클릭 이벤트 리스너
- * 
- * 
- */
-document.addEventListener('click', (e) => {
-  // 확인
-  console.log(e.target);
-
-  // 시간 선택 시  
-  if(e.target.classList.contains('time-slot')){
-
-  }
-})
-
 
 
 /** DOMContentLoaded 이벤트 리스너  
@@ -36,26 +35,28 @@ document.addEventListener('click', (e) => {
  *  > 대실 운영 시간은 일괄적으로 11:00 ~ 22:00 까지 설정
  * 
  * */
-document.addEventListener('DOMContentLoaded', () => {
+document.addEventListener('DOMContentLoaded', async () => {
   // 예약 가능 시간을 출력할 div
-  const timeGrid = document.querySelectorAll('.time-gird');
+  const timeGrid = document.querySelector('.time-grid');
+
 
   // Case 1) - 현재 날짜가 이용일 이전인 경우의 대실 예약
   if(isBeforeInfo){
-    // Fragment 생성 
-    const btnFragment = document.createElement('fragment');
-    
-    // 버튼 13개 (10:00 ~ 22:00) 생성 
-    for(let i = 0; i <= 13; i++){
-      // 버튼 생성
-      const btn = document.createElement('button');
-      btn.type = 'button';
-      btn.classList.add('time-slot');
-      btn.textContent = `${strTimeSlot(i)}`;
+    // Fragment 생성 const btnFragment = document.createElement('fragment');
+
+    // for(let i = 0; i < 13; i++){
+    //   // 버튼 생성
+    //   const btn = document.createElement('button');
+    //   btn.type = 'button';
+    //   btn.classList.add('time-slot');
+    //   btn.textContent = `${strTimeSlot(i)}`;
       
-      // fragment 에 추가
-      btnFragment.appendChild(btn);
-    }
+    //   // fragment 에 추가
+    //   btnFragment.appendChild(btn);
+    // }
+
+    // 버튼 13개 (10:00 ~ 22:00) 생성 
+    const btnFragment = await fragmentGenerator(0, roomIdInfo);
 
     // fragment 를 이용해 한 번에 추가
     timeGrid.appendChild(btnFragment); 
@@ -65,23 +66,13 @@ document.addEventListener('DOMContentLoaded', () => {
   // Case 2) - 현재 날짜가 이용일 당일인 경우의 대실 예약 
   if(isTodayInfo){
     const now = dayjs().format('HH');
+    // 확인
+    console.log('시간 정보 : ' + now);
 
     // 오전 10 시 이전 (운영 시작 시간 이전) 에 예약하는 경우 
     if(now < 10){
-      // Fragment 생성 
-      const btnFragment = document.createElement('fragment');
-      
       // 버튼 13개 (10:00 ~ 22:00) 생성 
-      for(let i = 0; i <= 13; i++){
-        // 버튼 생성
-        const btn = document.createElement('button');
-        btn.type = 'button';
-        btn.classList.add('time-slot');
-        btn.textContent = `${strTimeSlot(i)}`;
-        
-        // fragment 에 추가
-        btnFragment.appendChild(btn);
-      }
+      const btnFragment = await fragmentGenerator(0, roomIdInfo);
 
       // fragment 를 이용해 한 번에 추가
       timeGrid.appendChild(btnFragment); 
@@ -89,9 +80,135 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // 오전 10 시 이후 (운영 시작 시간 이후) 에 예약하는 경우 
     else {
+      switch(now){
+        case '10':
+          const btnFragment = await fragmentGenerator(1, roomIdInfo);
+          timeGrid.appendChild(btnFragment); break;
 
+        case '11':
+          const btnFragment1 = await fragmentGenerator(2, roomIdInfo);
+          timeGrid.appendChild(btnFragment1); break;
+
+        case '12':
+          const btnFragment2 = await fragmentGenerator(3, roomIdInfo);
+          timeGrid.appendChild(btnFragment2); break;
+
+        case '13':
+          const btnFragment3 = await fragmentGenerator(4, roomIdInfo);
+          timeGrid.appendChild(btnFragment3); break;
+
+        case '14':
+          const btnFragment4 = await  fragmentGenerator(5, roomIdInfo);
+          timeGrid.appendChild(btnFragment4); break;
+
+        case '15':
+          const btnFragment5 = await fragmentGenerator(6, roomIdInfo);
+          timeGrid.appendChild(btnFragment5); break;
+
+        case '16':
+          const btnFragment6 = await fragmentGenerator(7, roomIdInfo);
+          timeGrid.appendChild(btnFragment6); break;
+
+        case '17':
+          const btnFragment7 = await fragmentGenerator(8, roomIdInfo);
+          timeGrid.appendChild(btnFragment7); break;
+
+        case '18':
+          const btnFragment8 = await fragmentGenerator(9, roomIdInfo);
+          timeGrid.appendChild(btnFragment8); break;
+
+        case '19':
+          const btnFragment9 = await fragmentGenerator(10, roomIdInfo);
+          timeGrid.appendChild(btnFragment9); break;
+
+        case '20':
+          const btnFragment10 = await fragmentGenerator(11, roomIdInfo);
+          timeGrid.appendChild(btnFragment10); break;
+
+        case '21':
+          const btnFragment11 = await fragmentGenerator(12, roomIdInfo);
+          timeGrid.appendChild(btnFragment11); break;
+
+        default:
+          const p = document.createElement('p');
+          p.innerText = "대실 이용이 불가능합니다..!";
+
+          timeGrid.appendChild(p); break;
+      }
     }
-  }
+  } 
+})
+
+
+/** document 클릭 이벤트 리스너
+ * 
+ *  > select 는 click 보단 change event listener 가 적합 
+ * 
+ *  > click Event Listener 를 사용하는 경우의 부작용
+ *  
+ *    - select 자체를 클릭해 옵션 목록을 열기만 해도 click이 발생하며 옵션 하나를 선택해 닫히는 시점에도 
+ *      또 한 번 click 이 트리거되어 원하는 로직이 두 번 실행될 수 있음
+ * 
+ *    - 일부 브라우저에서는 option 요소 클릭이 select로 버블링되지 않는 경우도 있어, 일관성이 떨어짐
+ * 
+ * ￣￣￣￣￣￣￣￣￣￣￣￣￣￣￣￣￣￣￣￣￣￣￣￣￣￣￣￣￣￣￣￣￣￣￣￣￣￣￣￣￣￣￣￣￣￣￣￣￣￣￣￣￣
+ *  > change Event Listener 를 사용하는 경우의 장점
+ * 
+ *    - 사용자가 실제로 값을 바꿨을 때만 한 번만 호출되며 e.target.value 가 변경된 최종 값을 보장
+ * 
+ *    - 복수의 <select> 를 다룰 때도 동일하게 동작하므로 관리가 편함 
+ */
+document.addEventListener('click', (e) => {
+  // 확인
+  console.log(e.target);
+
+  // 시간 선택 시  
+  if(e.target.classList.contains('time-slot')){
+    console.log("========================= e.target.classList.contains('time-slot') =========================")
+    const rentUseTime = useTime + 1;
+
+    // 초기화 
+    const timeSlotArr = Array.from(document.querySelectorAll('.time-slot'));
+    /**
+     * 
+     * > 클릭된 (또는 이벤트가 발생한) 요소 (e.target) 가 배열 timeSlotArr의 몇 번째 인덱스에 들어있는지 찾아서
+     *   해당 숫자를 idx 라는 변수에 저장
+     * */ 
+    const idx = timeSlotArr.indexOf(e.target);
+    // 확인 
+    console.log(timeSlotArr);
+    console.log(idx);
+
+    // 기존 선택 요소들 모두 비활성화 
+    timeSlotArr.forEach(e => e.classList.remove('time-slot-selected'))
+
+    // 끝 인덱스 계산
+    const endIdx = Math.min(idx + rentUseTime, timeSlotArr.length);
+    console.log(`endIdx : ${endIdx}`);
+
+    // 클릭한 버튼 부터 대실 이용 가능 시간 만큼 활성화 
+    for(let i = idx; i < endIdx; i++){
+      // 기존에 예약된 시간대를 제외한 부분만 활성화
+      if(!timeSlotArr[i].disabled){
+        timeSlotArr[i].classList.add('time-slot-selected');
+      }
+    }
+
+    // 시간 정보 저장 
+    startTimeInfo = strTimeSlot(idx);
+
+    // endIdx 가 timslotArr.length 이면
+    if(endIdx == 13){
+      endTimeInfo = strTimeSlot((endIdx-1));
+
+    } 
+      else {
+        endTimeInfo = strTimeSlot((endIdx-1));
+    }
+    // 확인
+    console.log(`시작 시간 : ${startTimeInfo}`);
+    console.log(`종료 시간 : ${endTimeInfo}`);
+  } // 시간 선택 이벤트 리스너 fin 
 })
 
 
@@ -99,35 +216,36 @@ document.addEventListener('DOMContentLoaded', () => {
 /** 쿠폰 이벤트 리스너 - 쿠폰의 변동사항을 적용
  * 
  */
+ // 쿠폰이 있는 경우에만 
 if(document.querySelector('.select-cupon')){
-  document.querySelector('.select-cupon').addEventListener('click', (e) => {
-    // 쿠폰 할인란 초기화, 
-    document.querySelector('.usingCupon').innerHTML = '';
-        
+  const selectedCp = document.querySelector('.select-cupon');
+
+  selectedCp.addEventListener('change', (e) => {
+    // 선택된 옵션 가져오기 
+    const selectedOption = e.target.selectedOptions[0];
+
+    // data-cupon-id 와 value 읽기 
+    dataSetcuponId = selectedOption.dataset.cuponId;
+    const value = Number(selectedOption.value);
+
+    // 확인
+    console.log(`선택된 쿠폰 ID : ${dataSetcuponId}`);
+    console.log(`할인 금액 : ${value}`);
+
     // 쿠폰 할인에 표시
-    document.querySelector('.usingCupon').innerHTML = `${e.target.value} 원`;
-  
-    // 할인 급액란 초기화, 
-    document.querySelector('.cuponPrice').innerHTML = '';
-  
+    document.querySelector('.usingCupon').textContent = `${value} 원`;
+
     // 할인 금액에 표시
-    document.querySelector('.cuponPrice').innerHTML = `${e.target.value} 원`;
-  
+    document.querySelector('.cuponPrice').textContent = `${e.target.value}`;
+
     /** 정가 - 쿠폰 할인가를 총 결제 금액에 표시 */
-     // 총 결제 금액란 초기화, 
-    document.querySelector('.pbpTotalAmount').innerHTML = '';
-     
     let pbpTotalAmount = Number(strikePrice) - Number(e.target.value) 
   
-    document.querySelector('.pbpTotalAmount').innerHTML = `${pbpTotalAmount} 원`;
-  
-    // 결제하기 버튼 금액 초기화, 
-    document.querySelector('.payment-button').innerHTML = ''; 
-  
-    // 결제하기 버튼 부분에 표시 
-    document.querySelector('.payment-button').innerHTML = `${pbpTotalAmount} 원 결제하기`;
-  })
+    document.querySelector('.pbpTotalAmount').textContent = `${pbpTotalAmount}`;
 
+    // 결제하기 버튼 부분에 표시 
+    document.querySelector('.payment-button').textContent = `${pbpTotalAmount} 원 결제하기`;
+  })
 }
 
 
@@ -171,7 +289,7 @@ paymentButton.addEventListener('click', async () => {
      // TossPayments 초기화
     const tossPayments = TossPayments("test_ck_ZLKGPx4M3MaBdQzvKDyR3BaWypv1");
      // customerKey (임시, 원래는 user authorize 로 가져옴)
-    const customerKey = `${crypto.randomUUID()}_W`;
+    const customerKey = await getUserCustomerKey(userIdInfo);
      // tossPayment 의 결제 메서드 호출 
     const payment = tossPayments.payment({ customerKey });
     
@@ -182,13 +300,13 @@ paymentButton.addEventListener('click', async () => {
      // 숙소명 (pbp TABLE - orderName)
     const orderName_info = document.querySelector('.roomName').textContent;
      // cupon_id (임시 생성, 실제로는 페이지 이동 시 비동기로 로딩)
-    const cuponId_info = 1;
+    const cuponId_info = dataSetcuponId;
      // 쿠폰으로 할인 받은 금액 
-    const cuponPrice_info = 3000;
+    const cuponPrice_info = Number(document.querySelector('.cuponPrice').textContent);
      // 원래 가격 
-    const strikePrice_info = 5000;
+    const strikePrice_info = Number(document.querySelector('.strikePrice').textContent);
      // 총 결제 가격 
-    const pbpTotalAmount_info = 2000;  
+    const pbpTotalAmount_info = Number(document.querySelector('.pbpTotalAmount').textContent);  
      // 결제 수단 (method)
     const method_info = document.querySelector('.payment-methods input[name="payment"]:checked').value; 
   
@@ -197,19 +315,33 @@ paymentButton.addEventListener('click', async () => {
      // order_id 는 위에서 생성된 id 사용 
       
      // room_id (임시 생성)
-    const roomId_info = 13;
+    const roomId_info = roomIdInfo;
      // user_id 
-    const userId_info = 26;
-     // 이용 시작일 (reservation TABLE - stayTime)
-    const startDate_info = new Date("2025-07-21T11:00:00.000Z").toISOString();
-     // 이용 종료일
-    const endDate_info = new Date("2025-07-22T12:00:00.000Z").toISOString();
+    const userId_info = userIdInfo;
+    
+     /** 이용 시작일 (reservation TABLE - stayTime) 과 이용 종료일
+      * 
+      *  > 선택한 타임 슬롯이 2025-08-04 의 10:00 ~ 14:00 까지 인 경우 
+      *   new Date(`${startDateInfo}T${startTimeInfo}`).toISOString() 은 2025-08-04T01:00:00.000Z 로 
+      *   new Date(`${endDateInfo}T${endTimeInfo}`).toISOString() 은 2025-08-04T05:00:00.000Z 로 표시 
+      * 
+      * */ 
+    const startDate_info 
+      = new Date(`${startDateInfo}T${startTimeInfo}`).toISOString();
+     // 확인
+    console.log(`startDate_info : ${startDate_info}`);
+
+     // 이용 종료일시
+    const endDate_info = new Date(`${endDateInfo}T${endTimeInfo}`).toISOString();
+     // 확인
+    console.log(`endDate_info : ${endDate_info}`);
+
      // 결제 금액은 위에서 사용된 총 결제 가격을 사용
   
      // 숙박 인원 (reservation TABLE - guestsAmount)
     const guestsAmount_info = parseInt(document.querySelector('.guestsAmount').textContent);
      // 예약 타입 - ReservationType 은 STAY 와 RENT 만 존재
-    const reservationType_info = 'STAY';
+    const reservationType_info = 'RENT';
   
     // payment_info 가 null 인 경우 
     // if (paymentInfo == null) {
@@ -288,11 +420,83 @@ paymentButton.addEventListener('click', async () => {
       }
     });
 
-  } 
+  } // try{} fin
     catch (error) {
       console.error('orderId 생성 실패:', error);
   }
 });
+
+
+
+/** getUserCustomerKey(userId) - userId 로 customerKey 가져오기
+ * 
+ * 
+ */
+async function getUserCustomerKey(userId) {
+  try{
+    const resp = await fetch(`/payment/reserve-ck?ck=${userId}`);
+
+    const result = await resp.text();
+
+    return result;
+
+  } catch(error){
+
+    console.log(`getUserCustomerKey ERROR : ${error}`);
+  }
+}
+
+
+/** fragmentGenerator(startIdx, endIdx) - 시간과 예약 정보에 따라 버튼 생성
+ * 
+ *  >  
+ * 
+*/ 
+async function fragmentGenerator(startIdx, roomIdInfo){ 
+  try {
+    /** await fetch(`/payment/reserve-info?${roomIdInfo}`) - roomId 로 해당 객실의 예약 가능한 시간대 가져오기
+     * 
+     * > 대실 예약 시 생성되는 모든 버튼은 13개 (idx 0 ~ idx 13) 로 예약 정보를 가져와 
+     *   예약된 시간대의 번호에 해당하는 배열을 생성 
+     * 
+     * > 10:00 ~ 22:00 까지 대실 예약이 가능한 시간이기에 0 ~ 12 의 번호로 매핑
+     * 
+     * > 기존 예약 정보를 형식화한 배열 reservedSlots 을 반환받아 요소 생성 시 
+     *    reservedSllots.includes(hour) 가 true 이면 해당 요소 disabled  
+     * 
+     * > e.g., 10:00 ~ 14:00 까지의 예약 내역이 존재하는 경우 
+     *  const reserveSlot = [0,1,2,3,4,5];
+     *  
+     * */ 
+    const resp = await fetch(`/payment/reserve-info?roomId=${roomIdInfo}`);
+
+    const reservedSlots = await resp.json();
+    // 확인
+    console.log(`reserveSlots : ${reservedSlots}`);
+
+    // DocumentFragment 생성 
+    const frag = document.createDocumentFragment();
+    
+    for(let i = startIdx; i < 13; i++){
+      // 버튼 생성
+      const btn = document.createElement('button');
+      btn.type = 'button';
+      btn.classList.add('time-slot');
+      btn.textContent = `${strTimeSlot(i)}`;
+
+      // 기존에 예약된 시간대는 비활성화
+      if(reservedSlots.includes(i)){ btn.disabled = true; }
+  
+      frag.appendChild(btn);
+    }
+  
+    return frag;
+
+  } catch (error) {
+    console.log(`fragmentGenerator ERROR : ${error}`);    
+  }
+  
+}
 
 
 /** strTimeSlot(idx) - idx 에 따라 문자열을 반환하는 메서드 

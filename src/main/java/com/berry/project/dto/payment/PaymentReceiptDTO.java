@@ -36,7 +36,7 @@ public class PaymentReceiptDTO {
   // payment 객체의 method
   private String method;
 
-  // payment 객체의 requestedAt
+  // payment 객체의 requestedAt 는 "yyyy-MM-dd'T'HH:mm:ssXXX" 형식으로 반환
   @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ssXXX")
   private OffsetDateTime requestedAt;
 

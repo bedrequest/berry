@@ -3,6 +3,7 @@ package com.berry.project.dto.payment;
 import com.berry.project.dto.cupon.CuponDTO;
 import lombok.*;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.OffsetDateTime;
 import java.util.List;
@@ -15,7 +16,6 @@ import java.util.List;
 @Builder
 public class PaymentStayPageDTO {
   private String roomName;
-  private String rentTime;
   private OffsetDateTime startDate;
   private OffsetDateTime endDate;
   private String userName;
@@ -25,4 +25,7 @@ public class PaymentStayPageDTO {
   private long strikePrice;
   private List<CuponDTO> cuponList;
   private int cuponCnt;
+  private boolean isToday;
+  private long userId;
+  private long roomId;
 }

@@ -10,6 +10,9 @@
   <!-- 토스페이먼츠 SDK 로드 -->
   <script src="https://js.tosspayments.com/v2/standard"></script>
 
+  <!-- Day.js - 날짜 경량 라이브러리 -->
+  <script src="https://unpkg.com/dayjs@1/dayjs.min.js"></script>
+
   <script th:inline="javascript">
     const pInfoDto = [[${pInfoDto}]];
 
@@ -25,11 +28,47 @@
            style="width: 150px; height: 50px;">
 
       <h1 class="payment-title" style="line-height: 50px;">
-        대실 예약 결제
+        숙박 예약 결제
       </h1>
     </div>
 
     <div>
+      <!-- 이용 시간 -->
+      <div class="section">
+        <h2 class="section-title">이용 정보</h2>
+        <div class="info-box">
+          <!-- 객실명 -->
+          <div class="info-item">
+            <span class="label">객실명</span>
+            <span class="lodgeDetails roomName">[[${pInfoDto.roomName}]]</span>
+          </div>
+
+          <!-- 체크인 -->
+          <div class="info-item">
+            <span class="label">체크인</span>
+
+            <!-- replace() 와 th:text 중 선택 사용 -->
+            <span
+              class="lodgeDetails checkInTime selectedPrint"
+              th:text="${#temporals.format(pInfoDto.startDate, 'yyyy-MM-dd HH:mm')}">
+              <!--체크인 : [[${pInfoDto.startDate.toString().replace("T","일 ")}]]-->
+            </span>
+          </div>
+
+          <!-- 체크 아웃 -->
+          <div class="info-item">
+            <span class="label">체크 아웃</span>
+
+            <span
+              class="lodgeDetails checkOutTime selectedPrint"
+              th:text="${#temporals.format(pInfoDto.endDate, 'yyyy-MM-dd HH:mm')}">
+              <!--체크 아웃 : [[${pInfoDto.endDate.toString().replace("T","일 ")}]]-->
+            </span>
+          </div>
+
+        </div>
+      </div>
+
       <!-- 예약자 정보 -->
       <div class="section">
         <h2 class="section-title">예약자 정보</h2>
@@ -39,6 +78,7 @@
             <span class="lodgeDetails userName" >[[${pInfoDto.userName}]]</span>
           </div>
 
+          <!-- < (lt = &lt), > (gt = &gt), <= (le; less or equal), >= (ge; greater or equal) -->
           <th:block th:if="${pInfoDto.isMobileCertified}">
             <div class="info-item">
               <span class="label">연락처</span>
@@ -46,11 +86,11 @@
             </div>
           </th:block>
 
-          <th:block th:unless="${isMobileCertified}">
+          <th:block th:unless="${pInfoDto.isMobileCertified}">
             <div class="info-item">
               <div style="display:flex; vertical-align: center;">
                 <span class="label" style="margin-right:8px; line-height: 30px;">연락처</span>
-                <button type="button" class="verify-btn">본인 인증</button>
+                <button type="button" class="verify-btn"><a th:href="@{/user/myPage}">본인 인증</a></button>
               </div>
 
               <span class="lodgeDetails userPhone">[[${pInfoDto.userPhone}]]</span>
@@ -67,6 +107,7 @@
         </div>
       </div>
 
+
       <!-- 쿠폰이 없는 경우 -->
       <th:block th:if="${#lists.isEmpty(pInfoDto.cuponList)}">
         <script th:inline="javascript">
@@ -78,7 +119,7 @@
 
           <div class="cupon-select-section">
             <label for="cupon-select1" class="cupon-label"></label>
-            <select id="cupon-select1" class="cupon-select1 not-exists select-cupon">
+            <select id="cupon-select1" class="cupon-select1 not-exists">
               <option value="999">사용 가능한 쿠폰이 없습니다.</option>
             </select>
           </div>
@@ -97,25 +138,34 @@
 
           <div class="cupon-select-section" style="margin-bottom: 30px;">
             <label for="cupon-select2" class="cupon-label">사용 가능한 쿠폰 : [[${pInfoDto.cuponCnt}]] 장</label>
+            <select id="cupon-select2" class="cupon-select2 select-cupon">
+              <!-- unchecked -->
+              <option value="" disabled selected hidden>사용할 쿠폰을 선택하세요.</option>
 
-            <th:block th:each="cupon : ${pInfoDto.cuponList}">
-              <th:block th:switch="${cupon.cuponType}">
-                <select id="cupon-select2" class="cupon-select2 select-cupon">
-                  <!-- unchecked -->
-                  <option value="" disabled selected hidden>사용할 쿠폰을 선택하세요.</option>
-
+              <th:block th:each="cupon : ${pInfoDto.cuponList}">
+                <th:block th:switch="${cupon.cuponType}">
                   <!-- 첫 회원가입 쿠폰 -->
-                  <option th:case="1" value="3000">
+                  <option th:case="1" class="appliedCupon" value="3000" th:data-cupon-id="${cupon.cuponId}">
                     신규 가입 할인 쿠폰
                   </option>
 
-                  <!-- 등급업 쿠폰 -->
-                  <option th:case="2" value="5000">Silver 등급업 쿠폰</option>
-                  <option th:case="3" value="5000">Gold 등급업 쿠폰</option>
-                  <option th:case="4" value="5000">Platinum 등급업 쿠폰</option>
-                </select>
+                  <!-- 등급업 쿠폰 - 실버 -->
+                  <option th:case="2" class="appliedCupon" value="5000" th:data-cupon-id="${cupon.cuponId}">
+                    Silver 등급업 쿠폰
+                  </option>
+
+                  <!-- 등급업 쿠폰 - 골드 -->
+                  <option th:case="3" class="appliedCupon" value="5000" th:data-cupon-id="${cupon.cuponId}">
+                    Gold 등급업 쿠폰
+                  </option>
+
+                  <!-- 등급업 쿠폰 - 플레티넘 -->
+                  <option th:case="4" class="appliedCupon" value="5000" th:data-cupon-id="${cupon.cuponId}">
+                    Platinum 등급업 쿠폰
+                  </option>
+                </th:block>
               </th:block>
-            </th:block>
+            </select>
           </div>
 
           <div class="cupon-box">
@@ -128,26 +178,26 @@
       </th:block>
 
 
-
       <!-- 결제 금액 -->
       <div class="section">
         <h2 class="section-title">최종 결제 금액</h2>
         <div class="info-box amount-box">
           <div class="info-item">
             <span class="label">주문 금액</span>
-            <span class="lodgeDetails strikePrice">[[${pInfoDto.strikePrice}]] 원</span>
+            <span class="lodgeDetails strikePrice">[[${pInfoDto.strikePrice}]]</span>
           </div>
           <div class="info-item discount">
             <span class="label">할인 금액</span>
-            <span class="lodgeDetails cuponPrice">0 원</span>
+            <span class="lodgeDetails cuponPrice">0</span>
           </div>
           <hr class="divider">
           <div class="info-item total">
             <span id="label">총 결제 금액</span>
-            <span class="lodgeDetails pbpTotalAmount">[[${pInfoDto.strikePrice}]] 원</span>
+            <span class="lodgeDetails pbpTotalAmount">[[${pInfoDto.strikePrice}]]</span>
           </div>
         </div>
       </div>
+
 
       <!-- 약관 동의 -->
       <div class="section">
@@ -209,7 +259,15 @@
     const tossPayments = TossPayments(tossClientKey);
 
     const strikePrice = [[${pInfoDto.strikePrice}]];
+
+    const userIdInfo = [[${pInfoDto.userId}]];
+
+    const roomIdInfo = [[${pInfoDto.roomId}]];
+
+    const startDateInfo = [[${pInfoDto.startDate}]];
+
+    const endDateInfo = [[${pInfoDto.endDate}]];
   </script>
 
-  <script th:src="@{/js/payment/paymentRent.js}"></script>
+  <script th:src="@{/js/payment/paymentStay.js}"></script>
 </div>
