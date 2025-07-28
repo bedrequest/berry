@@ -158,20 +158,21 @@ public class PaymentController {
 
   /** "@PostMapping("/fail") - 실패 redirectUrl*/
   @PostMapping("/fail")
-  public String fail(@RequestParam("code") String Code, @RequestParam("message") String msg
+  public String fail(@RequestParam("code") String code, @RequestParam("message") String msg
       , @RequestParam("orderId") String orderId, RedirectAttributes re){
-    // 초기화
-     // 실패 도메인
-    String targetUrl = "/payment/fail";
 
+    re.addFlashAttribute("e_code", code);
+    re.addFlashAttribute("e_msg", msg);
 
-    return targetUrl;
+    return "redirect:/payment/again";
   }
 
 
   /** "@GetMapping("/again") - 결제 실패 페이지로 이동 */
   @GetMapping("/again")
-  public void again(){}
+  public void again(@ModelAttribute("e_code") String e_code, @ModelAttribute("e_msg") String e_msg){
+
+  }
 
 
   /** "@PostMapping("/cancel") - 결제 환불 */

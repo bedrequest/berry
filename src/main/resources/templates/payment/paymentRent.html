@@ -12,17 +12,16 @@
 </head>
 
 <div layout:fragment="content">
+  <div class="payment-container" style="width: 1200px;">
+    <div class="payment-title-container" style="display: flex; justify-content: center;">
+      <img th:src="@{/image/Berry_logo.png}"
+           alt="Berry Logo"
+           style="width: 150px; height: 50px;">
 
-<div class="payment-container" >
-  <div class="payment-title-container" style="display: flex; justify-content: center;">
-    <img th:src="@{/image/Berry_logo.png}"
-         alt="Berry Logo"
-         style="width: 150px; height: 50px;">
-
-    <h1 class="payment-title" style="line-height: 50px;">
-      대실 예약 결제
-    </h1>
-  </div>
+      <h1 class="payment-title" style="line-height: 50px;">
+        대실 예약 결제
+      </h1>
+    </div>
 
     <!-- 'payment_info'가 없는 경우를 대비한 메시지 -->
     <!--<div th:if="${payment_info == null}" class="info-box">
@@ -33,76 +32,86 @@
     <div>
       <!-- 이용 시간 -->
       <div class="section">
-          <h2 class="section-title">이용 정보</h2>
-          <div class="info-box">
-            <div class="info-item">
-                <span class="label">숙소명</span>
-                <span class="lodgeDetails roomName" >디럭스 룸</span>
-            </div>
-            <div class="info-item">
-                <span class="label">예약 일시</span>
-                <span class="lodgeDetails stayTime selectedPrint"></span>
-            </div>
+        <h2 class="section-title">이용 정보</h2>
+        <div class="info-box">
+          <div class="info-item">
+            <span class="label">숙소명</span>
+            <span class="lodgeDetails roomName" >디럭스 룸</span>
+          </div>
+          <div class="info-item">
+            <span class="label">예약 일시</span>
+            <span class="lodgeDetails stayTime selectedPrint"></span>
+          </div>
 
-            <div class="time-selector-section">
-              <h2 class="time-selector-title">이용시간</h2>
-              <p class="time-selector-subtitle">최대 4시간 이용 가능</p>
+          <div class="time-selector-section">
+            <h2 class="time-selector-title">이용시간</h2>
+            <p class="time-selector-subtitle">최대 4시간 이용 가능</p>
 
-              <div class="time-grid">
-                <button class="time-slot">12:00</button>
-                <button class="time-slot">12:30</button>
-                <button class="time-slot">13:00</button>
-                <button class="time-slot">13:30</button>
-                <button class="time-slot">14:00</button>
-                <button class="time-slot">14:30</button>
-                <button class="time-slot">15:00</button>
-                <button class="time-slot selected">15:30</button>
-                <button class="time-slot">16:00</button>
-                <button class="time-slot">16:30</button>
-                <button class="time-slot">17:00</button>
-                <button class="time-slot">17:30</button>
-                <button class="time-slot">18:00</button>
-                <button class="time-slot">18:30</button>
-                <button class="time-slot">19:00</button>
-                <button class="time-slot">19:30</button>
-                <button class="time-slot">20:00</button>
-                <button class="time-slot">20:30</button>
-                <button class="time-slot">21:00</button>
-              </div>
+            <div class="time-grid">
+              <button class="time-slot">12:00</button>
+              <button class="time-slot">12:30</button>
+              <button class="time-slot">13:00</button>
+              <button class="time-slot">13:30</button>
+              <button class="time-slot">14:00</button>
+              <button class="time-slot">14:30</button>
+              <button class="time-slot">15:00</button>
+              <button class="time-slot">15:30</button>
+              <button class="time-slot">16:00</button>
+              <button class="time-slot">16:30</button>
+              <button class="time-slot">17:00</button>
+              <button class="time-slot">17:30</button>
+              <button class="time-slot">18:00</button>
+              <button class="time-slot">18:30</button>
+              <button class="time-slot">19:00</button>
+              <button class="time-slot">19:30</button>
+              <button class="time-slot">20:00</button>
+              <button class="time-slot">20:30</button>
+              <button class="time-slot">21:00</button>
             </div>
           </div>
+        </div>
       </div>
 
       <!-- 예약자 정보 -->
       <div class="section">
-          <h2 class="section-title">예약자 정보</h2>
-          <div class="info-box">
-              <div class="info-item">
-                  <span class="label">예약자명</span>
-                  <span class="lodgeDetails userName" >Lee</span>
-              </div>
-              <div class="info-item">
-                  <span class="label">연락처</span>
-                  <span class="lodgeDetails userPhone">010-1111-1111</span>
-              </div>
-              <div class="info-item">
-                <span class="label">숙박 인원</span>
-                <span class="lodgeDetails guestsAmount">2명</span>
-              </div>
-          </div>
+        <h2 class="section-title">예약자 정보</h2>
+        <div class="info-box">
+            <div class="info-item">
+                <span class="label">예약자명</span>
+                <span class="lodgeDetails userName" >Lee</span>
+            </div>
+            <div class="info-item">
+                <span class="label">연락처</span>
+                <span class="lodgeDetails userPhone">010-1111-1111</span>
+            </div>
+            <div class="info-item">
+              <span class="label">숙박 인원</span>
+              <span class="lodgeDetails guestsAmount">2</span>
+            </div>
+        </div>
       </div>
 
       <!-- 쿠폰 사용 여부 -->
       <div class="section">
-          <h2 class="section-title">할인 적용</h2>
-          <div class="coupon-box">
-              <!-- 실제 쿠폰 정보를 받아와서 처리하는 로직이 필요합니다. -->
-              <div class="info-item">
-                  <span class="label">쿠폰 할인</span>
-                  <span class="lodgeDetails usingCupon">- 0 원</span>
-              </div>
+        <h2 class="section-title">할인 적용</h2>
+
+        <div class="coupon-select-section" style="margin-bottom: 30px;">
+          <label for="coupon-select" class="coupon-label">사용 가능한 쿠폰 : ?장</label>
+          <select id="coupon-select" class="coupon-select">
+            <option value="">-- 쿠폰을 선택하세요 --</option>
+            <option value="coupon1">신규가입 3,000원 할인</option>
+            <option value="coupon2">실버 3,000 원 쿠폰</option>
+          </select>
+        </div>
+
+        <div class="coupon-box">
+          <div class="info-item">
+            <span class="label">쿠폰 할인</span>
+            <span class="lodgeDetails usingCupon">- 3000 원</span>
           </div>
+        </div>
       </div>
+
 
       <!-- 결제 금액 -->
       <div class="section">
@@ -110,115 +119,79 @@
           <div class="info-box amount-box">
               <div class="info-item">
                   <span class="label">주문 금액</span>
-                  <span class="lodgeDetails strikePrice">50,000 원</span> <!-- 임시 금액 -->
+                  <span class="lodgeDetails strikePrice">5,000 원</span> <!-- 임시 금액 -->
               </div>
               <div class="info-item discount">
                   <span class="label">할인 금액</span>
-                  <span class="lodgeDetails cuponPrice">- 0 원</span>
+                  <span class="lodgeDetails cuponPrice">- 3000 원</span>
               </div>
               <hr class="divider">
               <div class="info-item total">
                   <span id="label">총 결제 금액</span>
-                  <span class="lodgeDetails pbpTotalAmount">50,000 원</span> <!-- 임시 금액 -->
+                  <span class="lodgeDetails pbpTotalAmount">2,000 원</span> <!-- 임시 금액 -->
               </div>
           </div>
       </div>
 
       <!-- 약관 동의 -->
       <div class="section">
-          <h2 class="section-title">약관 동의</h2>
-          <div class="terms-box">
-              <div class="term">
-                  <input type="checkbox" id="terms-all" name="terms-all">
-                  <label for="terms-all">전체 동의</label>
-              </div>
-              <hr class="divider">
-              <div class="term">
-                  <input type="checkbox" id="terms-1" name="terms-1" class="terms-req">
-                  <label for="terms-1">[필수] 숙소이용규칙 및 취소/환불규정 동의</label>
-              </div>
-              <div class="term">
-                  <input type="checkbox" id="terms-2" name="terms-2" class="terms-req">
-                  <label for="terms-2">[필수] 개인정보 수집 및 이용 동의</label>
-              </div>
+        <h2 class="section-title">약관 동의</h2>
+        <div class="terms-box">
+          <div class="term">
+            <input type="checkbox" id="terms-all" name="terms-all">
+            <label for="terms-all">전체 동의</label>
           </div>
+          <hr class="divider">
+          <div class="term">
+            <input type="checkbox" id="terms-1" name="terms-1" class="terms-req">
+            <label for="terms-1">[필수] 숙소이용규칙 및 취소/환불규정 동의</label>
+          </div>
+          <div class="term">
+            <input type="checkbox" id="terms-2" name="terms-2" class="terms-req">
+            <label for="terms-2">[필수] 개인정보 수집 및 이용 동의</label>
+          </div>
+        </div>
       </div>
+
+
+      <!-- 결제 수단 -->
+      <div class="section">
+        <h2 class="section-title">결제 수단</h2>
+
+        <div class="payment-methods">
+          <input type="radio" id="pay-card" name="payment" value="CARD" checked>
+          <label for="pay-card">신용/체크카드</label>
+
+          <input type="radio" id="pay-virtual" name="payment" value="VIRTUAL_ACCOUNT">
+          <label for="pay-virtual">가상 계좌<br /></label>
+
+          <input type="radio" id="pay-transfer" name="payment" value="TRANSFER">
+          <label for="pay-transfer">계좌이체<br /></label>
+
+          <input type="radio" id="pay-mobile" name="payment" value="MOBILE_PHONE">
+          <label for="pay-mobile">휴대폰 결제<br /></label>
+
+          <input type="radio" id="pay-culture" name="payment" value="CULTURE_GIFT_CERTIFICATE">
+          <label for="pay-culture">상품권<br /></label>
+        </div>
+      </div>
+
 
       <!-- 결제 하기 버튼 -->
       <div class="payment-button-container">
-          <button type="button" id="payment-button" class="payment-button" disabled>50,000원 결제하기</button>
+        <button type="button" id="payment-button" class="payment-button" disabled>2,000원 결제하기</button>
       </div>
     </div>
+  </div>
+
+
+
+  <!-- Script -->
+  <script th:inline="javascript">
+    const tossClientKey = [[${tossClientKey}]]
+
+    const tossPayments = TossPayments(tossClientKey);
+  </script>
+
+  <script th:src="@{/js/payment/paymentStay.js}"></script>
 </div>
-
-
-
-<script th:inline="javascript">
-/*<![CDATA[*/
-
-    // 1. 객체 초기화
-    const paymentButton = document.getElementById('payment-button');
-    const clientKey = 'test_ck_D5GePWvyJnrK0W0k6q8gLzN97Eoq'; // 발급받은 클라이언트 키로 교체하세요.
-    const tossPayments = TossPayments(clientKey);
-
-    // payment_info 객체를 JavaScript에서 사용하기 쉽게 변수에 할당
-    const paymentInfo = /*[[${payment_info}]]*/ null;
-
-    // 2. 결제하기 버튼 클릭 이벤트 처리
-    paymentButton.addEventListener('click', function () {
-        if (!paymentInfo) {
-            alert('결제 정보가 없습니다.');
-            return;
-        }
-
-        // 3. 토스페이먼츠 결제 요청
-        tossPayments.requestPayment('카드', {
-            amount: 50000, // 실제 결제 금액
-            orderId: 'order_' + new Date().getTime(), // 주문 ID (실제로는 고유하게 생성해야 함)
-            orderName: paymentInfo.lodgePayload.roomName, // 주문명
-            customerName: paymentInfo.userPayload.userName, // 고객명
-            successUrl: window.location.origin + '/payment/success', // 성공 시 리디렉션될 URL
-            failUrl: window.location.origin + '/payment/fail',       // 실패 시 리디렉션될 URL
-        })
-        .catch(function (error) {
-            if (error.code === 'USER_CANCEL') {
-                // 결제 고객이 결제창을 닫았을 때 에러 처리
-                console.log('결제가 취소되었습니다.');
-            } else {
-                // 그 외 에러 처리
-                console.error('결제 실패:', error.message);
-                alert('결제에 실패했습니다: ' + error.message);
-            }
-        });
-    });
-
-    // 약관 동의 로직 (기존 코드 유지)
-    const allAgree = document.getElementById('terms-all');
-    const requiredAgrees = document.querySelectorAll('.terms-req');
-
-    function checkAgreements() {
-        const allRequiredChecked = Array.from(requiredAgrees).every(checkbox => checkbox.checked);
-        paymentButton.disabled = !allRequiredChecked;
-    }
-
-    allAgree.addEventListener('change', (e) => {
-        requiredAgrees.forEach(checkbox => {
-            checkbox.checked = e.target.checked;
-        });
-        checkAgreements();
-    });
-
-    requiredAgrees.forEach(checkbox => {
-        checkbox.addEventListener('change', () => {
-            const allRequiredChecked = Array.from(requiredAgrees).every(c => c.checked);
-            allAgree.checked = allRequiredChecked;
-            checkAgreements();
-        });
-    });
-
-    checkAgreements();
-
-/*]]>*/
-</script>
-</div>
-</html>

@@ -47,6 +47,7 @@ public class SecurityConfig {
                 "/lodge/**", "/search/**",
                 "/reviews/list/**", "/review-tags/**",
                 "/.well-known/**", "/error/**"
+
             )
             .permitAll()
             .anyRequest().authenticated()
