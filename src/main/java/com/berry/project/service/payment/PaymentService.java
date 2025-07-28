@@ -292,4 +292,12 @@ public interface PaymentService {
   // 결제 페이지 이동 시 정보 - 쿠폰 개수
   int getCuponCnt(long userId);
 
+  // 기존 예약 정보를 특정 형식으로 가져옴
+  int[] getRoomsReserveInfo(long roomId);
+
+  // userId 를 받아 customerKey 가져오기
+  String getUserCustomerKey(long userId);
+
+  // 환불 정책에 따른 금액 반환
+  long getCancelAmount(String orderId);
 }

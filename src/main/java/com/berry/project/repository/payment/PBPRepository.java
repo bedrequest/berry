@@ -59,4 +59,10 @@ public interface PBPRepository extends JpaRepository<PaymentBeforePayment, Long>
      *
      */
     List<PaymentBeforePayment> findByOrderNameContainingOrderByOrderRegDateDesc(String orderName);
+
+
+    /** deleteByOrderRegDateBefore(OffsetDateTime oneHourAgo) - 특정 시간 이전의 레코드 삭제
+     *
+     */
+    void deleteByOrderRegDateBefore(java.time.OffsetDateTime oneHourAgo);
 }

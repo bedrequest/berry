@@ -3,18 +3,39 @@ console.log("======================== paymentCacncel.js in =====================
 
 // 초기화
  // 환불 버튼
-const paymentCancel = document.querySelector('.payment-cancel');  
+const paymentCancel = document.getElementById('cancelReservation');  
  // 환불 사유 
 const cancelReason = document.querySelector('.cancelReason');
 
 /** 환불 버튼 이벤트 리스너 */
 paymentCancel.addEventListener('click', async () => {
   try {
-    // orderId 가져오기 (추후 수정)
-    const orderId_info = "order_1753423933297_1_54f9d3f4";
+    // 초기화
+    let cancelReason_info;
+    
+    // orderId 가져오기 
+    const orderId_info = document.getElementById("reservationOrderId").value;
+    // 환불 사유 적는 요소
+    const otherReason = document.getElementById("otherReason");
+    // 확인
+    console.log("orderId 최종확인용 >> ", orderId);
+        
+    
+    if(otherReason.value != ""){
+      // 환불 사유 초기화
+      cancelReason_info = otherReason.value;
 
-    // cancelReason 가져오기 
-    const cancelReason_info = "단순 변심"; ;
+      // 기타 일 경우 가져갈 값
+      console.log("기타 사유 최종확인용 >> ", otherReason.value);
+
+    } else{
+        // select 가 기타가 아닐경우 가져갈 값
+        const selected = document.getElementById("refundReason");
+        // 환불 사유 초기화
+        cancelReason_info = selected.value;
+
+        console.log(selected.value);
+    }
     
     // payload
     const cancelPayload = {
@@ -26,7 +47,11 @@ paymentCancel.addEventListener('click', async () => {
       if(result == '0'){ 
         alert('결제 취소가 성공적으로 완료되었습니다!');
       } 
-        else { alert('결제 취소가 성공적으로 완료되지 못했습니다!');}
+        else if(result == '-1'){ 
+          alert('결제 취소가 성공적으로 완료되지 못했습니다!');
+        } else if(result == '-2'){
+          alert('환불이 불가능합니다..!');
+        }
     })
 
   } catch (error) {

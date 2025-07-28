@@ -28,4 +28,6 @@ public class PaymentRentPageDTO {
   private int cuponCnt;
   private boolean isBefore;
   private boolean isToday;
+  private long userId;
+  private long roomId;
 }

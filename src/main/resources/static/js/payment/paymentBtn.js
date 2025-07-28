@@ -12,6 +12,7 @@ document.addEventListener('click', (e) => {
   console.log(e.target);
 
   const reserveBtn = e.target.closest('.reserveBtn');
+
   if(reserveBtn){
     /** 대실 예약 이벤트 리스너
      * 
@@ -50,21 +51,18 @@ document.addEventListener('click', (e) => {
         startDate : startDate_info,
         endDate : endDate_info
       }
-      
-
+      // 확인
       console.log(orderPayload);
 
-      /** 동적으로 <form> 태그 생성하여 제출
-       *
-       */
+    
+      /** 동적으로 <form> 태그 생성하여 제출 */
       dynamicPostForPRG('/payment/moveRent', orderPayload);
-
-
 
       // else {
       //     alert('로그인이 필요한 작업입니다!');
       // }    
-    }
+      
+    } // 대실 예약 이벤트 리스너 fin
   
   
     /** 숙박 예약 버튼 이벤트 리스너
@@ -74,45 +72,48 @@ document.addEventListener('click', (e) => {
       // 확인
       console.log("================ e.target.classList.contain(예약 버튼) ================");
   
-      if(user != undefined){
-        // 초기화
-         // 인원수 
-        let cnt = Number(document.getElementById('adultInput').value)
-         + Number(document.getElementById('childInput').value);
-         // 시작일 
-        const startDate_info = document.getElementById('checkInInput').value;
-         // 종료일
-        const endDate_info = document.getElementById('checkOutInput').value;
-         // roomId
-
-  
-        console.log(startDate_info);
-        console.log(endDate_info);
-  
-        // 객체 파싱
-        const orderPayload = {
-          userId : user,
-          roomId : reserveBtn.dataset.roomid,
-          guestsAmount : cnt,
-          startDate : startDate_info,
-          endDate : endDate_info 
-        }
-
-        console.log(orderPayload);
-
-        /** 동적으로 <form> 태그 생성하여 제출 
-         * 
-         */
-        dynamicPostForPRG('/payment/moveStay', orderPayload);
-
-      } else {
-          alert('로그인이 필요한 작업입니다!');
+      // 비로그인 상태라면
+      if(!user){
+        const ret = encodeURIComponent(window.location.href);
+        window.location.href = `/user/login?redirectTo=${ret}`;
+        return;
       }
-    } 
 
-  }
+      // 초기화
+       // 인원수
+      let cnt = Number(document.getElementById('adultInput').value)
+        + Number(document.getElementById('childInput').value);
+       // 시작일
+      const startDate_info = document.getElementById('checkInInput').value;
+       // 종료일
+      const endDate_info = document.getElementById('checkOutInput').value;
+       // 확인
+      console.log(startDate_info);
+      console.log(endDate_info);
 
-})
+      // 객체 파싱
+      const orderPayload = {
+        userId : user,
+        roomId : reserveBtn.dataset.roomid,
+        guestsAmount : cnt,
+        startDate : startDate_info,
+        endDate : endDate_info
+      }
+
+      // 확인
+      console.log(orderPayload);
+
+      /** 동적으로 <form> 태그 생성하여 제출 */
+      dynamicPostForPRG('/payment/moveStay', orderPayload);
+
+      // else {
+      //     alert('로그인이 필요한 작업입니다!');
+      // }    
+    } // 숙박 예약 이벤트 리스너 fin 
+
+  } // reserveBtn 이벤트 리스너 fin
+
+}) // document 이벤트 리스너 fin 
 
 
 

@@ -49,6 +49,8 @@ public class QUser extends EntityPathBase<User> {
 
     public final StringPath userGrade = createString("userGrade");
 
+    public final NumberPath<Integer> userGradePoint = createNumber("userGradePoint", Integer.class);
+
     public final NumberPath<Long> userId = createNumber("userId", Long.class);
 
     public final StringPath userName = createString("userName");

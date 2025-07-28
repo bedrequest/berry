@@ -45,6 +45,14 @@ public class MyAppScheduler {
 
     // 1번 작업 수행
     cuponRepository.deleteByCuponEndDateBefore(currentDate);
-  }
 
+    // 2번 작업 수행
+    OffsetDateTime oneHourAgo = currentDate.minusHours(1);
+    pbpRepository.deleteByOrderRegDateBefore(oneHourAgo);
+
+    // 3번 작업 수행
+    reservationRepository.deleteByBookingStatusAndReservationRegDateBefore("PENDING", currentDate);
+
+
+  }
 }

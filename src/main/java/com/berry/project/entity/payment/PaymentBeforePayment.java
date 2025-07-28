@@ -34,8 +34,8 @@ public class PaymentBeforePayment {
   private String orderId;
 
   // 쿠폰 사용 시 적용된 쿠폰 ID
-  @Column(name="cupon_id", length = 200)
-  private long cuponId;
+  @Column(name="cupon_id", nullable = false, length = 200)
+  private Long cuponId;
 
   @Column(length = 50)
   private String method;

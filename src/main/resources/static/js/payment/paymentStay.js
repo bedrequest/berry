@@ -1,26 +1,69 @@
 // 확인 - 클라이언트 키, 
-console.log(tossClientKey)
+console.log(tossClientKey);
+console.log(userIdInfo);
+console.log(roomIdInfo);
+console.log(startDateInfo);
+console.log(endDateInfo);
+
+
 
 // 초기화
+ // csrf Token
+// const csrfToken  = document.querySelector('meta[name="_csrf"]').getAttribute('content');
+// const csrfHeader = document.querySelector('meta[name="_csrf_header"]').getAttribute('content');
+ // 쿠폰 id 를 저장할 변수
+let dataSetcuponId;
  // 결제 버튼 
 const paymentButton = document.getElementById('payment-button');
  // 약관 - 전체 동의
 const allAgree = document.getElementById('terms-all');
  // 약관 - 필수 약관 
 const requiredAgrees = document.querySelectorAll('.terms-req');
- // payment_info 객체를 JavaScript에서 사용하기 쉽게 변수에 할당
-const paymentInfo = /*[[${payment_info}]]*/ null;
 
 
-/** 전체 이벤트 리스너
- * 
- *  > user_id 를 활용해 서버에서 해당 유저가 가진 쿠폰 Record (List<Cupon>) 를 가져오기
+/** 문서 로드 시 이벤트 리스너 */
+document.addEventListener('DOMContentLoaded', () => {
+  checkAgreements();
+}) 
+
+
+/** 쿠폰 이벤트 리스너 - 쿠폰의 변동사항을 적용
  * 
  */
-document.addEventListener('DOMContentLoaded', () => {
+ // 쿠폰이 있는 경우에만 
+if(document.querySelector('.select-cupon')){
+  const selectedCp = document.querySelector('.select-cupon');
 
-})
+  selectedCp.addEventListener('change', (e) => {
+    // 선택된 옵션 가져오기 
+    const selectedOption = e.target.selectedOptions[0];
 
+    // data-cupon-id 와 value 읽기 
+    dataSetcuponId = selectedOption.dataset.cuponId;
+    const value = Number(selectedOption.value);
+
+    // 확인
+    console.log(`선택된 쿠폰 ID : ${dataSetcuponId}`);
+    console.log(`할인 금액 : ${value}`);
+
+    // 쿠폰 할인에 표시
+    document.querySelector('.usingCupon').textContent = `${value} 원`;
+
+    // 할인 금액에 표시
+    document.querySelector('.cuponPrice').textContent = `${e.target.value}`;
+
+    /** 정가 - 쿠폰 할인가를 총 결제 금액에 표시 */
+    let pbpTotalAmount = Number(strikePrice) - Number(e.target.value) 
+  
+    document.querySelector('.pbpTotalAmount').textContent = `${pbpTotalAmount}`;
+
+    // 결제하기 버튼 부분에 표시 
+    document.querySelector('.payment-button').textContent = `${pbpTotalAmount} 원 결제하기`;
+  })
+}
+
+
+// 본인 인증 버튼이 없는 경우에만 
 
 /** 전체 동의 이벤트 리스너 */
 allAgree.addEventListener('change', (e) => {
@@ -44,7 +87,7 @@ requiredAgrees.forEach(checkbox => {
     checkAgreements();
   });
 });
-
+  
 checkAgreements();
 
 
@@ -60,7 +103,7 @@ paymentButton.addEventListener('click', async () => {
      // TossPayments 초기화
     const tossPayments = TossPayments("test_ck_ZLKGPx4M3MaBdQzvKDyR3BaWypv1");
      // customerKey (임시, 원래는 user authorize 로 가져옴)
-    const customerKey = `${crypto.randomUUID()}_W`;
+    const customerKey = await getUserCustomerKey(userIdInfo);
      // tossPayment 의 결제 메서드 호출 
     const payment = tossPayments.payment({ customerKey });
     
@@ -71,13 +114,13 @@ paymentButton.addEventListener('click', async () => {
      // 숙소명 (pbp TABLE - orderName)
     const orderName_info = document.querySelector('.roomName').textContent;
      // cupon_id (임시 생성, 실제로는 페이지 이동 시 비동기로 로딩)
-    const cuponId_info = 1;
+    const cuponId_info = dataSetcuponId;
      // 쿠폰으로 할인 받은 금액 
-    const cuponPrice_info = 3000;
+    const cuponPrice_info = Number(document.querySelector('.cuponPrice').textContent);
      // 원래 가격 
-    const strikePrice_info = 5000;
+    const strikePrice_info = Number(document.querySelector('.strikePrice').textContent);
      // 총 결제 가격 
-    const pbpTotalAmount_info = 2000;  
+    const pbpTotalAmount_info = Number(document.querySelector('.pbpTotalAmount').textContent);  
      // 결제 수단 (method)
     const method_info = document.querySelector('.payment-methods input[name="payment"]:checked').value; 
   
@@ -86,13 +129,26 @@ paymentButton.addEventListener('click', async () => {
      // order_id 는 위에서 생성된 id 사용 
       
      // room_id (임시 생성)
-    const roomId_info = 13;
+    const roomId_info = roomIdInfo;
      // user_id 
-    const userId_info = 9;
-     // 이용 시작일 (reservation TABLE - stayTime)
-    const startDate_info = new Date("2025-08-25T11:00:00.000Z").toISOString();
-     // 이용 종료일
-    const endDate_info = new Date("2025-08-30T12:00:00.000Z").toISOString();
+    const userId_info = userIdInfo;
+    
+     /** 이용 시작일 (reservation TABLE - stayTime) 과 이용 종료일
+      * 
+      *  > 선택한 타임 슬롯이 2025-08-04 의 10:00 ~ 14:00 까지 인 경우 
+      *   new Date(`${startDateInfo}T${startTimeInfo}`).toISOString() 은 2025-08-04T01:00:00.000Z 로 
+      *   new Date(`${endDateInfo}T${endTimeInfo}`).toISOString() 은 2025-08-04T05:00:00.000Z 로 표시 
+      * 
+      * */ 
+    const startDate_info = new Date(startDateInfo).toISOString();
+     // 확인
+    console.log(`startDate_info : ${startDate_info}`);
+
+     // 이용 종료일시
+    const endDate_info = new Date(endDateInfo).toISOString();
+     // 확인
+    console.log(`endDate_info : ${endDate_info}`);
+
      // 결제 금액은 위에서 사용된 총 결제 가격을 사용
   
      // 숙박 인원 (reservation TABLE - guestsAmount)
@@ -177,11 +233,31 @@ paymentButton.addEventListener('click', async () => {
       }
     });
 
-  } 
+  } // try{} fin
     catch (error) {
       console.error('orderId 생성 실패:', error);
   }
 });
+
+
+
+/** getUserCustomerKey(userId) - userId 로 customerKey 가져오기
+ * 
+ * 
+ */
+async function getUserCustomerKey(userId) {
+  try{
+    const resp = await fetch(`/payment/reserve-ck?ck=${userId}`);
+
+    const result = await resp.text();
+
+    return result;
+
+  } catch(error){
+
+    console.log(`getUserCustomerKey ERROR : ${error}`);
+  }
+}
 
 
 
@@ -255,7 +331,13 @@ function checkAgreements() {
   // 초기화
   const allRequiredChecked = Array.from(requiredAgrees).every(checkbox => checkbox.checked);
   
-  paymentButton.disabled = !allRequiredChecked;
+  if(!document.querySelector('.verify-btn')){
+    paymentButton.disabled = !allRequiredChecked;
+
+  }
+    else if(document.querySelector('.verify-btn')){
+      document.querySelector('.payment-button').disabled = true;
+  }
 }
 
 
