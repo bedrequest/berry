@@ -2,6 +2,8 @@ package com.berry.project.dto.lodge;
 
 import lombok.*;
 
+import java.util.List;
+
 @Getter
 @Setter
 @ToString
@@ -11,5 +13,5 @@ import lombok.*;
 public class LodgeDescriptionDTO {
 
   private String title;
-  private String content;
+  private List<String> contents;
 }

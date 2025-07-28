@@ -49,28 +49,28 @@ public class LodgeCustomRepositoryTest {
 
     log.info("3. 광주의 펜션 검색");
     printResult(lodgeRepository.searchLodges(
-        new ListOptionDTO("광주", false, "펜션", null, null, null),
+        new ListOptionDTO("광주", false, "펜션", 0, 9999999, 0, null),
         new LodgeOptionDTO(),
         pageable
     ));
 
     log.info("4. 서울에서 조식을 제공해주는 숙소");
     printResult(lodgeRepository.searchLodges(
-        new ListOptionDTO("서울", false, null, null, facilityMaskDecoder.encode(List.of("조식제공")), null),
+        new ListOptionDTO("서울", false, null, 0, 9999999, facilityMaskDecoder.encode(List.of("조식제공")), null),
         new LodgeOptionDTO(),
         pageable
     ));
 
     log.info("5. 인천에서 5만원 이상인 객실이 존재하는 숙소");
     printResult(lodgeRepository.searchLodges(
-        new ListOptionDTO("인천", false, null, "50000~", null, null),
+        new ListOptionDTO("인천", false, null, 50000, 9999999, null, null),
         new LodgeOptionDTO(),
         pageable
     ));
 
     log.info("6. 나비 키워드로 가격이 3만원 ~ 7만원인 숙소");
     printResult(lodgeRepository.searchLodges(
-        new ListOptionDTO("나비", true, null, "30000~70000", null, null),
+        new ListOptionDTO("나비", true, null, 30000, 70000, null, null),
         new LodgeOptionDTO(),
         pageable
     ));

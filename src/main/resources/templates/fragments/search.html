@@ -3,10 +3,31 @@
       xmlns:th="http://www.thymeleaf.org">
 <form th:fragment="search" id="searchBox">
   <script th:inline="javascript">
-    const link = document.createElement('link');
-    link.rel = "stylesheet";
-    link.href = /*[[@{/css/search.css}]]*/;
-    document.head.appendChild(link);
+    const styleOfSearchFragment = document.createElement('link');
+    styleOfSearchFragment.rel = "stylesheet";
+    styleOfSearchFragment.href = /*[[@{/css/search.css}]]*/;
+    document.head.appendChild(styleOfSearchFragment);
+
+    const flatpickrCss = document.createElement('link');
+    flatpickrCss.rel = "stylesheet";
+    flatpickrCss.href = "https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css";
+    document.head.appendChild(flatpickrCss);
+
+    const flatpickrCustomCss = document.createElement('link');
+    flatpickrCustomCss.rel = "stylesheet";
+    flatpickrCustomCss.href = /*[[@{/css/flatpickrCustom.css}]]*/;
+    document.head.appendChild(flatpickrCustomCss);
+
+    const flatpickrTheme = document.createElement('link');
+    flatpickrTheme.rel = "stylesheet";
+    flatpickrTheme.type = "text/css";
+    flatpickrTheme.href = "https://npmcdn.com/flatpickr/dist/themes/material_red.css";
+    document.head.appendChild(flatpickrTheme);
+
+    const flatpickrJs = document.createElement('script');
+    flatpickrJs.src = "https://cdn.jsdelivr.net/npm/flatpickr";
+    flatpickrJs.defer = true;
+    document.head.appendChild(flatpickrJs);
   </script>
   <div id="searchKeywordArea">
     <div id="noKeywordWarning" class="invisible">
@@ -80,4 +101,6 @@
   </script>
   <script type="module" th:src="@{/js/util/debounce.js}"></script>
   <script type="module" th:src="@{/js/search/search.js}"></script>
+  <!-- duorpeb, 달력 JS -->
+  <script th:src="@{/js/flatPickr.js}"></script>
 </form>
