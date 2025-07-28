@@ -337,6 +337,7 @@
       String birthYear = (String) kakaoAccount.get("birthyear"); // year
       String birthDay = (String) kakaoAccount.get("birthday"); // month,day
       String userUid = oAuth2User.getName(); // Uid
+      userPhone = userPhone.replace("+82 ", "0");
       log.info("kakao login------------------------");
       log.info("kakao Info >> {}",kakaoAccount);
       log.info(">> kakao user_uid >> {}", userUid); // Uid

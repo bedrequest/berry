@@ -50,7 +50,8 @@ public class TossPaymentsAPIHandler {
 
     // 요청 객체 직렬화
     String jsonBody = objectMapper.writeValueAsString(Map.of(
-       "paymentKey", paymentKey,
+        // 만료된 키 테스트, "paymentKey", "test_payment_key_expired",
+        "paymentKey", paymentKey,
        "orderId", orderId,
        "amount", amount
     ));
@@ -63,6 +64,7 @@ public class TossPaymentsAPIHandler {
                      .header("Content-Type","application/json")
                      .POST(HttpRequest.BodyPublishers.ofString(jsonBody))
                      .build();
+
 
     /** 동기 호출 및 응답 파싱 - Tosspayments 가 반환한 payment 객체를 직렬화 (JSON 문자열로 return)
      *

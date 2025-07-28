@@ -9,7 +9,6 @@
 </head>
 
 <div layout:fragment="content">
-
   <div class="content-inner">
     <div class="login-container">
 
@@ -21,6 +20,8 @@
           로그인
         </h2>
         <form th:action="@{/user/login}" method="post">
+          <input type="hidden" name="redirectTo" th:value="${param.redirectTo}" />
+
           <div class="user-input-group">
             <input type="text" name="userEmail" placeholder="이메일(example@domain.com)" required>
           </div>
@@ -88,10 +89,18 @@
       </div>
     </div>
     <!--#e74b60, #e73c8, #a9439a -->
-
-
   </div>
+
+  <!-- duorpeb, redirect 를 위한 div -->
+  <div class="redirect"></div>
+
+  <!-- duorpeb, For redirect -->
+  <script th:inline="javascript">
+    let redirectTo = /*[[${param.redirectTo}]]*/;
+  </script>
 
   <script th:src="@{/js/user/userLoginModal.js}"></script>
 
+  <!-- duorpeb, redirect JS -->
+  <script th:src="@{/js/user/duorpebRedirect.js}"></script>
 </div>

@@ -1,8 +1,10 @@
 package com.berry.project.dto.payment;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.*;
 
 import java.time.LocalDateTime;
+import java.time.OffsetDateTime;
 
 @Getter
 @Setter
@@ -15,11 +17,18 @@ public class ReservationDTO {
   private long roomId;
   private long userId;
   private String orderId;
-  private LocalDateTime startDate;
-  private LocalDateTime endDate;
+
+  @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ssXXX")
+  private OffsetDateTime startDate;
+
+  @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ssXXX")
+  private OffsetDateTime endDate;
+
   private int totalAmount;
   private int guestsAmount;
   private String bookingStatus;
   private String reservationType;
-  private LocalDateTime reservationRegDate;
+
+  @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ssXXX")
+  private OffsetDateTime reservationRegDate;
 }
