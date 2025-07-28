@@ -118,15 +118,18 @@ textarea.form-control {
 .file-upload label {
   display: inline-block;
   padding: .5em .75em;
-  color: #999;
+  color: white;
   font-size: inherit;
   line-height: normal;
   vertical-align: middle;
-  background-color: #fdfdfd;
+  background-color: #0066cc;
   cursor: pointer;
-  border: 1px solid #ebebeb;
-  border-bottom-color: #e2e2e2;
   border-radius: .25em;
+  font-weight: bold;
+}
+
+.file-upload label:hover {
+  background-color: #004c99;
 }
 
 .file-upload input[type="file"] {

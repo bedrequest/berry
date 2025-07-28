@@ -347,6 +347,7 @@
       log.info(">> kakao year >> {}",birthYear);
       log.info(">> kakao day >> {}",birthDay);
       log.info("kakao login------------------------");
+      userPhone = userPhone.replace("+82 ", "0");
 
       // 로그인 시 들어오는 데이터 DB 에 저장하기
       UserDTO userDTO = new UserDTO();
