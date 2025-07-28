@@ -1,20 +1,28 @@
 package com.berry.project.service.lodge;
 
-import com.berry.project.dto.lodge.LodgeDTO;
-import com.berry.project.dto.lodge.RoomDTO;
-import com.berry.project.dto.lodge.ListOptionDTO;
-import com.berry.project.dto.lodge.LodgeOptionDTO;
+import com.berry.project.dto.lodge.*;
 import com.berry.project.entity.lodge.Lodge;
+import com.berry.project.entity.lodge.LodgeDescription;
 import com.berry.project.entity.lodge.Room;
 import com.berry.project.handler.PagingHandler;
 import com.berry.project.util.FacilityMaskDecoder;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 public interface LodgeService {
   LodgeDTO detail(long lodgeId, LodgeOptionDTO lodgeOptionDTO);
 
-  default LodgeDTO convertEntityToDto(Lodge lodge, FacilityMaskDecoder facilityMaskDecoder) {
+  default LodgeDTO convertEntityToDto(Lodge lodge, FacilityMaskDecoder facilityMaskDecoder, List<LodgeDescription> descriptions) {
+    List<LodgeDescriptionDTO> descriptionDTOList = new ArrayList<>();
+    for (LodgeDescription entity : descriptions)
+      descriptionDTOList.add(LodgeDescriptionDTO.builder()
+          .title(entity.getTitle())
+          .content(entity.getContent())
+          .build());
+
     return LodgeDTO.builder()
         .lodgeId(lodge.getLodgeId())
         .lodgeName(lodge.getLodgeName())
@@ -22,7 +30,7 @@ public interface LodgeService {
         .lodgeAddr(lodge.getLodgeAddr())
         .facilities(facilityMaskDecoder.decode(lodge.getFacility()))
         .intro(lodge.getIntro())
-        .description(lodge.getDescription())
+        .description(descriptionDTOList)
         .businessCall(lodge.getBusinessCall())
         .latitude(lodge.getLatitude())
         .longitude(lodge.getLongitude())

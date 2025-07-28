@@ -30,9 +30,6 @@ public class Lodge {
   @Lob
   private String intro;
 
-  @Lob
-  private String description;
-
   @Column(name = "business_call")
   private String businessCall;
 

@@ -8,7 +8,6 @@ public class RegionNameUtils {
   static {
     REGION_NAME_MAP = Map.ofEntries(
         // DB 재설정용
-        /*
         Map.entry("서울", "서울특별시"),
         Map.entry("인천", "인천광역시"),
         Map.entry("대구", "대구광역시"),
@@ -20,7 +19,6 @@ public class RegionNameUtils {
         Map.entry("강원", "강원도"),
         Map.entry("전북", "전북특별자치도"),
         Map.entry("세종", "세종특별자치시"),
-         */
 
         // 검색어 변환 겸용
         Map.entry("서울시", "서울특별시"),
