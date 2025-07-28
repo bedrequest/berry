@@ -41,5 +41,7 @@ public interface CustomerIqBoardService  {
       .build();
   }
 
+
+
   List<CustomerIqBoardDTO> getlist();
 }
