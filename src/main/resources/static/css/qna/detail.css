@@ -3,19 +3,21 @@ body {
   font-family: 'Noto Sans KR', sans-serif;
   background-color: #f9f9f9;
   margin: 0;
-  padding: 40px 0;
   display: flex;
+  flex-direction: column;
   justify-content: center;
 }
 
 /* 메인 컨테이너 */
 .container {
-  width: 1200px;
+  width: 1080px;          /* 고정 너비 1080px */
   background-color: #ffffff;
   padding: 40px;
+  margin: auto;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
   border-radius: 8px;
   box-sizing: border-box;
+  overflow: hidden;
 }
 
 /* 페이지 제목 */
@@ -32,6 +34,7 @@ body {
   display: flex;
   align-items: center;
   margin-bottom: 20px;
+
 }
 
 .form-group label {
@@ -41,50 +44,37 @@ body {
   margin-right: 10px;
 }
 
+/* input-box 기본 스타일 */
 .input-box {
-  flex: 1;
+  width: 400px;              /* 고정 너비 유지 */
   padding: 10px 14px;
   font-size: 15px;
   border: 1px solid #ccc;
   border-radius: 4px;
   background-color: #fefefe;
   color: #333;
+  height: 42px;
   box-sizing: border-box;
-  height: 42px; /* 통일된 높이 */
 }
 
+/* 짧은 input-box (카테고리 등) */
 .input-box.short {
-  max-width: 300px;
+  width: 160px;              /* 고정 너비 유지 */
 }
 
-/* 작성자, 작성일 줄 */
+/* 작성자 + 작성일 줄 */
 .form-group-inline {
   display: flex;
-  flex-wrap: wrap;
   align-items: center;
   margin-bottom: 20px;
-  gap: 20px;
+  gap: 12px;
 }
 
-.form-item {
-  display: flex;
-  align-items: center;
-  flex: 1 1 300px;
-  min-width: 250px;
-}
-
-.form-item label {
-  width: 100px;
-  margin-right: 10px;
-  font-weight: 500;
-  color: #333;
-}
-
-.input-box.small {
-  flex: 1;
-  padding: 10px 14px;
+.form-group-inline input {
+  width: 400px;
   height: 42px;
   font-size: 15px;
+  padding: 10px 14px;
   border: 1px solid #ccc;
   border-radius: 4px;
   background-color: #fefefe;
@@ -101,35 +91,73 @@ textarea.form-control {
   border: 1px solid #ccc;
   border-radius: 4px;
   resize: none;
+  overflow: hidden;
   background-color: #fefefe;
   color: #333;
-  margin-bottom: 24px;
   box-sizing: border-box;
+  margin-bottom: 20px;
 }
+
+.char-count {
+  font-size: 12px;
+  color: #6c757d;
+  user-select: none;
+}
+
+.char-count.warning {
+  color: #dc3545;
+}
+
+
+
 
 /* 파일 첨부 줄 */
 .file-upload {
   display: flex;
   align-items: center;
+  justify-content: flex-end;
   gap: 12px;
   margin-bottom: 30px;
 }
 
+/* 업로드 버튼 스타일 (label for="ex_filename") */
 .file-upload label {
-  display: inline-block;
-  padding: .5em .75em;
-  color: #999;
-  font-size: inherit;
-  line-height: normal;
-  vertical-align: middle;
-  background-color: #fdfdfd;
+  background-color: #007bff;
+  color: white;
+  height: 42px;
+  line-height: 42px;
+  padding: 0 16px;
+  border-radius: 4px;
   cursor: pointer;
-  border: 1px solid #ebebeb;
-  border-bottom-color: #e2e2e2;
-  border-radius: .25em;
+  font-weight: 500;
+  font-size: 15px;
+  display: inline-block;
+  white-space: nowrap;
+  user-select: none;
+  transition: background-color 0.2s;
 }
 
-.file-upload input[type="file"] {
+.file-upload label:hover {
+  background-color: #0056b3;
+}
+
+/* 비활성화된 업로드 버튼 스타일 */
+.file-upload label.disabled {
+  background-color: #ccc;        /* 연한 회색 */
+  color: #666;                   /* 어두운 회색 글자 */
+  cursor: default;               /* 기본 커서 */
+  pointer-events: none;          /* 클릭 및 호버 무효화 */
+  user-select: none;
+  transition: none;              /* 호버 효과 제거 */
+}
+
+.file-upload label.disabled:hover {
+  background-color: #ccc;        /* 호버시 색 변화 없음 */
+}
+
+/* 숨김 처리된 파일 입력 */
+.file-upload input[type="file"],
+.upload-hidden {
   position: absolute;
   width: 1px;
   height: 1px;
@@ -140,19 +168,19 @@ textarea.form-control {
   border: 0;
 }
 
+/* 파일명 표시 칸 */
 .file-upload .upload-name {
-  flex: 1;
-  padding: .5em .75em;
-  font-size: inherit;
-  font-family: inherit;
-  line-height: normal;
-  vertical-align: middle;
-  background-color: #f5f5f5;
-  border: 1px solid #ebebeb;
-  border-bottom-color: #e2e2e2;
-  border-radius: .25em;
   height: 42px;
+  width: 930px;
+  font-size: 15px;
+  padding: 0 12px;
+  line-height: 42px;
   box-sizing: border-box;
+  color: #333;
+  background-color: #f5f5f5;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  display: inline-block;
 }
 
 /* 하단 버튼 */
@@ -193,39 +221,70 @@ textarea.form-control {
   opacity: 0.9;
 }
 
-/* 반응형: 화면 너비가 좁을 때 처리 */
-@media (max-width: 768px) {
-  .container {
-    width: 90%;
-    padding: 20px;
-  }
-
-  .form-group-inline {
-    flex-direction: column;
-    align-items: stretch;
-  }
-
-  .form-item {
-    width: 100%;
-    margin-right: 0;
-    margin-bottom: 10px;
-  }
-
-  .form-item label {
-    width: auto;
-    margin-bottom: 5px;
-  }
-
-  .input-box.small {
-    width: 100%;
-  }
-
-  .file-upload {
-    flex-direction: column;
-    align-items: stretch;
-  }
-
-  .file-upload .upload-name {
-    width: 100%;
-  }
+/* 첨부파일 미리보기 */
+.attached-file-area {
+  margin-top: 20px;
 }
+
+.file-item {
+  margin-bottom: 10px;
+}
+
+.preview-image {
+  max-width: 200px;
+  height: auto;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  padding: 4px;
+}
+
+/* 새로 선택한 이미지 미리보기 영역 */
+.image-preview-container {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-top: 20px;
+  margin-bottom: 20px;
+}
+
+.image-preview-container img {
+  max-width: 200px;
+  max-height: 150px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  object-fit: cover;
+}
+
+/* 이미지 X 버튼 스타일 */
+.file-item {
+  position: relative;  /* 자식 요소인 .file-x 위치 기준 */
+  display: inline-block;
+}
+
+.file-x {
+  position: absolute;
+  bottom: 85%; /* 살짝 위로 */
+  left: 85%;   /* 살짝 오른쪽 */
+  transform: translate(50%, -50%); /* 정확한 겹침 조정 */
+  width: 24px;
+  height: 24px;
+  background-color: #dc3545; /* 부트스트랩 빨강 */
+  color: white;
+  border: none;
+  border-radius: 50%;
+  font-weight: bold;
+  font-size: 16px;
+  line-height: 24px;
+  text-align: center;
+  cursor: pointer;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+  visibility: visible; /* JavaScript에서 제어하는 경우 초기엔 hidden */
+  z-index: 10;
+  padding: 0;
+}
+
+.file-x:hover {
+  background-color: #c82333;
+}
+
+

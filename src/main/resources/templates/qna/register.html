@@ -3,21 +3,20 @@
       xmlns:th="http://www.thymeleaf.org"
       xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
       layout:decorate="~{layout/layout}">
-<head>
-<link rel="stylesheet" th:href="@{/css/qna/register.css}">
-  <meta charset="UTF-8">
-  <title>문의 내용</title>
-</head>
+
+<section layout:fragment="customStyle">
+  <link rel="stylesheet" th:href="@{/css/qna/register.css}" />
+</section>
 <body>
 
-<div class="container">
+<div class="container" layout:fragment="content">
   <h1>문의내용</h1>
 
   <form action="/qna/register" method="post" enctype="multipart/form-data">
 
-    <div style="display: flex; align-items: center; gap: 20px;">
-      <label for="category">카테고리</label>
-      <select id="category" name="category">
+    <div class="form-inline-group"> <!-- 이 div에 클래스를 추가해주세요 -->
+      <label for="category" class="form-label-inline">카테고리</label> <!-- label에도 클래스 추가 -->
+      <select id="category" name="category" class="form-select-inline"> <!-- select에도 클래스 추가 -->
         <option >--선택--</option>
         <option th:value="p">결제</option>
         <option th:value="r">환불</option>
@@ -45,16 +44,20 @@
     <br><br>
 
     <label for="content">문의 내용</label><br>
-    <textarea id="content" name="content" rows="10" cols="50" placeholder="문의 내용을 입력해주세요"></textarea>
+    <textarea id="content" name="content" cols="50" rows="10" maxlength="999" placeholder="문의 내용을 입력해주세요"></textarea>
+
+    <!-- 글자 수 표시 -->
+    <div id="charCount" class="char-count">0 / 1000</div>
 
     <br><br>
 
 
     <!--/* file 추가 라인 */-->
+    <!-- 파일 업로드 부분 수정 -->
     <div class="file-upload preview-image">
-      <input type="text" class="upload-name" value="파일선택" disabled="disabled">
+      <input type="text" id="file" class="upload-name" placeholder="선택된 파일 없음" disabled="disabled">
       <label for="input-file">업로드</label>
-      <input type="file" id="input-file" class="upload-hidden">
+      <input type="file" name="files" id="input-file" class="upload-hidden" onchange="updateFileName(this)">
     </div>
 
 
@@ -66,15 +69,19 @@
     </div>
 
   </form>
-  <script th:src="@{/js/boardRegister.js}"></script>
+  <script th:src="@{/js/qna/boardRegister.js}"></script>
 </div>
 
 
 <script>
   function updateFileName(input) {
-    const fileName = input.files.length > 0 ? input.files[0].name : '파일선택';
-    input.closest('.file-upload').querySelector('.upload-name').value = fileName;
-  }
+   if(input.files && input.files[0]) {
+     const fileName = input.files[0].name;
+     input.closest('.file-upload').querySelector('.upload-name').value = fileName;
+   } else {
+     input.closest('.file-upload').querySelector('.upload-name').value = '파일선택';
+   }
+ }
 </script>
 
 </body>

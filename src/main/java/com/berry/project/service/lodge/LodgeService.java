@@ -4,7 +4,7 @@ import com.berry.project.dto.lodge.*;
 import com.berry.project.entity.lodge.Lodge;
 import com.berry.project.entity.lodge.LodgeDescription;
 import com.berry.project.entity.lodge.Room;
-import com.berry.project.handler.PagingHandler;
+import com.berry.project.handler.CustomerIqPagingHandler;
 import com.berry.project.util.FacilityMaskDecoder;
 
 import java.util.ArrayList;
@@ -55,5 +55,6 @@ public interface LodgeService {
         .build();
   }
 
-  PagingHandler<LodgeDTO> getLodgeList(int pageNo, ListOptionDTO listOptionDTO, LodgeOptionDTO lodgeOptionDTO);
+
+  Object getLodgeList(int pageNo, ListOptionDTO listOptionDTO, LodgeOptionDTO lodgeOptionDTO);
 }
