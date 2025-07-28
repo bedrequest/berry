@@ -42,12 +42,12 @@ realUpload.addEventListener('change', function () {
 
 // listBtn 클릭 시 /board/list로 이동
 document.getElementById('listBtn').addEventListener('click', () => {
-  location.href = "/board/list";
+  location.href = "/qna/list";
 });
 
 // delBtn 클릭 시 /board/remove로 이동 (bno 파라미터 포함)
 document.getElementById('delBtn').addEventListener('click', () => {
-  location.href = "/board/remove?bno=" + bnoValue;
+  location.href = "/qna/remove?bno=" + bnoValue;
 });
 
 // modBtn 클릭 시 제목, 카테고리 readOnly 해제 및 수정 submit 버튼 생성
