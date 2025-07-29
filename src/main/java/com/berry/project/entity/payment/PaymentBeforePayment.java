@@ -8,6 +8,7 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
 
 import java.time.LocalDateTime;
+import java.time.OffsetDateTime;
 
 @Table
 @Getter
@@ -57,6 +58,6 @@ public class PaymentBeforePayment {
 
   // 결제 요청 시각
   @CreationTimestamp
-  @Column(name="order_reg_date")
-  private LocalDateTime orderRegDate;
+  @Column(name="order_reg_date", columnDefinition = "TIMESTAMP")
+  private OffsetDateTime orderRegDate;
 }

@@ -121,14 +121,18 @@ public class PaymentController {
     // 초기화
      // 경로
     String targetUrl = "redirect:/payment/fail";
-
-    // PBP TABLE 에서 파라미터의 orderId 와 일치하는 Record 의 pbpTotalAmount 와 amount 를 비교
+     // PBP TABLE 에서 파라미터의 orderId 와 일치하는 Record 의 pbpTotalAmount 와 amount 를 비교하기 위한 초기화
     long pbpTotalAmount = paymentservice.getAmountFromOrderId(orderId);
+     // 금액 비교
+    boolean isValidAmount = false;
 
-    //
+    // 금액 조건 초기화
+    if(pbpTotalAmount == amount){ isValidAmount = true; };
+
+
     try {
       // 구매 시 결제 금액과 최종 결제 금액이 같으면  
-      if(pbpTotalAmount == amount){
+      if(isValidAmount){
         // 결제 승인 API 호출
         PaymentReceiptDTO prdto = tpcApiHandler.callConfirmAPI(orderId, paymentKey, amount);
 
@@ -156,8 +160,8 @@ public class PaymentController {
   public void completed(){}
 
 
-  /** "@PostMapping("/fail") - 실패 redirectUrl*/
-  @PostMapping("/fail")
+  /** "@GetMapping("/fail") - 실패 redirectUrl*/
+  @GetMapping("/fail")
   public String fail(@RequestParam("code") String code, @RequestParam("message") String msg
       , @RequestParam("orderId") String orderId, RedirectAttributes re){
 
@@ -170,8 +174,9 @@ public class PaymentController {
 
   /** "@GetMapping("/again") - 결제 실패 페이지로 이동 */
   @GetMapping("/again")
-  public void again(@ModelAttribute("e_code") String e_code, @ModelAttribute("e_msg") String e_msg){
+  public String again(@ModelAttribute("e_code") String e_code, @ModelAttribute("e_msg") String e_msg){
 
+    return "/payment/again";
   }
 
 

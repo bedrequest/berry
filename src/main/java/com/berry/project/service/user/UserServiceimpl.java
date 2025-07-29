@@ -1,8 +1,10 @@
 package com.berry.project.service.user;
 
 import com.berry.project.dto.user.UserDTO;
+import com.berry.project.entity.cupon.Cupon;
 import com.berry.project.entity.user.AuthUser;
 import com.berry.project.entity.user.User;
+import com.berry.project.repository.payment.CuponRepository;
 import com.berry.project.repository.user.AuthUserRepository;
 import com.berry.project.repository.user.UserRepository;
 import lombok.RequiredArgsConstructor;
@@ -11,6 +13,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
+import java.time.OffsetDateTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -21,6 +24,8 @@ public class UserServiceimpl implements UserService {
 
   private final UserRepository userRepository;
   private final AuthUserRepository authUserRepository;
+  // YSL, 쿠폰 발급을 위한 초기화
+  private final CuponRepository cuponRepository;
 
   @Transactional
   @Override
@@ -53,6 +58,17 @@ public class UserServiceimpl implements UserService {
 
     if(userId > 0){
       authUserRepository.save(convertUserDTOToAuthEntity(userDTO));
+
+      // duorpeb, 쿠폰 발급
+      Cupon registerCupon
+          = Cupon.builder()
+          .userId(userId)
+          .cuponType(0)
+          .cuponEndDate(OffsetDateTime.now().plusDays(180))
+          .isValid(true)
+          .build();
+
+      cuponRepository.save(registerCupon);
     }
 
   }
@@ -123,6 +139,17 @@ public class UserServiceimpl implements UserService {
     userDTO.setUserId(userId);
     if(userId > 0){
       authUserRepository.save(convertUserDTOToAuthEntity(userDTO));
+
+      // duorpeb, 쿠폰 발급
+      Cupon registerCupon
+          = Cupon.builder()
+                 .userId(userId)
+                 .cuponType(0)
+                 .cuponEndDate(OffsetDateTime.now().plusDays(180))
+                 .isValid(true)
+                 .build();
+
+      cuponRepository.save(registerCupon);
     }
 
     return userId;

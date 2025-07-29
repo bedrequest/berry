@@ -6,6 +6,7 @@ import org.hibernate.annotations.CreationTimestamp;
 import org.springframework.cglib.core.Local;
 
 import java.time.LocalDateTime;
+import java.time.OffsetDateTime;
 
 @Table(name="cupon")
 @Entity
@@ -28,11 +29,11 @@ public class Cupon {
   private int cuponType;
 
   @CreationTimestamp
-  @Column(name="cupon_reg_date")
-  private LocalDateTime cuponRegDate;
+  @Column(name="cupon_reg_date", columnDefinition = "TIMESTAMP")
+  private OffsetDateTime cuponRegDate;
 
-  @Column(name="cupon_end_date")
-  private LocalDateTime cuponEndDate;
+  @Column(name="cupon_end_date", columnDefinition = "TIMESTAMP")
+  private OffsetDateTime cuponEndDate;
 
   @Column(name="is_valid", columnDefinition = "BOOLEAN DEFAULT TRUE")
   private boolean isValid;

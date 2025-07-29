@@ -148,7 +148,12 @@ public class UserController {
       userDTO.setAdult(false);
     }
     userDTO.setEmailCertified(false);
-    
+
+
+    /** userService.registerUser(userDTO)
+     *
+     *  > YSL, registerUser(userDTO) 부분에서 쿠폰 발급 코드 추가
+     * */
     Long userId = userService.registerUser(userDTO);
 
     return (userId > 0) ? "redirect:/" : "/user/join";

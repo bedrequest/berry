@@ -1,8 +1,10 @@
 package com.berry.project.dto.cupon;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.*;
 
 import java.time.LocalDateTime;
+import java.time.OffsetDateTime;
 
 @Getter
 @Setter
@@ -14,7 +16,12 @@ public class CuponDTO {
   private long cuponId;
   private long userId;
   private int cuponType;
-  private LocalDateTime cuponRegDate;
-  private LocalDateTime cuponEndDate;
+
+  @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ssXXX")
+  private OffsetDateTime cuponRegDate;
+
+  @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ssXXX")
+  private OffsetDateTime cuponEndDate;
+
   private boolean isValid;
 }

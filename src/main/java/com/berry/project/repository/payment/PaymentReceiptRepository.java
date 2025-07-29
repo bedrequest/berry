@@ -16,39 +16,47 @@ public interface PaymentReceiptRepository extends JpaRepository<PaymentReceipt, 
      *
      */
     Optional<PaymentReceipt> findByOrderId(String orderId);
-    
-    /**
-     * 결제 상태별 조회
+
+
+    /** List"<"PaymentReceipt> findByStatusOrderByApprovedAtDesc(String status)
+     *  - 결제 상태별 조회
+     *
      */
     List<PaymentReceipt> findByStatusOrderByApprovedAtDesc(String status);
-    
-    /**
-     * 결제 방법별 조회
+
+
+    /** List"<"PaymentReceipt> findByMethodOrderByApprovedAtDesc(String method) - 결제 방법별 조회
+     *
      */
     List<PaymentReceipt> findByMethodOrderByApprovedAtDesc(String method);
-    
-    /**
-     * 특정 기간 내 결제 내역 조회
+
+
+    /** List"<"PaymentReceipt> findByDateRange(LocalDateTime start, LocalDateTime end)
+     *  - 특정 기간 내 결제 내역 조회
+     *
      */
     @Query("SELECT p FROM PaymentReceipt p WHERE p.approvedAt >= :startDate AND p.approvedAt <= :endDate")
     List<PaymentReceipt> findByDateRange(
         @Param("startDate") LocalDateTime startDate,
         @Param("endDate") LocalDateTime endDate
     );
-    
-    /**
-     * 특정 금액 이상의 결제 내역 조회
+
+
+    /** List"<"PaymentReceipt> findByMinAmount(@Param("minAmount") int minAmount)
+     *  - 특정 금액 이상의 결제 내역 조회
      */
     @Query("SELECT p FROM PaymentReceipt p WHERE p.totalAmount >= :minAmount")
     List<PaymentReceipt> findByMinAmount(@Param("minAmount") int minAmount);
-    
-    /**
-     * 주문명으로 검색
+
+
+    /** List"<"PaymentReceipt> findByOrderNameContainingOrderByApprovedAtDesc(String orderName)
+     *  - 주문명으로 검색
      */
     List<PaymentReceipt> findByOrderNameContainingOrderByApprovedAtDesc(String orderName);
-    
-    /**
-     * 결제 타입별 조회
+
+
+    /** List"<"PaymentReceipt> findByTypeOrderByApprovedAtDesc(String type)
+     *  - 결제 타입별 조회
      */
     List<PaymentReceipt> findByTypeOrderByApprovedAtDesc(String type);
 }

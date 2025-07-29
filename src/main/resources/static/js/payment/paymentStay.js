@@ -12,6 +12,16 @@ const requiredAgrees = document.querySelectorAll('.terms-req');
 const paymentInfo = /*[[${payment_info}]]*/ null;
 
 
+/** 전체 이벤트 리스너
+ * 
+ *  > user_id 를 활용해 서버에서 해당 유저가 가진 쿠폰 Record (List<Cupon>) 를 가져오기
+ * 
+ */
+document.addEventListener('DOMContentLoaded', () => {
+
+})
+
+
 /** 전체 동의 이벤트 리스너 */
 allAgree.addEventListener('change', (e) => {
   // 확인,
@@ -145,7 +155,7 @@ paymentButton.addEventListener('click', async () => {
           method : result.method,
           amount: {
             currency: "KRW",
-            value: result.pbpTotalAmount 
+            value: result.pbpTotalAmount
           }, // 실제 결제 금액
           orderId: result.orderId, // 주문 ID (실제로는 고유하게 생성해야 함)
           orderName: result.orderName, // 주문명
