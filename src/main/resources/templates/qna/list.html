@@ -24,48 +24,49 @@
     여기에 안내문구를 입력하세요.
   </div>
 
-  <p style="text-align:center; margin-bottom: 30px;">
-    <span style="display: inline-block; text-align: left;">
-    <input
-            type="date"
-            id="start"
-            name="trip-start"
-            value="2025-06-01"
-            min="2025-06-01"
-            max="2026-06-01" />
-    <span style="margin: 0 8px;">~</span>
-    <input
-            type="date"
-            id="end"
-            name="trip-end"
-            value="2025-01-01"
-            min="2025-06-01"
-            max="2026-06-01" />
-  </span>
-  </p>
+
 
   <!-- 검색 폼을 가운데 정렬하는 div로 감싸기 -->
   <div style="display: flex; justify-content: center;">
-<!--    <form action="board/list" class="d-flex align-items-center gap-2" role="search" style="text-align: left; width: auto;">-->
-<!--      <select class="form-select" name="type" aria-label="Select Category" style="width: 150px;">-->
-<!--        <option th:selected="${ph.type == null ? true : false}">&#45;&#45;선택&#45;&#45;</option>-->
-<!--        <option th:value="p" th:selected="${ph.type == 'p' ? true : false}">결제</option>-->
-<!--        <option th:value="r" th:selected="${ph.type == 'r' ? true : false}">환불</option>-->
-<!--        <option th:value="f" th:selected="${ph.type == 'f' ? true : false}">시설</option>-->
-<!--        <option th:value="s" th:selected="${ph.type == 's' ? true : false}">서비스</option>-->
-<!--        <option th:value="e" th:selected="${ph.type == 'e' ? true : false}">기타</option>-->
-<!--      </select>-->
-<!--      <input class="form-control me-2" name="keyword" th:value="${ph.keyword}" type="search" placeholder="Search" aria-label="Search" />-->
-<!--      <input type="hidden" name="pageNo" th:value="1" />-->
-<!--      <button type="submit" class="btn btn-primary">Search</button>-->
-<!--    </form>-->
+    <form action="/qna/list" class="d-flex align-items-center gap-2" role="search" style="text-align: left; width: auto;">
+      <p style="text-align:center; margin-bottom: 30px;">
+    <span style="display: inline-block; text-align: left;">
+    <input
+        type="date"
+        id="start"
+        name="tripStart"
+        th:value="${ph.tripStart}"
+        min="2025-01-01"
+        max="2026-06-01" />
+    <span style="margin: 0 8px;">~</span>
+    <input
+        type="date"
+        id="end"
+        name="tripEnd"
+        th:value="${ph.tripEnd}"
+        min="2025-01-01"
+        max="2026-06-01" />
+  </span>
+      </p>
+      <select class="form-select" name="type" aria-label="Select Category" style="width: 150px;">
+        <option th:selected="${ph.type == null ? true : false}">--선택--</option>
+        <option th:selected="${ph.type == '결제' ? true : false}">결제</option>
+        <option th:selected="${ph.type == 'r' ? true : false}">환불</option>
+        <option th:selected="${ph.type == 'f' ? true : false}">시설</option>
+        <option th:selected="${ph.type == 's' ? true : false}">서비스</option>
+        <option th:selected="${ph.type == 'e' ? true : false}">기타</option>
+      </select>
+      <input class="form-control me-2" name="keyword" th:value="${ph.keyword}" type="search" placeholder="Search" aria-label="Search" />
+      <input type="hidden" name="pageNo" th:value="1" />
+      <button type="submit" class="btn btn-primary">Search</button>
+    </form>
   </div>
 
   <table class="table">
     <thead>
     <tr>
       <th scope="col">No</th>
-      <th scope="col" colspan="2">카테고리</th>
+      <th scope="col">카테고리</th>
       <th scope="col">제목</th>
       <th scope="col">작성자</th>
       <th scope="col">작성일</th>
@@ -74,16 +75,16 @@
     </thead>
     <!--   작성글, 리스트 나열   -->
     <tbody>
-    <tr th:each="bvo:${list}">
+    <tr th:each="bvo:${ph.list}">
       <th scope="row">[[${bvo.bno}]]</th>
       <td>[[${bvo.category}]]</td>
       <td><a th:href="@{/qna/detail(bno=${bvo.bno})}">
         [[${bvo.title}]]</a>
 
       </td>
-      <td>[[${bvo.writer}]]</td>
+      <td>[[${bvo.userEmail}]]</td>
       <td>[[${bvo.regDate}]]</td>
-      <td>[[${bvo.check}]]</td>
+      <td>[[${bvo.comment}]]</td>
     </tr>
     </tbody>
 
@@ -91,31 +92,31 @@
 
   <!-- 글 작성 버튼 -> register로 이동 -->
   <div class="d-grid gap-2 d-md-flex justify-content-md-end">
-    <a th:href="@{register}"><button type="button" class="btn btn-primary">작성</button></a>
+    <a th:href="@{/qna/register}"><button type="button" class="btn btn-primary">작성</button></a>
   </div>
 
   <!-- 페이지네이션 PagingHandler 있다 침 -->
-<!--  <nav aria-label="Page navigation example">-->
-<!--    <ul class="pagination justify-content-center">-->
-<!--      <li class="page-item" th:classappend="${ph.hasPrev eq false ? 'disabled' : ''}">-->
-<!--        <a class="page-link" th:href="@{/board/list(pageNo=${ph.startPage-1}, type=${ph.type}, keyword=${ph.keyword})}" aria-label="Previous">-->
-<!--          <span aria-hidden="true">&laquo;</span>-->
-<!--        </a>-->
-<!--      </li>-->
-<!--      &lt;!&ndash;/* begin end 옵션이 없음. ${#numbers.sequence(from, to)} */&ndash;&gt;-->
-<!--      <th:block th:each="i:${#numbers.sequence(ph.startPage, ph.endPage)}">-->
-<!--        <li class="page-item" th:classappend="${ph.pageNo eq i ? 'active' : ''}">-->
-<!--          <a class="page-link" th:href="@{/board/list(pageNo=${i}, type=${ph.type}, keyword=${ph.keyword})}">[[${i}]]</a>-->
-<!--        </li>-->
-<!--      </th:block>-->
+  <nav aria-label="Page navigation example">
+    <ul class="pagination justify-content-center">
+      <li class="page-item" th:classappend="${ph.hasPrev eq false ? 'disabled' : ''}">
+        <a class="page-link" th:href="@{/qna/list(pageNo=${ph.startPage-1}, type=${ph.type}, keyword=${ph.keyword}, tripStart=${ph.tripStart}, tripEnd=${ph.tripEnd})}" aria-label="Previous">
+          <span aria-hidden="true">&laquo;</span>
+        </a>
+      </li>
+      <!--/* begin end 옵션이 없음. ${#numbers.sequence(from, to)} */-->
+      <th:block th:each="i:${#numbers.sequence(ph.startPage, ph.endPage)}">
+        <li class="page-item" th:classappend="${ph.pageNo eq i ? 'active' : ''}">
+          <a class="page-link" th:href="@{/qna/list(pageNo=${i}, type=${ph.type}, keyword=${ph.keyword}, tripStart=${ph.tripStart}, tripEnd=${ph.tripEnd})}">[[${i}]]</a>
+        </li>
+      </th:block>
 
-<!--      <li class="page-item" th:classappend="${ph.hasNext eq false ? 'disabled' : ''}">-->
-<!--        <a class="page-link" th:href="@{/board/list(pageNo=${ph.endPage+1}, type=${ph.type}, keyword=${ph.keyword})}" aria-label="Next">-->
-<!--          <span aria-hidden="true">&raquo;</span>-->
-<!--        </a>-->
-<!--      </li>-->
-<!--    </ul>-->
-<!--  </nav>-->
+      <li class="page-item" th:classappend="${ph.hasNext eq false ? 'disabled' : ''}">
+        <a class="page-link" th:href="@{/qna/list(pageNo=${ph.endPage+1}, type=${ph.type}, keyword=${ph.keyword}, tripStart=${ph.tripStart}, tripEnd=${ph.tripEnd})}" aria-label="Next">
+          <span aria-hidden="true">&raquo;</span>
+        </a>
+      </li>
+    </ul>
+  </nav>
 
 </div>
 

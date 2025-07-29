@@ -1,5 +1,6 @@
 package com.berry.project.entity.qna;
 
+import com.berry.project.entity.TimeBase;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -11,7 +12,7 @@ import java.time.LocalDateTime;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class CustomerIqFile {
+public class CustomerIqFile extends TimeBase {
 
   @Id
   @Column(length = 255)
@@ -32,11 +33,4 @@ public class CustomerIqFile {
   @Column(name = "file_size")
   private Long fileSize; // 파일 크기 (bytes)
 
-  @Column(name = "reg_date", updatable = false)
-  private LocalDateTime regDate; // 업로드 시간
-
-  @PrePersist
-  protected void onCreate() {
-      this.regDate = LocalDateTime.now();
-  }
 }

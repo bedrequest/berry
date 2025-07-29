@@ -19,11 +19,11 @@
       <label for="category">카테고리</label>
       <select id="category" name="category">
         <option >--선택--</option>
-        <option th:value="p">결제</option>
-        <option th:value="r">환불</option>
-        <option th:value="f">시설</option>
-        <option th:value="s">서비스</option>
-        <option th:value="e">기타</option>
+        <option th:value="결제">결제</option>
+        <option th:value="환불">환불</option>
+        <option th:value="시설">시설</option>
+        <option th:value="서비스">서비스</option>
+        <option th:value="기타">기타</option>
       </select>
 
       <label style="display: flex; align-items: center; gap: 5px;">
@@ -40,7 +40,7 @@
     <br><br>
 
     <label for="nickname">닉네임</label>
-    <input type="text" id="nickname" name="nickname" placeholder="닉네임을 입력해주세요">
+    <input type="text" id="nickname" name="userEmail" placeholder="닉네임을 입력해주세요">
 
     <br><br>
 
@@ -54,7 +54,7 @@
     <div class="file-upload preview-image">
       <input type="text" class="upload-name" value="파일선택" disabled="disabled">
       <label for="input-file">업로드</label>
-      <input type="file" id="input-file" class="upload-hidden">
+      <input type="file" name="files" id="input-file" class="upload-hidden">
     </div>
 
 
