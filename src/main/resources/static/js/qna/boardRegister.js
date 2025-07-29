@@ -85,4 +85,5 @@ document.getElementById('input-file').addEventListener('change', function () {
         };
         reader.readAsDataURL(fileObject[0]);
     }
+    document.getElementById('file').value=fileObject[0].name;
 });
