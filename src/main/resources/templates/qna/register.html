@@ -3,11 +3,10 @@
       xmlns:th="http://www.thymeleaf.org"
       xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
       layout:decorate="~{layout/layout}">
-<head>
-  <link rel="stylesheet" th:href="@{/css/qna/register.css}">
-  <meta charset="UTF-8">
-  <title>문의 내용</title>
-</head>
+
+<section layout:fragment="customStyle">
+  <link rel="stylesheet" th:href="@{/css/qna/register.css}" />
+</section>
 <body>
 
 <div class="container" layout:fragment="content">

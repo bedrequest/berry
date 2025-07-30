@@ -28,10 +28,10 @@
   <!-- 작성자 + 작성일 -->
   <div class="form-group-inline">
     <div class="inline-group">
-      <input id="writer" class="input-box short" readonly/>
+      <input id="writer" th:value="${boardDTO.userEmail}" class="input-box short" readonly/>
     </div>
     <div class="inline-group">
-      <input id="date" class="input-box short" readonly/>
+      <input id="date" th:value="${boardDTO.regDate}" class="input-box short" readonly/>
     </div>
   </div>
 

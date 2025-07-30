@@ -4,12 +4,9 @@
       xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
       layout:decorate="~{layout/layout}">
 
-<head>
-  <meta charset="UTF-8">
-  <title>고객문의</title>
-  <link rel="stylesheet" th:href="@{/css/qna/list.css}">
-
-</head>
+<section layout:fragment="customStyle">
+  <link rel="stylesheet" th:href="@{/css/qna/list.css}" />
+</section>
 
 <body>
 <div class="container" layout:fragment="content">
