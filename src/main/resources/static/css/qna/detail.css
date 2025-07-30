@@ -3,7 +3,6 @@ body {
   font-family: 'Noto Sans KR', sans-serif;
   background-color: #f9f9f9;
   margin: 0;
-  padding: 40px 0;
   display: flex;
   justify-content: center;
 }
@@ -11,6 +10,8 @@ body {
 /* 메인 컨테이너 */
 .container {
   width: 1200px;
+  min-width: 1200px;
+  max-width: 1200px;
   background-color: #ffffff;
   padding: 40px;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
@@ -42,49 +43,34 @@ body {
 }
 
 .input-box {
-  flex: 1;
+  width: 400px;
   padding: 10px 14px;
   font-size: 15px;
   border: 1px solid #ccc;
   border-radius: 4px;
   background-color: #fefefe;
   color: #333;
+  height: 42px;
   box-sizing: border-box;
-  height: 42px; /* 통일된 높이 */
 }
 
 .input-box.short {
-  max-width: 300px;
+  width: 160px;
 }
 
-/* 작성자, 작성일 줄 */
+/* 작성자 + 작성일 줄 */
 .form-group-inline {
   display: flex;
-  flex-wrap: wrap;
   align-items: center;
   margin-bottom: 20px;
-  gap: 20px;
+  gap: 12px;
 }
 
-.form-item {
-  display: flex;
-  align-items: center;
-  flex: 1 1 300px;
-  min-width: 250px;
-}
-
-.form-item label {
-  width: 100px;
-  margin-right: 10px;
-  font-weight: 500;
-  color: #333;
-}
-
-.input-box.small {
-  flex: 1;
-  padding: 10px 14px;
+.form-group-inline input {
+  width: 400px;
   height: 42px;
   font-size: 15px;
+  padding: 10px 14px;
   border: 1px solid #ccc;
   border-radius: 4px;
   background-color: #fefefe;
@@ -95,6 +81,8 @@ body {
 /* textarea 영역 */
 textarea.form-control {
   width: 100%;
+  min-width: 100%;
+  max-width: 100%;
   min-height: 200px;
   padding: 14px;
   font-size: 15px;
@@ -111,17 +99,17 @@ textarea.form-control {
 .file-upload {
   display: flex;
   align-items: center;
+  justify-content: flex-end;
   gap: 12px;
   margin-bottom: 30px;
 }
 
 .file-upload label {
+  white-space: nowrap;
   display: inline-block;
   padding: .5em .75em;
   color: white;
   font-size: inherit;
-  line-height: normal;
-  vertical-align: middle;
   background-color: #0066cc;
   cursor: pointer;
   border-radius: .25em;
@@ -144,15 +132,11 @@ textarea.form-control {
 }
 
 .file-upload .upload-name {
-  flex: 1;
+  width: 1200px;
   padding: .5em .75em;
   font-size: inherit;
-  font-family: inherit;
-  line-height: normal;
-  vertical-align: middle;
   background-color: #f5f5f5;
   border: 1px solid #ebebeb;
-  border-bottom-color: #e2e2e2;
   border-radius: .25em;
   height: 42px;
   box-sizing: border-box;
@@ -196,43 +180,34 @@ textarea.form-control {
   opacity: 0.9;
 }
 
-/* 반응형: 화면 너비가 좁을 때 처리 */
-@media (max-width: 768px) {
-  .container {
-    width: 90%;
-    padding: 20px;
-  }
+/* 첨부파일 미리보기 */
+.attached-file-area {
+  margin-top: 20px;
+}
 
-  .form-group-inline {
-    flex-direction: column;
-    align-items: stretch;
-  }
+.file-item {
+  margin-bottom: 10px;
+}
 
-  .form-item {
-    width: 100%;
-    margin-right: 0;
-    margin-bottom: 10px;
-  }
+.preview-image {
+  max-width: 200px;
+  height: auto;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  padding: 4px;
+}
 
-  .form-item label {
-    width: auto;
-    margin-bottom: 5px;
-  }
+.image-preview-container {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-bottom: 20px;
+}
 
-  .input-box.small {
-    width: 100%;
-  }
-
-  .file-upload {
-    flex-direction: column;
-    align-items: stretch;
-  }
-
-  .file-upload .upload-name {
-    width: 100%;
-  }
-
-
-
-
+.image-preview-container img {
+  max-width: 200px;
+  max-height: 150px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  object-fit: cover;
 }

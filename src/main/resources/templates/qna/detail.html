@@ -17,38 +17,55 @@
   <h2 class="page-title">문의내용</h2>
 
   <!-- category + title -->
+  <!-- 카테고리 + 제목 묶음 -->
   <div class="form-group">
-    <label for="c">카테고리</label>
-    <input type="text"
-           th:value="${customeriqboardfileDTO.boardDTO.category}" id="c" class="input-box short" readonly>
+    <div style="display: flex; gap: 12px; flex: 1;">
+      <input type="text" id="c" class="input-box short" readonly placeholder="카테고리">
+      <input type="text" class="input-box" name="title" th:value="${boardDTO.title}" id="t" readonly placeholder="제목">
+    </div>
   </div>
 
-  <input type="hidden" name="bno" th:value="${customeriqboardfileDTO.boardDTO.bno}">
-  <div class="form-group">
-    <label for="t">제목</label>
-    <input type="text" class="input-box"
-           name="title" th:value="${customeriqboardfileDTO.boardDTO.title}" id="t" readonly>
-  </div>
-
-  <!-- writer: form-group-vertical 클래스 추가 -->
-  <div class="form-group form-group-vertical">
-    <label for="w">작성자</label>
-    <input type="text" class="input-box small"
-           name="writer" th:value="${customeriqboardfileDTO.boardDTO.userEmail}" id="w" readonly>
-  </div>
-
-  <!-- regDate: form-group-vertical 클래스 추가 -->
-  <div class="form-group form-group-vertical">
-    <label for="r">작성일</label>
-    <input type="text" class="input-box small"
-           th:value="${customeriqboardfileDTO.boardDTO.regDate}" id="r" readonly>
+  <!-- 작성자 + 작성일 -->
+  <div class="form-group-inline">
+    <div class="inline-group">
+      <input id="writer" class="input-box short" readonly/>
+    </div>
+    <div class="inline-group">
+      <input id="date" class="input-box short" readonly/>
+    </div>
   </div>
 
   <!-- content -->
   <div class="form-group">
     <textarea type="text" class="form-control"
-              name="content" id="con" cols="30" rows="10" readonly placeholder="문의 내용을 표시합니다.">[[${customeriqboardfileDTO.boardDTO.content}]]</textarea>
+              name="content" id="con" cols="30" rows="10" readonly placeholder="문의 내용을 표시합니다.">[[${boardDTO.content}]]</textarea>
   </div>
+
+
+
+
+  <!-- 첨부파일 미리보기 -->
+  <div class="attached-files" th:if="${boardFileDTO.fileList != null}">
+    <div class="file-list" th:each="file : ${boardFileDTO.fileList}">
+      <div class="file-item">
+
+        <!-- 이미지일 경우 미리보기 -->
+        <img th:if="${file.fileType == 'image'}"
+             th:src="@{|/upload/${file.uploadPath}/${file.uuid}_${file.fileName}?v=${#dates.createNow().time}|}"
+             class="preview-image" />
+
+        <!-- 이미지가 아닐 경우 파일명 링크 -->
+        <a th:if="${file.fileType != 'image'}"
+           th:href="@{|/upload/${file.uploadPath}/${file.uuid}_${file.fileName}|}"
+           th:text="${file.fileName}" target="_blank" download></a>
+
+      </div>
+    </div>
+  </div>
+
+
+  <div id="imagePreviewContainer" class="image-preview-container"></div>
+
 
   <!-- 파일첨부 -->
   <div class="file-upload">
@@ -65,21 +82,38 @@
   </div>
 </div>
 
-<script th:src="@{/js/qna/boardDetail.js}"></script>
-
 <script>
   const realUpload = document.getElementById('ex_filename');
   const uploadName = document.querySelector('.upload-name');
+  const imagePreviewContainer = document.getElementById('imagePreviewContainer');
 
   realUpload.addEventListener('change', function () {
     const files = Array.from(this.files);
+
+    // 파일 이름 표시
     if (files.length > 0) {
       const names = files.map(file => file.name).join(', ');
       uploadName.value = names;
     } else {
       uploadName.value = '선택된 파일 없음';
     }
+
+    // 이미지 미리보기 초기화
+    imagePreviewContainer.innerHTML = '';
+
+    // 이미지 파일만 필터링해서 미리보기 생성
+    files.forEach(file => {
+      if (file.type.startsWith('image/')) {
+        const reader = new FileReader();
+        reader.onload = function (e) {
+          const img = document.createElement('img');
+          img.src = e.target.result;
+          imagePreviewContainer.appendChild(img);
+        };
+        reader.readAsDataURL(file);
+      }
+    });
   });
 </script>
-<!--</body>-->
-<!--</html>-->
+</body>
+</html>
