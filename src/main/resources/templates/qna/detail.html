@@ -21,32 +21,32 @@
   <div class="form-group">
     <div style="display: flex; gap: 12px; flex: 1;">
       <input type="text" id="c" class="input-box short" readonly placeholder="카테고리">
-      <input type="text" class="input-box" name="title" th:value="${boardDTO.title}" id="t" readonly placeholder="제목">
+      <input type="text" class="input-box" name="title" th:value="${customeriqboardfileDTO.boardDTO.title}" id="t" readonly placeholder="제목">
     </div>
   </div>
 
   <!-- 작성자 + 작성일 -->
   <div class="form-group-inline">
     <div class="inline-group">
-      <input id="writer" th:value="${boardDTO.userEmail}" class="input-box short" readonly/>
+      <input id="writer" th:value="${customeriqboardfileDTO.boardDTO.userEmail}" class="input-box short" readonly/>
     </div>
     <div class="inline-group">
-      <input id="date" th:value="${boardDTO.regDate}" class="input-box short" readonly/>
+      <input id="date" th:value="${customeriqboardfileDTO.boardDTO.regDate}" class="input-box short" readonly/>
     </div>
   </div>
 
   <!-- content -->
   <div class="form-group">
     <textarea type="text" class="form-control"
-              name="content" id="con" cols="30" rows="10" readonly placeholder="문의 내용을 표시합니다.">[[${boardDTO.content}]]</textarea>
+              name="content" id="con" cols="30" rows="10" readonly placeholder="문의 내용을 표시합니다.">[[${customeriqboardfileDTO.boardDTO.content}]]</textarea>
   </div>
 
 
 
 
   <!-- 첨부파일 미리보기 -->
-  <div class="attached-files" th:if="${boardFileDTO.fileList != null}">
-    <div class="file-list" th:each="file : ${boardFileDTO.fileList}">
+  <div class="attached-files" th:if="${customeriqboardfileDTO.fileList != null}">
+    <div class="file-list" th:each="file : ${customeriqboardfileDTO.fileList}">
       <div class="file-item">
 
         <!-- 이미지일 경우 미리보기 -->
@@ -56,7 +56,7 @@
 
         <!-- 이미지가 아닐 경우 파일명 링크 -->
         <a th:if="${file.fileType != 'image'}"
-           th:href="@{|/upload/${file.uploadPath}/${file.uuid}_${file.fileName}|}"
+           th:href="@{|/upload/${file.saveDir}/${file.uuid}_${file.fileName}|}"
            th:text="${file.fileName}" target="_blank" download></a>
 
       </div>
@@ -81,8 +81,9 @@
     <button type="button" id="listBtn" class="btn btn-primary">List</button>
   </div>
 </div>
+<script th:src="@{/js/qna/boardDetail.js}"></script>
 
-<script>
+<script th:inline="javascript">
   const realUpload = document.getElementById('ex_filename');
   const uploadName = document.querySelector('.upload-name');
   const imagePreviewContainer = document.getElementById('imagePreviewContainer');
