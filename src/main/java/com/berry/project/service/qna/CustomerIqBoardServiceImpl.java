@@ -7,6 +7,7 @@ import com.berry.project.entity.qna.CustomerIqBoard;
 import com.berry.project.entity.qna.CustomerIqFile;
 import com.berry.project.repository.qna.CustomerIqBoardRepository;
 import com.berry.project.repository.qna.CustomerIqFileRepository;
+import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -16,9 +17,8 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.List;
+import java.util.Optional;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -43,8 +43,8 @@ public class CustomerIqBoardServiceImpl implements CustomerIqBoardService {
   }
 
   private Long fileSave(List<CustomerIqFileDTO> fileList, Long bno) {
-    if(bno > 0 && fileList != null){
-      for(CustomerIqFileDTO customeriqfileDTO : fileList){
+    if (bno > 0 && fileList != null) {
+      for (CustomerIqFileDTO customeriqfileDTO : fileList) {
         customeriqfileDTO.setBno(bno);
         bno = customeriqfilerepository.save(convertDtoToEntity(customeriqfileDTO)).getBno();
       }
@@ -65,17 +65,80 @@ public class CustomerIqBoardServiceImpl implements CustomerIqBoardService {
   }
 
   @Override
-  public Page<CustomerIqBoardDTO> getList(int page, String type, String keyword, String  startDate, String endDate) {
+  public Page<CustomerIqBoardDTO> getPageList(int pageNo) {
+    Pageable pageable = PageRequest.of(pageNo, 10,
+        Sort.by("bno").descending());
+    Page<CustomerIqBoard> list = customeriqboardrepository.findAll(pageable);
+    Page<CustomerIqBoardDTO> customeriqboardDTOPageList = list.map(this::convertEntityToDto);
+    return customeriqboardDTOPageList;
+  }
+
+
+  @Override
+  public Page<CustomerIqBoardDTO> getList(int page, String type, String keyword, String startDate, String endDate) {
 
     Pageable pageable = PageRequest.of(page, 10,
         Sort.by("bno").descending());
 
-    Page<CustomerIqBoard> list = customeriqboardrepository.searchcoustomeriqboard(type,keyword,startDate,endDate,pageable);
+    Page<CustomerIqBoard> list = customeriqboardrepository.searchcoustomeriqboard(type, keyword, startDate, endDate, pageable);
     log.info(">>> list serviceImpl >> {}", list.getContent());
     Page<CustomerIqBoardDTO> customeriqboardDTOList = list.map(this::convertEntityToDto);
 
     return customeriqboardDTOList;
   }
 
+  @Transactional
+  @Override
+  public CustomerIqBoardFileDTO getDetail(Long bno) {
+    Optional<CustomerIqBoard> optional = customeriqboardrepository.findById(bno);
+    if (optional.isPresent()) {
+      CustomerIqBoard customeriqboard = optional.get();
+
+      customeriqboardrepository.save(customeriqboard);
+
+      CustomerIqBoardDTO customeriqboardDTO = convertEntityToDto(optional.get());
+
+      List<CustomerIqFile> fileList = customeriqfilerepository.findByBno(bno);
+      List<CustomerIqFileDTO> fileDTOList = fileList.stream()
+          .map(this::convertEntityToDto)
+          .toList();
+      CustomerIqBoardFileDTO customeriqboardfileDTO = new CustomerIqBoardFileDTO(customeriqboardDTO, fileDTOList);
+      return customeriqboardfileDTO;
+    }
+    return null;
+  }
+
+  @Transactional
+  @Override
+  public Long modify(CustomerIqBoardFileDTO customeriqboardfileDTO) {
+    CustomerIqBoard customeriqboard = customeriqboardrepository.findById(customeriqboardfileDTO.getBoardDTO().getBno())
+        .orElseThrow(() -> new EntityNotFoundException("존재하지 않는 게시글"));
+
+    customeriqboard.setTitle(customeriqboardfileDTO.getBoardDTO().getTitle());
+    customeriqboard.setContent(customeriqboardfileDTO.getBoardDTO().getContent());
+
+    long bno = fileSave(customeriqboardfileDTO.getFileList(), customeriqboard.getBno());
+
+    return bno;
+  }
+
+  @Override
+  public void remove(Long bno) {
+    customeriqboardrepository.deleteById(bno);
+  }
+
+  @Transactional
+  @Override
+  public long fileRemove(String uuid) {
+    Optional<CustomerIqFile> customeriqfile = customeriqfilerepository.findById(uuid);
+    if(customeriqfile.isPresent()){
+      Optional<CustomerIqBoard> optional = customeriqboardrepository.findById(customeriqfile.get().getBno());
+      if(optional.isPresent()){
+        CustomerIqBoard customerIqBoard = optional.get();
+      }
+      customeriqfilerepository.deleteById(uuid);
+    }
+    return customeriqfile.get().getBno();
+  }
 
 }

@@ -13,9 +13,8 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 @Slf4j
@@ -70,7 +69,6 @@ public class CustomerIqBoardController {
             type = null;
         }
 
-
         int page = pageNo - 1;
         Page<CustomerIqBoardDTO> list = boardservice.getList(page, type, keyword, tripStart, tripEnd);
         log.info("list {}", list);
@@ -80,8 +78,39 @@ public class CustomerIqBoardController {
         model.addAttribute("ph", paginghandler);
     }
 
-    @GetMapping("/modify")
-    public void modify() {
-        log.info("modify");
+    @GetMapping("/detail")
+    public void detail(Model model, @RequestParam("bno") Long bno){
+        CustomerIqBoardFileDTO customeriqboardfileDTO = boardservice.getDetail(bno);
+        log.info(">>>> customeriqboardfileDTO > {} ", customeriqboardfileDTO);
+        model.addAttribute("customeriqboardfileDTO", customeriqboardfileDTO);
     }
+    @PostMapping("/update")
+    public String modify(CustomerIqBoardDTO customeriqboardDTO,
+                       RedirectAttributes redirectAttributes,
+                       @RequestParam(name = "files", required = false)
+                       MultipartFile[] files) {
+        log.info(">>>> customeriqboardDTO >> {}", customeriqboardDTO);
+        List<CustomerIqFileDTO> fileList = null;
+        if(files !=null && files[0].getSize() > 0){
+            fileList = fileHandler.uploadFiles(files);
+        }
+        Long bno = boardservice.modify(new CustomerIqBoardFileDTO(customeriqboardDTO, fileList));
+        redirectAttributes.addAttribute("bno", customeriqboardDTO.getBno());
+
+        return "redirect:/qna/detail";
+    }
+
+    @GetMapping("/remove")
+    public String remove(@RequestParam("bno") Long bno){
+        boardservice.remove(bno);
+        return "redirect:/qna/list";
+    }
+
+    @DeleteMapping("/customeriqfile/{uuid}")
+    @ResponseBody
+    public String fileRemove(@PathVariable("uuid") String uuid){
+        Long bno = boardservice.fileRemove(uuid);
+        return bno > 0 ? "1":"0";
+    }
+
 }

@@ -51,10 +51,10 @@
       <select class="form-select" name="type" aria-label="Select Category" style="width: 150px;">
         <option th:selected="${ph.type == null ? true : false}">--선택--</option>
         <option th:selected="${ph.type == '결제' ? true : false}">결제</option>
-        <option th:selected="${ph.type == 'r' ? true : false}">환불</option>
-        <option th:selected="${ph.type == 'f' ? true : false}">시설</option>
-        <option th:selected="${ph.type == 's' ? true : false}">서비스</option>
-        <option th:selected="${ph.type == 'e' ? true : false}">기타</option>
+        <option th:selected="${ph.type == '환불' ? true : false}">환불</option>
+        <option th:selected="${ph.type == '시설' ? true : false}">시설</option>
+        <option th:selected="${ph.type == '서비스' ? true : false}">서비스</option>
+        <option th:selected="${ph.type == '기타' ? true : false}">기타</option>
       </select>
       <input class="form-control me-2" name="keyword" th:value="${ph.keyword}" type="search" placeholder="Search" aria-label="Search" />
       <input type="hidden" name="pageNo" th:value="1" />

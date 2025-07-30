@@ -71,8 +71,15 @@ public interface CustomerIqBoardService  {
 
   List<CustomerIqBoardDTO> getlist();
 
-//  Page<CustomerIqBoardDTO> getList(int page, String type, String keyword);
-
-
   Page<CustomerIqBoardDTO> getList(int page, String type, String keyword, String startDate, String endDate);
+
+  CustomerIqBoardFileDTO getDetail(Long bno);
+
+  Long modify(CustomerIqBoardFileDTO customeriqboardfileDTO);
+
+  void remove(Long bno);
+
+  Page<CustomerIqBoardDTO> getPageList(int pageNo);
+
+  long fileRemove(String uuid);
 }

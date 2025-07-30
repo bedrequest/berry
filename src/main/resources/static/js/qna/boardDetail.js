@@ -1,7 +1,4 @@
 console.log("boardDetail.js in");
-console.log(bnoValue);
-
-
 
 //<script>
 //  const realUpload = document.getElementById('ex_filename');
