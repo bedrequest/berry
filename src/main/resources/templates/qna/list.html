@@ -42,7 +42,7 @@
                id="end"
                name="tripEnd"
                min="2025-06-01"
-               max="2026-06-01" />
+               max="2026-06-01"/>
       </div>
 
       <!-- 아랫줄: 필터 -->
@@ -129,15 +129,8 @@
     const formattedDate = `${yyyy}-${mm}-${dd}`;
 
     const endInput = document.getElementById('end');
-
-    // 오늘 날짜가 min~max 범위 내에 있으면 오늘 날짜로, 아니면 min 날짜로 설정
-    if (formattedDate >= endInput.min && formattedDate <= endInput.max) {
-      endInput.value = formattedDate;
-    } else {
-      endInput.value = endInput.min;
-    }
-
-    console.log('입력값:', endInput.value);
+    endInput.value = formattedDate;
+    endInput.style.visibility = 'visible'; // 표시
   });
 </script>
 </body>
