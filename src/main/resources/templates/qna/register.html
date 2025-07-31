@@ -52,7 +52,7 @@
     <!--/* file 추가 라인 */-->
     <!-- 파일 업로드 부분 수정 -->
     <div class="file-upload preview-image">
-      <input type="text" id="file" class="upload-name" disabled="disabled">
+      <input type="text" id="file" class="upload-name" placeholder="선택된 파일 없음" disabled="disabled">
       <label for="input-file">업로드</label>
       <input type="file" id="input-file" class="upload-hidden" onchange="updateFileName(this)">
     </div>
@@ -66,7 +66,7 @@
     </div>
 
   </form>
-  <script th:src="@{js/qna/boardRegister.js}"></script>
+  <script th:src="@{/js/qna/boardRegister.js}"></script>
 </div>
 
 

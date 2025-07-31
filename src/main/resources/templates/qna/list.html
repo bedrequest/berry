@@ -23,38 +23,43 @@
 
 
   <!-- 검색 폼을 가운데 정렬하는 div로 감싸기 -->
-  <div style="display: flex; justify-content: center;">
-    <form action="/qna/list" class="d-flex align-items-center gap-2" role="search" style="text-align: left; width: auto;">
-      <p style="text-align:center; margin-bottom: 30px;">
-    <span style="display: inline-block; text-align: left;">
-    <input
-        type="date"
-        id="start"
-        name="tripStart"
-        th:value="${ph.tripStart}"
-        min="2025-01-01"
-        max="2026-06-01" />
-    <span style="margin: 0 8px;">~</span>
-    <input
-        type="date"
-        id="end"
-        name="tripEnd"
-        th:value="${ph.tripEnd}"
-        min="2025-01-01"
-        max="2026-06-01" />
-  </span>
-      </p>
-      <select class="form-select" name="type" aria-label="Select Category" style="width: 150px;">
-        <option th:selected="${ph.type == null ? true : false}">--선택--</option>
-        <option th:selected="${ph.type == '결제' ? true : false}">결제</option>
-        <option th:selected="${ph.type == '환불' ? true : false}">환불</option>
-        <option th:selected="${ph.type == '시설' ? true : false}">시설</option>
-        <option th:selected="${ph.type == '서비스' ? true : false}">서비스</option>
-        <option th:selected="${ph.type == '기타' ? true : false}">기타</option>
-      </select>
-      <input class="form-control me-2" name="keyword" th:value="${ph.keyword}" type="search" placeholder="Search" aria-label="Search" />
-      <input type="hidden" name="pageNo" th:value="1" />
-      <button type="submit" class="btn btn-primary">Search</button>
+  <div class="search-box-wrapper">
+    <form action="/qna/list" method="get" role="search">
+
+      <!-- 날짜 줄 -->
+      <div class="search-line">
+        <input
+                type="date"
+                id="start"
+                name="tripStart"
+                th:value="${ph.tripStart}"
+                min="2025-01-01"
+                max="2026-06-01" />
+        <span style="align-self: center;">~</span>
+        <input
+                type="date"
+                id="end"
+                name="tripEnd"
+                th:value="${ph.tripEnd}"
+                min="2025-01-01"
+                max="2026-06-01" />
+      </div>
+
+      <!-- 검색줄 -->
+      <div class="search-line">
+        <select class="form-select" name="type" aria-label="Select Category">
+          <option th:selected="${ph.type == null ? true : false}">--선택--</option>
+          <option th:selected="${ph.type == '결제' ? true : false}">결제</option>
+          <option th:selected="${ph.type == '환불' ? true : false}">환불</option>
+          <option th:selected="${ph.type == '시설' ? true : false}">시설</option>
+          <option th:selected="${ph.type == '서비스' ? true : false}">서비스</option>
+          <option th:selected="${ph.type == '기타' ? true : false}">기타</option>
+        </select>
+        <input class="form-control" name="keyword" th:value="${ph.keyword}" type="search" placeholder="Search" aria-label="Search" />
+        <input type="hidden" name="pageNo" th:value="1" />
+        <button type="submit" class="btn btn-primary">Search</button>
+      </div>
+
     </form>
   </div>
 
@@ -134,3 +139,4 @@
     document.getElementById('end').value = today;
   });
 </script>
+</body>

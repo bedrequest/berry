@@ -4,48 +4,57 @@
       xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
       layout:decorate="~{layout/layout}">
 
+<!-- CSS 연결 (부모 템플릿 <head> 안에 삽입됨) -->
 <section layout:fragment="customStyle">
   <link rel="stylesheet" th:href="@{/css/qna/detail.css}" />
 </section>
 
-<!--<head>-->
-<!--  <meta charset="UTF-8">-->
-<!--  <title>문의내용</title>-->
-<!--</head>-->
-<!--<body>-->
-<div class="container" layout:fragment="content">
-  <h2 class="page-title">문의내용</h2>
+<!-- 실제 콘텐츠 시작 -->
+<div layout:fragment="content">
+  <div class="container">
+    <h2 class="page-title">문의내용</h2>
 
-  <!-- category + title -->
-  <!-- 카테고리 + 제목 묶음 -->
-  <input type="hidden" name="bno" th:value="${customeriqboardfileDTO.boardDTO.bno}">
-  <div class="form-group">
-    <div style="display: flex; gap: 12px; flex: 1;">
-      <input type="text" id="c" class="input-box short" readonly placeholder="카테고리">
-      <input type="text" class="input-box" name="title" th:value="${customeriqboardfileDTO.boardDTO.title}" id="t" readonly placeholder="제목">
-    </div>
-  </div>
+    <form action="/qna/detail" method="post" id="modForm" enctype="multipart/form-data">
+
+      <!-- 카테고리 + 제목 -->
+      <div class="form-group">
+        <div style="display: flex; gap: 12px; flex: 1;">
+          <!-- 기존 readonly input (평소에 보임) -->
+          <input type="text" id="c" class="input-box short" th:value="${customeriqboardfileDTO.boardDTO.category}" readonly placeholder="카테고리" name="">
+
+          <!-- Modify 시 보일 select (초기 숨김) -->
+          <select id="categorySelect" class="input-box short" name="category" style="display:none;">
+            <option value="결제">결제</option>
+            <option value="환불">환불</option>
+            <option value="시설">시설</option>
+            <option value="서비스">서비스</option>
+            <option value="기타">기타</option>
+          </select>
+
+          <input type="text" class="input-box" name="title" th:value="${customeriqboardfileDTO.boardDTO.title}" id="t" readonly placeholder="제목">
+        </div>
+      </div>
 
   <!-- 작성자 + 작성일 -->
   <div class="form-group-inline">
     <div class="inline-group">
-      <input id="writer" name="userEmail" th:value="${customeriqboardfileDTO.boardDTO.userEmail}" class="input-box short" readonly/>
+      <input type="text" id="w" name="userEmail" th:value="${customeriqboardfileDTO.boardDTO.userEmail}" class="input-box short" readonly/>
     </div>
     <div class="inline-group">
       <input id="date" name="userEmail" th:value="${customeriqboardfileDTO.boardDTO.regDate}" class="input-box short" readonly/>
     </div>
   </div>
 
-  <!-- content -->
-  <div class="form-group">
-    <textarea type="text" class="form-control"
-              name="content" id="con" cols="30" rows="10" readonly placeholder="문의 내용을 표시합니다.">[[${customeriqboardfileDTO.boardDTO.content}]]</textarea>
-  </div>
+      <!-- 내용 -->
+      <div class="form-group">
+      <textarea class="form-control" name="content" id="con" cols="30" rows="10" readonly
+                placeholder="문의 내용을 표시합니다.">[[${customeriqboardfileDTO.boardDTO.content}]]</textarea>
+      </div>
 
-  <!-- 첨부파일 미리보기 -->
-  <div class="attached-files" th:if="${customeriqboardfileDTO.fileList != null}">
-    <div class="file-list" th:each="file : ${customeriqboardfileDTO.fileList}">
-      <div class="file-item">
+      <!-- 첨부파일 미리보기 -->
+      <div class="attached-files" th:if="${customeriqboardfileDTO.fileList != null}">
+        <div class="file-list" th:each="file : ${customeriqboardfileDTO.fileList}">
+          <div class="file-item">
 
         <!-- 이미지일 경우 미리보기 -->
         <img th:if="${file.fileType == 'image'}"
@@ -61,57 +70,37 @@
     </div>
   </div>
 
-  <div id="imagePreviewContainer" class="image-preview-container"></div>
+      <!-- 이미지 미리보기 영역 -->
+      <div id="imagePreviewContainer" class="image-preview-container"></div>
 
-  <!-- 파일첨부 -->
-  <div class="file-upload">
-    <input type="text" class="upload-name" placeholder="선택된 파일 없음" disabled="disabled">
-    <label for="ex_filename">업로드</label>
-    <input type="file" id="ex_filename" class="upload-hidden" multiple>
+      <!-- 파일 업로드 -->
+      <div class="file-upload">
+        <input type="text" class="upload-name" placeholder="선택된 파일 없음" disabled="disabled">
+        <label for="ex_filename" class="disabled">업로드</label>
+        <input type="file" id="ex_filename" class="upload-hidden" multiple disabled>
+      </div>
+
+      <!-- 버튼 -->
+      <div class="button-row">
+        <input type="hidden" name="bno" th:value="${customeriqboardfileDTO.boardDTO.bno}">
+
+        <!-- Modify & Delete 영역 -->
+        <div id="action-buttons" style="display: flex; gap: 8px;">
+          <button type="button" id="modBtn" class="btn btn-warning">Modify</button>
+          <button type="button" id="delBtn" class="btn btn-danger">Remove</button>
+        </div>
+
+        <!-- Submit 버튼 (처음엔 숨김) -->
+        <button type="submit" id="submitBtn" class="btn btn-warning" style="display: none;">Submit</button>
+
+        <!-- List 버튼은 항상 보임 -->
+        <button type="button" id="listBtn" class="btn btn-primary">List</button>
+      </div>
+
+    </form>
+    <script th:src="@{/js/qna/boardDetail.js}"></script>
   </div>
 
-  <!-- 버튼 -->
-  <div class="button-row">
-    <button type="button" id="modBtn" class="btn btn-warning">Modify</button>
-    <button type="button" id="delBtn" class="btn btn-danger">Remove</button>
-    <button type="button" id="listBtn" class="btn btn-primary">List</button>
-  </div>
-
-<script th:src="@{/js/qna/boardDetail.js}"></script>
-
-<script th:inline="javascript">
-  const realUpload = document.getElementById('ex_filename');
-  const uploadName = document.querySelector('.upload-name');
-  const imagePreviewContainer = document.getElementById('imagePreviewContainer');
-
-  realUpload.addEventListener('change', function () {
-    const files = Array.from(this.files);
-
-    // 파일 이름 표시
-    if (files.length > 0) {
-      const names = files.map(file => file.name).join(', ');
-      uploadName.value = names;
-    } else {
-      uploadName.value = '선택된 파일 없음';
-    }
-
-    // 이미지 미리보기 초기화
-    imagePreviewContainer.innerHTML = '';
-
-    // 이미지 파일만 필터링해서 미리보기 생성
-    files.forEach(file => {
-      if (file.type.startsWith('image/')) {
-        const reader = new FileReader();
-        reader.onload = function (e) {
-          const img = document.createElement('img');
-          img.src = e.target.result;
-          imagePreviewContainer.appendChild(img);
-        };
-        reader.readAsDataURL(file);
-      }
-    });
-  });
-</script>
 </div>
-</body>
+
 </html>
