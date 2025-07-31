@@ -240,3 +240,35 @@ textarea.form-control {
   border-radius: 4px;
   object-fit: cover;
 }
+
+/* 이미지 X 버튼 스타일 */
+.file-item {
+  position: relative;  /* 자식 요소인 .file-x 위치 기준 */
+  display: inline-block;
+}
+
+.file-x {
+  position: absolute;
+  bottom: 85%; /* 살짝 위로 */
+  left: 85%;   /* 살짝 오른쪽 */
+  transform: translate(50%, -50%); /* 정확한 겹침 조정 */
+  width: 24px;
+  height: 24px;
+  background-color: #dc3545; /* 부트스트랩 빨강 */
+  color: white;
+  border: none;
+  border-radius: 50%;
+  font-weight: bold;
+  font-size: 16px;
+  line-height: 24px;
+  text-align: center;
+  cursor: pointer;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+  visibility: visible; /* JavaScript에서 제어하는 경우 초기엔 hidden */
+  z-index: 10;
+  padding: 0;
+}
+
+.file-x:hover {
+  background-color: #c82333;
+}
