@@ -52,8 +52,9 @@ textarea {
     border-radius: 4px;
     background-color: #fff;
     box-sizing: border-box;
-    margin-bottom: 20px;
+    margin-bottom: 10px;
     font-size: 14px;
+    overflow: hidden;
 }
 
 .flex-row {
@@ -236,4 +237,17 @@ button {
   font-weight: 500;
   color: #333;
   /* 필요에 따라 line-height 등을 조절하여 텍스트 정렬을 미세 조정할 수 있습니다. */
+}
+
+.char-count {
+  font-size: 13px;
+  color: #888;
+  text-align: right;
+  margin-top: 4px;
+  margin-bottom: 20px;
+  transition: color 0.2s;
+}
+
+.char-count.warning {
+  color: #dc3545; /* Bootstrap danger (red) */
 }

@@ -47,9 +47,16 @@
 
       <!-- 내용 -->
       <div class="form-group">
-      <textarea class="form-control" name="content" id="con" cols="30" rows="10" readonly
-                placeholder="문의 내용을 표시합니다.">[[${customeriqboardfileDTO.boardDTO.content}]]</textarea>
+  <textarea class="form-control" name="content" id="con" cols="30" rows="10" readonly
+            maxlength="1000"
+            placeholder="문의 내용을 표시합니다.">[[${customeriqboardfileDTO.boardDTO.content}]]</textarea>
       </div>
+
+      <div class="char-count-container" style="text-align: right; margin-top: -24px; margin-bottom: 24px;">
+        <div id="charCount" class="char-count" style="display: none;">0 / 1000</div>
+      </div>
+
+
       <!-- 첨부파일 미리보기 -->
       <div class="attached-files" th:if="${customeriqboardfileDTO.fileList != null}">
         <div class="file-list" th:each="file : ${customeriqboardfileDTO.fileList}">

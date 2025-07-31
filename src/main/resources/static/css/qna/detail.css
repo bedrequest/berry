@@ -34,6 +34,7 @@ body {
   display: flex;
   align-items: center;
   margin-bottom: 20px;
+
 }
 
 .form-group label {
@@ -84,19 +85,31 @@ body {
 /* textarea 영역 */
 textarea.form-control {
   width: 100%;
-  min-width: 100%;
-  max-width: 100%;
   min-height: 200px;
   padding: 14px;
   font-size: 15px;
   border: 1px solid #ccc;
   border-radius: 4px;
   resize: none;
+  overflow: hidden;
   background-color: #fefefe;
   color: #333;
-  margin-bottom: 24px;
   box-sizing: border-box;
+  margin-bottom: 20px;
 }
+
+.char-count {
+  font-size: 12px;
+  color: #6c757d;
+  user-select: none;
+}
+
+.char-count.warning {
+  color: #dc3545;
+}
+
+
+
 
 /* 파일 첨부 줄 */
 .file-upload {
@@ -230,6 +243,7 @@ textarea.form-control {
   display: flex;
   flex-wrap: wrap;
   gap: 12px;
+  margin-top: 20px;
   margin-bottom: 20px;
 }
 
@@ -272,3 +286,5 @@ textarea.form-control {
 .file-x:hover {
   background-color: #c82333;
 }
+
+

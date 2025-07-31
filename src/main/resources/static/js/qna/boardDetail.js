@@ -3,7 +3,7 @@ document.addEventListener('DOMContentLoaded', () => {
   const delBtn = document.getElementById('delBtn');        // 삭제 버튼
   const submitBtn = document.getElementById('submitBtn');  // 제출 버튼
   const listBtn = document.getElementById('listBtn');      // 리스트 이동 버튼
-  const content = document.getElementById('con');          // 내용 입력칸
+  const content = document.getElementById('con');          // 내용 입력칸 (textarea)
   const title = document.getElementById('t');              // 제목 입력칸
   const categoryInput = document.getElementById('c');      // 카테고리 input
   const categorySelect = document.getElementById('categorySelect'); // 카테고리 select
@@ -16,7 +16,10 @@ document.addEventListener('DOMContentLoaded', () => {
 
   const bnoValue = document.querySelector('input[name="bno"]').value;
 
-  // [Modify] 버튼 클릭 시
+  // 글자 수 표시 div
+  const charCount = document.getElementById('charCount');
+
+  // Modify 버튼 클릭 시 처리
   modBtn.addEventListener('click', () => {
     // 제목, 내용, 작성자 이메일 readonly 해제
     title.removeAttribute('readonly');
@@ -30,52 +33,67 @@ document.addEventListener('DOMContentLoaded', () => {
     categorySelect.style.display = 'inline-block';
     categorySelect.value = categoryInput.value;
 
-    // Modify & Delete 숨김
+    // Modify & Delete 버튼 숨김
     modBtn.style.display = 'none';
     delBtn.style.display = 'none';
 
-    // Submit 보이기
+    // Submit 버튼 보이기
     submitBtn.style.display = 'inline-block';
 
     // 업로드 버튼 활성화: label 클래스 제거, input disabled 해제
     if (uploadLabel) {
       uploadLabel.classList.remove('disabled');
+      uploadLabel.style.cursor = 'pointer';
     }
     if (uploadInput) {
       uploadInput.disabled = false;
     }
 
+    // 글자 수 표시 보이기 및 초기화
+    if (charCount) {
+      charCount.style.display = 'block';
+      updateCharCount();
+    }
 
-//file-x (class) 버튼을 보이게 설정 : style="visibility: hidden => visible로 변환"
-    let fileDelBtn = document.querySelectorAll(".file-x");
-    console.log(fileDelBtn);
-    fileDelBtn.forEach(btn =>{
-        btn.style.visibility = "visible";
-        // file-x 버튼을 클릭하면 비동기로 uuid를 보내서 DB상에서 파일 삭제
-        btn.addEventListener('click',(e)=>{
-            let uuid = btn.dataset.uuid;
-            // 비동기 전송
-            fileRemoveToServer(uuid).then(result =>{
-                if(result == "1"){
-                    alert("파일삭제 성공");
-                    let fileX = document.querySelector('.fileX');
-                    console.log(fileX);
-                    fileX.remove();
-                    btn.remove();
+    // textarea 입력시 자동 높이 조절 및 글자수 업데이트
+    content.style.height = 'auto'; // 초기화
+    content.style.height = content.scrollHeight + 'px';
 
-                }
-            })
-        })
+    content.addEventListener('input', () => {
+      // 자동 높이 조절
+      content.style.height = 'auto';
+      content.style.height = content.scrollHeight + 'px';
+
+      updateCharCount();
+    });
+
+    // file-x 버튼들 보이게 변경 및 삭제 기능 연결
+    let fileDelBtns = document.querySelectorAll(".file-x");
+    fileDelBtns.forEach(btn => {
+      btn.style.visibility = "visible";
+
+      btn.addEventListener('click', (e) => {
+        let uuid = btn.dataset.uuid;
+        // 비동기 전송으로 파일 삭제 요청
+        fileRemoveToServer(uuid).then(result => {
+          if (result == "1") {
+            alert("파일삭제 성공");
+            // 관련 이미지/링크와 버튼 제거
+            const fileXElement = btn.previousElementSibling || btn.parentElement.querySelector('.fileX');
+            if (fileXElement) fileXElement.remove();
+            btn.remove();
+          }
+        });
+      });
     });
   });
 
-  delBtn.addEventListener('click',()=>{
-      location.href="/qna/remove?bno="+bnoValue;
+  delBtn.addEventListener('click', () => {
+    location.href = "/qna/remove?bno=" + bnoValue;
   });
 
-  // [List] 버튼 클릭 시 목록 페이지로 이동
+  // 리스트 버튼 클릭 시 목록 페이지로 이동
   listBtn.addEventListener('click', () => {
-  console.log("asdf");
     location.href = "/qna/list";
   });
 
@@ -111,22 +129,41 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
+  // 글자수 업데이트 함수
+  function updateCharCount() {
+    if (!charCount || !content) return;
+    const len = content.value.length;
+    charCount.innerText = `${len} / 1000`;
+
+    if (len >= 900) {
+      charCount.classList.add('warning');
+    } else {
+      charCount.classList.remove('warning');
+    }
+  }
 });
 
-
-
-
+// 서버에 파일 삭제 요청
 async function fileRemoveToServer(uuid) {
-    try {
-        const url = `/qna/customeriqfile/${uuid}`;
-        const config = {
-            method:'delete',
-
-        }
-        const resp = await fetch(url, config);
-        const result = await resp.text();
-        return result;
-    } catch (error) {
-        console.log(error);
+  try {
+    const url = `/qna/customeriqfile/${uuid}`;
+    const config = {
+      method: 'delete',
     }
+    const resp = await fetch(url, config);
+    const result = await resp.text();
+    return result;
+  } catch (error) {
+    console.error(error);
+  }
 }
+
+document.addEventListener('DOMContentLoaded', () => {
+  const content = document.getElementById('con');
+
+  if (content) {
+    // readonly textarea 높이 자동 조절 (수정모드 아니어도)
+    content.style.height = 'auto';       // 초기화
+    content.style.height = content.scrollHeight + 'px';  // 내용에 맞게 높이 조절
+  }
+});
