@@ -4,19 +4,20 @@ body {
   background-color: #f9f9f9;
   margin: 0;
   display: flex;
+  flex-direction: column;
   justify-content: center;
 }
 
 /* 메인 컨테이너 */
 .container {
-  width: 1200px;
-  min-width: 1200px;
-  max-width: 1200px;
+  width: 1080px;          /* 고정 너비 1080px */
   background-color: #ffffff;
   padding: 40px;
+  margin: auto;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
   border-radius: 8px;
   box-sizing: border-box;
+  overflow: hidden;
 }
 
 /* 페이지 제목 */
@@ -42,8 +43,9 @@ body {
   margin-right: 10px;
 }
 
+/* input-box 기본 스타일 */
 .input-box {
-  width: 400px;
+  width: 400px;              /* 고정 너비 유지 */
   padding: 10px 14px;
   font-size: 15px;
   border: 1px solid #ccc;
@@ -54,8 +56,9 @@ body {
   box-sizing: border-box;
 }
 
+/* 짧은 input-box (카테고리 등) */
 .input-box.short {
-  width: 160px;
+  width: 160px;              /* 고정 너비 유지 */
 }
 
 /* 작성자 + 작성일 줄 */
@@ -104,23 +107,44 @@ textarea.form-control {
   margin-bottom: 30px;
 }
 
+/* 업로드 버튼 스타일 (label for="ex_filename") */
 .file-upload label {
-  white-space: nowrap;
-  display: inline-block;
-  padding: .5em .75em;
+  background-color: #007bff;
   color: white;
-  font-size: inherit;
-  background-color: #0066cc;
+  height: 42px;
+  line-height: 42px;
+  padding: 0 16px;
+  border-radius: 4px;
   cursor: pointer;
-  border-radius: .25em;
-  font-weight: bold;
+  font-weight: 500;
+  font-size: 15px;
+  display: inline-block;
+  white-space: nowrap;
+  user-select: none;
+  transition: background-color 0.2s;
 }
 
 .file-upload label:hover {
-  background-color: #004c99;
+  background-color: #0056b3;
 }
 
-.file-upload input[type="file"] {
+/* 비활성화된 업로드 버튼 스타일 */
+.file-upload label.disabled {
+  background-color: #ccc;        /* 연한 회색 */
+  color: #666;                   /* 어두운 회색 글자 */
+  cursor: default;               /* 기본 커서 */
+  pointer-events: none;          /* 클릭 및 호버 무효화 */
+  user-select: none;
+  transition: none;              /* 호버 효과 제거 */
+}
+
+.file-upload label.disabled:hover {
+  background-color: #ccc;        /* 호버시 색 변화 없음 */
+}
+
+/* 숨김 처리된 파일 입력 */
+.file-upload input[type="file"],
+.upload-hidden {
   position: absolute;
   width: 1px;
   height: 1px;
@@ -131,15 +155,19 @@ textarea.form-control {
   border: 0;
 }
 
+/* 파일명 표시 칸 */
 .file-upload .upload-name {
-  width: 1200px;
-  padding: .5em .75em;
-  font-size: inherit;
-  background-color: #f5f5f5;
-  border: 1px solid #ebebeb;
-  border-radius: .25em;
   height: 42px;
+  width: 930px;
+  font-size: 15px;
+  padding: 0 12px;
+  line-height: 42px;
   box-sizing: border-box;
+  color: #333;
+  background-color: #f5f5f5;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  display: inline-block;
 }
 
 /* 하단 버튼 */
@@ -197,6 +225,7 @@ textarea.form-control {
   padding: 4px;
 }
 
+/* 새로 선택한 이미지 미리보기 영역 */
 .image-preview-container {
   display: flex;
   flex-wrap: wrap;

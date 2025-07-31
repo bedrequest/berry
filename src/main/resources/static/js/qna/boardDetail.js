@@ -1,111 +1,83 @@
-console.log("boardDetail.js in");
+document.addEventListener('DOMContentLoaded', () => {
+  const modBtn = document.getElementById('modBtn');        // 수정 버튼
+  const delBtn = document.getElementById('delBtn');        // 삭제 버튼
+  const submitBtn = document.getElementById('submitBtn');  // 제출 버튼
+  const listBtn = document.getElementById('listBtn');      // 리스트 이동 버튼
+  const content = document.getElementById('con');          // 내용 입력칸
+  const title = document.getElementById('t');              // 제목 입력칸
+  const categoryInput = document.getElementById('c');      // 카테고리 input
+  const categorySelect = document.getElementById('categorySelect'); // 카테고리 select
+  const userEmail = document.getElementById('w');
 
-//<script>
-//  const realUpload = document.getElementById('ex_filename');
-//  const uploadName = document.querySelector('.upload-name');
-//
-//  realUpload.addEventListener('change', function () {
-//    const files = Array.from(this.files);  // 파일 목록을 배열로 변환
-//
-//    if (files.length > 0) {
-//      const names = files.map(file => file.name).join(', ');
-//      uploadName.value = names;
-//    } else {
-//      uploadName.value = '선택된 파일 없음';
-//    }
-//  });
-//</script>
+  const uploadInput = document.getElementById('ex_filename');      // 파일 선택 input
+  const uploadName = document.querySelector('.upload-name');       // 파일 이름 표시 input
+  const uploadLabel = document.querySelector('.file-upload label[for="ex_filename"]');
+  const previewContainer = document.getElementById('imagePreviewContainer');  // 이미지 미리보기
 
-// bnoValue 변수 선언 (폼 내 hidden input에서 값 읽기)
-const bnoValue = document.querySelector('input[name="bno"]').value;
+  // 🟡 [Modify] 버튼 클릭 시
+  modBtn.addEventListener('click', () => {
+    // 제목, 내용, 작성자 이메일 readonly 해제
+    title.removeAttribute('readonly');
+    content.removeAttribute('readonly');
+    userEmail.removeAttribute('readonly');
 
-console.log("boardDetail.js in");
-console.log(bnoValue);
+    // 카테고리 input 숨기기
+    categoryInput.style.display = 'none';
 
-// 파일 업로드 후 선택된 파일명 표시
-const realUpload = document.getElementById('ex_filename');
-const uploadName = document.querySelector('.upload-name');
+    // 카테고리 select 보이기 및 값 설정
+    categorySelect.style.display = 'inline-block';
+    categorySelect.value = categoryInput.value;
 
-realUpload.addEventListener('change', function () {
-  const files = Array.from(this.files);  // 파일 목록 배열로 변환
+    // Modify & Delete 숨김
+    modBtn.style.display = 'none';
+    delBtn.style.display = 'none';
 
-  if (files.length > 0) {
-    const names = files.map(file => file.name).join(', ');
-    uploadName.value = names;
-  } else {
-    uploadName.value = '선택된 파일 없음';
-  }
-});
+    // Submit 보이기
+    submitBtn.style.display = 'inline-block';
 
-// listBtn 클릭 시 /board/list로 이동
-document.getElementById('listBtn').addEventListener('click', () => {
-  location.href = "/qna/list";
-});
+    // 업로드 버튼 활성화: label 클래스 제거, input disabled 해제
+    if (uploadLabel) {
+      uploadLabel.classList.remove('disabled');
+    }
+    if (uploadInput) {
+      uploadInput.disabled = false;
+    }
+  });
 
-// delBtn 클릭 시 /board/remove로 이동 (bno 파라미터 포함)
-document.getElementById('delBtn').addEventListener('click', () => {
-  location.href = "/qna/remove?bno=" + bnoValue;
-});
+  // 🔵 [List] 버튼 클릭 시 목록 페이지로 이동
+  listBtn.addEventListener('click', () => {
+    location.href = "/qna/list";
+  });
 
-// modBtn 클릭 시 제목, 카테고리 readOnly 해제 및 수정 submit 버튼 생성
-document.getElementById('modBtn').addEventListener('click', () => {
-  document.getElementById('t').readOnly = false; // 제목 input
-  document.getElementById('c').readOnly = false; // 카테고리 input
+  // 🟢 파일 선택 시 이미지 미리보기 및 파일명 출력
+  if (uploadInput) {
+    uploadInput.addEventListener('change', function () {
+      const files = Array.from(this.files);
 
-  // submit 버튼 생성
-  let modBtn = document.createElement("button");
-  modBtn.setAttribute('type', 'submit');
-  modBtn.setAttribute('id', 'regBtn');
-  modBtn.classList.add('btn', 'btn-warning');
-  modBtn.innerText = "Submit";
+      // 파일 이름 표시
+      if (files.length > 0) {
+        const names = files.map(file => file.name).join(', ');
+        uploadName.value = names;
+      } else {
+        uploadName.value = '선택된 파일 없음';
+      }
 
-  // 폼에 submit 버튼 추가 (form에 id="modForm" 있어야 함)
-  document.getElementById('modForm').appendChild(modBtn);
+      // 기존 미리보기 제거
+      previewContainer.innerHTML = '';
 
-  // 기존 Modify, Delete 버튼 제거
-  document.getElementById('modBtn').remove();
-  document.getElementById('delBtn').remove();
-
-  // 업로드 버튼 활성화 (id="trigger" 엘리먼트가 있어야 함)
-  const triggerBtn = document.getElementById('trigger');
-  if(triggerBtn) {
-    triggerBtn.disabled = false;
-  }
-
-  // file-x 버튼들 보이게 하고 클릭 시 비동기 파일 삭제 기능 추가
-  let fileDelBtn = document.querySelectorAll(".file-x");
-  console.log(fileDelBtn);
-  fileDelBtn.forEach(btn => {
-    btn.style.visibility = "visible";
-
-    btn.addEventListener('click', (e) => {
-      let uuid = btn.dataset.uuid;
-      fileRemoveToServer(uuid).then(result => {
-        if(result === "1"){
-          alert("파일삭제 성공");
-          e.target.closest('li').remove();
-        } else {
-          alert("파일삭제 실패");
+      // 이미지 미리보기 생성
+      files.forEach(file => {
+        if (file.type.startsWith('image/')) {
+          const reader = new FileReader();
+          reader.onload = function (e) {
+            const img = document.createElement('img');
+            img.src = e.target.result;
+            img.classList.add('preview-image');
+            previewContainer.appendChild(img);
+          };
+          reader.readAsDataURL(file);
         }
       });
     });
-  });
-});
-
-// 비동기 파일 삭제 함수 (CSRF 토큰, 헤더 변수 선언 필요)
-async function fileRemoveToServer(uuid) {
-  try {
-    const url = `/board/file/${uuid}`;
-    const config = {
-      method: 'DELETE',
-      headers: {
-        [csrfHeader]: csrfToken
-      }
-    };
-    const resp = await fetch(url, config);
-    const result = await resp.text();
-    return result;
-  } catch (error) {
-    console.error("파일 삭제 중 오류:", error);
   }
-}
+});
