@@ -24,6 +24,17 @@ public class BoardCustomerIqRepositoryImpl implements BoardCustomerIqRepository 
     this.queryFactory = new JPAQueryFactory(em);
   }
 
+  // 공지글 목록 조회 (항상 상단)
+  @Override
+  public List<CustomerIqBoard> findNoticeBoards() {
+    return queryFactory
+        .selectFrom(QCustomerIqBoard.customerIqBoard)
+        .where(QCustomerIqBoard.customerIqBoard.category.eq("공지"))
+        .orderBy(QCustomerIqBoard.customerIqBoard.bno.desc())
+        .limit(5)
+        .fetch();
+  }
+
   @Override
   public Page<CustomerIqBoard> searchcoustomeriqboard(String type, String keyword,
                                                String startDate, String endDate,
@@ -38,9 +49,9 @@ public class BoardCustomerIqRepositoryImpl implements BoardCustomerIqRepository 
         ? LocalDateTime.parse(endDate + " 23:59:59", formatter)
         : LocalDateTime.now();
 
-
     // 날짜 조건 (필수)
     BooleanExpression condition = QCustomerIqBoard.customerIqBoard.regDate.between(start, end);
+    condition = condition.and(QCustomerIqBoard.customerIqBoard.category.ne("공지"));
 
     if (type != null && !type.isEmpty()) {
       condition = condition.and(QCustomerIqBoard.customerIqBoard.category.eq(type));
@@ -55,7 +66,10 @@ public class BoardCustomerIqRepositoryImpl implements BoardCustomerIqRepository 
     List<CustomerIqBoard> result = queryFactory
         .selectFrom(QCustomerIqBoard.customerIqBoard)
         .where(condition)
-        .orderBy(QCustomerIqBoard.customerIqBoard.bno.desc())
+        .orderBy(
+//            QCustomerIqBoard.customerIqBoard.category.eq("공지").desc(),
+            QCustomerIqBoard.customerIqBoard.bno.desc()
+        )
         .offset(pageable.getOffset())
         .limit(pageable.getPageSize())
         .fetch();

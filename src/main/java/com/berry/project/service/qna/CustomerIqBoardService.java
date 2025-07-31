@@ -10,6 +10,7 @@ import org.springframework.data.domain.Page;
 import java.io.File;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Map;
 
 public interface CustomerIqBoardService  {
 
@@ -71,7 +72,7 @@ public interface CustomerIqBoardService  {
 
   List<CustomerIqBoardDTO> getlist();
 
-  Page<CustomerIqBoardDTO> getList(int page, String type, String keyword, String startDate, String endDate);
+  Map<String, Object> getList(int page, String type, String keyword, String startDate, String endDate);
 
   CustomerIqBoardFileDTO getDetail(Long bno);
 

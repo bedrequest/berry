@@ -18,6 +18,7 @@
 
   <!-- category + title -->
   <!-- 카테고리 + 제목 묶음 -->
+  <input type="hidden" name="bno" th:value="${customeriqboardfileDTO.boardDTO.bno}">
   <div class="form-group">
     <div style="display: flex; gap: 12px; flex: 1;">
       <input type="text" id="c" class="input-box short" readonly placeholder="카테고리">
@@ -28,10 +29,10 @@
   <!-- 작성자 + 작성일 -->
   <div class="form-group-inline">
     <div class="inline-group">
-      <input id="writer" th:value="${customeriqboardfileDTO.boardDTO.userEmail}" class="input-box short" readonly/>
+      <input id="writer" name="userEmail" th:value="${customeriqboardfileDTO.boardDTO.userEmail}" class="input-box short" readonly/>
     </div>
     <div class="inline-group">
-      <input id="date" th:value="${customeriqboardfileDTO.boardDTO.regDate}" class="input-box short" readonly/>
+      <input id="date" name="userEmail" th:value="${customeriqboardfileDTO.boardDTO.regDate}" class="input-box short" readonly/>
     </div>
   </div>
 
@@ -40,9 +41,6 @@
     <textarea type="text" class="form-control"
               name="content" id="con" cols="30" rows="10" readonly placeholder="문의 내용을 표시합니다.">[[${customeriqboardfileDTO.boardDTO.content}]]</textarea>
   </div>
-
-
-
 
   <!-- 첨부파일 미리보기 -->
   <div class="attached-files" th:if="${customeriqboardfileDTO.fileList != null}">
@@ -63,9 +61,7 @@
     </div>
   </div>
 
-
   <div id="imagePreviewContainer" class="image-preview-container"></div>
-
 
   <!-- 파일첨부 -->
   <div class="file-upload">
@@ -80,7 +76,7 @@
     <button type="button" id="delBtn" class="btn btn-danger">Remove</button>
     <button type="button" id="listBtn" class="btn btn-primary">List</button>
   </div>
-</div>
+
 <script th:src="@{/js/qna/boardDetail.js}"></script>
 
 <script th:inline="javascript">
@@ -116,5 +112,6 @@
     });
   });
 </script>
+</div>
 </body>
 </html>

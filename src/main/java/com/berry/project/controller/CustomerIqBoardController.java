@@ -16,6 +16,7 @@ import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.util.List;
+import java.util.Map;
 
 @Slf4j
 @Controller
@@ -70,11 +71,16 @@ public class CustomerIqBoardController {
         }
 
         int page = pageNo - 1;
-        Page<CustomerIqBoardDTO> list = boardservice.getList(page, type, keyword, tripStart, tripEnd);
+        Map<String, Object> list = boardservice.getList(page, type, keyword, tripStart, tripEnd);
         log.info("list {}", list);
-//        model.addAttribute("list", list);
+        log.info("list {}", list.get("noticeList"));
+        log.info("list {}", list.get("list"));
 
-        CustomerIqPagingHandler<CustomerIqBoardDTO> paginghandler = new CustomerIqPagingHandler(list, pageNo, type, keyword,tripStart, tripEnd);
+        model.addAttribute("noticeList", list.get("noticeList"));
+
+        Page<CustomerIqBoardDTO> customerIqBoardDTOPageList = (Page<CustomerIqBoardDTO>)list.get("list");
+
+        CustomerIqPagingHandler<CustomerIqBoardDTO> paginghandler = new CustomerIqPagingHandler(customerIqBoardDTOPageList, pageNo, type, keyword,tripStart, tripEnd);
         model.addAttribute("ph", paginghandler);
     }
 

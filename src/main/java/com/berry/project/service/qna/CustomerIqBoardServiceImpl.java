@@ -17,7 +17,9 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 @Slf4j
@@ -75,16 +77,29 @@ public class CustomerIqBoardServiceImpl implements CustomerIqBoardService {
 
 
   @Override
-  public Page<CustomerIqBoardDTO> getList(int page, String type, String keyword, String startDate, String endDate) {
+  public Map<String, Object> getList(int page, String type, String keyword, String startDate, String endDate) {
 
     Pageable pageable = PageRequest.of(page, 10,
         Sort.by("bno").descending());
+
+    // 1. 공지글은 항상 고정
+    List<CustomerIqBoard> noticeList = customeriqboardrepository.findNoticeBoards();
+    List<CustomerIqBoardDTO> noticeDTOList = noticeList
+            .stream()
+            .map(this::convertEntityToDto)
+            .toList();
 
     Page<CustomerIqBoard> list = customeriqboardrepository.searchcoustomeriqboard(type, keyword, startDate, endDate, pageable);
     log.info(">>> list serviceImpl >> {}", list.getContent());
     Page<CustomerIqBoardDTO> customeriqboardDTOList = list.map(this::convertEntityToDto);
 
-    return customeriqboardDTOList;
+    // 4. 반환 형태
+    Map<String, Object> result = new HashMap<>();
+    result.put("noticeList", noticeDTOList);           // 공지글 따로
+    result.put("list", customeriqboardDTOList);
+
+
+    return result;
   }
 
   @Transactional
