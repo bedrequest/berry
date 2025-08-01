@@ -15,6 +15,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Optional;
 
 @RequiredArgsConstructor
@@ -39,7 +40,8 @@ public class LodgeServiceImpl implements LodgeService {
     LodgeDTO lodgeDTO = convertEntityToDto(
         optionalLodge.get(),
         facilityMaskDecoder,
-        lodgeDescriptionRepository.findByLodgeId(optionalLodge.get().getLodgeId()));
+        lodgeDescriptionRepository.findByLodgeId(optionalLodge.get().getLodgeId()),
+        0, null, null);
     fillImages(lodgeDTO);
     fillRooms(lodgeDTO, true);
 
@@ -59,7 +61,8 @@ public class LodgeServiceImpl implements LodgeService {
         .map(entry -> convertEntityToDto(
             entry,
             facilityMaskDecoder,
-            lodgeDescriptionRepository.findByLodgeId(entry.getLodgeId())));
+            lodgeDescriptionRepository.findByLodgeId(entry.getLodgeId()),
+            0, null, null));
 
     for (LodgeDTO lodgeDTO : result) {
       fillImages(lodgeDTO);
