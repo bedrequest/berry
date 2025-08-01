@@ -45,16 +45,18 @@ public class LoginSuccessHandler implements AuthenticationSuccessHandler {
       httpSession.removeAttribute(WebAttributes.AUTHENTICATION_EXCEPTION);
     }
 
+
     /** duorpeb, 비로그인 상태로 예약 버튼을 누르는 경우, 다시 예약 페이지로 돌아가기 위한 코드
      *
+     * > /user/login?redirectTo={ref}
      * */
      // Step 1
-    String queryParam = request.getParameter("redirectTo");
-     // Step 2
-    if(queryParam != null){
-      redirectStrategy.sendRedirect(request, response, queryParam);
-      return;
-    }
+//    String queryParam = request.getParameter("redirectTo");
+//     // Step 2
+//    if(queryParam != null){
+//      redirectStrategy.sendRedirect(request, response, queryParam);
+//      return;
+//    }
 
     // 이전 맵핑 경로 가져오기
     SavedRequest savedRequest = requestCache.getRequest(request, response);

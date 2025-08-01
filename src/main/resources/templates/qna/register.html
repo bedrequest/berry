@@ -68,6 +68,7 @@
       <button type="submit" id="regBtn" class="btn btn-primary">등록</button>
     </div>
 
+    <input type="hidden" name="userEmail" th:value="${userDTO.userEmail}">
   </form>
   <script th:src="@{/js/qna/boardRegister.js}"></script>
 </div>

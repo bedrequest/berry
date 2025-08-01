@@ -118,6 +118,7 @@ inputs.forEach(input => {
       })
       
     }
+    document.getElementById("signupButton").disabled = !(confirm && finalValid && duplicate);
   })
 })
 
@@ -140,6 +141,3 @@ async function duplicateEmailCheckedToServer(userEmail) {
   }
 
 }
-
-
-

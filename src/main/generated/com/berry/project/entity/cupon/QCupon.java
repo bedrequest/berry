@@ -19,11 +19,11 @@ public class QCupon extends EntityPathBase<Cupon> {
 
     public static final QCupon cupon = new QCupon("cupon");
 
-    public final DateTimePath<java.time.LocalDateTime> cuponEndDate = createDateTime("cuponEndDate", java.time.LocalDateTime.class);
+    public final DateTimePath<java.time.OffsetDateTime> cuponEndDate = createDateTime("cuponEndDate", java.time.OffsetDateTime.class);
 
     public final NumberPath<Long> cuponId = createNumber("cuponId", Long.class);
 
-    public final DateTimePath<java.time.LocalDateTime> cuponRegDate = createDateTime("cuponRegDate", java.time.LocalDateTime.class);
+    public final DateTimePath<java.time.OffsetDateTime> cuponRegDate = createDateTime("cuponRegDate", java.time.OffsetDateTime.class);
 
     public final NumberPath<Integer> cuponType = createNumber("cuponType", Integer.class);
 

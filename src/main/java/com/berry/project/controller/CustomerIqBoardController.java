@@ -3,9 +3,11 @@ package com.berry.project.controller;
 import com.berry.project.dto.qna.CustomerIqBoardDTO;
 import com.berry.project.dto.qna.CustomerIqBoardFileDTO;
 import com.berry.project.dto.qna.CustomerIqFileDTO;
+import com.berry.project.dto.user.UserDTO;
 import com.berry.project.handler.CustomerIqFileHandler;
 import com.berry.project.handler.CustomerIqPagingHandler;
 import com.berry.project.service.qna.CustomerIqBoardService;
+import com.berry.project.service.user.UserService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
@@ -15,6 +17,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import java.security.Principal;
 import java.util.List;
 import java.util.Map;
 
@@ -26,9 +29,15 @@ public class CustomerIqBoardController {
 
     private final CustomerIqBoardService boardservice;
     private final CustomerIqFileHandler fileHandler;
+    private final UserService userService;
 
     @GetMapping("/register")
-    public void register() {
+    public void register(Principal principal, Model model) {
+        // web 은 email, oauth2 는 uid
+        String username = principal.getName();
+        log.info("myPage Principal username >>> {}", username);
+        UserDTO userDTO = userService.getUserInfo(username);
+        model.addAttribute("userDTO", userDTO);
     }
 
     @PostMapping("/register")

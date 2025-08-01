@@ -2,7 +2,7 @@
 <html lang="en"
       xmlns:th="http://www.thymeleaf.org"
       xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
-      xmlns:sec="http://www.thymeleaf.org/extra/spring-security"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
       layout:decorate="~{layout/layout}">
 <section layout:fragment="customStyle">
   <link rel="stylesheet" th:href="@{/css/lodge/detail.css}" />
@@ -20,6 +20,12 @@
     let user = null;
   </script>
   <div th:insert="~{fragments/search :: search}" class="sticky"></div>
+
+  <div sec:authorize="isAuthenticated()">
+    <script th:inline="javascript">
+      user = [[${#authentication.principal.userDTO.userId}]];
+    </script>
+  </div>
 
   <div class="navBar">
     <div class="container">
@@ -252,6 +258,7 @@
     <div id="reviewArea"
          th:attr="data-url=@{/reviews/view(lodgeId=${lodgeDTO.lodgeId},page=1,sort='newest')}">
       <p class="text-center text-muted">리뷰 로딩 중…</p>
+    </div>
 
     <div id="modal">
       <div id="modalBody">
@@ -309,17 +316,10 @@
     <!-- duorpeb, PRG 패턴을 사용하기 위한 div -->
     <div class="prg"></div>
 
-    <script type="text/javascript" th:src="'https://oapi.map.naver.com/openapi/v3/maps.js?ncpKeyId=' + ${naverMapId}"></script>
-    <script th:inline="javascript">
-      const latitude = /*[[${lodgeDTO.latitude}]]*/,
-      longitude = /*[[${lodgeDTO.longitude}]]*/;
-    </script>
-
-    <script th:src="@{/js/lodge/detail.js}"></script>
-
     <!-- YSL -->
     <script th:src="@{/js/payment/paymentBtn.js}"></script>
 
+      <!-- 이유현 : 네이버 지도 -->
     <script type="text/javascript" th:src="'https://oapi.map.naver.com/openapi/v3/maps.js?ncpKeyId=' + ${naverMapId}"></script>
     <script>
       /* 네이버 지도 API */
@@ -340,6 +340,7 @@
           map: map
       });
     </script>
+
     <script type="module" th:src="@{/js/lodge/detail.js}"></script>
   </div>
 </div>
