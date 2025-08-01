@@ -14,6 +14,7 @@ document.addEventListener('DOMContentLoaded', () => {
   const uploadLabel = document.querySelector('.file-upload label[for="ex_filename"]');
   const previewContainer = document.getElementById('imagePreviewContainer');  // 이미지 미리보기
 
+    const bnoValue = document.querySelector('input[name="bno"]').value;
   // 🟡 [Modify] 버튼 클릭 시
   modBtn.addEventListener('click', () => {
     // 제목, 내용, 작성자 이메일 readonly 해제
@@ -42,6 +43,11 @@ document.addEventListener('DOMContentLoaded', () => {
     if (uploadInput) {
       uploadInput.disabled = false;
     }
+  });
+
+// 삭제버튼
+  delBtn.addEventListener('click',()=>{
+      location.href="/qna/remove?bno="+bnoValue;
   });
 
   // 🔵 [List] 버튼 클릭 시 목록 페이지로 이동

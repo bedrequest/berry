@@ -44,6 +44,7 @@ public class CustomerIqBoardController {
         if (files != null && files[0].getSize() > 0) {
             // 파일 핸들러 작업
             fileList = fileHandler.uploadFiles(files);
+            log.info("fileList {}", fileList);
         }
         Long bno = boardservice.insert(new CustomerIqBoardFileDTO(customeriqboardDTO, fileList));
         log.info("bno {}", bno);

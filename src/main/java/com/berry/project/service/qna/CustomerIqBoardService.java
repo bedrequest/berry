@@ -7,8 +7,6 @@ import com.berry.project.entity.qna.CustomerIqBoard;
 import com.berry.project.entity.qna.CustomerIqFile;
 import org.springframework.data.domain.Page;
 
-import java.io.File;
-import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
 

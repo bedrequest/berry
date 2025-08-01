@@ -130,6 +130,7 @@ public class CustomerIqBoardServiceImpl implements CustomerIqBoardService {
         .orElseThrow(() -> new EntityNotFoundException("존재하지 않는 게시글"));
 
     customeriqboard.setTitle(customeriqboardfileDTO.getBoardDTO().getTitle());
+    customeriqboard.setCategory(customeriqboardfileDTO.getBoardDTO().getCategory());
     customeriqboard.setContent(customeriqboardfileDTO.getBoardDTO().getContent());
 
     long bno = fileSave(customeriqboardfileDTO.getFileList(), customeriqboard.getBno());
