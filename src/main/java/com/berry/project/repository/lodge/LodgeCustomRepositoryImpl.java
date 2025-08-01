@@ -99,9 +99,4 @@ public class LodgeCustomRepositoryImpl implements LodgeCustomRepository {
     return new PageImpl<Lodge>(query.getResultList(), pageable, (long) totalCount.getSingleResult());
   }
 
-  @Override
-  public Lodge getLodgeByRoom(Long roomId) {
-
-    return null;
-  }
 }

@@ -21,8 +21,6 @@ public class QLodge extends EntityPathBase<Lodge> {
 
     public final StringPath businessCall = createString("businessCall");
 
-    public final StringPath description = createString("description");
-
     public final NumberPath<Integer> facility = createNumber("facility", Integer.class);
 
     public final StringPath intro = createString("intro");
