@@ -2,6 +2,7 @@ package com.berry.project.dto.review;
 
 import jakarta.validation.constraints.*;
 import lombok.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
@@ -35,4 +36,8 @@ public class ReviewRequestDTO {
 
     private Long reviewId;
 
+
+    private MultipartFile[] files;
+    private String userEmail;
+    private List<String> deleteImageUuids;
 }

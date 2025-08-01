@@ -24,7 +24,7 @@ import java.util.List;
 @Slf4j
 @Controller
 public class LodgeController {
-
+  
   private final LodgeService lodgeService;
   private final ReviewService reviewService;
 
