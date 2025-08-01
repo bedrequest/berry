@@ -1,9 +1,9 @@
 /* 전체 컨테이너 정리 */
-.container-md {
+.container {
   width: 1200px;
   margin: 0 auto;
   padding: 40px 20px;
-  background-color: #f9f9f9;
+  background-color: white;
   border-radius: 16px;
 }
 
@@ -23,43 +23,104 @@ p {
   text-align: center;
 }
 
-/* 날짜 선택기 스타일 */
-input[type="date"] {
-  padding: 6px 10px;
-  width: 200px;
-  border: 1px solid #ccc;
-  border-radius: 8px;
-  font-size: 15px;
-  background-color: #fff;
-  transition: border 0.3s;
+/* 안내문구 박스 스타일 */
+.notice-box {
+  background-color: #e9ecef;
+  padding: 24px;
+  margin: 30px auto;
+  border-radius: 12px;
+  font-size: 16px;
+  color: #333;
+  width: 100%;
+  max-width: 1000px;
+  text-align: center;
+  box-shadow: 0 0 8px rgba(0, 0, 0, 0.03);
 }
 
-input[type="date"]:focus {
-  border-color: #0d6efd;
-  outline: none;
-}
-
-/* 검색 폼 */
-form[role="search"] {
+/* 검색 폼 전체 wrapper */
+.search-box-wrapper {
   display: flex;
-  justify-content: flex-start;
-  gap: 10px;
-  margin-top: 20px;
-  margin-bottom: 30px;
+  justify-content: center;
+  margin: 30px 0;
 }
 
-form[role="search"] select,
-form[role="search"] input[type="search"] {
+/* 날짜줄 & 검색줄 공통 스타일 */
+.search-line {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+  width: 600px;
+  margin-bottom: 10px;
+}
+
+/* 날짜 선택, 셀렉트박스, 검색창, 버튼 스타일 통일 */
+.search-line input[type="date"],
+.search-line select,
+.search-line input[type="search"],
+.search-line .btn {
+  flex: 1;
+  min-width: 0;
   height: 38px;
   font-size: 15px;
+  border: 1px solid #ccc !important;
   border-radius: 8px;
-  padding: 0 10px;
+  padding: 6px 10px;
+  box-shadow: none !important;
+  transition: background-color 0.2s, border-color 0.2s;
 }
 
-form[role="search"] .btn {
-  padding: 6px 16px;
-  border-radius: 8px;
+.search-line input[type="date"] {
+  height: 32px; /* 달력 칸 높이 줄임 */
+}
+
+.search-line select {
+  flex: 0 0 100px; /* 고정 너비 */
+}
+
+.search-line input[type="search"] {
+  flex: 2; /* 너비 넓힘 */
+}
+
+.search-line .btn.btn-primary {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex: 0 0 100px;
+  height: 38px;
   font-size: 15px;
+  border: 1px solid #ccc !important;
+  border-radius: 8px;
+  padding: 0;
+  box-shadow: none !important;
+  transition: background-color 0.2s, border-color 0.2s;
+}
+
+/* 검색 버튼 & 작성 버튼 스타일 */
+.btn.btn-primary,
+.btn.btn-primary:hover,
+.btn.btn-primary:active {
+  background-color: #0b5ed7;
+  border: 1px solid #aaa !important;
+  color: white;
+}
+
+.btn.btn-primary {
+  font-size: 16px;
+  font-weight: 600;
+  padding: 10px 30px;
+  border-radius: 12px;
+  text-align: center;
+}
+
+.btn.btn-primary:hover {
+  cursor: pointer;
+}
+
+/* 작성 버튼 컨테이너 */
+.d-grid.gap-2.d-md-flex.justify-content-md-end {
+  display: flex;
+  justify-content: flex-end;
+  margin: 30px 0 10px;
 }
 
 /* 테이블 스타일 */
@@ -72,18 +133,20 @@ form[role="search"] .btn {
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.05);
   table-layout: fixed;
   width: 100%;
+  border: 1px solid #ccc; /* ✅ 전체 테이블 테두리 */
 }
 
 .table thead {
-  background-color: #f1f1f1;
+  background-color: #dee2e6; /* ✅ 더 진한 회색 배경 */
 }
 
 .table thead th {
   text-align: center;
   vertical-align: middle;
-  font-weight: 600;
+  font-weight: 700;
   font-size: 15px;
   padding: 12px;
+  border: 1px solid #ccc; /* ✅ 헤더 구분선 */
 }
 
 .table tbody td,
@@ -93,6 +156,7 @@ form[role="search"] .btn {
   font-size: 14px;
   padding: 12px 10px;
   word-break: break-word;
+  border: 1px solid #ddd; /* ✅ 내용 행 구분선 */
 }
 
 .table a {
@@ -110,20 +174,11 @@ form[role="search"] .btn {
   margin-left: 4px;
 }
 
-/* 작성 버튼 */
-a > button.btn-primary {
-  display: block;
-  margin: 30px auto 10px;
-  padding: 10px 30px;
-  border-radius: 12px;
-  font-size: 16px;
-  font-weight: 600;
-}
-
 /* 페이지네이션 */
 .pagination {
+  display: flex !important;
+  justify-content: center !important;
   margin-top: 20px;
-  justify-content: center;
 }
 
 .page-link {
@@ -143,16 +198,31 @@ a > button.btn-primary {
   color: #ccc;
 }
 
-/* 안내문구 박스 스타일 추가 */
-.notice-box {
-  background-color: #e9ecef;
-  padding: 24px;
-  margin: 30px auto;
-  border-radius: 12px;
-  font-size: 16px;
-  color: #333;
-  width: 100%;
-  max-width: 1000px;
-  text-align: center;
-  box-shadow: 0 0 8px rgba(0, 0, 0, 0.03);
+/* 반응형: 화면 작을 때 요소 세로 정렬 */
+@media (max-width: 768px) {
+  .search-line {
+    flex-direction: column;
+    align-items: center;
+    width: 100%;
+  }
+
+  .search-line input[type="date"],
+  .search-line select,
+  .search-line input[type="search"],
+  .search-line .btn {
+    width: 100%;
+    max-width: 300px;
+    margin-bottom: 10px;
+  }
+
+  .d-grid.gap-2.d-md-flex.justify-content-md-end {
+    justify-content: center;
+  }
 }
+
+.table thead th:nth-child(1) { width: 7%; }   /* No */
+.table thead th:nth-child(2) { width: 13%; }  /* 카테고리 */
+.table thead th:nth-child(3) { width: 40%; }  /* 제목 (넓게) */
+.table thead th:nth-child(4) { width: 15%; }  /* 작성자 */
+.table thead th:nth-child(5) { width: 15%; }  /* 작성일 */
+.table thead th:nth-child(6) { width: 10%; }  /* 진행 */

@@ -1,5 +1,6 @@
 package com.berry.project.dto.lodge;
 
+import com.berry.project.dto.review.ReviewResponseDTO;
 import lombok.*;
 
 import java.util.Arrays;
@@ -23,9 +24,12 @@ public class LodgeDTO {
   private String businessCall;
   private double latitude;
   private double longitude;
-  List<RoomDTO> rooms;
-  List<String> lodgeImages;
-  List<String> ways;
+  private List<RoomDTO> rooms;
+  private List<String> lodgeImages;
+  private List<String> ways;
+  private Double averageReviewScore;
+  private long reviewCount;
+  private ReviewResponseDTO bestReview;
 
   public String getShortAddress() {
     return String.join(" ",

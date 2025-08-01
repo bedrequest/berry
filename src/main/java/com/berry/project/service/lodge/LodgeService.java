@@ -1,11 +1,14 @@
 package com.berry.project.service.lodge;
 
 import com.berry.project.dto.lodge.*;
+import com.berry.project.dto.review.ReviewResponseDTO;
 import com.berry.project.entity.lodge.Lodge;
 import com.berry.project.entity.lodge.LodgeDescription;
 import com.berry.project.entity.lodge.Room;
-import com.berry.project.handler.PagingHandler;
+import com.berry.project.handler.CustomerIqPagingHandler;
 import com.berry.project.util.FacilityMaskDecoder;
+import org.json.simple.JSONArray;
+import org.json.simple.parser.JSONParser;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -15,13 +18,30 @@ import java.util.Map;
 public interface LodgeService {
   LodgeDTO detail(long lodgeId, LodgeOptionDTO lodgeOptionDTO);
 
-  default LodgeDTO convertEntityToDto(Lodge lodge, FacilityMaskDecoder facilityMaskDecoder, List<LodgeDescription> descriptions) {
+  default LodgeDTO convertEntityToDto(
+      Lodge lodge,
+      FacilityMaskDecoder facilityMaskDecoder,
+      List<LodgeDescription> descriptions,
+      long reviewCount,
+      Double averageReviewScore,
+      ReviewResponseDTO bestReview) {
     List<LodgeDescriptionDTO> descriptionDTOList = new ArrayList<>();
-    for (LodgeDescription entity : descriptions)
+    JSONParser parser = new JSONParser();
+
+    for (LodgeDescription entity : descriptions) {
+      List<String> contents = new ArrayList<>();
+      try {
+        JSONArray parsed = (JSONArray) parser.parse(entity.getContent());
+        for (Object item : parsed) contents.add(item.toString());
+      } catch (Exception e) {
+        continue;
+      }
+
       descriptionDTOList.add(LodgeDescriptionDTO.builder()
           .title(entity.getTitle())
-          .content(entity.getContent())
+          .contents(contents)
           .build());
+    }
 
     return LodgeDTO.builder()
         .lodgeId(lodge.getLodgeId())
@@ -35,6 +55,9 @@ public interface LodgeService {
         .latitude(lodge.getLatitude())
         .longitude(lodge.getLongitude())
         .rooms(new ArrayList<>())
+        .reviewCount(reviewCount)
+        .averageReviewScore(averageReviewScore)
+        .bestReview(bestReview)
         .build();
   }
 
@@ -55,5 +78,6 @@ public interface LodgeService {
         .build();
   }
 
-  PagingHandler<LodgeDTO> getLodgeList(int pageNo, ListOptionDTO listOptionDTO, LodgeOptionDTO lodgeOptionDTO);
+
+  Object getLodgeList(int pageNo, ListOptionDTO listOptionDTO, LodgeOptionDTO lodgeOptionDTO);
 }

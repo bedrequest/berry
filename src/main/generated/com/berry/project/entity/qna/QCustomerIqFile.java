@@ -19,6 +19,8 @@ public class QCustomerIqFile extends EntityPathBase<CustomerIqFile> {
 
     public static final QCustomerIqFile customerIqFile = new QCustomerIqFile("customerIqFile");
 
+    public final com.berry.project.entity.QTimeBase _super = new com.berry.project.entity.QTimeBase(this);
+
     public final NumberPath<Long> bno = createNumber("bno", Long.class);
 
     public final StringPath fileName = createString("fileName");
@@ -27,7 +29,11 @@ public class QCustomerIqFile extends EntityPathBase<CustomerIqFile> {
 
     public final NumberPath<Integer> fileType = createNumber("fileType", Integer.class);
 
-    public final DateTimePath<java.time.LocalDateTime> regDate = createDateTime("regDate", java.time.LocalDateTime.class);
+    //inherited
+    public final DateTimePath<java.time.LocalDateTime> modDate = _super.modDate;
+
+    //inherited
+    public final DateTimePath<java.time.LocalDateTime> regDate = _super.regDate;
 
     public final StringPath saveDir = createString("saveDir");
 

@@ -4,6 +4,7 @@ import lombok.*;
 
 import java.util.List;
 
+@Builder
 @Getter
 @Setter
 @ToString
@@ -13,4 +14,5 @@ public class CustomerIqBoardFileDTO {
 
   private CustomerIqBoardDTO boardDTO;
   private List<CustomerIqFileDTO> fileList;
+
 }

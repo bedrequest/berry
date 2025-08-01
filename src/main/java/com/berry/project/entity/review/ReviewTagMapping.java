@@ -21,4 +21,13 @@ public class ReviewTagMapping {
 
     @Column(name = "tag_id", nullable = false)
     private Long tagId;
+
+    // 연관관계 추가
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "review_id", insertable = false, updatable = false)
+    private Review review;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "tag_id", insertable = false, updatable = false)
+    private ReviewTag tag;
 }
