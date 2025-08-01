@@ -219,3 +219,10 @@ p {
     justify-content: center;
   }
 }
+
+.table thead th:nth-child(1) { width: 7%; }   /* No */
+.table thead th:nth-child(2) { width: 13%; }  /* 카테고리 */
+.table thead th:nth-child(3) { width: 40%; }  /* 제목 (넓게) */
+.table thead th:nth-child(4) { width: 15%; }  /* 작성자 */
+.table thead th:nth-child(5) { width: 15%; }  /* 작성일 */
+.table thead th:nth-child(6) { width: 10%; }  /* 진행 */

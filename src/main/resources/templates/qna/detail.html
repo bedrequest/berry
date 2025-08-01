@@ -47,23 +47,34 @@
 
       <!-- 내용 -->
       <div class="form-group">
-      <textarea class="form-control" name="content" id="con" cols="30" rows="10" readonly
-                placeholder="문의 내용을 표시합니다.">[[${customeriqboardfileDTO.boardDTO.content}]]</textarea>
+  <textarea class="form-control" name="content" id="con" cols="30" rows="10" readonly
+            maxlength="1000"
+            placeholder="문의 내용을 표시합니다.">[[${customeriqboardfileDTO.boardDTO.content}]]</textarea>
       </div>
+
+      <div class="char-count-container" style="text-align: right; margin-top: -24px; margin-bottom: 24px;">
+        <div id="charCount" class="char-count" style="display: none;">0 / 1000</div>
+      </div>
+
+
       <!-- 첨부파일 미리보기 -->
       <div class="attached-files" th:if="${customeriqboardfileDTO.fileList != null}">
         <div class="file-list" th:each="file : ${customeriqboardfileDTO.fileList}">
           <div class="file-item">
 
-        <!-- 이미지일 경우 미리보기 -->
-        <img th:if="${file.fileType == 1}"
-             th:src="@{|/upload/qna/${file.saveDir}/${file.uuid}_${file.fileName}|}"
-             class="preview-image" />
+            <th:block th:if="${file.fileType == 1}">
+              <!-- 이미지일 경우 미리보기 -->
+              <img th:src="@{|/upload/qna/${file.saveDir}/${file.uuid}_${file.fileName}|}"
+                   class="preview-image fileX"  />
+                  <button type="button" th:data-uuid="${file.uuid}" class="file-x" style="visibility:hidden;">X</button>
+            </th:block>
 
         <!-- 이미지가 아닐 경우 파일명 링크 -->
-        <a th:if="${file.fileType != 1}"
-           th:href="@{|/upload/qna/${file.saveDir}/${file.uuid}_${file.fileName}|}"
+            <th:block th:if="${file.fileType != 1}">
+        <a class="fileX" th:href="@{|/upload/qna/${file.saveDir}/${file.uuid}_${file.fileName}|}"
            th:text="${file.fileName}" target="_blank" download></a>
+            <button type="button" th:data-uuid="${file.uuid}" class="file-x" style="visibility:hidden;">X</button>
+            </th:block>
 
       </div>
     </div>

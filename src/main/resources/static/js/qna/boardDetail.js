@@ -14,8 +14,12 @@ document.addEventListener('DOMContentLoaded', () => {
   const uploadLabel = document.querySelector('.file-upload label[for="ex_filename"]');
   const previewContainer = document.getElementById('imagePreviewContainer');  // 이미지 미리보기
 
-    const bnoValue = document.querySelector('input[name="bno"]').value;
-  // 🟡 [Modify] 버튼 클릭 시
+  const bnoValue = document.querySelector('input[name="bno"]').value;
+
+  // 글자 수 표시 div
+  const charCount = document.getElementById('charCount');
+
+  // Modify 버튼 클릭 시 처리
   modBtn.addEventListener('click', () => {
     // 제목, 내용, 작성자 이메일 readonly 해제
     title.removeAttribute('readonly');
@@ -28,34 +32,73 @@ document.addEventListener('DOMContentLoaded', () => {
     // 카테고리 select 보이기 및 값 설정
     categorySelect.style.display = 'inline-block';
     categorySelect.value = categoryInput.value;
+    categorySelect.disabled = false;
 
-    // Modify & Delete 숨김
+    // Modify & Delete 버튼 숨김
     modBtn.style.display = 'none';
     delBtn.style.display = 'none';
 
-    // Submit 보이기
+    // Submit 버튼 보이기
     submitBtn.style.display = 'inline-block';
 
     // 업로드 버튼 활성화: label 클래스 제거, input disabled 해제
     if (uploadLabel) {
       uploadLabel.classList.remove('disabled');
+      uploadLabel.style.cursor = 'pointer';
     }
     if (uploadInput) {
       uploadInput.disabled = false;
     }
+
+    // 글자 수 표시 보이기 및 초기화
+    if (charCount) {
+      charCount.style.display = 'block';
+      updateCharCount();
+    }
+
+    // textarea 입력시 자동 높이 조절 및 글자수 업데이트
+    content.style.height = 'auto'; // 초기화
+    content.style.height = content.scrollHeight + 'px';
+
+    content.addEventListener('input', () => {
+      // 자동 높이 조절
+      content.style.height = 'auto';
+      content.style.height = content.scrollHeight + 'px';
+
+      updateCharCount();
+    });
+
+    // file-x 버튼들 보이게 변경 및 삭제 기능 연결
+    let fileDelBtns = document.querySelectorAll(".file-x");
+    fileDelBtns.forEach(btn => {
+      btn.style.visibility = "visible";
+
+      btn.addEventListener('click', (e) => {
+        let uuid = btn.dataset.uuid;
+        // 비동기 전송으로 파일 삭제 요청
+        fileRemoveToServer(uuid).then(result => {
+          if (result == "1") {
+            alert("파일삭제 성공");
+            // 관련 이미지/링크와 버튼 제거
+            const fileXElement = btn.previousElementSibling || btn.parentElement.querySelector('.fileX');
+            if (fileXElement) fileXElement.remove();
+            btn.remove();
+          }
+        });
+      });
+    });
   });
 
-// 삭제버튼
-  delBtn.addEventListener('click',()=>{
-      location.href="/qna/remove?bno="+bnoValue;
+  delBtn.addEventListener('click', () => {
+    location.href = "/qna/remove?bno=" + bnoValue;
   });
 
-  // 🔵 [List] 버튼 클릭 시 목록 페이지로 이동
+  // 리스트 버튼 클릭 시 목록 페이지로 이동
   listBtn.addEventListener('click', () => {
     location.href = "/qna/list";
   });
 
-  // 🟢 파일 선택 시 이미지 미리보기 및 파일명 출력
+  // 파일 선택 시 이미지 미리보기 및 파일명 출력
   if (uploadInput) {
     uploadInput.addEventListener('change', function () {
       const files = Array.from(this.files);
@@ -85,5 +128,43 @@ document.addEventListener('DOMContentLoaded', () => {
         }
       });
     });
+  }
+
+  // 글자수 업데이트 함수
+  function updateCharCount() {
+    if (!charCount || !content) return;
+    const len = content.value.length;
+    charCount.innerText = `${len} / 1000`;
+
+    if (len >= 900) {
+      charCount.classList.add('warning');
+    } else {
+      charCount.classList.remove('warning');
+    }
+  }
+});
+
+// 서버에 파일 삭제 요청
+async function fileRemoveToServer(uuid) {
+  try {
+    const url = `/qna/customeriqfile/${uuid}`;
+    const config = {
+      method: 'delete',
+    }
+    const resp = await fetch(url, config);
+    const result = await resp.text();
+    return result;
+  } catch (error) {
+    console.error(error);
+  }
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+  const content = document.getElementById('con');
+
+  if (content) {
+    // readonly textarea 높이 자동 조절 (수정모드 아니어도)
+    content.style.height = 'auto';       // 초기화
+    content.style.height = content.scrollHeight + 'px';  // 내용에 맞게 높이 조절
   }
 });

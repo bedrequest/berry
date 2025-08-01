@@ -32,17 +32,13 @@
                 type="date"
                 id="start"
                 name="tripStart"
-                th:value="${ph.tripStart}"
-                min="2025-01-01"
-                max="2026-06-01" />
+                />
         <span style="align-self: center;">~</span>
         <input
                 type="date"
                 id="end"
                 name="tripEnd"
-                th:value="${ph.tripEnd}"
-                min="2025-01-01"
-                max="2026-06-01" />
+                 />
       </div>
 
       <!-- 검색줄 -->
@@ -108,7 +104,7 @@
     <a th:href="@{/qna/register}"><button type="button" class="btn btn-primary">작성</button></a>
   </div>
 
-  <!-- 페이지네이션 PagingHandler 있다 침 -->
+  <!-- 페이지네이션 PagingHandler -->
   <nav aria-label="Page navigation example">
     <ul class="pagination justify-content-center">
       <li class="page-item" th:classappend="${ph.hasPrev eq false ? 'disabled' : ''}">
@@ -130,13 +126,25 @@
       </li>
     </ul>
   </nav>
-
-</div>
-
 <script>
-  window.addEventListener('DOMContentLoaded', function () {
-    const today = new Date().toISOString().split('T')[0];
-    document.getElementById('end').value = today;
+  document.addEventListener('DOMContentLoaded', function () {
+    const today = new Date();
+    const todayFormatted = today.toISOString().split('T')[0];
+
+    const lastMonth = new Date(today);
+    lastMonth.setMonth(today.getMonth() - 1);
+    const lastMonthFormatted = lastMonth.toISOString().split('T')[0];
+
+    const startInput = document.getElementById('start');
+    const endInput = document.getElementById('end');
+
+    startInput.value = lastMonthFormatted;
+    endInput.value = todayFormatted;
+
+    startInput.max = todayFormatted;
+    endInput.max = todayFormatted;
   });
 </script>
+</div>
+
 </body>
