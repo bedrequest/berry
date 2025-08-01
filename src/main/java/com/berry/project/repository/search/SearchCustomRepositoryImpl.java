@@ -6,20 +6,19 @@ import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import io.github.crizin.KoreanUtils;
 import jakarta.persistence.EntityManager;
+import jakarta.persistence.Query;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 import static com.berry.project.entity.search.QSearch.search;
 
+@Slf4j
 public class SearchCustomRepositoryImpl implements SearchCustomRepository {
 
-  private final JPAQueryFactory queryFactory;
-
-  public SearchCustomRepositoryImpl(EntityManager em) {
-    this.queryFactory = new JPAQueryFactory(em);
-  }
+  @Autowired
+  private EntityManager entityManager;
 
   @Override
   public List<Search> findThatContains(String keyword) {
@@ -35,18 +34,24 @@ public class SearchCustomRepositoryImpl implements SearchCustomRepository {
       jasoSet.add(jaso);
     }
 
-    BooleanExpression condition = null;
+    StringBuilder queryBuilder = new StringBuilder("select * from search where ");
+    Map<Integer, String> parameters = new HashMap<>();
+    int idx = 1;
     for (String jaso : jasoSet) {
-      String searchBy = "%" + jaso + "%";
-      BooleanExpression entry = search.jasoKeyword.likeIgnoreCase(searchBy)
-          .or(search.jasoDetail.likeIgnoreCase(searchBy));
+      queryBuilder.append("(jaso_keyword like ?").append(idx).append(" or jaso_detail like ?").append(idx).append(")");
+      if (idx < jasoSet.size()) queryBuilder.append(" and ");
 
-      condition = condition == null ? entry : condition.and(entry);
+      parameters.put(idx, "%" + jaso + "%");
+      idx++;
     }
+    queryBuilder.append(" order by char_length(detail)");
 
-    return queryFactory.selectFrom(search)
-        .where(condition)
-        .orderBy(search.lodgeId.asc().nullsFirst())
-        .fetch();
+    log.info(queryBuilder.toString());
+
+    Query query = entityManager.createNativeQuery(queryBuilder.toString(), Search.class);
+    for (int key : parameters.keySet())
+      query.setParameter(key, parameters.get(key));
+
+    return query.getResultList();
   }
 }
