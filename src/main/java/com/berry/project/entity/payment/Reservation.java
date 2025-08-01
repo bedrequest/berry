@@ -6,6 +6,7 @@ import org.hibernate.annotations.CreationTimestamp;
 import org.springframework.cglib.core.Local;
 
 import java.time.LocalDateTime;
+import java.time.OffsetDateTime;
 
 @Table(name="reservation")
 @Entity
@@ -34,12 +35,12 @@ public class Reservation {
   private String orderId;
 
   // 이용 시작일
-  @Column(name="start_date", nullable = false)
-  private LocalDateTime startDate;
+  @Column(name="start_date", nullable = false, columnDefinition = "TIMESTAMP")
+  private OffsetDateTime startDate;
 
   // 이용 종료일
-  @Column(name="end_date", nullable = false)
-  private LocalDateTime endDate;
+  @Column(name="end_date", nullable = false, columnDefinition = "TIMESTAMP")
+  private OffsetDateTime endDate;
 
   // 결제 금액
   @Column(name = "total_amount", nullable = false)
@@ -60,6 +61,6 @@ public class Reservation {
 
   // 예약 시각
   @CreationTimestamp
-  @Column(name="reservation_reg_date")
-  private LocalDateTime reservationRegDate;
+  @Column(name="reservation_reg_date", columnDefinition = "TIMESTAMP")
+  private OffsetDateTime reservationRegDate;
 }

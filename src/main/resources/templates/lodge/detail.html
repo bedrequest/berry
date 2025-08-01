@@ -2,6 +2,7 @@
 <html lang="en"
       xmlns:th="http://www.thymeleaf.org"
       xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      xmlns:sec="http://www.thymeleaf.org/extra/spring-security"
       layout:decorate="~{layout/layout}">
 <section layout:fragment="customStyle">
   <link rel="stylesheet" th:href="@{/css/lodge/detail.css}" />
@@ -11,11 +12,12 @@
 
   <script th:inline="javascript">
     window.lodgeDTO = /*[[${lodgeDTO}]]*/;
-
     const jquerySwiperLink = document.createElement('link');
     jquerySwiperLink.rel = "stylesheet";
     jquerySwiperLink.href = "https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css";
     document.querySelector('head').appendChild(jquerySwiperLink);
+    
+    let user = null;
   </script>
   <div th:insert="~{fragments/search :: search}" class="sticky"></div>
 
@@ -303,6 +305,20 @@
         </div>
       </div>
     </div>
+      
+    <!-- duorpeb, PRG 패턴을 사용하기 위한 div -->
+    <div class="prg"></div>
+
+    <script type="text/javascript" th:src="'https://oapi.map.naver.com/openapi/v3/maps.js?ncpKeyId=' + ${naverMapId}"></script>
+    <script th:inline="javascript">
+      const latitude = /*[[${lodgeDTO.latitude}]]*/,
+      longitude = /*[[${lodgeDTO.longitude}]]*/;
+    </script>
+
+    <script th:src="@{/js/lodge/detail.js}"></script>
+
+    <!-- YSL -->
+    <script th:src="@{/js/payment/paymentBtn.js}"></script>
 
     <script type="text/javascript" th:src="'https://oapi.map.naver.com/openapi/v3/maps.js?ncpKeyId=' + ${naverMapId}"></script>
     <script>

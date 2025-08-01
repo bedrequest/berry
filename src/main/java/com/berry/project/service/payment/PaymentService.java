@@ -4,10 +4,14 @@ import com.berry.project.dto.cupon.CuponDTO;
 import com.berry.project.dto.payment.*;
 import com.berry.project.dto.user.MyPageReservationDTO;
 import com.berry.project.entity.cupon.Cupon;
+import com.berry.project.entity.lodge.Room;
 import com.berry.project.entity.payment.PaymentBeforePayment;
 import com.berry.project.entity.payment.PaymentCancel;
 import com.berry.project.entity.payment.PaymentReceipt;
 import com.berry.project.entity.payment.Reservation;
+import com.berry.project.entity.user.User;
+
+import java.util.List;
 
 public interface PaymentService {
   /** PBPDTO -> PaymentBeforePayment */
@@ -275,5 +279,17 @@ public interface PaymentService {
 
   // return 받은 payment 객체에서 cancels 를 추출해 PaymentCancel TABLE 에 저장
   void insertPaymentCancel(String paymentKey, ReturnCancelsDTO rcdto, String orderId);
+
+  // 결제 페이지 이동 시 정보 - 객실 정보
+  Room getRoomInfo(long roomId);
+
+  // 결제 페이지 이동 시 정보 - 유저 정보
+  User getUserInfo(long userId);
+
+  // 결제 페이지 이동 시 정보 - 쿠폰 정보
+  List<CuponDTO> getCuponList(long userId);
+
+  // 결제 페이지 이동 시 정보 - 쿠폰 개수
+  int getCuponCnt(long userId);
 
 }

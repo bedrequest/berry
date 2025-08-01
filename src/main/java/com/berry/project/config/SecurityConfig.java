@@ -35,6 +35,8 @@ public class SecurityConfig {
     return PasswordEncoderFactories.createDelegatingPasswordEncoder();
   }
 
+  /**
+   * */
   @Bean
   SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
 
@@ -48,6 +50,13 @@ public class SecurityConfig {
                 "/reviews/list/**", "/review-tags/**", "/.well-known/**", "/error/**"
             )
             .permitAll()
+            /** duorpeb, 비로그인 유저가 로그인 버튼 누르는 경우 로그인 페이지로 redirect 를 하기 위한 코드
+             *
+             * > authenticated() 는 익명 사용자도 isAuthenticated()==true 로 처리하기 때문에
+             *   .requestMatchers.authenticated() 를 사용하면 userId=undefined 로 400 ERROR 발생
+             *
+             * */
+            .requestMatchers("/payment/**").fullyAuthenticated()
             .anyRequest().authenticated()
         )
         .formLogin(login -> login

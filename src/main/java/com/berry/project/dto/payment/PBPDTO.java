@@ -1,8 +1,10 @@
 package com.berry.project.dto.payment;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.*;
 
 import java.time.LocalDateTime;
+import java.time.OffsetDateTime;
 
 @Getter
 @Setter
@@ -20,5 +22,7 @@ public class PBPDTO {
   private long strikePrice;
   private long pbpTotalAmount;
   private String orderName;
-  private LocalDateTime orderRegDate;
+
+  @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ssXXX")
+  private OffsetDateTime orderRegDate;
 }

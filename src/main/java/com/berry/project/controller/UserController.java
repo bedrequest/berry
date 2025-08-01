@@ -68,7 +68,7 @@ public class UserController {
 
   // -- 동기 --
   @GetMapping("/login")
-  public void login(){}
+  public void login(@RequestParam(name="redirectTo", required = false) String redirectTo){}
 
   @GetMapping("/signup")
   public String signup(Model model, @RequestParam(required = false) Boolean marketing){
@@ -171,7 +171,12 @@ public class UserController {
       userDTO.setAdult(false);
     }
     userDTO.setEmailCertified(false);
-    
+
+
+    /** userService.registerUser(userDTO)
+     *
+     *  > YSL, registerUser(userDTO) 부분에서 쿠폰 발급 코드 추가
+     * */
     Long userId = userService.registerUser(userDTO);
 
     return (userId > 0) ? "redirect:/" : "/user/join";

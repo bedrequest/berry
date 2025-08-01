@@ -141,7 +141,7 @@
       </div>
       <div class="listBody" th:if="${pagingHandler.totalCount > 0}">
         <ul>
-          <li th:each="lodge:${pagingHandler.list}">
+          <li th:each="lodge : ${pagingHandler.list}">
             <div class="bookmark">
               <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="#999999" class="bi bi-heart-fill" viewBox="0 0 16 16">
                 <path fill-rule="evenodd" d="M8 1.314C12.438-3.248 23.534 4.735 8 15-7.534 4.736 3.562-3.248 8 1.314"/>
@@ -190,7 +190,7 @@
                 th:classappend="${pagingHandler.hasPrev ? '' : 'disabled'}" >
               <div class="page-link">&laquo;</div>
             </li>
-            <th:block th:each="i:${#numbers.sequence(pagingHandler.startPage, pagingHandler.endPage)}"
+            <th:block th:each="i : ${#numbers.sequence(pagingHandler.startPage, pagingHandler.endPage)}"
                       th:if="${pagingHandler.totalCount > 0}">
               <li class="page-item" th:data-pageno="${i}"
                   th:classappend="${pagingHandler.pageNo eq i ? 'active' : ''}">

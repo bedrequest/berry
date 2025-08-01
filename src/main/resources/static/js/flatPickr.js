@@ -17,7 +17,6 @@ flatpickr("#checkInInput, #checkOutInput", {
 
   // 저장 형태 - ISO 문자열 전체 : ""
   //dateFormat: "Z",
-
   // 최소 선택 날짜
   minDate: today,
   // maxDate: new Date(nextYear, maxDate_info.getMonth(), maxDate_info.getDate()),
