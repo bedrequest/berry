@@ -1,0 +1,72 @@
+.flatpickr-months .flatpickr-month{
+  padding-bottom: 16px;
+}
+
+.flatpickr-weekdays {
+  padding-bottom: 5px;
+}
+
+.flatpickr-day{
+  font-weight: 700;
+}
+
+/* 캘린더 헤더 년도 뒤에 “년” 문구 추가 */
+.flatpickr-calendar .flatpickr-current-month .numInputWrapper {
+  margin-top: 1px;
+  margin-left: 26px;
+  position: relative;           /* ::after를 절대위치로 배치하기 위해 */
+  display: inline-block;        /* 내부 크기를 감싸도록 */
+}
+
+.flatpickr-calendar .flatpickr-current-month .numInputWrapper::after {
+  line-height: 6px;
+  content: '년';
+  position: absolute;
+  top: 50%;
+  right: -0.3em;                /* 필요에 따라 조정 */
+  transform: translateY(-50%);
+  pointer-events: none;         /* 클릭 방해 방지 */
+  font-size: 1.0em;             /* input 폰트 크기에 맞춰 조정 */
+  font-weight: 700;
+  color: white;                  /* 필요에 따라 색상 */
+}
+
+span.flatpickr-weekday{
+  font-size: 1.2em !important;
+  color: white !important;
+}
+
+/* monthSelectorType="dropdown" 인 경우: select 래퍼(span) 에 붙이기 */
+.flatpickr-calendar .flatpickr-current-month .flatpickr-monthDropdown-months {
+  position: relative;
+  display: inline-block;
+}
+
+.flatpickr-calendar .flatpickr-current-month .cur-month::after {
+  vertical-align: middle;
+  content: '월';
+  position: absolute;
+  top: 50%;
+  left: 4.7em;   /* 필요에 따라 조정 */
+  transform: translateY(-50%);
+  pointer-events: none;
+  font-size: 1.0em;             /* input 폰트 크기에 맞춰 조정 */
+  color: white;
+}
+
+/* 헤더의 연도 입력 자체를 클릭∙입력 불가 처리 */
+.flatpickr-current-month .numInputWrapper input.cur-year {
+  pointer-events: none;
+  font-weight: 700;
+  color: white !important;
+}
+
+/*.flatpickr-current-month input.cur-year[disabled]{
+  color: rgba(255, 255, 255);
+}*/
+
+/* 연도 선택 화살표 없애기 */
+.flatpickr-current-month .numInputWrapper .arrowUp,
+.flatpickr-current-month .numInputWrapper .arrowDown{
+  display: none !important;
+}

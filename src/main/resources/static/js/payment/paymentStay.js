@@ -12,6 +12,16 @@ const requiredAgrees = document.querySelectorAll('.terms-req');
 const paymentInfo = /*[[${payment_info}]]*/ null;
 
 
+/** 전체 이벤트 리스너
+ * 
+ *  > user_id 를 활용해 서버에서 해당 유저가 가진 쿠폰 Record (List<Cupon>) 를 가져오기
+ * 
+ */
+document.addEventListener('DOMContentLoaded', () => {
+
+})
+
+
 /** 전체 동의 이벤트 리스너 */
 allAgree.addEventListener('change', (e) => {
   // 확인,
@@ -78,11 +88,11 @@ paymentButton.addEventListener('click', async () => {
      // room_id (임시 생성)
     const roomId_info = 13;
      // user_id 
-    const userId_info = 26;
+    const userId_info = 9;
      // 이용 시작일 (reservation TABLE - stayTime)
-    const startDate_info = new Date("2025-07-21T11:00:00.000Z").toISOString();
+    const startDate_info = new Date("2025-08-25T11:00:00.000Z").toISOString();
      // 이용 종료일
-    const endDate_info = new Date("2025-07-22T12:00:00.000Z").toISOString();
+    const endDate_info = new Date("2025-08-30T12:00:00.000Z").toISOString();
      // 결제 금액은 위에서 사용된 총 결제 가격을 사용
   
      // 숙박 인원 (reservation TABLE - guestsAmount)
@@ -145,7 +155,7 @@ paymentButton.addEventListener('click', async () => {
           method : result.method,
           amount: {
             currency: "KRW",
-            value: result.pbpTotalAmount 
+            value: result.pbpTotalAmount
           }, // 실제 결제 금액
           orderId: result.orderId, // 주문 ID (실제로는 고유하게 생성해야 함)
           orderName: result.orderName, // 주문명

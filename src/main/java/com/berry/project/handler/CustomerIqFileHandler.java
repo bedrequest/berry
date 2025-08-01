@@ -25,10 +25,13 @@ public class CustomerIqFileHandler {
     // 날짜 폴더 경로 생성
     LocalDate date = LocalDate.now();
     String today = date.toString().replace("-", File.separator);
-    File folders = new File(UP_DIR, today);
+    File folders1 = new File(UP_DIR, "qna");
+    File folders = new File(folders1, today);
     if (!folders.exists()) {
       folders.mkdirs();
     }
+
+    log.info("folders {}", folders);
 
     // 파일별 처리
     for (MultipartFile file : files) {

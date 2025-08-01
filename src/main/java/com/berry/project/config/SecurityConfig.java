@@ -35,6 +35,8 @@ public class SecurityConfig {
     return PasswordEncoderFactories.createDelegatingPasswordEncoder();
   }
 
+  /**
+   * */
   @Bean
   SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
 
@@ -45,9 +47,17 @@ public class SecurityConfig {
                 "/","/css/**","/js/**","/image/**","/user/signup/**","/user/login/**"
                 ,"/user/duplicateCheckedEmail/**",
                 "/lodge/**", "/search/**",
-                "/reviews/list/**", "/review-tags/**","/.well-known/**","/error/**"
+                "/reviews/list/**", "/review-tags/**", "/.well-known/**", "/error/**",
+                "/reviews/view/**"
             )
             .permitAll()
+            /** duorpeb, 비로그인 유저가 로그인 버튼 누르는 경우 로그인 페이지로 redirect 를 하기 위한 코드
+             *
+             * > authenticated() 는 익명 사용자도 isAuthenticated()==true 로 처리하기 때문에
+             *   .requestMatchers.authenticated() 를 사용하면 userId=undefined 로 400 ERROR 발생
+             *
+             * */
+            .requestMatchers("/payment/**").fullyAuthenticated()
             .anyRequest().authenticated()
         )
         .formLogin(login -> login
@@ -59,7 +69,7 @@ public class SecurityConfig {
             .permitAll()
         )
         .oauth2Login(oauth2 -> oauth2
-            .loginPage("/user/test") // 테스트 완료 후 실제 로그인 페이지로 변경
+            .loginPage("/user/login") // 테스트 완료 후 실제 로그인 페이지로 변경
             .defaultSuccessUrl("/") // 테스트 완료 후 success handler 로 변경
             .userInfoEndpoint(userInfo -> userInfo
             .userService(customOAuth2UserService)

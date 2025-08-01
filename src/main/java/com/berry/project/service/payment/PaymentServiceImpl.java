@@ -1,22 +1,28 @@
 package com.berry.project.service.payment;
 
+import com.berry.project.dto.cupon.CuponDTO;
 import com.berry.project.dto.payment.MergePayloadDTO;
 import com.berry.project.dto.payment.PBPDTO;
 import com.berry.project.dto.payment.PaymentReceiptDTO;
 import com.berry.project.dto.payment.ReturnCancelsDTO;
+import com.berry.project.entity.cupon.Cupon;
+import com.berry.project.entity.lodge.Room;
 import com.berry.project.entity.payment.PaymentBeforePayment;
 import com.berry.project.entity.payment.PaymentReceipt;
 import com.berry.project.entity.payment.Reservation;
-import com.berry.project.repository.payment.PBPRepository;
-import com.berry.project.repository.payment.PaymentCancelRepository;
-import com.berry.project.repository.payment.PaymentReceiptRepository;
-import com.berry.project.repository.payment.ReservationRepository;
+import com.berry.project.entity.user.User;
+import com.berry.project.repository.lodge.RoomRepository;
+import com.berry.project.repository.payment.*;
+import com.berry.project.repository.user.UserRepository;
+
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.OffsetDateTime;
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -32,6 +38,12 @@ public class PaymentServiceImpl implements PaymentService {
   private final PaymentCancelRepository paymentCancelRepository;
    // PaymentReceipt TABLE
   private final PaymentReceiptRepository paymentReceiptRepository;
+   // Cupon TABLE
+  private final CuponRepository cuponRepository;
+   // Room TABLE
+  private final RoomRepository roomRepository;
+   // User TABLE
+  private final UserRepository userRepository;
 
   
   /** insertMergePayload(MergePayloadDTO mpdto) 
@@ -132,5 +144,45 @@ public class PaymentServiceImpl implements PaymentService {
         () -> new EntityNotFoundException("Can't found this Entity..!"));
 
     reservation.setBookingStatus("CANCELED");
+  }
+
+  /** 결제 페이지 이동 시 정보 - 객실 정보 가져오기  */
+  @Override
+  public Room getRoomInfo(long roomId) {
+    Room room = roomRepository.findById(roomId).orElseThrow(() ->
+        new EntityNotFoundException("Can't found this Entity..!"));
+
+    return room;
+  }
+
+
+  /** 결제 페이지 이동 시 정보 - 유저 정보 가져오기 */
+  @Override
+  public User getUserInfo(long userId) {
+    User user = userRepository.findById(userId).orElseThrow(() ->
+        new EntityNotFoundException("Can't found this Entity..!"));
+
+    return user;
+  }
+
+
+  /** 결제 페이지 이동 시 정보 - 쿠폰 정보 */
+  @Override
+  public List<CuponDTO> getCuponList(long userId) {
+    OffsetDateTime currentTime = OffsetDateTime.now();
+
+    List<Cupon> cuponList = cuponRepository.findValidCuponsByUserId(userId, currentTime);
+
+    List<CuponDTO> cdtoList = cuponList.stream().map(this::convertCuponEntityToCuponDto).toList();
+
+    return cdtoList;
+  }
+
+  /** 결제 페이지 이동 시 정보 - 쿠폰 개수 */
+  @Override
+  public int getCuponCnt(long userId) {
+    OffsetDateTime currentTIme = OffsetDateTime.now();
+
+    return cuponRepository.countValidCuponsByUserId(userId, currentTIme);
   }
 }

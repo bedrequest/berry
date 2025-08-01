@@ -22,10 +22,13 @@
                     </a>
                     <a href="/user/login"  class="btn-login" sec:authorize="isAnonymous()">로그인</a>
                     <a href="/user/logout"  class="btn-login" sec:authorize="isAuthenticated()">로그아웃</a>
-                    <a href="/user/myPage"  class="btn-myPage" sec:authorize="isAuthenticated()">마이페이지</a>
-                    <a href="/user/signup" class="btn-signup" sec:authorize="isAnonymous()" >회원가입</a>
+                    <a href="/user/myPage"  class="btn-myPage" sec:authorize="isAuthenticated()">
+                        <img src="/image/icon-account.png" alt="마이페이지" class="header-icon" />
+                    </a>
                 </div>
             </div>
         </div>
-    </header>
+      </div>
+    </div>
+  </header>
 </div>
