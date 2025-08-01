@@ -7,6 +7,7 @@ import com.berry.project.dto.payment.ReturnCancelsDTO;
 import com.berry.project.entity.payment.PaymentBeforePayment;
 import com.berry.project.entity.payment.PaymentReceipt;
 import com.berry.project.entity.payment.Reservation;
+import com.berry.project.repository.lodge.LodgeRepository;
 import com.berry.project.repository.payment.PBPRepository;
 import com.berry.project.repository.payment.PaymentCancelRepository;
 import com.berry.project.repository.payment.PaymentReceiptRepository;
@@ -32,6 +33,9 @@ public class PaymentServiceImpl implements PaymentService {
   private final PaymentCancelRepository paymentCancelRepository;
    // PaymentReceipt TABLE
   private final PaymentReceiptRepository paymentReceiptRepository;
+   // 해찬 LodgeRepository
+  private final LodgeRepository lodgeRepository;
+
 
   
   /** insertMergePayload(MergePayloadDTO mpdto) 
@@ -133,4 +137,5 @@ public class PaymentServiceImpl implements PaymentService {
 
     reservation.setBookingStatus("CANCELED");
   }
+
 }

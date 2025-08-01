@@ -96,22 +96,28 @@ inputs.forEach(input => {
       confirm = true;
     }
     
+    // text 초기화
+    document.getElementById("updateSubInfo").innerText = "";
     // 이메일 중복검사 결과값 반영
-    if(isValidEmail && input.id == "user_email"){
+    if(isValidEmail && input.id == "user_email" && input != ""){
       
       duplicateEmailCheckedToServer(input.value).then(result => {
         console.log(result);
         if(result === "ok"){
           duplicate = true;
+          document.getElementById("updateSubInfo").style.color = "green";
+          document.getElementById("updateSubInfo").innerText = "사용 가능한 이메일입니다.";
           
         }else{
           console.log("중복");
           duplicate = false;
+          document.getElementById("updateSubInfo").style.color = "red";
+          document.getElementById("updateSubInfo").innerText = "중복된 이메일입니다.";
         }
+        document.getElementById("signupButton").disabled = !(confirm && finalValid && duplicate);
       })
       
     }
-    document.getElementById("signupButton").disabled = !(confirm && finalValid && duplicate);
   })
 })
 

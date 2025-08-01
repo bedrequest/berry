@@ -276,6 +276,7 @@
       log.info(">> naver year >> {}",birthYear);
       log.info(">> naver day >> {}",birthDay);
       log.info("naver login------------------------");
+      userPhone.replace("-", "");
 
       // 로그인 시 들어오는 데이터 DB 에 저장하기
       UserDTO userDTO = new UserDTO();
@@ -348,6 +349,7 @@
       log.info(">> kakao day >> {}",birthDay);
       log.info("kakao login------------------------");
       userPhone = userPhone.replace("+82 ", "0");
+      userPhone = userPhone.replace("-", "");
 
       // 로그인 시 들어오는 데이터 DB 에 저장하기
       UserDTO userDTO = new UserDTO();

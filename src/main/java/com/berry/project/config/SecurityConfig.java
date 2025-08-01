@@ -59,7 +59,7 @@ public class SecurityConfig {
             .permitAll()
         )
         .oauth2Login(oauth2 -> oauth2
-            .loginPage("/user/test") // 테스트 완료 후 실제 로그인 페이지로 변경
+            .loginPage("/user/login") // 테스트 완료 후 실제 로그인 페이지로 변경
             .defaultSuccessUrl("/") // 테스트 완료 후 success handler 로 변경
             .userInfoEndpoint(userInfo -> userInfo
             .userService(customOAuth2UserService)

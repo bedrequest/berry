@@ -42,7 +42,7 @@ public class User extends TimeBase {
   private String birthday; // 생년월일 yyyymmdd 의 형태 (주민번호 앞자리와 동일)
 
   @Column(nullable = false, columnDefinition = "Boolean default false", name = "is_mobile_certified")
-  private boolean isMobileCertified;
+  private boolean isMobileCertified; // 모바일 인증 여부
 
   @Column(nullable = false, columnDefinition = "Boolean default false", name = "user_term_option")
   private boolean userTermOption; // 마켓팅 수신 동의

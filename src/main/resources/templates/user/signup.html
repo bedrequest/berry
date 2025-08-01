@@ -33,7 +33,10 @@
       <form th:action="@{/user/signup}" method="post">
         <input type="hidden" name="userTermOption" th:value="${userTermOption}">
         <div class="form-group">
-          <label for="user_email">이메일</label>
+          <div class="signup-info-group">
+            <label for="user_email">이메일</label>
+            <p class="signup-subInfo-tit" id="updateSubInfo"></p>
+          </div>
           <input class="user-input" type="email" id="user_email" name="userEmail" placeholder="example@domain.com" required>
           <p id="okText"></p>
         </div>
@@ -58,8 +61,8 @@
         </div>
 
         <div class="form-group">
-          <label for="user_phone">휴대폰 번호</label>
-          <input class="user-input" type="text" id="user_phone" name="userPhone" placeholder="01012345678">
+          <label for="user_phone">전호번호</label>
+          <input class="user-input" type="text" id="user_phone" name="userPhone" placeholder="01012345678(-를 제외하고 입력">
         </div>
 
         <button type="submit" class="signup-btn" id="signupButton" disabled>가입하기</button>

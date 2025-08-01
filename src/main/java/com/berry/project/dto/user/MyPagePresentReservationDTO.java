@@ -1,16 +1,9 @@
-package com.berry.project.dto.payment;
-
-import lombok.*;
+package com.berry.project.dto.user;
 
 import java.time.LocalDateTime;
 
-@Getter
-@Setter
-@ToString
-@AllArgsConstructor
-@NoArgsConstructor
-@Builder
-public class ReservationDTO {
+public class MyPagePresentReservationDTO {
+
   private long reservationId;
   private long roomId;
   private long userId;
@@ -22,6 +15,10 @@ public class ReservationDTO {
   private String bookingStatus;
   private String reservationType;
   private LocalDateTime reservationRegDate;
-
+  // lodge
+  private String lodgeName;
+  // room
+  private String roomImg;
+  private String roomName;
 
 }
