@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
+      xmlns:layout="http://www.ultraq.next.nz/thymeleaf/layout"
+      layout:decorate="~{layout/layout}">
+
+<section layout:fragment="customStyle">
+  <link rel="stylesheet" th:href="@{/css/common.css}" />
+  <link rel="stylesheet" th:href="@{/css/review/reviews.css}" />
+</section>
+
+<div layout:fragment="content" class="edit-review-container">
+  <h1 class="edit-title">리뷰 수정</h1>
+
+  <!-- 완전 manual 바인딩: th:object 제거 -->
+  <form th:action="@{/reviews/modify}"
+        method="post" enctype="multipart/form-data"
+        id="editReviewForm" class="review-form">
+    <input type="hidden" sec:csrfInput=""/>
+
+    <!-- 히든 필드: name/value 직접 -->
+    <input type="hidden" name="reviewId"
+           th:value="${reviewRequest.reviewId}"/>
+    <input type="hidden" name="lodgeId"
+           th:value="${reviewRequest.lodgeId}"/>
+
+    <!-- 별점: 이미 name="rating" 으로 되어 있으므로 그대로 -->
+    <div class="form-group">
+      <label class="form-label d-block">별점</label>
+      <div class="star-rating">
+        <input type="radio" id="star5" name="rating" value="5"
+               th:checked="${reviewRequest.rating == 5}"/><label for="star5">★</label>
+        <input type="radio" id="star4" name="rating" value="4"
+               th:checked="${reviewRequest.rating == 4}"/><label for="star4">★</label>
+        <input type="radio" id="star3" name="rating" value="3"
+               th:checked="${reviewRequest.rating == 3}"/><label for="star3">★</label>
+        <input type="radio" id="star2" name="rating" value="2"
+               th:checked="${reviewRequest.rating == 2}"/><label for="star2">★</label>
+        <input type="radio" id="star1" name="rating" value="1"
+               th:checked="${reviewRequest.rating == 1}"/><label for="star1">★</label>
+      </div>
+    </div>
+
+    <!-- 태그: th:field 제거, name="tagNames" -->
+    <div class="form-group">
+      <label class="form-label d-block">태그 (최대 3개)</label>
+      <div class="tags-group">
+        <div th:each="tag : ${tags}" class="tag-item">
+          <input type="checkbox"
+                 name="tagNames"
+                 th:value="${tag.tagName}"
+                 th:checked="${reviewRequest.tagNames != null and reviewRequest.tagNames.contains(tag.tagName)}"
+                 th:id="${'tag_'+tag.tagName}"
+                 class="form-check-input"/>
+          <label class="form-check-label"
+                 th:for="${'tag_'+tag.tagName}"
+                 th:text="${tag.tagName}">태그명</label>
+        </div>
+      </div>
+    </div>
+
+    <!-- 기존 이미지 삭제 옵션 -->
+    <div class="form-group" th:if="${existingImages}">
+      <label class="form-label d-block">기존 이미지 (삭제하려면 체크)</label>
+      <div class="images-group">
+        <label th:each="img : ${existingImages}" class="existing-image" style="position:relative; display:inline-block;">
+          <input type="checkbox"
+                 name="deleteImageUuids"
+                 th:value="${img.reviewUuid}"
+                 class="form-check-input"
+                 style="z-index:2; position:absolute; top:4px; left:4px;"/>
+          <img th:src="@{'/upload/' + ${img.reviewSaveDir} + '/' + ${img.reviewUuid} + '_th_' + ${img.reviewFileName}}"
+               alt="기존 리뷰 이미지"
+               class="review-thumbnail"
+               onerror="this.parentElement.style.display='none';"/>
+        </label>
+      </div>
+    </div>
+
+    <!-- 새 이미지 업로드 + 미리보기 -->
+    <div class="form-group">
+      <label for="files" class="form-label d-block">새 이미지 첨부</label>
+      <input type="file"
+             name="files"
+             id="files"
+             multiple
+             class="form-control"/>
+      <div id="newImagePreview" class="images-group mt-3"></div>
+    </div>
+
+    <!-- 내용: name="content" -->
+    <div class="form-group">
+      <label for="content" class="form-label d-block">리뷰 내용</label>
+      <textarea name="content"
+                id="content"
+                class="form-control"
+                rows="4"
+                th:text="${reviewRequest.content}"></textarea>
+    </div>
+
+    <!-- 액션 버튼 -->
+    <div class="form-actions">
+      <button type="submit" class="btn-text">수정하기</button>
+      <button type="button" class="btn-text" onclick="history.back()">취소</button>
+    </div>
+  </form>
+</div>
+
+<script th:src="@{/js/review/reviews.js}"></script>
+
+</html>

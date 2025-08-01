@@ -1,14 +1,30 @@
 package com.berry.project.controller;
 
+import com.berry.project.dto.review.ReviewImageDTO;
 import com.berry.project.dto.review.ReviewRequestDTO;
 import com.berry.project.dto.review.ReviewResponseDTO;
+import com.berry.project.dto.review.TagCountDTO;
+import com.berry.project.dto.user.UserDTO;
+import com.berry.project.repository.review.ReviewImageRepository;
 import com.berry.project.service.review.ReviewService;
 import com.berry.project.service.review.ReviewTagService;
+import com.berry.project.service.review.ReviewStatsService;
+import com.berry.project.service.user.UserService;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Sort;
+import org.springframework.http.MediaType;
+import org.springframework.security.authentication.AnonymousAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
+
+import java.util.Comparator;
+import java.util.List;
 
 @Controller
 @RequiredArgsConstructor
@@ -16,69 +32,207 @@ import org.springframework.web.bind.annotation.*;
 public class ReviewController {
     private final ReviewService reviewService;
     private final ReviewTagService reviewTagService;
+    private final ReviewStatsService reviewStatsService;
+    private final UserService userService;
+    private final ReviewImageRepository reviewImageRepository;
+    private final ObjectMapper objectMapper;
 
-    // 1) 리뷰 목록 조회 (페이징 포함)
-    @GetMapping("/list/{lodgeId}/{page}")
-    public String list(
-            @PathVariable Long lodgeId,
-            @PathVariable int page,
-            Model model
-    ) {
+
+    //  리뷰 fragment 렌더링
+    @GetMapping("/view")
+    public String reviewFragment(
+            @RequestParam Long lodgeId,
+            @RequestParam(name = "page", defaultValue = "1") int page,
+            @RequestParam(name = "sort", defaultValue = "newest") String sort,
+            Model model,
+            Authentication authentication
+    ) throws com.fasterxml.jackson.core.JsonProcessingException {
+        // 1) 페이징·정렬 (sort: "newest", "oldest", "likes")
         int size = 5;
         Page<ReviewResponseDTO> pageData =
-                reviewService.getReviewsPageByLodgeId(lodgeId, page - 1, size);
+                reviewService.getReviewsPageByLodgeId(lodgeId, page - 1, size, sort);
 
+        // 2) 페이징 계산
+        int currentPage   = pageData.getNumber() + 1;
+        int totalPages    = pageData.getTotalPages();
         int pageGroupSize = 5;
-        int currentPage = pageData.getNumber() + 1; // 1-based
-        int totalPages = pageData.getTotalPages();
-        int startPage = (currentPage - 1) / pageGroupSize * pageGroupSize + 1;
-        int endPage   = Math.min(startPage + pageGroupSize - 1, totalPages);
+        int startPage     = (currentPage - 1) / pageGroupSize * pageGroupSize + 1;
+        int endPage       = Math.min(startPage + pageGroupSize - 1, totalPages);
 
-        model.addAttribute("reviews",      pageData.getContent());
-        model.addAttribute("lodgeId",      lodgeId);
-        model.addAttribute("currentPage",  currentPage);
-        model.addAttribute("startPage",    startPage);
-        model.addAttribute("endPage",      endPage);
-        model.addAttribute("hasPrev",      startPage > 1);
-        model.addAttribute("hasNext",      endPage < totalPages);
-        model.addAttribute("totalPages",   totalPages);
-        model.addAttribute("tags",         reviewTagService.getAllTags());
-        model.addAttribute("reviewRequest", new ReviewRequestDTO());
-        return "/review/reviews";
+        model.addAttribute("reviews",     pageData.getContent());
+        model.addAttribute("currentPage", currentPage);
+        model.addAttribute("startPage",   startPage);
+        model.addAttribute("endPage",     endPage);
+        model.addAttribute("hasPrev",     startPage > 1);
+        model.addAttribute("hasNext",     endPage < totalPages);
+        model.addAttribute("sort",        sort);
+        model.addAttribute("lodgeId",     lodgeId);
+
+        // 3) 작성 폼·태그·통계
+        model.addAttribute("reviewRequest",
+                ReviewRequestDTO.builder().lodgeId(lodgeId).build());
+        model.addAttribute("tags", reviewTagService.getAllTags());
+        List<TagCountDTO> tagStats = reviewStatsService.getTagStatsByLodge(lodgeId);
+        model.addAttribute("tagStats", tagStats);
+        List<TagCountDTO> topTags = tagStats.stream()
+                .sorted(Comparator.comparingLong(TagCountDTO::count).reversed())
+                .limit(3)
+                .toList();
+        model.addAttribute("topTags", topTags);
+
+        // 차트용 레이블·카운트 리스트 생성
+        List<String> tagLabels = tagStats.stream()
+                .map(TagCountDTO::tagName)
+                .toList();
+        List<Long> tagCounts = tagStats.stream()
+                .map(TagCountDTO::count)
+                .toList();
+
+        // JSON 직렬화하여 모델에 추가
+        model.addAttribute("tagLabelsJson", objectMapper.writeValueAsString(tagLabels));
+        model.addAttribute("tagCountsJson", objectMapper.writeValueAsString(tagCounts));
+
+        // 기존 리스트도 유지
+        model.addAttribute("tagLabels", tagLabels);
+        model.addAttribute("tagCounts", tagCounts);
+
+        // 4) 현재 사용자 이메일
+        String currentUserEmail = null;
+        if (authentication != null && authentication.isAuthenticated()
+                && !(authentication instanceof AnonymousAuthenticationToken)) {
+            Object principal = authentication.getPrincipal();
+            currentUserEmail = principal instanceof OAuth2User
+                    ? ((OAuth2User) principal).getAttribute("email")
+                    : authentication.getName();
+        }
+        model.addAttribute("currentUserEmail", currentUserEmail);
+
+        // 5) 평균 평점과 총 리뷰 수 추가
+        double avgRating  = reviewStatsService.getAverageRatingByLodge(lodgeId);
+        long totalReviews = reviewStatsService.getTotalReviewCountByLodge(lodgeId);
+        model.addAttribute("avgRating",    String.format("%.1f", avgRating));
+        model.addAttribute("totalReviews", totalReviews);
+
+        return "fragments/review :: review";
     }
 
-    // 2) 리뷰 작성
-    @PostMapping("/post")
-    public String post(@ModelAttribute("reviewRequest") ReviewRequestDTO dto) {
-        reviewService.createReview(dto);
-        return "redirect:/reviews/list/" + dto.getLodgeId() + "/1";
+
+    //  리뷰 작성
+    @PostMapping(value = "/post", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public String post(
+            @ModelAttribute("reviewRequest") ReviewRequestDTO dto,
+            @RequestParam(name = "files", required = false) MultipartFile[] files,
+            Authentication authentication
+    ) {
+        if (authentication == null || !authentication.isAuthenticated()) {
+            return "redirect:/user/login";
+        }
+        if (authentication.getPrincipal() instanceof OAuth2User) {
+            String userUid = authentication.getName();
+            UserDTO userDTO = userService.isSocialDuplicateUser(userUid);
+            if (userDTO == null) {
+                return "redirect:/user/login";
+            }
+            dto.setUserId(userDTO.getUserId());
+            dto.setUserEmail(userDTO.getUserEmail());
+        } else {
+            String email = authentication.getName();
+            UserDTO userDTO = userService.selectUserEmail(email);
+            if (userDTO == null) {
+                return "redirect:/user/login";
+            }
+            dto.setUserId(userDTO.getUserId());
+            dto.setUserEmail(email);
+        }
+        ReviewResponseDTO result = reviewService.createReview(dto, files);
+        return "redirect:/lodge/detail/"
+                + dto.getLodgeId()
+                + "?page=1#review-"
+                + result.getReviewId();
     }
 
-    // 3) 리뷰 수정
+    //  리뷰 수정 폼
+    @GetMapping("/modify")
+    public String showModifyForm(
+            @RequestParam Long reviewId,
+            Model model
+    ) {
+        ReviewResponseDTO existing = reviewService.getReview(reviewId);
+        ReviewRequestDTO formDto = new ReviewRequestDTO();
+        formDto.setReviewId(existing.getReviewId());
+        formDto.setLodgeId(existing.getLodgeId());
+        formDto.setRating(existing.getRating());
+        formDto.setContent(existing.getContent());
+        formDto.setTagNames(existing.getTags());
+
+        List<ReviewImageDTO> existingImages =
+                reviewImageRepository.findByReviewId(reviewId)
+                        .stream()
+                        .map(ReviewImageDTO::fromEntity)
+                        .toList();
+
+        model.addAttribute("reviewRequest", formDto);
+        model.addAttribute("tags", reviewTagService.getAllTags());
+        model.addAttribute("existingImages", existingImages);
+        return "review/review_modify";
+    }
+
+    //  리뷰 수정 처리
     @PostMapping("/modify")
-    public String modify(@ModelAttribute("reviewRequest") ReviewRequestDTO dto) {
-
-        reviewService.updateReview(dto.getReviewId(), dto);
-        return "redirect:/reviews/list/" + dto.getLodgeId() + "/1";
+    public String modifySubmit(
+            @ModelAttribute("reviewRequest") ReviewRequestDTO dto,
+            @RequestParam(name = "files", required = false) MultipartFile[] files,
+            @RequestParam(name = "deleteImageUuids", required = false) List<String> deleteImageUuids
+    ) {
+        ReviewResponseDTO updated = reviewService.updateReview(
+                dto.getReviewId(),
+                dto,
+                files,
+                deleteImageUuids
+        );
+        return "redirect:/lodge/detail/"
+                + dto.getLodgeId()
+                + "?page=1#review-"
+                + updated.getReviewId();
     }
 
-    // 4) 리뷰 삭제
+    //  리뷰 삭제
     @GetMapping("/remove/{reviewId}")
     public String remove(@PathVariable Long reviewId) {
         ReviewResponseDTO dto = reviewService.getReview(reviewId);
         reviewService.deleteReview(reviewId);
-        return "redirect:/reviews/list/" + dto.getLodgeId() + "/1";
+        return "redirect:/lodge/detail/"
+                + dto.getLodgeId()
+                + "?page=1#reviewArea";
     }
 
-    // 조회용 임시
-    @GetMapping
-    public String listByParams(
-            @RequestParam Long lodgeId,
-            @RequestParam(defaultValue = "1") int page,
-            Model model
+    //  좋아요 토글
+    @PostMapping("/{reviewId}/like")
+    public String like(
+            @PathVariable Long reviewId,
+            @RequestParam("pageParam") int pageParam,
+            Authentication authentication
     ) {
-        // 내부에서 아까 만든 list() 호출
-        return list(lodgeId, page, model);
+        String identifier = authentication.getName();
+        reviewService.toggleLike(reviewId, identifier);
+        Long lodgeId = reviewService.getReview(reviewId).getLodgeId();
+        return "redirect:/lodge/detail/" + lodgeId
+                + "?page=" + pageParam
+                + "#review-" + reviewId;
     }
 
+    //  신고 토글
+    @PostMapping("/{reviewId}/report")
+    public String report(
+            @PathVariable Long reviewId,
+            @RequestParam("pageParam") int pageParam,
+            Authentication authentication
+    ) {
+        String identifier = authentication.getName();
+        reviewService.toggleReport(reviewId, identifier);
+        Long lodgeId = reviewService.getReview(reviewId).getLodgeId();
+        return "redirect:/lodge/detail/" + lodgeId
+                + "?page=" + pageParam
+                + "#review-" + reviewId;
+    }
 }

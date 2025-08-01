@@ -5,6 +5,7 @@
       layout:decorate="~{layout/layout}">
 <section layout:fragment="customStyle">
   <link rel="stylesheet" th:href="@{/css/lodge/detail.css}" />
+  <link rel="stylesheet" th:href="@{/css/review/reviews.css}" />
 </section>
 <div layout:fragment="content">
 
@@ -48,7 +49,12 @@
     <div id="facility"></div>
     <div id="description"></div>
     <div id="location"></div>
-    <div id="reviewArea"></div>
+
+    <!-- 리뷰 영역: 빈 상태로 두고 JS로 비동기 로드 -->
+    <div id="reviewArea"
+         th:attr="data-url=@{/reviews/view(lodgeId=${lodgeDTO.lodgeId},page=1,sort='newest')}">
+      <p class="text-center text-muted">리뷰 로딩 중…</p>
+    </div>
 
   </div>
 

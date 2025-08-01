@@ -1,0 +1,250 @@
+<div xmlns:th="http://www.thymeleaf.org"
+     xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
+     th:fragment="review(reviews, lodgeId, currentPage, startPage, endPage, hasPrev, hasNext, reviewRequest, tags, currentUserEmail, sort, topTags, tagStats, tagLabels, tagCounts, avgRating, totalReviews)">
+
+  <!-- 1) 리뷰 요약 통계 -->
+  <section class="review-summary mb-4">
+    <h5 class="section-title text-danger" style="color:#E74B60;">리얼 리뷰</h5>
+    <div class="review-stats d-flex align-items-center">
+      <div class="avg-rating">★<span th:text="${avgRating}">4.5</span>점</div>
+      <div class="total-count ms-3">총<span th:text="${totalReviews}">123</span>명 평가</div>
+    </div>
+  </section>
+
+  <!-- 2) 태그 & 차트 -->
+  <section class="tag-chart-section mb-4">
+    <h5 class="section-title mb-2 text-danger" style="color:#E74B60;">이런점이 좋았어요!</h5>
+    <div class="tag-chart-container mb-4 d-flex">
+      <!-- 카드 그룹 -->
+      <div class="tag-cards">
+        <div th:each="tag : ${topTags}"
+             class="tag-card d-flex justify-content-center align-items-center">
+          <span th:text="${tag.tagName}">경치가 좋아요</span>
+          <span th:text="${tag.count}" class="fw-bold ms-2">123</span>
+        </div>
+      </div>
+      <!-- 차트 영역 -->
+      <div class="tag-chart flex-shrink-0">
+        <canvas id="tagChart"></canvas>
+        <div id="reviewChartData"
+             th:attr="data-labels=${tagLabelsJson},data-counts=${tagCountsJson}"
+             style="display:none;"></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 3) 리뷰 작성 + 정렬 컨트롤 -->
+  <section class="review-control-section mb-4">
+    <div class="review-control-wrapper">
+      <!-- 왼쪽: 리뷰 작성 버튼 -->
+      <div class="review-form-toggle">
+        <button id="toggleReviewFormBtn" class="btn-text">리뷰 작성</button>
+      </div>
+      <!-- 오른쪽: 정렬 드롭다운 -->
+      <div class="sort-dropdown">
+        <button id="sortToggle" class="btn-text">
+          <span th:switch="${sort}">
+            <span th:case="'newest'">최신순</span>
+            <span th:case="'oldest'">오래된순</span>
+            <span th:case="'likes'">좋아요순</span>
+            <span th:case="*">정렬</span>
+          </span>▾
+        </button>
+        <ul id="sortMenu" class="sort-menu">
+          <li>
+            <button class="dropdown-item"
+                    th:classappend="${sort=='newest'} ? ' active' : ''"
+                    th:onclick="|loadReviewFragment(1,'newest')|">
+              최신순
+            </button>
+          </li>
+          <li>
+            <button class="dropdown-item"
+                    th:classappend="${sort=='oldest'} ? ' active' : ''"
+                    th:onclick="|loadReviewFragment(1,'oldest')|">
+              오래된순
+            </button>
+          </li>
+          <li>
+            <button class="dropdown-item"
+                    th:classappend="${sort=='likes'} ? ' active' : ''"
+                    th:onclick="|loadReviewFragment(1,'likes')|">
+              좋아요순
+            </button>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <!-- 4) 리뷰 작성 폼 -->
+  <section class="review-form-section mb-4">
+    <div id="reviewFormContainer" class="d-none">
+      <form th:action="@{/reviews/post}"
+            th:object="${reviewRequest}"
+            method="post"
+            enctype="multipart/form-data"
+            class="border p-3 rounded bg-white shadow-sm">
+        <input type="hidden" sec:csrfInput=""/>
+        <input type="hidden" th:field="*{lodgeId}"/>
+
+        <!-- 별점 -->
+        <div class="mb-3">
+          <label class="form-label d-block">별점</label>
+          <div class="star-rating">
+            <input type="radio" th:field="*{rating}" id="star5" value="5"/>
+            <label for="star5">★</label>
+            <input type="radio" th:field="*{rating}" id="star4" value="4"/>
+            <label for="star4">★</label>
+            <input type="radio" th:field="*{rating}" id="star3" value="3"/>
+            <label for="star3">★</label>
+            <input type="radio" th:field="*{rating}" id="star2" value="2"/>
+            <label for="star2">★</label>
+            <input type="radio" th:field="*{rating}" id="star1" value="1"/>
+            <label for="star1">★</label>
+          </div>
+        </div>
+
+        <!-- 태그 -->
+        <div class="mb-3">
+          <label class="form-label d-block">태그 (최대 3개)</label>
+          <div>
+            <div th:each="tag : ${tags}"
+                 class="form-check form-check-inline mb-2">
+              <input class="form-check-input"
+                     type="checkbox"
+                     th:field="*{tagNames}"
+                     th:value="${tag.tagName}"
+                     th:id="${'tag_'+tag.tagName}"/>
+              <label class="form-check-label"
+                     th:for="${'tag_'+tag.tagName}"
+                     th:text="${tag.tagName}">태그명</label>
+            </div>
+          </div>
+        </div>
+
+        <!-- 파일 업로드 -->
+        <div class="mb-3">
+          <label for="files" class="form-label d-block">사진 첨부</label>
+          <input type="file"
+                 name="files"
+                 id="files"
+                 multiple
+                 class="form-control"/>
+        </div>
+
+        <!-- 내용 -->
+        <div class="mb-3">
+          <label for="content" class="form-label d-block">리뷰 내용</label>
+          <textarea th:field="*{content}"
+                    id="content"
+                    class="form-control"
+                    rows="3"
+                    placeholder="이용하신 숙소는 어떠셨나요?"></textarea>
+        </div>
+
+        <!-- 등록 -->
+        <button type="submit" class="btn-text">등록</button>
+      </form>
+    </div>
+  </section>
+
+  <!-- 5) 리뷰 리스트 -->
+  <section class="review-list-section">
+    <div th:if="${#lists.isEmpty(reviews)}" class="text-center text-muted">
+      등록된 리뷰가 없습니다.
+    </div>
+    <div th:each="review : ${reviews}"
+         th:attr="id=${'review-' + review.reviewId}"
+         class="review-item border-bottom py-3">
+
+      <!-- 1) 작성자 이메일 -->
+      <div class="review-header mb-2">
+        <span class="nickname fw-bold"
+              th:text="${review.userEmail}">user@berry.com</span>
+      </div>
+
+      <!-- 2) 별점 + 태그 -->
+      <div class="d-flex align-items-center review-meta mb-3">
+        <div class="review-rating me-4">
+          <span th:each="i : ${#numbers.sequence(1,5)}"
+                th:text="${i <= review.rating} ? '★' : '☆'">★</span>
+        </div>
+        <div class="review-tags d-flex flex-wrap gap-2">
+          <span th:each="tag : ${review.tags}"
+                class="badge review-tag-badge"
+                th:text="${tag}">태그명</span>
+        </div>
+      </div>
+
+      <!-- 3) 이미지 썸네일 -->
+      <div class="review-images mb-3"
+           th:if="${review.images != null and !review.images.isEmpty()}">
+        <div th:each="img : ${review.images}" class="me-2 d-inline-block">
+          <img th:src="@{|/upload/${img.reviewSaveDir}/${img.reviewUuid}_th_${img.reviewFileName}|}"
+               onerror="this.style.display='none';"
+               class="review-thumbnail"/>
+        </div>
+      </div>
+
+      <!-- 4) 리뷰 내용 + 접기/펼치기 -->
+      <div class="review-content-container mb-3">
+        <p class="review-content collapsed"
+           th:text="${review.content}">리뷰 내용</p>
+        <button type="button"
+                class="btn-text toggle-more"
+                onclick="toggleContent(this)">더보기</button>
+      </div>
+
+      <!-- 5) 날짜 + 좋아요·신고 + 수정·삭제 -->
+      <div class="review-footer">
+        <div class="footer-left d-flex align-items-center">
+          <span class="review-date me-3"
+                th:text="${#temporals.format(review.createdAt, 'yyyy-MM-dd')}">
+            2025-07-24
+          </span>
+          <form th:action="@{/reviews/{id}/like(id=${review.reviewId})}"
+                method="post"
+                class="d-inline me-3">
+            <input type="hidden" sec:csrfInput=""/>
+            <input type="hidden" name="pageParam" th:value="${currentPage}"/>
+            <button type="submit" class="btn-text">
+              좋아요 <span th:text="${review.likeCount}">0</span>
+            </button>
+          </form>
+          <form th:action="@{/reviews/{id}/report(id=${review.reviewId})}"
+                method="post"
+                class="d-inline">
+            <input type="hidden" sec:csrfInput=""/>
+            <input type="hidden" name="pageParam" th:value="${currentPage}"/>
+            <button type="submit" class="btn-text">신고</button>
+          </form>
+        </div>
+        <div th:if="${currentUserEmail == review.userEmail}"
+             class="footer-right d-flex align-items-center">
+          <a th:href="@{/reviews/modify(reviewId=${review.reviewId})}" class="btn-text me-4">수정</a>
+          <a th:href="@{/reviews/remove/{reviewId}(reviewId=${review.reviewId})}" class="btn-text">삭제</a>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- 6) 페이징 바 -->
+  <nav aria-label="페이지 네비게이션" class="mt-4">
+    <ul class="pagination justify-content-center">
+      <li class="page-item" th:if="${hasPrev}">
+        <a class="page-link" href="#" th:attr="data-page=${startPage - 1}">&laquo;</a>
+      </li>
+      <li class="page-item"
+          th:each="i : ${#numbers.sequence(startPage, endPage)}"
+          th:classappend="${i == currentPage} ? ' active'">
+        <a class="page-link" href="#" th:attr="data-page=${i}" th:text="${i}">1</a>
+      </li>
+      <li class="page-item" th:if="${hasNext}">
+        <a class="page-link" href="#" th:attr="data-page=${endPage + 1}">&raquo;</a>
+      </li>
+    </ul>
+  </nav>
+
+</div>
