@@ -24,6 +24,9 @@ public class Review {
     @Column(name = "lodge_id", nullable = false)
     private Long lodgeId;
 
+    @Column(name = "user_email", nullable = false)
+    private String userEmail;
+
     @Column(name = "reservation_id")
     private Long reservationId;
 

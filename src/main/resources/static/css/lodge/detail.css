@@ -3,7 +3,6 @@
   font-size: 18px;
   font-weight: 600;
 }
-
 /* 내용 */
 p {
   color: #707070;
@@ -11,9 +10,8 @@ p {
   white-space: pre-wrap;
   line-height: 22px;
 }
-
 .area {
-  padding: 30px 0;
+  padding: 30px 0 20px;
   border-bottom: 1px solid #dddddd;
 }
 
@@ -26,8 +24,52 @@ p {
 
   color: #707070;
   font-size: 15px;
-
+  
   list-style: disc;
+}
+
+/* 이미지 */
+.image {
+  position: relative;
+
+  background-size: cover;
+  background-repeat: no-repeat;
+
+  cursor: pointer;
+}
+.image:hover::before {
+  content: "";
+  position: absolute;
+  top: 0; left: 0;
+  width: 100%; height: 100%;
+
+  background-color: rgba(0, 0, 0, 0.2);
+  z-index: 1;
+
+  border-radius: inherit;
+}
+
+/* 이미지 더보기 버튼 */
+.moreImagesBtn {
+  position: absolute;
+  bottom: 25px; right: 25px;
+  padding: 12px;
+  display: flex;
+
+  align-items: center;
+
+  color: white;
+  font-weight: 600;
+
+  background-color: #333333;
+  border: none;
+  border-radius: 20px;
+
+  z-index: 3;
+  cursor: pointer;
+}
+.moreImagesBtn>svg {
+  margin-right: 5px;
 }
 
 /* 0. 검색창을 sticky로 관리 */
@@ -36,8 +78,8 @@ p {
   top: 0;
 
   background-color: white;
-
-  z-index: 20;
+  
+  z-index: 102;
 }
 
 /* 1. container */
@@ -56,7 +98,7 @@ p {
   font-size: 18px;
   border-bottom: 1px solid #dddddd;
 
-  z-index: 10;
+  z-index: 101;
 }
 .navBar>.container {
   display: flex;
@@ -70,15 +112,15 @@ p {
   margin: 0 10px;
   padding: 10px;
 
-  transition: 0.3s ease-in;
+  color: #707070;
+
+  transition: 0.2s ease-in-out;
+
+  cursor: pointer;
 }
 .navBar li.current {
   border-bottom: 3px solid #e74b60;
-}
-.navBar li>a {
-  color: #707070;
-}
-.navBar li.current>a {
+
   color: #e74b60;
 }
 .navBar .minPrice {
@@ -92,6 +134,7 @@ p {
 
 /* 4. lodgeImageArea */
 #lodgeImageArea {
+  position: relative;
   width: 100%;
   height: 512px;
   margin-bottom: 20px;
@@ -100,24 +143,6 @@ p {
   grid-template-columns: repeat(4, 1fr);
   grid-template-rows: 1fr 1fr;
   gap: 8px;
-}
-#lodgeImageArea>div {
-  position: relative;
-
-  background-size: cover;
-
-  cursor: pointer;
-}
-#lodgeImageArea>div:hover::before {
-  content: "";
-  position: absolute;
-  top: 0; left: 0;
-  width: 100%; height: 100%;
-
-  background-color: rgba(0, 0, 0, 0.22);
-  z-index: 1;
-
-  border-radius: inherit;
 }
 #lodgeImageArea>.bigImage {
   grid-column: 1/3;
@@ -135,6 +160,8 @@ p {
 
 /* 5. titleArea */
 #titleArea {
+  position: relative;
+  
   font-size: 28px;
 }
 #titleArea>span {
@@ -155,12 +182,30 @@ p {
   font-weight: 600;
 }
 
+#titleArea>.bookmark {
+  position: absolute;
+  top: 0;
+  right: 0;
+
+  width: 18px;
+  height: 18px;
+  padding: 6px;
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  background-color: #efefef;
+  border-radius: 18px;
+
+  z-index: 1;
+  cursor: pointer
+}
+
 /* 6. areaUnderTitle */
 .areaUnderTitle {
   margin-top: 20px;
-  width: 100%;
-  height: 133px;
-
+  
   display: grid;
   grid-template-columns: repeat(3, 1fr);
   grid-template-rows: 1fr;
@@ -183,10 +228,91 @@ p {
 
   position: absolute;
   width: 100%; height: 100%;
+  top: 0; left: 0;
+
+  background-color: rgba(0, 0, 0, 0.02);
 
   border-radius: inherit;
 
   z-index: 1;
+}
+.areaUnderTitle .areaTitle {
+  font-size: 16px;
+}
+
+/* 6-1. 대표 리뷰 */
+.reviewPickUpArea>.reviewStats {
+  display: flex;
+}
+.reviewPickUpArea>.reviewStats>.averageReviewScore {
+  margin-right: 10px;
+  padding: 5px 10px;
+
+  background-color: #ffc550;
+  border-radius: 15px;
+}
+.reviewPickUpArea>.reviewStats>.reviewCount {
+  display: flex;
+  align-items: center;
+}
+.reviewPickUpArea>.reviewPickUpContent {
+  margin-top: 15px;
+
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.reviewPickUpArea>.reviewPickUpContent>p {
+  display: -webkit-box;
+
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: normal;
+
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+  line-clamp: 2;
+}
+/* 6-2. 시설 프리뷰 */
+.facilityPreviewHeader {
+  display: flex;
+  align-items: center;
+}
+.facilityPreviewTable {
+  margin-top: 20px;
+  display: grid;
+
+  grid-template-columns: repeat(3, 1fr);
+  gap: 8px;
+}
+.facilityPreviewTable>div {
+  display: flex;
+  align-items: center;
+}
+/* 6-3. 위치 */
+.locationPreview {
+  display: grid;
+  grid-template-columns: 1fr;
+}
+.locationPreview svg {
+  margin-right: 4px;
+}
+.locationPreview>.locationHeader {
+  display: flex;
+  align-items: center;
+}
+.locationPreview>.addressLine {
+  margin: 20px 0 10px;
+  display: flex;
+
+  align-items: center;
+
+  font-size: 15px;
+}
+.locationPreview>.way {
+  display: flex;
+  align-items: center;
+
+  font-size: 15px;
 }
 
 /* 7. roomArea */
@@ -205,13 +331,17 @@ p {
   border-radius: 15px;
 }
 /* 7-3. 객실 이미지 */
-.room>.roomPreviewImage {
+.room>.roomPreviewImageArea {
+  position: relative;
   width: 480px;
   height: 270px;
 
-  background-repeat: no-repeat;
-  background-size: cover;
-
+  border-radius: 10px;
+}
+.room>.roomPreviewImageArea>.image {
+  width: 100%;
+  height: 100%;
+  
   border-radius: 10px;
 }
 /* 7-4. 객실 정보 */
@@ -219,10 +349,14 @@ p {
   width: calc(100% - 500px);
   margin-left: 20px;
 }
+
+/* 1) 객실 이름 */
 .room>.roomDescription>.roomTitle {
   font-size: 24px;
   font-weight: 600;
 }
+
+/* 2) 상세 */
 .room>.roomDescription>.roomDetail {
   margin: 20px 0;
   padding: 20px;
@@ -239,7 +373,6 @@ p {
 .room svg {
   margin-right: 5px;
 }
-
 .stay>span, .rent>span {
   font-size: 16px;
   font-weight: 600;
@@ -250,27 +383,18 @@ p {
 
   justify-content: space-between;
 }
+.rentDetail {
+  padding-bottom: 20px;
+  margin-bottom: 20px;
+
+  border-bottom: 1px solid #dddddd;
+}
 .rentOption, .stayOption {
   display: flex;
   color: #707070;
 }
 .rentTime, .stayTime {
   font-size: 12px;
-}
-
-.personCountInfo {
-  padding: 15px;
-  display: flex;
-
-  align-items: center;
-
-  font-size: 12px;
-
-  background-color: white;
-  border-radius: 10px;
-}
-.personCountInfo>.title {
-  margin-right: 30px;
 }
 .longRent, .earlyCheckIn {
   font-weight: 600;
@@ -318,6 +442,21 @@ p {
   font-size: 14px;
   font-weight: 700;
 }
+/* 3) 인원수 */
+.personCountInfo {
+  padding: 15px;
+  display: flex;
+
+  align-items: center;
+
+  font-size: 12px;
+
+  background-color: white;
+  border-radius: 10px;
+}
+.personCountInfo>.title {
+  margin-right: 30px;
+}
 
 /* 8. 숙소 소개 */
 #lodgeIntro {
@@ -338,22 +477,38 @@ p {
 .facilityTable {
   width: 100%;
   margin-top: 20px;
+  display: grid;
+
+  grid-template-columns: repeat(3, 1fr);
 }
 .facilityTable>div {
-  display: inline-block;
-  width: calc(100% / 3 - 3px);
   margin: 10px 0;
+  display: flex;
+
+  align-items: center;
+
+  font-size: 15px;
+  color: #707070;
+}
+.facilityTable>div>img {
+  margin-right: 4px;
 }
 
 /* 10. 숙소 이용 정보 */
 .descItem {
-  padding-top: 20px;
+  padding-top: 1px;
 }
 .descTitle {
   margin-top: 20px;
 
   color: #49627A;
   font-weight: 700;
+}
+#description .realList>li {
+  margin: 10px 0;
+}
+#description p {
+  white-space: normal;
 }
 
 /* 11. 위치 */
@@ -382,4 +537,299 @@ p {
 }
 #addressCopy:hover {
   text-decoration: underline;
+}
+
+/* 12. 리뷰 */
+/* 12-1. 리뷰 헤더 */
+#reviewHeader {
+  display: flex;
+  width: 100%;
+  padding-bottom: 20px;
+
+  justify-content: space-between;
+
+  border-bottom: 1px solid #dddddd;
+}
+/* 12-1-1. 리뷰 통계 */
+#reviewStatArea {
+  display: flex;
+  align-items: center;
+}
+#reviewStatArea>span {
+  font-weight: 700;
+}
+#reviewStatArea>span:first-of-type {
+  margin: 0 8px;
+
+  font-size: 18px;
+}
+#reviewStatArea>span:last-of-type {
+  color: #c2c2c2;
+  font-size: 16px;
+}
+/* 12-1-2. 리뷰 정렬 */
+#reviewSortBtn {
+  position: relative;
+
+  color: #333333;
+  font-size: 14px;
+  font-weight: 600;
+
+  cursor: pointer;
+}
+#reviewSortOptionArea {
+  position: absolute;
+  top: 25px; right: 0;
+  width: 120px;
+  padding: 20px;
+  padding-top: 0;
+  display: none;
+  
+  background-color: white;
+  border: 1px solid #dddddd;
+  border-radius: 10px;
+}
+#reviewSortOptionArea>.reviewSortOption {
+  padding-top: 20px;
+}
+#reviewSortOptionArea.active {
+  display: inline-block;
+}
+#reviewSortOptionArea>.reviewSortOption.selected {
+  color: #e74b60;
+}
+
+/* 13. 모달 */
+body.modal-open {
+  /* 모달이 열렸을 때 바깥 화면의 스크롤 방지 */
+  overflow: hidden;
+}
+#modal {
+  position: fixed;
+  top: 0; left: 0;
+  width: 100%;
+  height: 100%;
+  display: none;
+
+  justify-content: center;
+
+  background-color: rgba(0, 0, 0, 0.4);
+  
+  z-index: 1000;
+}
+#modal.open {
+  display: flex;
+}
+/* 13-1. 모달 창 */
+#modalBody {
+  position: relative;
+  width: 1200px;
+  height: 800px;
+  margin-top: auto;
+  margin-bottom: auto;
+  padding: 20px 0;
+
+  background-color: white;
+  border-radius: 20px;
+}
+
+/* 13-2. 모달 헤더 */
+#modalTitle {
+  position: relative;
+
+  text-align: center;
+
+  color: #333333;
+  font-weight: 600;
+}
+#modalRoomTitle {
+  position: absolute;
+  top: 25px;
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+#modalNavBar {
+  margin-top: 30px;
+  display: flex;
+
+  border-bottom: 1px solid #dddddd;
+}
+#modalNavBar>div {
+  margin: 0 10px;
+  padding: 15px;
+
+  color: #707070;
+  font-size: 16px;
+  font-weight: 600;
+
+  cursor: pointer;
+}
+#modalNavBar>div.selected {
+  color: #e74b60;
+  border-bottom: 2px solid #e74b60;
+
+  cursor: default;
+}
+#modalCloseBtn {
+  position: absolute;
+  top: 20px;
+  left: 20px;
+
+  background-color: transparent;
+  border: none;
+
+  cursor: pointer;
+  z-index: 1;
+}
+/* 13-2. 모달 메인 */
+#roomNavBar {
+  padding: 9px 20px;
+
+  font-size: 14px;
+  font-weight: 500;
+}
+#roomNavBar>li {
+  padding: 8px;
+
+  border: 1px solid #dddddd;
+  border-radius: 30px;
+
+  cursor: pointer;
+}
+#roomNavBar>li.selected {
+  color: white;
+  background-color: #e74b60;
+  border: 1px solid #e74b60;
+
+  cursor: default;
+}
+
+#modalImages {
+  height: 600px;
+}
+#modalMain.roomModal>#modalImages {
+  height: 550px;
+}
+#modalImages .swiper-slide {
+  background-color: #eeeeee;
+}
+#modalImages .swiper-slide>img {
+  position: absolute;
+  left: 50%;
+  max-width: 100%;
+  max-height: 600px;
+
+  transform: translateX(-50%);
+}
+#modalMain.room>#modalImages .swiper-slide>img {
+  max-height: 550px;
+}
+
+/* 13-3. 모달 버튼 */
+.modalControlBtn {
+  position: absolute;
+  top: 50%;
+
+  background-color: transparent;
+  border: none;
+
+  cursor: pointer;
+  z-index: 1;
+}
+.modalControlBtn:disabled {
+  cursor: default;
+}
+#modalPrevBtn {
+  left: 30px;
+}
+#modalNextBtn {
+  right: 30px;
+}
+
+/* 13-4. 모달 푸터 */
+#modalFooter {
+  padding: 10px;
+  height: 96px;
+}
+#imageSlide li {
+  padding: 0;
+  display: flex;
+
+  align-items: center;
+
+  cursor: pointer;
+}
+#imageSlide li>img {
+  width: 86px;
+  height: 86px;
+  padding: 3px;
+
+  border-radius: 10px;
+}
+#imageSlide li.selected {
+  cursor: default;
+}
+#imageSlide li.selected>img {
+  border: 2px solid #e74b60;
+}
+
+.swiper-pagination {
+  display: flex;
+  justify-content: end;
+}
+.swiper-pagination>div>span {
+  padding-top: 7px;
+  padding-bottom: 7px;
+
+  font-size: 14px;
+  font-weight: 500;
+  color: #bbbbbb;
+
+  background-color: #707070;
+}
+.swiper-pagination>div>span:first-of-type {
+  color: white;
+  padding-left: 10px;
+}
+.swiper-pagination>div>span:nth-of-type(2) {
+  padding-left: 5px;
+  padding-right: 5px;
+}
+.swiper-pagination>div>span:last-of-type {
+  padding-right: 10px;
+}
+
+/* 13-5. 모달 헤더와 모달 푸터의 슬라이드 효과 */
+.autoSlideContainer {
+  max-width: 100%;
+  overflow-x: auto;
+  position: relative;
+  mask-image: linear-gradient(to right, transparent 0px, black 20px, black calc(100% - 20px), transparent 100%);
+  -webkit-mask-image: linear-gradient(to right, transparent 0px, black 20px, black calc(100% - 20px), transparent 100%);
+  scrollbar-width: none;
+}
+.autoSlideContainer::-webkit-scrollbar {
+  display: none;
+}
+.autoSlide {
+  display: flex;
+  list-style: none;
+  gap: 16px;
+  padding: 0;
+  margin: 0;
+}
+.autoSlide>li {
+  flex: 0 0 auto;
+  max-width: 212px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  background-color: white;
+  padding: 8px 12px;
+  border-radius: 4px;
+}
+.autoSlide>li.placeholder {
+  width: 1px;
+  border: none !important;
 }

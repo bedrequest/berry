@@ -4,78 +4,113 @@
       xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
       layout:decorate="~{layout/layout}">
 
-<link rel="stylesheet" th:href="@{/css/qna/detail.css}">
-<head>
-  <meta charset="UTF-8">
-  <title>문의내용</title>
-</head>
-<body>
-<div class="container">
-  <h2 class="page-title">문의내용</h2>
+<!-- CSS 연결 (부모 템플릿 <head> 안에 삽입됨) -->
+<section layout:fragment="customStyle">
+  <link rel="stylesheet" th:href="@{/css/qna/detail.css}" />
+</section>
 
-  <!-- category + title -->
-  <div class="form-group">
-    <label for="c">카테고리</label>
-    <input type="text" id="c" class="input-box short" readonly>
-  </div>
+<!-- 실제 콘텐츠 시작 -->
+<div layout:fragment="content">
+  <div class="container">
+    <h2 class="page-title">문의내용</h2>
 
-  <input type="hidden" name="bno" th:value="${boardDTO.bno}">
-  <div class="form-group">
-    <label for="t">제목</label>
-    <input type="text" class="input-box"
-           name="title" th:value="${boardDTO.title}" id="t" readonly>
-  </div>
+    <form action="/qna/update" method="post" id="modForm" enctype="multipart/form-data">
 
-  <!-- writer + regDate -->
-  <div class="form-group-inline aligned">
-    <div class="form-item">
-      <label for="w">작성자</label>
-      <input type="text" class="input-box small"
-             name="writer" th:value="${boardDTO.writer}" id="w" readonly>
+      <!-- 카테고리 + 제목 -->
+      <div class="form-group">
+        <div style="display: flex; gap: 12px; flex: 1;">
+          <!-- 기존 readonly input (평소에 보임) -->
+          <input type="text" id="c" class="input-box short" th:value="${customeriqboardfileDTO.boardDTO.category}" readonly placeholder="카테고리">
+
+          <!-- Modify 시 보일 select (초기 숨김) -->
+          <select id="categorySelect" class="input-box short" name="category" style="display:none;">
+            <option th:value="결제">결제</option>
+            <option th:value="환불">환불</option>
+            <option th:value="시설">시설</option>
+            <option th:value="서비스">서비스</option>
+            <option th:value="기타">기타</option>
+          </select>
+
+          <input type="text" class="input-box" name="title" th:value="${customeriqboardfileDTO.boardDTO.title}" id="t" readonly placeholder="제목">
+        </div>
+      </div>
+
+  <!-- 작성자 + 작성일 -->
+  <div class="form-group-inline">
+    <div class="inline-group">
+      <input type="text" id="w" name="userEmail" th:value="${customeriqboardfileDTO.boardDTO.userEmail}" class="input-box short" readonly/>
     </div>
-
-    <div class="form-item">
-      <label for="r">작성일</label>
-      <input type="text" class="input-box small"
-             th:value="${boardDTO.regDate}" id="r" readonly>
+    <div class="inline-group">
+      <input id="date" name="regDate" th:value="${customeriqboardfileDTO.boardDTO.regDate}" class="input-box short" readonly/>
     </div>
   </div>
 
-  <!-- content -->
-  <div class="form-group">
-    <textarea type="text" class="form-control"
-              name="content" id="con" cols="30" rows="10" readonly placeholder="문의 내용을 표시합니다.">[[${boardDTO.content}]]</textarea>
+      <!-- 내용 -->
+      <div class="form-group">
+  <textarea class="form-control" name="content" id="con" cols="30" rows="10" readonly
+            maxlength="1000"
+            placeholder="문의 내용을 표시합니다.">[[${customeriqboardfileDTO.boardDTO.content}]]</textarea>
+      </div>
+
+      <div class="char-count-container" style="text-align: right; margin-top: -24px; margin-bottom: 24px;">
+        <div id="charCount" class="char-count" style="display: none;">0 / 1000</div>
+      </div>
+
+
+      <!-- 첨부파일 미리보기 -->
+      <div class="attached-files" th:if="${customeriqboardfileDTO.fileList != null}">
+        <div class="file-list" th:each="file : ${customeriqboardfileDTO.fileList}">
+          <div class="file-item">
+
+            <th:block th:if="${file.fileType == 1}">
+              <!-- 이미지일 경우 미리보기 -->
+              <img th:src="@{|/upload/qna/${file.saveDir}/${file.uuid}_${file.fileName}|}"
+                   class="preview-image fileX"  />
+                  <button type="button" th:data-uuid="${file.uuid}" class="file-x" style="visibility:hidden;">X</button>
+            </th:block>
+
+        <!-- 이미지가 아닐 경우 파일명 링크 -->
+            <th:block th:if="${file.fileType != 1}">
+        <a class="fileX" th:href="@{|/upload/qna/${file.saveDir}/${file.uuid}_${file.fileName}|}"
+           th:text="${file.fileName}" target="_blank" download></a>
+            <button type="button" th:data-uuid="${file.uuid}" class="file-x" style="visibility:hidden;">X</button>
+            </th:block>
+
+      </div>
+    </div>
   </div>
 
-  <!-- 파일첨부 -->
-  <div class="file-upload">
-    <input type="text" class="upload-name" placeholder="선택된 파일 없음" disabled="disabled">
-    <label for="ex_filename">업로드</label>
-    <input type="file" id="ex_filename" class="upload-hidden" multiple>
+      <!-- 이미지 미리보기 영역 -->
+      <div id="imagePreviewContainer" class="image-preview-container"></div>
+
+      <!-- 파일 업로드 -->
+      <div class="file-upload">
+        <input type="text" class="upload-name" placeholder="선택된 파일 없음" disabled="disabled">
+        <label for="ex_filename" class="disabled">업로드</label>
+        <input type="file" name="files" id="ex_filename" class="upload-hidden" multiple disabled>
+      </div>
+
+      <!-- 버튼 -->
+      <div class="button-row">
+        <input type="hidden" name="bno" th:value="${customeriqboardfileDTO.boardDTO.bno}">
+
+        <!-- Modify & Delete 영역 -->
+        <div id="action-buttons" style="display: flex; gap: 8px;">
+          <button type="button" id="modBtn" class="btn btn-warning">Modify</button>
+          <button type="button" id="delBtn" class="btn btn-danger">Remove</button>
+        </div>
+
+        <!-- Submit 버튼 (처음엔 숨김) -->
+        <button type="submit" id="submitBtn" class="btn btn-warning" style="display: none;">Submit</button>
+
+        <!-- List 버튼은 항상 보임 -->
+        <button type="button" id="listBtn" class="btn btn-primary">List</button>
+      </div>
+
+    </form>
+    <script th:src="@{/js/qna/boardDetail.js}"></script>
   </div>
 
-  <!-- 버튼 -->
-  <div class="button-row">
-    <button type="button" id="modBtn" class="btn btn-warning">Modify</button>
-    <button type="button" id="delBtn" class="btn btn-danger">Remove</button>
-    <button type="button" id="listBtn" class="btn btn-primary">List</button>
-  </div>
 </div>
 
-
-<script>
-  const realUpload = document.getElementById('ex_filename');
-  const uploadName = document.querySelector('.upload-name');
-
-  realUpload.addEventListener('change', function () {
-    const files = Array.from(this.files);
-    if (files.length > 0) {
-      const names = files.map(file => file.name).join(', ');
-      uploadName.value = names;
-    } else {
-      uploadName.value = '선택된 파일 없음';
-    }
-  });
-</script>
-</body>
 </html>

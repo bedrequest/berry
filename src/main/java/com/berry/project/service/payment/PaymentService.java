@@ -2,6 +2,7 @@ package com.berry.project.service.payment;
 
 import com.berry.project.dto.cupon.CuponDTO;
 import com.berry.project.dto.payment.*;
+import com.berry.project.dto.user.MyPageReservationDTO;
 import com.berry.project.entity.cupon.Cupon;
 import com.berry.project.entity.lodge.Room;
 import com.berry.project.entity.payment.PaymentBeforePayment;
@@ -240,6 +241,27 @@ public interface PaymentService {
             .build();
   }
 
+  // 해찬
+  /** Reservation -> ReservationDTO */
+  default MyPageReservationDTO printConvertReservationEntityToReservationDto(Reservation reservation){
+    if(reservation == null) { return null; }
+
+    return
+        MyPageReservationDTO.builder()
+            .reservationId(reservation.getReservationId())
+            .roomId(reservation.getRoomId())
+            .userId(reservation.getUserId())
+            .orderId(reservation.getOrderId())
+            .startDate(reservation.getStartDate())
+            .bookingStatus(reservation.getBookingStatus())
+            .endDate(reservation.getEndDate())
+            .totalAmount(reservation.getTotalAmount())
+            .guestsAmount(reservation.getGuestsAmount())
+            .reservationType(reservation.getReservationType())
+            .reservationRegDate(reservation.getReservationRegDate())
+            .build();
+  }
+
   // 결제하기 버튼 클릭 시 JS 에서 보낸 결제, 예약 정보를 저장하는 메서드
   boolean insertMergePayload(MergePayloadDTO mpdto);
 
@@ -269,4 +291,5 @@ public interface PaymentService {
 
   // 결제 페이지 이동 시 정보 - 쿠폰 개수
   int getCuponCnt(long userId);
+
 }

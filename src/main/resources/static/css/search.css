@@ -29,13 +29,17 @@
 }
 
 #searchBox input {
-  padding: 10px;
   height: 28px;
+
+  font-size: 16px;
 
   border: none;
   border-radius: 10px;
   background-color: #e9e9e9;
-  font-size: 16px;
+}
+
+#dateArea input, #peopleCountArea input {
+  padding: 10px;
 }
 
 #searchBox input:hover {
@@ -62,7 +66,10 @@
 #searchKeywordInput {
   width: 300px;
   overflow-x: hidden;
+  padding: 10px;
   padding-left: 18px;
+
+  font-weight: 600;
 }
 #searchKeywordInput:focus {
   width: 298px;
@@ -78,7 +85,7 @@
   padding: 10px;
   overflow-y: scroll;
 
-  border: 1px solid lightgray;
+  border: 1px solid #e9e9e9;
   border-radius: 10px;
   background-color: white;
 }
@@ -107,8 +114,31 @@
 #searchBox .keywordSuggestion:hover {
   background-color: #f5f5f5;
 }
+#noSearchResult {
+  width: 100%;
+  height: 100%;
+  display: flex;
 
-/* 2-3. noKeywordWarning */
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+
+  background: transparent;
+}
+#noSearchResult>span:first-of-type {
+  margin-bottom: 20px;
+
+  font-size: 20px;
+  font-weight: 700;
+  color: #999999;
+}
+#noSearchResult>span:last-of-type {
+  font-size: 14px;
+  font-weight: 500;
+  color: #c2c2c2;
+}
+
+/* 2-3. noKeywordWarning : 키워드를 입력하지 않고 검색 버튼을 눌렀을 때 */
 #noKeywordWarning {
   position: absolute;
   left: 48px; top: 4px;
@@ -155,6 +185,9 @@
   justify-content: space-evenly;
   align-items: center;
 
+  font-size: 18px;
+  font-weight: 500;
+
   background-color: #e9e9e9;
   border-radius: 10px;
 
@@ -178,6 +211,7 @@
   background-color: white;
 
   cursor: default;
+  z-index: 1;
 }
 #peopleCountInputArea>div {
   display: flex;
@@ -200,12 +234,12 @@
   height: 50px;
   padding: 10px;
 
-  font-size: 20px;
+  font-size: 18px;
+  font-weight: 500;
   color: white;
 
   border: none;
   border-radius: 10px;
-  /* background: linear-gradient(#A9439A, #E74B60); */
   background-color: #E74B60;
 
   z-index: 0;

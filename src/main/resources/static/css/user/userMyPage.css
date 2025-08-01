@@ -3,7 +3,7 @@
     --gray-light: #f5f5f5;
     --gray-dark: #666;
     --font-dark: #333;
-    --disabled: #ac4b59;
+    --disabled: #b85766c7;
 }
 
 /* top-section */
@@ -32,10 +32,10 @@
 /* 1. 유저정보 */
 .user-info, .user-notice-box {
     background: white;
-    padding: 1.5rem;
+    /* padding: 1.5rem; */
     border-radius: 12px;
     box-shadow: 0 2px 8px rgba(0,0,0,0.05);
-    margin-bottom: 2rem;
+    margin-bottom: 100px;
 }
 
 .user-info-ul {
@@ -56,6 +56,7 @@
     color: var(--font-dark);
 }
 
+
 .user-info .user-info-btn {
     background: var(--primary-color);
     color: white;
@@ -70,11 +71,46 @@
      padding-left: 1rem;
 }
 
+/* 태그가 있는 li*/
+.tag-li{
+  align-items: center;
+}
+/* span 태그 */
+#tagList {
+  display: flex;
+  justify-content: right;
+} 
+
+.user-favorite-tag {
+  display: none;
+}
+.view-tag {
+  display: block ;
+  padding: 4px 6px;
+  margin: 4px 2px;
+  border-radius: 10px;
+  border: 1px solid #ccc;
+  font-weight: bold;
+  font-size: 14px;
+  background-color: var(--primary-color);
+  color: var(--gray-light);
+
+}
+
 /* mid-section */
+.mid-section {
+  /* padding: 1.5rem; */
+}
+.mid-section-headTit{
+  font-size: 1.5rem;
+  font-weight: bold;
+  color: var(--primary-color);
+  margin-bottom: 1rem;
+}
 .reservation-left-box {
     float: left;
     width: 50%;
-    height: 200px;
+    height: 400px;
     background-color: var(--gray-light);
     border-radius: 12px;
     display: flex;
@@ -83,25 +119,38 @@
     font-weight: bold;
 }
 
+.reservation-left-box img {
+  border-radius: 12px;
+}
+
 .reservation-right-box {
     float: right;
     width: 40%;
+    height: 400px;
     background: white;
-    padding: 1rem;
     border-radius: 12px;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+    box-shadow: 0 2px 8px rgba(0,0,0,0.25);
+    position: relative;
 }
-
+  
 .reservation-right-box ul {
-    list-style: none;
-    padding: 0;
-    margin: 0 0 1rem;
+  list-style: none;
+  padding: 15px 15px 15px 15px;
 }
 
 .reservation-right-box li {
     display: flex;
     justify-content: space-between;
-    margin-bottom: 0.5rem;
+    margin-bottom: 2rem;
+}
+
+.reservation-left-tit {
+  font-weight: bold;
+  width: 30%;
+}
+.reservation-right-tit {
+  font-size: 14px;
+  width: 70%;
 }
 
 .reservation-right-box button {
@@ -112,11 +161,21 @@
     border-radius: 6px;
     cursor: pointer;
     margin: 0.5rem;
+    position: absolute;
+    bottom: 10px;
+    right: 0px;
 }
 
 /* bottom-section */
 .bottom-section{
     margin: 100px 0;
+    /* padding: 1.5rem; */
+}
+.bottom-section-headTit {
+    font-size: 1.5rem;
+    font-weight: bold;
+    color: var(--primary-color);
+    margin-bottom: 1rem;
 }
 
 .reservation-table {
@@ -142,6 +201,7 @@
     border-bottom: 1px solid #eee;
     text-align: center;
     color: var(--font-dark);
+    font-size: 14px;
 }
 
 .myPage-content-group::after {
@@ -161,9 +221,9 @@
     position: fixed;
     z-index: 1000;
     left: 0;
-    top: 0;
+    top: -100px;
     width: 100%;
-    height: 100%;
+    height: 150%;
     background-color: rgba(0,0,0,0.6);
   }
   
@@ -180,17 +240,26 @@
   /* 제목 */
   .modal-main-tit {
     margin: 60px 0 20px 0;
-    font-size: 20px;
+    font-size: 24px;
     font-weight: bold;
   }
   
   /* 내용 */
-  .modal-content p {
-    color: #444;
+  .modal-content .modal-content-tit {
+    color: var(--font-dark);
     font-size: 14px;
     font-weight: bold;
     width: 30%;
 }
+  /* 모달 내부 설명글 */
+  .modal-info-tit {
+    font-size: 12px;
+    color: var(--gray-dark);
+  }
+  .modal-subInfo-tit {
+    font-size: 12px;
+  }
+
   /* input 영역 */
   .modal-input-group {
     display: flex;
@@ -204,6 +273,52 @@
     font-size: 16px;
     border: 1px solid #ccc;
     border-radius: 8px;
+    outline: none;
+  }
+  .modal-input-group .modal-tag-box {
+    width: 60%;
+    padding: 12px 24px 12px 0;
+  }
+  .modal-tag-box .tag-btn{
+    padding: 4px 6px;
+    margin: 4px 2px;
+    border-radius: 10px;
+    border: 1px solid #ccc;
+    font-weight: bold;
+    color: var(--font-dark);
+    box-shadow: 2px 2px 1px rgba(0,0,0,0.35);
+    transition: transform 0.1s ease, box-shadow 0.1s ease;
+  }
+
+  .tag-btn:hover{
+    cursor: pointer;
+    background-color: #d8d8d8;
+  }
+  
+  .tag-btn:active{
+    background-color: var(--primary-color);
+    color: var(--gray-light);
+    transform: translate(2px, 2px);
+    box-shadow: none;
+  }
+  
+  .tag-btn-toggle{
+    background-color: var(--primary-color);
+    color: var(--gray-light) !important;
+  }
+  .tag-btn-toggle:hover{
+    background-color: #cc4557 !important;
+  }
+  .tag-btn-toggle:active{
+    color: var(--font-dark) !important;
+  }
+  
+
+  /* info 그룹 */
+  .modal-info-group {
+   display: flex;
+   justify-content: space-between;
+
   }
 
   
@@ -224,7 +339,7 @@
   }
   
   #wmMembership {
-    background-color: red;
+    background-color: var(--primary-color);
     color: white;
   }
 
@@ -265,3 +380,47 @@
     border: 1px solid #ccc;
     border-radius: 8px;
   }
+
+  .tit-title {
+    padding: 12px 0;
+    font-size: 16px;
+
+  }
+
+  /* 인증번호 받기 버튼 */
+  .get-certified-btn{
+    padding: 8px 16px;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 14px;
+    background-color: var(--primary-color);
+    color: white;
+  }
+
+  /* 인증번호 입력 div */
+  #verifyBox {
+    display: none;
+  }
+  #verifyEmailBox{
+    display: none;
+  }
+  /* 인증 버튼 */
+  #certifiedUserPhoneSubBtn {
+   display: none;
+  }
+
+  /* 세부예약정보 모달 */
+.reservation-detail-ul{
+  padding: 20px;
+} 
+.reservation-detail-ul li{
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 25px;
+}
+#cancelReservation {
+  background-color: var(--primary-color);
+  color: var(--gray-light);
+}
+

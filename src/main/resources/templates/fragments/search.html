@@ -4,10 +4,10 @@
 
 <form th:fragment="search" id="searchBox">
   <script th:inline="javascript">
-    const link = document.createElement('link');
-    link.rel = "stylesheet";
-    link.href = /*[[@{/css/search.css}]]*/;
-    document.head.appendChild(link);
+    const styleOfSearchFragment = document.createElement('link');
+    styleOfSearchFragment.rel = "stylesheet";
+    styleOfSearchFragment.href = /*[[@{/css/search.css}]]*/;
+    document.head.appendChild(styleOfSearchFragment);
 
     const flatpickrCss = document.createElement('link');
     flatpickrCss.rel = "stylesheet";
@@ -102,7 +102,6 @@
   </script>
   <script type="module" th:src="@{/js/util/debounce.js}"></script>
   <script type="module" th:src="@{/js/search/search.js}"></script>
-
   <!-- duorpeb, 달력 JS -->
   <script th:src="@{/js/flatPickr.js}"></script>
 </form>

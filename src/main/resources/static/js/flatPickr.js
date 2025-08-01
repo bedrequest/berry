@@ -2,7 +2,7 @@
 const today = new Date();
  // 선택 시 시간 부분 무시
 today.setHours(0,0,0,0);
- // 최대 지정 날짜 
+ // 최대 지정 날짜
 const maxDate = new Date();
  // 현재 날짜로부터 180 일 뒤까지만 선택 가능
 maxDate.setDate(maxDate.getDate() + 90);
@@ -16,8 +16,7 @@ flatpickr("#checkInInput, #checkOutInput", {
   monthSelectorType: "static",
 
   // 저장 형태 - ISO 문자열 전체 : ""
-  dateFormat: "Z", 
-  
+  //dateFormat: "Z",
   // 최소 선택 날짜
   minDate: today,
   // maxDate: new Date(nextYear, maxDate_info.getMonth(), maxDate_info.getDate()),
@@ -61,4 +60,3 @@ flatpickr("#checkInInput, #checkOutInput", {
     console.log("dateFormat : ", instance.config.dateFormat);
   }
 });
-

@@ -26,11 +26,11 @@ public class RoomDTO {
   private List<String> roomImageUrls;
 
   public int getRentTimeInt() {
-    if (rentTime == null || rentTime.isEmpty()) return 0;
+    if (rentTime == null) return 0;
 
     int result = rentTime.charAt(0) - '0';
     if (rentTime.charAt(1) >= '0' &&
-        rentTime.charAt(1) <= '9') {
+    rentTime.charAt(1) <= '9') {
       result *= 10;
       result += rentTime.charAt(1) - '0';
     }

@@ -1,7 +1,13 @@
 package com.berry.project.controller;
 
+import com.berry.project.dto.user.ChangePwDTO;
 import com.berry.project.dto.user.DeactivatedUserDTO;
+import com.berry.project.dto.user.MyPageReservationDTO;
 import com.berry.project.dto.user.UserDTO;
+import com.berry.project.handler.user.CoolSMSHandler;
+import com.berry.project.handler.user.StarterMailHandler;
+import com.berry.project.service.lodge.LodgeService;
+import com.berry.project.service.payment.PaymentService;
 import com.berry.project.service.user.DeactivatedUserService;
 import com.berry.project.service.user.UserService;
 import jakarta.servlet.ServletException;
@@ -20,10 +26,14 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.RestTemplate;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.security.Principal;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 
 @Controller
@@ -37,6 +47,9 @@ public class UserController {
   private final UserService userService;
   private final DeactivatedUserService deactivatedUserService;
   private final OAuth2AuthorizedClientService oAuth2AuthorizedClientService;
+  private final StarterMailHandler starterMailHandler;
+  private final PaymentService paymentService;
+  private final LodgeService lodgeService;
 
   private final PasswordEncoder passwordEncoder;
 
@@ -46,8 +59,14 @@ public class UserController {
   private String naverClientId;
   @Value("${naver.secret.key}")
   private String naverSecretKey;
+  @Value("${coolsms.key}")
+  private String coolSmsApiKey;
+  @Value("${coolsms.secret.key}")
+  private String coolSmsSecretKey;
+  @Value("${coolsms.fromNumber}")
+  private String fromNumber;
 
-
+  // -- 동기 --
   @GetMapping("/login")
   public void login(@RequestParam(name="redirectTo", required = false) String redirectTo){}
 
@@ -65,28 +84,32 @@ public class UserController {
     // web 은 email, oauth2 는 uid
     String username = principal.getName();
     log.info("myPage Principal username >>> {}", username);
+    UserDTO userDTO = userService.getUserInfo(username);
+    
+    // 예약 내역 가져오기
+    List<MyPageReservationDTO> reservationList = userService.getReservationList(userDTO.getUserId());
+    log.info("reservationList >> {}",reservationList);
+    log.info("현재 로그인한 userId >> {}",userDTO.getUserId());
 
-    //--------------------- 윗부분 수정. 같고오는
+    List<MyPageReservationDTO> reservationPresentList = new ArrayList<>();
 
-    model.addAttribute("userDTO", userService.getUserInfo(username));
-  }
-
-  @GetMapping("/duplicateCheckedEmail/{userEmail}")
-  @ResponseBody
-  public String duplicateCheckedEmail(@PathVariable("userEmail") String userEmail){
-    log.info("duplicateCheckedEmail");
-    log.info("userEmail >>>>> {}", userEmail);
-    if(userEmail.equals("")){
-      return "fail";
+    // endDate 전 값만 보내주기
+    for(MyPageReservationDTO mrDTO : reservationList){
+      // 요소를 비교해서 아직 이용을 하지 않은 숙박이 있을 경우
+      if(LocalDateTime.now().isBefore(mrDTO.getEndDate()) && mrDTO.getBookingStatus().equals("DONE")){
+        reservationPresentList.add(mrDTO);
+      }
     }
-    Long isOk = userService.isDuplicateUser(userEmail);
-    log.info("duplicateCheckedEmail isOk >>>> {}",isOk);
+    log.info("이용 전 숙박내역 >>>>> {}", reservationPresentList);
 
-    return isOk == 0 ? "ok" : "fail";
-
+    model.addAttribute("reservationPresentList", reservationPresentList);
+    model.addAttribute("userDTO", userDTO);
+    model.addAttribute("reservationList", reservationList);
   }
 
-  // 회원탈퇴(비활성전환) =============================================
+  
+
+  // 1. 회원탈퇴(비활성전환) =============================================
   @PostMapping("/deactivatedTransferUser")
   public String deactivatedTransferUser(
       DeactivatedUserDTO deactivatedUserDTO,
@@ -107,10 +130,10 @@ public class UserController {
 
     return "redirect:/user/logout";
   }
-  // 회원정보 수정 =============================================
+  // 2. 회원정보 수정 =============================================
   @PostMapping("/userInfoUpdate")
   public String userInfoUpdate(UserDTO userDTO){
-
+    log.info("userUpdateInfo userDTO > {}", userDTO);
     userService.userInfoUpadate(userDTO);
 
     return "redirect:/user/myPage";
@@ -118,7 +141,7 @@ public class UserController {
 
 
 
-  // 회원가입 =============================================
+  // 3. 회원가입 =============================================
   @PostMapping("/signup")
   public String signup(UserDTO userDTO){
     log.info("signup userDTO {}", userDTO);
@@ -160,7 +183,7 @@ public class UserController {
   }
 
 
-
+  // 4. 로그아웃
   @GetMapping("/logout")
   public String customLogout(
       HttpServletRequest request,
@@ -229,6 +252,95 @@ public class UserController {
     }
 
     return "redirect:/";
+  }
+  // 5. 비밀번호 변경
+  @PostMapping("changePassword")
+  public String changePassword(ChangePwDTO changePwDTO, RedirectAttributes redirectAttributes){
+    log.info("changePwDTO >>>> {}", changePwDTO);
+    // 이전 비밀번호와 변경되는 비밀번호 비교...
+    boolean checkedPassword = passwordEncoder.matches(
+        changePwDTO.getCurrentPassword(),
+        userService.getUserFindById(changePwDTO.getUserId()).getPassword()
+    );
+    if(checkedPassword){
+      changePwDTO.setChangePassword(passwordEncoder.encode(changePwDTO.getChangePassword()));
+      userService.updatePassword(changePwDTO.getChangePassword(), changePwDTO.getUserId());
+      // 비밀번호 변경 시 로그아웃
+      return "redirect:/user/logout";
+    }else{
+      // addFlashAttribute > url 뒤에 parameter 숨김
+      // addAttribute > ? 달고감
+      redirectAttributes.addFlashAttribute("checkedPassword", "fail");
+      // 비밀번호 변경 실패시 문구 출력
+      return "redirect:/user/myPage";
+    }
+
+  }
+
+
+  // --비동기--
+  // 휴대폰 인증
+  @GetMapping("/getCertifiedNumber/{myPageUserId}")
+  @ResponseBody
+  public String getCertifiedNumber(@PathVariable("myPageUserId") Long userId){
+
+    CoolSMSHandler coolSMSHandler = new CoolSMSHandler();
+
+    UserDTO userDTO = userService.getUserFindById(userId); // 객체 불러오기
+
+    // Math.random 보다 보안이 더 좋은 SecureRandom을 사용해보자.
+    String secureNumber = coolSMSHandler.createSecureNumber(6);
+    log.info("secureNumber >>> {}", secureNumber);
+
+    coolSMSHandler.sendCertifiedNumber(userDTO.getUserPhone(), secureNumber, coolSmsApiKey, coolSmsSecretKey, fromNumber);
+
+    return secureNumber != null ? secureNumber : "fail";
+  }
+
+  @GetMapping("/certifiedPhoneOk/{myPageUserId}")
+  @ResponseBody
+  public String certifiePhoneOk(@PathVariable("myPageUserId") Long userId){
+
+    Long isOk = userService.updateMobileCertified(userId);
+    return isOk > 0 ? "ok" : "fail";
+  }
+
+  // 이메일 인증
+  @ResponseBody
+  @GetMapping("/getCertifiedCode/{myPageUserId}")
+  public String getCertifiedCode(@PathVariable("myPageUserId") Long userId){
+
+    UserDTO userDTO = userService.getUserFindById(userId);
+
+    String secureCode = starterMailHandler.generateRandomMixStr(10);
+    log.info("secureCode >>> {}", secureCode);
+    starterMailHandler.sendCertifiedCode(userDTO.getUserEmail(), secureCode);
+
+    return secureCode != null ? secureCode : "fail";
+  }
+
+  @GetMapping("/certifiedEmailOk/{myPageUserId}")
+  @ResponseBody
+  public String certifiedEmailOk(@PathVariable("myPageUserId") Long userId){
+
+    Long isOk = userService.updateEmailCertified(userId);
+    return isOk > 0 ? "ok" : "fail";
+  }
+
+  // 아이디 중복검사
+  @GetMapping("/duplicateCheckedEmail/{userEmail}")
+  @ResponseBody
+  public String duplicateCheckedEmail(@PathVariable("userEmail") String userEmail){
+    log.info("duplicateCheckedEmail");
+    log.info("userEmail >>>>> {}", userEmail);
+    if(userEmail.equals("")){
+      return "fail";
+    }
+    Long isOk = userService.isDuplicateUser(userEmail);
+    log.info("duplicateCheckedEmail isOk >>>> {}",isOk);
+
+    return isOk == 0 ? "ok" : "fail";
+
   }
 
 }

@@ -1,10 +1,11 @@
 package com.berry.project.service.lodge;
 
 import com.berry.project.dto.lodge.*;
+import com.berry.project.dto.review.ReviewResponseDTO;
 import com.berry.project.entity.lodge.Lodge;
 import com.berry.project.entity.lodge.LodgeDescription;
 import com.berry.project.entity.lodge.Room;
-import com.berry.project.handler.PagingHandler;
+import com.berry.project.handler.CustomerIqPagingHandler;
 import com.berry.project.util.FacilityMaskDecoder;
 import org.json.simple.JSONArray;
 import org.json.simple.parser.JSONParser;
@@ -20,7 +21,10 @@ public interface LodgeService {
   default LodgeDTO convertEntityToDto(
       Lodge lodge,
       FacilityMaskDecoder facilityMaskDecoder,
-      List<LodgeDescription> descriptions) {
+      List<LodgeDescription> descriptions,
+      long reviewCount,
+      Double averageReviewScore,
+      ReviewResponseDTO bestReview) {
     List<LodgeDescriptionDTO> descriptionDTOList = new ArrayList<>();
     JSONParser parser = new JSONParser();
 
@@ -51,6 +55,9 @@ public interface LodgeService {
         .latitude(lodge.getLatitude())
         .longitude(lodge.getLongitude())
         .rooms(new ArrayList<>())
+        .reviewCount(reviewCount)
+        .averageReviewScore(averageReviewScore)
+        .bestReview(bestReview)
         .build();
   }
 
@@ -71,5 +78,6 @@ public interface LodgeService {
         .build();
   }
 
-  PagingHandler<LodgeDTO> getLodgeList(int pageNo, ListOptionDTO listOptionDTO, LodgeOptionDTO lodgeOptionDTO);
+
+  Object getLodgeList(int pageNo, ListOptionDTO listOptionDTO, LodgeOptionDTO lodgeOptionDTO);
 }

@@ -89,9 +89,12 @@ document.addEventListener('keydown', e => {
 searchKeywordArea.addEventListener('click', () => {
   searchKeywordInput.click();
 });
+searchKeywordInput.addEventListener('input', debounce(getKeywords, 400));
 
-searchKeywordInput.addEventListener('input', debounce(() => {
-  lodgeId = null;
+if (searchKeywordInput.value != '') getKeywords();
+
+function getKeywords() {
+lodgeId = null;
   freeForm.value = "true";
   const keyword = searchKeywordInput.value;
   if (keyword == '') {
@@ -105,8 +108,10 @@ searchKeywordInput.addEventListener('input', debounce(() => {
     suggestions = results;
     searchSuggestions.innerHTML = '';
     if (results.length == 0) searchSuggestions.innerHTML = `
-    <h3>검색 결과가 없어요</h3>
-    <span>목적지 이름 또는 띄어쓰기를 다시 확인해주세요.</span>
+    <div id="noSearchResult">
+      <span>검색 결과가 없어요</span>
+      <span>목적지 이름 또는 띄어쓰기를 다시 확인해주세요.</span>
+    </div>
     `;
     
     for (let i = 0; i < results.length; i++) {
@@ -119,9 +124,8 @@ searchKeywordInput.addEventListener('input', debounce(() => {
       html += '</div><div>';
       searchSuggestions.innerHTML += html;
     }
-    console.log(suggestions);
   });
-}, 500));
+}
 /* ------------------------------------------- */
 
 /* 2. 여행 첫날, 마지막날 */

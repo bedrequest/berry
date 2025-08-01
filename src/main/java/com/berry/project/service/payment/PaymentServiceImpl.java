@@ -14,6 +14,7 @@ import com.berry.project.entity.user.User;
 import com.berry.project.repository.lodge.RoomRepository;
 import com.berry.project.repository.payment.*;
 import com.berry.project.repository.user.UserRepository;
+
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -144,7 +145,6 @@ public class PaymentServiceImpl implements PaymentService {
 
     reservation.setBookingStatus("CANCELED");
   }
-
 
   /** 결제 페이지 이동 시 정보 - 객실 정보 가져오기  */
   @Override

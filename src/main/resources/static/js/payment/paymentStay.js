@@ -88,11 +88,11 @@ paymentButton.addEventListener('click', async () => {
      // room_id (임시 생성)
     const roomId_info = 13;
      // user_id 
-    const userId_info = 26;
+    const userId_info = 9;
      // 이용 시작일 (reservation TABLE - stayTime)
-    const startDate_info = new Date("2025-07-21T11:00:00.000Z").toISOString();
+    const startDate_info = new Date("2025-08-25T11:00:00.000Z").toISOString();
      // 이용 종료일
-    const endDate_info = new Date("2025-07-22T12:00:00.000Z").toISOString();
+    const endDate_info = new Date("2025-08-30T12:00:00.000Z").toISOString();
      // 결제 금액은 위에서 사용된 총 결제 가격을 사용
   
      // 숙박 인원 (reservation TABLE - guestsAmount)

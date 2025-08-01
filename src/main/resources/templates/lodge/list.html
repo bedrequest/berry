@@ -11,71 +11,135 @@
        th:with="listOption=${pagingHandler.listOptionDTO}"></div>
   <div class="container">
     <div class="filter">
-      <span class="title">필터</span>
-      <div class="lodgeTypeArea">
-        <span class="filterName">숙소유형</span>
-        <div class="lodgeType">
-          <div class="customRadioBtn" th:classappend="${pagingHandler.listOptionDTO.lodgeType eq null ? 'selected' : ''}"></div>
-          <span>전체</span>
+      <div class="filterHeader">
+        <span class="title">필터</span>
+        <div class="buttons">
+          <!--/*          <button type="button" id="filterApplyBtn" disabled>적용</button>*/-->
+
+          <button type="button" id="filterResetBtn"
+                  th:disabled="${pagingHandler.listOptionDTO.defaultOption}">
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" class="bi bi-arrow-counterclockwise"
+                 viewBox="0 0 16 16">
+              <path fill-rule="evenodd" d="M8 3a5 5 0 1 1-4.546 2.914.5.5 0 0 0-.908-.417A6 6 0 1 0 8 2z"/>
+              <path
+                  d="M8 4.466V.534a.25.25 0 0 0-.41-.192L5.23 2.308a.25.25 0 0 0 0 .384l2.36 1.966A.25.25 0 0 0 8 4.466"/>
+            </svg>
+            리셋
+          </button>
         </div>
-        <div class="lodgeType" th:each="type : ${lodgeTypes}">
-          <div class="customRadioBtn" th:classappend="${pagingHandler.listOptionDTO.lodgeType eq type ? 'selected' : ''}"></div>
-          <span th:text="${type}"></span>
-        </div>
+
       </div>
-      <div class="priceRange">
-        <div class="filterName">
-          <span>가격</span>
-          <span>1박 기준</span>
+      <div class="filterMain">
+        <div class="lodgeTypeArea">
+          <span class="filterName">숙소유형</span>
+          <div class="lodgeType">
+            <div class="customRadioBtn"
+                 th:classappend="${pagingHandler.listOptionDTO.lodgeType eq null ? 'selected' : ''}"></div>
+            <span>전체</span>
+          </div>
+          <div class="lodgeType" th:each="type : ${lodgeTypes}">
+            <div class="customRadioBtn"
+                 th:classappend="${pagingHandler.listOptionDTO.lodgeType eq type ? 'selected' : ''}"></div>
+            <span th:text="${type}"></span>
+          </div>
+        </div>
+        <div class="priceRange">
+          <div class="filterName">
+            <span>가격</span>
+            <span>1박 기준</span>
+          </div>
+
+          <div class="filterBody">
+            <div id="lowestPriceArea" class="row">
+              <div class="rowTitle">최저가</div>
+              <div class="rowBody">
+                <button type="button" id="lowestPriceDown">-</button>
+                <div id="lowestPriceText">[[${listOptionDTO.lowestPrice}]]원</div>
+                <button type="button" id="lowestPriceUp">+</button>
+              </div>
+            </div>
+            <div id="highestPriceArea" class="row">
+              <div class="rowTitle">최고가</div>
+              <div class="rowBody">
+                <button type="button" id="highestPriceDown">-</button>
+                <div id="highestPriceText">
+                  <th:block th:if="${listOptionDTO.highestPrice gt 400000}">
+                    500000원 이상
+                  </th:block>
+                  <th:block th:if="${listOptionDTO.highestPrice le 400000}">
+                    [[${listOptionDTO.highestPrice}]]원
+                  </th:block>
+                </div>
+                <button type="button" id="highestPriceUp">+</button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="favorites">
+          <span class="filterName">#태그</span>
+          <div class="favorite divBtn" th:each="favorite, status : ${favorites}"
+               th:data-index="${status.index}" th:text="${favorite}"
+               th:classappend="${selectedFavorites.contains(favorite) ? 'selected' : ''}">
+          </div>
+        </div>
+
+        <div class="facilities">
+          <span class="filterName">시설</span>
+          <div class="facilityType">
+            <span class="subTitle">공용시설</span>
+            <div th:each="facility, status:${publicFacilities}"
+                 class="facilityBtn facility1 divBtn" th:text="${facility}" th:data-index="${status.index}"
+                 th:classappend="${facilities.contains(facility) ? 'selected' : ''}">
+            </div>
+          </div>
+          <div class="facilityType">
+            <span class="subTitle">객실 내 시설</span>
+            <div th:each="facility, status:${innerFacilities}"
+                 class="facilityBtn facility2 divBtn" th:text="${facility}" th:data-index="${status.index}"
+                 th:classappend="${facilities.contains(facility) ? 'selected' : ''}">
+            </div>
+          </div>
+          <div class="facilityType">
+            <span class="subTitle">기타시설</span>
+            <div th:each="facility, status:${otherFacilities}"
+                 class="facilityBtn facility3 divBtn" th:text="${facility}" th:data-index="${status.index}"
+                 th:classappend="${facilities.contains(facility) ? 'selected' : ''}">
+            </div>
+          </div>
         </div>
       </div>
 
-      <div class="favorites">
-        <span class="filterName">#태그</span>
-        <div class="favorite divBtn" th:each="favorite, status : ${favorites}"
-             th:data-index="${status.index}" th:text="${favorite}"
-             th:classappend="${selectedFavorites.contains(favorite) ? 'selected' : ''}">
-        </div>
-      </div>
-
-      <div class="facilities">
-        <span class="filterName">시설</span>
-        <div class="facilityType">
-          <span class="subTitle">공용시설</span>
-          <div th:each="facility, status : ${publicFacilities}"
-               class="facilityBtn facility1 divBtn" th:text="${facility}" th:data-index="${status.index}"
-               th:classappend="${facilities.contains(facility) ? 'selected' : ''}">
-          </div>
-        </div>
-        <div class="facilityType">
-          <span class="subTitle">객실 내 시설</span>
-          <div th:each="facility, status : ${innerFacilities}"
-               class="facilityBtn facility2 divBtn" th:text="${facility}" th:data-index="${status.index}"
-               th:classappend="${facilities.contains(facility) ? 'selected' : ''}">
-          </div>
-        </div>
-        <div class="facilityType">
-          <span class="subTitle">기타시설</span>
-          <div th:each="facility, status : ${otherFacilities}"
-               class="facilityBtn facility3 divBtn" th:text="${facility}" th:data-index="${status.index}"
-               th:classappend="${facilities.contains(facility) ? 'selected' : ''}">
-          </div>
-        </div>
-      </div>
     </div>
     <div class="list">
       <div class="stat">
         <span>'[[${pagingHandler.listOptionDTO.keyword}]]' 검색 결과 [[${pagingHandler.totalCount}]]개</span>
-        <select id="sort" name="sort" aria-label="정렬">
-          <option>정렬</option>
-          <option value="reviewRank">평점높은순</option>
-          <option value="reviewCount">리뷰많은순</option>
-          <option value="priceAsc">낮은가격순</option>
-          <option value="priceDesc">높은가격순</option>
-          <option value="distance">거리순</option>
-        </select>
+        <div id="lodgeSortBtn">
+          <span th:text="${pagingHandler.listOptionDTO.sort}"></span>
+          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="iconUp" viewBox="0 0 16 16">
+            <path fill-rule="evenodd" d="M7.646 4.646a.5.5 0 0 1 .708 0l6 6a.5.5 0 0 1-.708.708L8 5.707l-5.646 5.647a.5.5 0 0 1-.708-.708z"/>
+          </svg>
+          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="iconDown" viewBox="0 0 16 16">
+            <path fill-rule="evenodd" d="M1.646 4.646a.5.5 0 0 1 .708 0L8 10.293l5.646-5.647a.5.5 0 0 1 .708.708l-6 6a.5.5 0 0 1-.708 0l-6-6a.5.5 0 0 1 0-.708"/>
+          </svg>
+          <div id="lodgeSortOptionArea">
+            <div class="sortOption" th:each="option:${sortOptions}"
+                 th:classappend="${pagingHandler.listOptionDTO.sort.equals(option) ? 'selected' : ''}">
+              <span th:text="${option}"></span>
+              <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" class="bi bi-check" viewBox="0 0 16 16"
+                   th:if="${pagingHandler.listOptionDTO.sort.equals(option)}">
+                <path d="M10.97 4.97a.75.75 0 0 1 1.07 1.05l-3.99 4.99a.75.75 0 0 1-1.08.02L4.324 8.384a.75.75 0 1 1 1.06-1.06l2.094 2.093 3.473-4.425z"/>
+              </svg>
+            </div>
+          </div>
+        </div>
       </div>
-      <div class="listBody">
+      <div class="noResult" th:if="${pagingHandler.totalCount == 0}">
+        <div>검색 결과가 없어요.</div>
+        <div>'[[${pagingHandler.listOptionDTO.keyword}]]'에 대한 철자를 확인하거나</div>
+        <div>긴 문구는 띄어쓰기를 해보세요.</div>
+      </div>
+      <div class="listBody" th:if="${pagingHandler.totalCount > 0}">
         <ul>
           <li th:each="lodge : ${pagingHandler.list}">
             <div class="bookmark">
@@ -104,14 +168,14 @@
                       <span class="timeValue">[[${lodge.cheapestRent.rentTime}]]</span>
                     </p>
                     <p class="rent price" th:if="${lodge.cheapestRent != null}">
-                      [[${lodge.cheapestRent.rentPrice}]]원
+                      [[${lodge.cheapestRent.rentPrice}]]원~
                     </p>
                     <p class="stay time" th:if="${lodge.cheapestStay != null}">
                       <span class="timeTitle">숙박</span>
                       <span class="timeValue">[[${lodge.cheapestStay.stayTime}]]</span>
                     </p>
                     <p class="stay price" th:if="${lodge.cheapestStay != null}">
-                      [[${lodge.cheapestStay.stayPrice}]]원
+                      [[${lodge.cheapestStay.stayPrice}]]원~
                     </p>
                   </div>
                 </div>
@@ -147,6 +211,7 @@
     const lodgeOption = /*[[${lodgeOption}]]*/;
     const publicFacilityCount = /*[[${publicFacilities.size()}]]*/;
     const innerFacilityCount = /*[[${innerFacilities.size()}]]*/;
+    const priceTable = /*[[${priceTable}]]*/;
   </script>
   <script th:src="@{/js/lodge/list.js}"></script>
 </div>

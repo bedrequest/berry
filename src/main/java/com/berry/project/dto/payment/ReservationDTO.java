@@ -28,7 +28,8 @@ public class ReservationDTO {
   private int guestsAmount;
   private String bookingStatus;
   private String reservationType;
-
+  
   @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ssXXX")
   private OffsetDateTime reservationRegDate;
+
 }
