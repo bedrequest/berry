@@ -1,15 +1,102 @@
+/* 소제목 */
+.areaTitle {
+  font-size: 18px;
+  font-weight: 600;
+}
+
+/* 내용 */
+p {
+  color: #707070;
+  font-weight: 400;
+  white-space: pre-wrap;
+  line-height: 22px;
+}
+
+.area {
+  padding: 30px 0;
+  border-bottom: 1px solid #dddddd;
+}
+
+/* detail용 list */
+.realList {
+  margin: 20px;
+}
+.realList>li {
+  margin: 15px 0;
+
+  color: #707070;
+  font-size: 15px;
+
+  list-style: disc;
+}
+
+/* 0. 검색창을 sticky로 관리 */
+.sticky {
+  position: sticky;
+  top: 0;
+
+  background-color: white;
+
+  z-index: 20;
+}
+
 /* 1. container */
 .container {
   width: 1200px;
   margin: auto;
 }
 
-/* 2. lodgeImageArea */
+/* 2. navbar */
+.navBar {
+  padding: 10px 0;
+  position: sticky;
+  top: 80px;
+
+  background-color: white;
+  font-size: 18px;
+  border-bottom: 1px solid #dddddd;
+
+  z-index: 10;
+}
+.navBar>.container {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.navBar ul {
+  display: flex;
+}
+.navBar li {
+  margin: 0 10px;
+  padding: 10px;
+
+  transition: 0.3s ease-in;
+}
+.navBar li.current {
+  border-bottom: 3px solid #e74b60;
+}
+.navBar li>a {
+  color: #707070;
+}
+.navBar li.current>a {
+  color: #e74b60;
+}
+.navBar .minPrice {
+  font-weight: 600;
+}
+
+/* 3. main */
+.main {
+  padding-top: 10px;
+}
+
+/* 4. lodgeImageArea */
 #lodgeImageArea {
   width: 100%;
   height: 512px;
-
+  margin-bottom: 20px;
   display: grid;
+
   grid-template-columns: repeat(4, 1fr);
   grid-template-rows: 1fr 1fr;
   gap: 8px;
@@ -44,4 +131,255 @@
 }
 .smallImage:nth-of-type(5) {
   border-bottom-right-radius: 10px;
+}
+
+/* 5. titleArea */
+#titleArea {
+  font-size: 28px;
+}
+#titleArea>span {
+  font-size: 18px;
+  color: #707070;
+}
+#titleArea>.titleAndPrice {
+  display: flex;
+  margin-top: 10px;
+
+  justify-content: space-between;
+  align-items: center;
+}
+#titleArea>.titleAndPrice>span:first-of-type {
+  font-weight: 700;
+}
+#titleArea>.titleAndPrice>span:last-of-type {
+  font-weight: 600;
+}
+
+/* 6. areaUnderTitle */
+.areaUnderTitle {
+  margin-top: 20px;
+  width: 100%;
+  height: 133px;
+
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  grid-template-rows: 1fr;
+  gap: 8px;
+}
+.areaUnderTitle>div {
+  position: relative;
+  padding: 25px;
+
+  border: 1px solid #dddddd;
+  border-radius: 15px;
+
+  cursor: pointer;
+}
+.areaUnderTitle>div>* {
+  z-index: 2;
+}
+.areaUnderTitle>div:hover::after {
+  content: "";
+
+  position: absolute;
+  width: 100%; height: 100%;
+
+  border-radius: inherit;
+
+  z-index: 1;
+}
+
+/* 7. roomArea */
+/* 7-1. 전역 */
+#roomArea>span {
+  font-size: 18px;
+  font-weight: 600;
+}
+/* 7-2. 객실 설정 */
+.room {
+  display: flex;
+  margin: 20px 0;
+  padding: 30px;
+
+  background-color: #f5f7fa;
+  border-radius: 15px;
+}
+/* 7-3. 객실 이미지 */
+.room>.roomPreviewImage {
+  width: 480px;
+  height: 270px;
+
+  background-repeat: no-repeat;
+  background-size: cover;
+
+  border-radius: 10px;
+}
+/* 7-4. 객실 정보 */
+.room>.roomDescription {
+  width: calc(100% - 500px);
+  margin-left: 20px;
+}
+.room>.roomDescription>.roomTitle {
+  font-size: 24px;
+  font-weight: 600;
+}
+.room>.roomDescription>.roomDetail {
+  margin: 20px 0;
+  padding: 20px;
+
+  border-radius: 10px;
+  background-color: white;
+}
+.stay, .rent {
+  display: flex;
+
+  flex-direction: column;
+  justify-content: space-between;
+}
+.room svg {
+  margin-right: 5px;
+}
+
+.stay>span, .rent>span {
+  font-size: 16px;
+  font-weight: 600;
+}
+.rentDetail, .stayDetail {
+  display: flex;
+  margin-top: 10px;
+
+  justify-content: space-between;
+}
+.rentOption, .stayOption {
+  display: flex;
+  color: #707070;
+}
+.rentTime, .stayTime {
+  font-size: 12px;
+}
+
+.personCountInfo {
+  padding: 15px;
+  display: flex;
+
+  align-items: center;
+
+  font-size: 12px;
+
+  background-color: white;
+  border-radius: 10px;
+}
+.personCountInfo>.title {
+  margin-right: 30px;
+}
+.longRent, .earlyCheckIn {
+  font-weight: 600;
+}
+.rentPrice, .stayPrice {
+  font-weight: 700;
+}
+.reserveBtn {
+  position: relative;
+  margin-top: 10px;
+  padding: 10px;
+
+  display: flex;
+  justify-content: center;
+
+  color: white;
+  font-size: 14px;
+  font-weight: 700;
+
+  background-color: #e74b60;
+  border-radius: 10px;
+
+  cursor: pointer;
+  z-index: 0;
+}
+.reserveBtn::after {
+  content: "";
+  position: absolute;
+  top: 0; left: 0;
+  width: 100%; height: 100%;
+
+  background: rgba(0, 0, 0, 0);
+  border-radius: inherit;
+
+  z-index: 1;
+}
+.reserveBtn:hover::after {
+  background: rgba(0, 0, 0, 0.1);
+}
+.reserveBtn>span {
+  z-index: 2;
+}
+.soldOut {
+  color: #707070;
+  font-size: 14px;
+  font-weight: 700;
+}
+
+/* 8. 숙소 소개 */
+#lodgeIntro {
+  padding: 30px 0 10px;
+  display: flex;
+
+  flex-direction: column;
+}
+#lodgeIntro>.icon {
+  display: flex;
+  margin: 20px 0;
+}
+#lodgeIntro>.right {
+  justify-content: end;
+}
+
+/* 9. 서비스 및 부대시설 */
+.facilityTable {
+  width: 100%;
+  margin-top: 20px;
+}
+.facilityTable>div {
+  display: inline-block;
+  width: calc(100% / 3 - 3px);
+  margin: 10px 0;
+}
+
+/* 10. 숙소 이용 정보 */
+.descItem {
+  padding-top: 20px;
+}
+.descTitle {
+  margin-top: 20px;
+
+  color: #49627A;
+  font-weight: 700;
+}
+
+/* 11. 위치 */
+#map {
+  width: 100%;
+  height: 480px;
+  margin-top: 30px;
+}
+#addressArea {
+  display: flex;
+  margin: 20px 0;
+
+  font-size: 15px;
+  font-weight: 600;
+}
+#addressText {
+  margin-right: 10px;
+
+  color: #707070;
+}
+#addressCopy {
+  color: #e74b60;
+  text-decoration: none;
+
+  cursor: pointer;
+}
+#addressCopy:hover {
+  text-decoration: underline;
 }

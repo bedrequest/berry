@@ -56,7 +56,7 @@ public interface CuponRepository extends JpaRepository<Cupon, Long> {
      *
      */
     @Query("SELECT COUNT(c) FROM Cupon c WHERE c.userId = :userId AND c.isValid = true AND c.cuponEndDate > :currentDate")
-    long countValidCuponsByUserId(
+    int countValidCuponsByUserId(
         @Param("userId") Long userId,
         @Param("currentDate") OffsetDateTime currentDate
     );

@@ -49,7 +49,7 @@ public class UserController {
 
 
   @GetMapping("/login")
-  public void login(){}
+  public void login(@RequestParam(name="redirectTo", required = false) String redirectTo){}
 
   @GetMapping("/signup")
   public String signup(Model model, @RequestParam(required = false) Boolean marketing){

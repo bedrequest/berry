@@ -25,8 +25,8 @@ public class RoomDTO {
   private int maxCount;
   private List<String> roomImageUrls;
 
-  public int rentTimeInt() {
-    if (rentTime == null) return 0;
+  public int getRentTimeInt() {
+    if (rentTime == null || rentTime.isEmpty()) return 0;
 
     int result = rentTime.charAt(0) - '0';
     if (rentTime.charAt(1) >= '0' &&
@@ -38,11 +38,11 @@ public class RoomDTO {
     return result;
   }
 
-  public String stayCheckIn() {
+  public String getStayCheckIn() {
     if (stayTime == null) return null;
     return stayTime.split("·")[0];
   }
-  public String stayCheckOut() {
+  public String getStayCheckOut() {
     if (stayTime == null) return null;
     return stayTime.split("·")[1];
   }
