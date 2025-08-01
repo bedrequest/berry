@@ -22,4 +22,6 @@ public class ReservationDTO {
   private String bookingStatus;
   private String reservationType;
   private LocalDateTime reservationRegDate;
+
+
 }

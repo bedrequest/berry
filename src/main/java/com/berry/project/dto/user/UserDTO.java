@@ -30,6 +30,10 @@ public class UserDTO {
   private LocalDateTime regDate, modDate, lastLogin;
   private List<AuthUserDTO> authList;
 
+  public String convertRegDate(){
+    String dateTime = regDate.toString().substring(0, regDate.toString().indexOf("T"));
+    return dateTime;
+  }
 
 }
 

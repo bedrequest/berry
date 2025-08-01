@@ -7,4 +7,6 @@ import java.util.List;
 
 public interface RoomRepository extends JpaRepository<Room, Long> {
   List<Room> findByLodgeId(Long lodgeId);
+
+  List<Room> findByRoomIdIn(List<Long> roomIds);
 }

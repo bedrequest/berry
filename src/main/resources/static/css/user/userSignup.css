@@ -1,3 +1,7 @@
+:root{
+  --disabled: #b85766c7;
+}
+
 .signup-container {
   width: 900px;
   background-color: #f6f7fb;
@@ -57,6 +61,18 @@ label {
   font-size: 15px;
   border: 1px solid #ccc;
   border-radius: 8px;
+  outline: none;
+}
+
+/* 이메일 중복검사 확인용 */
+.signup-info-group {
+  display: flex;
+  justify-content: space-between;
+  font-size: 12px;
+}
+
+.signup-subInfo-tit {
+  font-size: 12px;
 }
 
 .signup-btn {
@@ -72,7 +88,7 @@ label {
   margin-top: 10px;
 }
 #signupButton:disabled {
-  background-color: #cc2851;
+  background-color: var(--disabled);
   cursor: not-allowed;        
 }
 

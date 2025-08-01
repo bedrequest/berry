@@ -1,7 +1,11 @@
 package com.berry.project.service.user;
 
 import com.berry.project.dto.user.AuthUserDTO;
+import com.berry.project.dto.user.MyPageReservationDTO;
 import com.berry.project.dto.user.UserDTO;
+import com.berry.project.entity.lodge.Lodge;
+import com.berry.project.entity.lodge.Room;
+import com.berry.project.entity.payment.Reservation;
 import com.berry.project.entity.user.AuthUser;
 import com.berry.project.entity.user.User;
 
@@ -67,6 +71,44 @@ public interface UserService {
         .isEmailCertified(user.isEmailCertified())
         .build();
   }
+  // 해찬
+  /** Reservation -> ReservationDTO */
+  default MyPageReservationDTO printConvertReservationEntityToReservationDto(Reservation reservation){
+    if(reservation == null) { return null; }
+
+    return
+        MyPageReservationDTO.builder()
+            .reservationId(reservation.getReservationId())
+            .roomId(reservation.getRoomId())
+            .userId(reservation.getUserId())
+            .orderId(reservation.getOrderId())
+            .startDate(reservation.getStartDate())
+            .bookingStatus(reservation.getBookingStatus())
+            .endDate(reservation.getEndDate())
+            .totalAmount(reservation.getTotalAmount())
+            .guestsAmount(reservation.getGuestsAmount())
+            .reservationType(reservation.getReservationType())
+            .reservationRegDate(reservation.getReservationRegDate())
+            .build();
+  }
+
+  default MyPageReservationDTO printConvertLodgeEntityToReservationDto(Room room){
+    if(room == null) { return null; }
+
+    return
+        MyPageReservationDTO.builder()
+            .roomName(room.getRoomName())
+            .build();
+  }
+
+  default MyPageReservationDTO printConvertLodgeEntityToReservationDto(Lodge lodge){
+    if(lodge == null) { return null; }
+
+    return
+        MyPageReservationDTO.builder()
+            .lodgeName(lodge.getLodgeName())
+            .build();
+  }
 
 
   UserDTO isSocialDuplicateUser(String userUid);
@@ -88,4 +130,12 @@ public interface UserService {
   UserDTO getUserFindById(Long userId);
 
   void userInfoUpadate(UserDTO userDTO);
+
+  Long updateMobileCertified(Long userId);
+
+  Long updateEmailCertified(Long userId);
+
+  void updatePassword(String changePassword, Long userId);
+
+  List<MyPageReservationDTO> getReservationList(Long userId);
 }
