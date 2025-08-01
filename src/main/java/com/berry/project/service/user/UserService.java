@@ -82,13 +82,13 @@ public interface UserService {
             .roomId(reservation.getRoomId())
             .userId(reservation.getUserId())
             .orderId(reservation.getOrderId())
-            .startDate(reservation.getStartDate())
+            .startDate(reservation.getStartDate().toLocalDateTime())
             .bookingStatus(reservation.getBookingStatus())
-            .endDate(reservation.getEndDate())
+            .endDate(reservation.getEndDate().toLocalDateTime())
             .totalAmount(reservation.getTotalAmount())
             .guestsAmount(reservation.getGuestsAmount())
             .reservationType(reservation.getReservationType())
-            .reservationRegDate(reservation.getReservationRegDate())
+            .reservationRegDate(reservation.getReservationRegDate().toLocalDateTime())
             .build();
   }
 

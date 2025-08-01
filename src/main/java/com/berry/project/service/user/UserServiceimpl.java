@@ -78,7 +78,7 @@ public class UserServiceimpl implements UserService {
       Cupon registerCupon
           = Cupon.builder()
           .userId(userId)
-          .cuponType(0)
+          .cuponType(1)
           .cuponEndDate(OffsetDateTime.now().plusDays(180))
           .isValid(true)
           .build();
@@ -164,7 +164,7 @@ public class UserServiceimpl implements UserService {
       Cupon registerCupon
           = Cupon.builder()
                  .userId(userId)
-                 .cuponType(0)
+                 .cuponType(1)
                  .cuponEndDate(OffsetDateTime.now().plusDays(180))
                  .isValid(true)
                  .build();
@@ -339,13 +339,13 @@ public class UserServiceimpl implements UserService {
             .roomId(reservation.getRoomId())
             .userId(reservation.getUserId())
             .orderId(reservation.getOrderId())
-            .startDate(reservation.getStartDate())
+            .startDate(reservation.getStartDate().toLocalDateTime())
             .bookingStatus(reservation.getBookingStatus())
-            .endDate(reservation.getEndDate())
+            .endDate(reservation.getEndDate().toLocalDateTime())
             .totalAmount(reservation.getTotalAmount())
             .guestsAmount(reservation.getGuestsAmount())
             .reservationType(reservation.getReservationType())
-            .reservationRegDate(reservation.getReservationRegDate())
+            .reservationRegDate(reservation.getReservationRegDate().toLocalDateTime())
             // room
             .roomName(room != null ? room.getRoomName() : null)
             .rentTime(room != null ? room.getRentTime() : null)

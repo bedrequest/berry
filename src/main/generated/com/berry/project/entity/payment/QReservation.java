@@ -21,7 +21,7 @@ public class QReservation extends EntityPathBase<Reservation> {
 
     public final StringPath bookingStatus = createString("bookingStatus");
 
-    public final DateTimePath<java.time.LocalDateTime> endDate = createDateTime("endDate", java.time.LocalDateTime.class);
+    public final DateTimePath<java.time.OffsetDateTime> endDate = createDateTime("endDate", java.time.OffsetDateTime.class);
 
     public final NumberPath<Integer> guestsAmount = createNumber("guestsAmount", Integer.class);
 
@@ -29,13 +29,13 @@ public class QReservation extends EntityPathBase<Reservation> {
 
     public final NumberPath<Long> reservationId = createNumber("reservationId", Long.class);
 
-    public final DateTimePath<java.time.LocalDateTime> reservationRegDate = createDateTime("reservationRegDate", java.time.LocalDateTime.class);
+    public final DateTimePath<java.time.OffsetDateTime> reservationRegDate = createDateTime("reservationRegDate", java.time.OffsetDateTime.class);
 
     public final StringPath reservationType = createString("reservationType");
 
     public final NumberPath<Long> roomId = createNumber("roomId", Long.class);
 
-    public final DateTimePath<java.time.LocalDateTime> startDate = createDateTime("startDate", java.time.LocalDateTime.class);
+    public final DateTimePath<java.time.OffsetDateTime> startDate = createDateTime("startDate", java.time.OffsetDateTime.class);
 
     public final NumberPath<Integer> totalAmount = createNumber("totalAmount", Integer.class);
 

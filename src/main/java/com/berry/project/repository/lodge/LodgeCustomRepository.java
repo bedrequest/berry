@@ -10,5 +10,4 @@ public interface LodgeCustomRepository {
 
   Page<Lodge> searchLodges(ListOptionDTO listOptionDTO, LodgeOptionDTO lodgeOptionDTO, Pageable pageable);
 
-  Lodge getLodgeByRoom(Long roomId);
 }

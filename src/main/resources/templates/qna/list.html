@@ -87,7 +87,8 @@
 
       </td>
       <td>[[${notice.userEmail}]]</td>
-      <td>[[${notice.regDate}]]</td>
+<!--      <td>[[${notice.regDate}]]</td>-->
+      <td>[[${#temporals.format(notice.regDate, 'yyyy-MM-dd HH:mm:ss')}]]</td>
       <td>[[${notice.comment}]]</td>
     </tr>
     <tr th:each="bvo:${ph.list}">
@@ -98,7 +99,8 @@
 
       </td>
       <td>[[${bvo.userEmail}]]</td>
-      <td>[[${bvo.regDate}]]</td>
+      <td>[[${#temporals.format(bvo.regDate, 'yyyy-MM-dd HH:mm:ss')}]]</td>
+<!--      <td>[[${bvo.regDate}]]</td>-->
       <td>[[${bvo.comment}]]</td>
     </tr>
     </tbody>

@@ -31,7 +31,7 @@ public class QPaymentBeforePayment extends EntityPathBase<PaymentBeforePayment> 
 
     public final StringPath orderName = createString("orderName");
 
-    public final DateTimePath<java.time.LocalDateTime> orderRegDate = createDateTime("orderRegDate", java.time.LocalDateTime.class);
+    public final DateTimePath<java.time.OffsetDateTime> orderRegDate = createDateTime("orderRegDate", java.time.OffsetDateTime.class);
 
     public final NumberPath<Long> paymentId = createNumber("paymentId", Long.class);
 

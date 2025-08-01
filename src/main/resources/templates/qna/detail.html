@@ -41,7 +41,8 @@
       <input type="text" id="w" name="userEmail" th:value="${customeriqboardfileDTO.boardDTO.userEmail}" class="input-box short" readonly/>
     </div>
     <div class="inline-group">
-      <input id="date" name="regDate" th:value="${customeriqboardfileDTO.boardDTO.regDate}" class="input-box short" readonly/>
+<!--      [[${#temporals.format(customeriqboardfileDTO.boardDTO.regDate, 'yyyy-MM-dd HH:mm:ss')}]]-->
+      <input id="date" name="regDate" th:value="${#temporals.format(customeriqboardfileDTO.boardDTO.regDate, 'yyyy-MM-dd HH:mm:ss')}" class="input-box short" readonly/>
     </div>
   </div>
 
