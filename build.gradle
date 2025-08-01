@@ -74,3 +74,12 @@ dependencies {
 tasks.named('test') {
 	useJUnitPlatform()
 }
+
+// Q타입 추가(25-07-29)
+def querydslSrcDir='src/main/generated'
+clean {
+	delete file(querydslSrcDir)
+}
+tasks.withType(JavaCompile){
+	options.generatedSourceOutputDirectory = file(querydslSrcDir)
+}

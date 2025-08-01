@@ -1,11 +1,16 @@
 package com.berry.project.handler;
 
 import lombok.Getter;
+import lombok.Setter;
+import lombok.ToString;
 import org.springframework.data.domain.Page;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Getter
+@Setter
+@ToString
 public class CustomerIqPagingHandler<T> {
   private int startPage;
   private int endPage;
@@ -16,6 +21,8 @@ public class CustomerIqPagingHandler<T> {
 
   private String type;
   private String keyword;
+  private String tripStart;
+  private String tripEnd;
   private List<T> list;
 
   public CustomerIqPagingHandler(Page<T> list, int pageNo){
@@ -31,9 +38,11 @@ public class CustomerIqPagingHandler<T> {
     this.hasNext = this.endPage < this.totalPage;
   }
 
-  public CustomerIqPagingHandler(Page<T> list, int pageNo, String type, String keyword){
+  public CustomerIqPagingHandler(Page<T> list, int pageNo, String type, String keyword, String tripStart, String tripEnd){
     this(list, pageNo);
     this.type = type;
     this.keyword = keyword;
+    this.tripStart = tripStart;
+    this.tripEnd = tripEnd;
   }
 }

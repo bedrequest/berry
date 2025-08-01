@@ -1,8 +1,41 @@
 console.log("boardRegister.js in");
 
+// textarea 자동 높이 조절
+const contentTextarea = document.getElementById('content');
+
+if (contentTextarea) {
+  contentTextarea.addEventListener('input', function () {
+    this.style.height = 'auto';  // 높이 초기화
+    this.style.height = this.scrollHeight + 'px';  // 새 높이로 설정
+  });
+}
+
+const contentArea = document.getElementById('content');
+const charCountDisplay = document.getElementById('charCount');
+
+if (contentArea && charCountDisplay) {
+  const updateCharCount = () => {
+    const length = contentArea.value.length;
+    charCountDisplay.textContent = `${length} / 1000`;
+
+    // 경고 색 적용 (900자 이상일 때)
+    if (length >= 900) {
+      charCountDisplay.classList.add('warning');
+    } else {
+      charCountDisplay.classList.remove('warning');
+    }
+  };
+
+  updateCharCount(); // 초기 로딩 시 반영
+  contentArea.addEventListener('input', updateCharCount);
+}
+
+
+
+
 // 리스트 버튼 이동
 document.getElementById('listBtn').addEventListener('click', () => {
-    location.href = "/board/list";
+    location.href = "/qna/list";
 });
 
 // 등록 버튼 유효성 검사
@@ -85,4 +118,6 @@ document.getElementById('input-file').addEventListener('change', function () {
         };
         reader.readAsDataURL(fileObject[0]);
     }
+    document.getElementById('file').value=fileObject[0].name;
 });
+
