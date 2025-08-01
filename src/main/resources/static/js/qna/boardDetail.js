@@ -32,6 +32,7 @@ document.addEventListener('DOMContentLoaded', () => {
     // 카테고리 select 보이기 및 값 설정
     categorySelect.style.display = 'inline-block';
     categorySelect.value = categoryInput.value;
+    categorySelect.disabled = false;
 
     // Modify & Delete 버튼 숨김
     modBtn.style.display = 'none';
