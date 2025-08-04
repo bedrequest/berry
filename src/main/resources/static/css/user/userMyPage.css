@@ -12,7 +12,7 @@
 }
 .top-section-headBox {
   display: flex;
-  justify-content: space-between;
+  justify-content: right;
 }
 .top-section-headTit {
     font-size: 1.5rem;
@@ -32,7 +32,7 @@
 /* 1. 유저정보 */
 .user-info, .user-notice-box {
     background: white;
-    /* padding: 1.5rem; */
+    padding: 1.5rem;
     border-radius: 12px;
     box-shadow: 0 2px 8px rgba(0,0,0,0.05);
     margin-bottom: 100px;
@@ -255,6 +255,7 @@
   .modal-info-tit {
     font-size: 12px;
     color: var(--gray-dark);
+    line-height: 1.5;
   }
   .modal-subInfo-tit {
     font-size: 12px;
@@ -419,8 +420,38 @@
   justify-content: space-between;
   margin-bottom: 25px;
 }
-#cancelReservation {
+.cancel-reservation {
   background-color: var(--primary-color);
   color: var(--gray-light);
 }
 
+/* 예약 취소 모달 */
+.refundReason-select {
+
+  padding: 5px 10px;
+  border-radius: 5px;
+  border-color: #ccc;
+  margin-top: 30px;
+  font-weight: bold;
+  color: var(--font-dark);
+}
+.refundReason-select:hover {
+  cursor: pointer;
+}
+
+.refundReason-select option {
+  font-size: 14px;
+  font-weight: bold;
+  color: var(--font-dark);
+}
+
+.refundReason-select:focus {
+  outline: none;  
+}
+
+#otherReasonBox p{
+  font-size: 14px;
+  font-weight: bold;
+  padding-bottom: 5px;
+  color: var(--font-dark);
+}
