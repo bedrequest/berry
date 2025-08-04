@@ -10,9 +10,9 @@
 <div layout:fragment="content">
   <div class="inner">
     <div class="myPage-content-group top-section">
+      <p class="top-section-headTit">회원정보</p>
       <div class="user-info">
         <div class="top-section-headBox">
-          <p class="top-section-headTit">회원정보</p>
           <button type="button" id="userInfoUpdateBtn" class="top-section-btn">정보 수정</button>
         </div>
         <ul class="user-info-ul" id="userInfoUl">
@@ -63,8 +63,8 @@
         <button class="user-info-btn" type="button" id="changePwModalBtn" th:if="${userDTO.provider == 'web'}">비밀번호 변경</button>
       </div>
 
+      <p class="top-section-headTit">알림</p>
       <div class="user-notice-box">
-        <p class="top-section-headTit">알림</p>
         <ul class="user-notice-ul">
           <li>알림입니다.</li>
         </ul>
@@ -88,7 +88,6 @@
                 </div>
 
                 <div class="reservation-right-box">
-
                   <ul>
                     <li>
                       <p class="reservation-left-tit">호텔 정보</p>
@@ -126,6 +125,7 @@
                     th:data-index="${iterStart.index}"
                     th:data-customcheckdate="${presentReservationDTO.customCheckDate()}"
                     th:data-customorderid="${presentReservationDTO.customOrderId()}"
+                    th:data-orderid="${presentReservationDTO.orderId}"
                     th:id="'reservationDetailInfoBtn' + ${iterStart.index}">세부예약 내용확인</button>
                 </div>
               </div>
@@ -389,15 +389,73 @@
         </ul>
       </div>
       <div class="modal-info-group">
-        <p class="modal-info-tit">※환불 규정의 경우 입실 2주일 전은 100% / 일주일 전 50% / 3일전에는 환불이 불가합니다.</p>
+        <p class="modal-info-tit">※환불 규정의 경우 입실 2주일 전과 당일 예약 후 1시간이내 취소 100% / 일주일 전 50% / 3일 전에는 환불이 불가합니다.</p>
         <p class="modal-subInfo-tit"></p>
       </div>
       <div class="modal-info-group" style="margin-top:10px;">
         <p class="modal-info-tit">※자세한 내용은 고객문의 및 고객센터로 연락바랍니다.(1234-5678)</p>
       </div>
-      <div class="modal-actions">
-        <button type="button" id="cancelReservation">예약취소</button>
+      <div class="modal-actions" id="detailInfoModalActions">
+<!--        <button type="button" id="cancelReservation">예약취소</button>-->
         <button type="button" id="reservationDetailInfoCloseModal">닫기</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- 예약 취소 모달 -->
+  <div class="modal" id="reservationCancelModal">
+    <div class="modal-body">
+      <div class="logo-position-div">
+        <img class="modal-logo" src="/image/Berry_logo.png" alt="로고">
+      </div>
+      <h2 class="modal-main-tit">예약 취소 사유</h2>
+
+      <div class="modal-content">
+
+          <div class="modal-input-group">
+            <input type="hidden" id="reservationOrderId">
+
+            <select class="refundReason-select" id="refundReason">
+              <optgroup label="환불 사유를 선택해주세요">
+                <option>
+                  단순 변심
+                </option>
+                <option>
+                  일정 변경
+                </option>
+                <option>
+                  예약 정보 오류
+                </option>
+                <option>
+                  결제 오류 또는 중복 결제
+                </option>
+                <option>
+                  숙소 시설 문제
+                </option>
+                <option>
+                  호스트 연락 불가
+                </option>
+                <option value="other">
+                  기타 (직접 입력)
+                </option>
+              </optgroup>
+            </select>
+
+          </div>
+
+          <div class="modal-input-group" id="otherReasonBox" style="display: none;">
+              <p>기타 사유를 입력해주세요.</p>
+              <textarea id="otherReason" class="auto-fit-textarea"></textarea>
+          </div>
+
+          <div class="modal-actions">
+            <div class="modal-action-left">
+            </div>
+            <div class="modal-action-right">
+              <button type="button" class="modal-sub-btn" id="subRefundBtn">제출</button>
+              <button type="button" class="modal-close-btn" id="rcCloseModal">닫기</button>
+            </div>
+          </div>
       </div>
     </div>
   </div>

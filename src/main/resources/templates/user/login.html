@@ -20,7 +20,7 @@
           로그인
         </h2>
         <form th:action="@{/user/login}" method="post">
-          <input type="hidden" name="redirectTo" th:value="${param.redirectTo}" />
+<!--          <input type="hidden" name="redirectTo" th:value="${param.redirectTo}" />-->
 
           <div class="user-input-group">
             <input type="text" name="userEmail" placeholder="이메일(example@domain.com)" required>

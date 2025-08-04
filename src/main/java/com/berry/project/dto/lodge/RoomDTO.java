@@ -26,7 +26,7 @@ public class RoomDTO {
   private List<String> roomImageUrls;
 
   public int getRentTimeInt() {
-    if (rentTime == null) return 0;
+    if (rentTime == null || rentTime.isEmpty()) return 0;
 
     int result = rentTime.charAt(0) - '0';
     if (rentTime.charAt(1) >= '0' &&
@@ -39,11 +39,11 @@ public class RoomDTO {
   }
 
   public String getStayCheckIn() {
-    if (stayTime == null) return null;
+    if (stayTime == null || stayTime.isEmpty()) return null;
     return stayTime.split("·")[0];
   }
   public String getStayCheckOut() {
-    if (stayTime == null) return null;
+    if (stayTime == null || stayTime.isEmpty()) return null;
     return stayTime.split("·")[1];
   }
 }
