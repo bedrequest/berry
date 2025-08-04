@@ -14,9 +14,9 @@
 
   <form action="/qna/register" method="post" enctype="multipart/form-data">
 
-    <div class="form-inline-group"> <!-- 이 div에 클래스를 추가해주세요 -->
-      <label for="category" class="form-label-inline">카테고리</label> <!-- label에도 클래스 추가 -->
-      <select id="category" name="category" class="form-select-inline"> <!-- select에도 클래스 추가 -->
+    <div class="form-inline-group">
+      <label for="category" class="form-label-inline">카테고리</label>
+      <select id="category" name="category" class="form-select-inline">
         <option >--선택--</option>
         <option th:value="결제">결제</option>
         <option th:value="환불">환불</option>
@@ -34,17 +34,14 @@
     <br><br>
 
     <label for="title">제목</label>
-    <input type="text" id="title" name="title" placeholder="제목을 입력해주세요">
+    <input type="text" id="title" name="title" placeholder="제목을 입력해주세요" maxlength="50">
 
     <br><br>
-
-    <label for="nickname">닉네임</label>
-    <input type="text" id="nickname" name="nickname" placeholder="닉네임을 입력해주세요">
 
     <br><br>
 
     <label for="content">문의 내용</label><br>
-    <textarea id="content" name="content" cols="50" rows="10" maxlength="999" placeholder="문의 내용을 입력해주세요"></textarea>
+    <textarea id="content" name="content" cols="50" rows="10" maxlength="1000" placeholder="문의 내용을 입력해주세요"></textarea>
 
     <!-- 글자 수 표시 -->
     <div id="charCount" class="char-count">0 / 1000</div>

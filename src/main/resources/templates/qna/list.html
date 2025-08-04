@@ -28,7 +28,7 @@
 
 
 
-  <!-- 검색 폼을 가운데 정렬하는 div로 감싸기 -->
+
   <div class="search-box-wrapper">
     <form action="/qna/list" method="get" role="search">
 
@@ -87,7 +87,6 @@
 
       </td>
       <td>[[${notice.userEmail}]]</td>
-<!--      <td>[[${notice.regDate}]]</td>-->
       <td>[[${#temporals.format(notice.regDate, 'yyyy-MM-dd HH:mm:ss')}]]</td>
       <td>[[${notice.comment}]]</td>
     </tr>
@@ -100,7 +99,6 @@
       </td>
       <td>[[${bvo.userEmail}]]</td>
       <td>[[${#temporals.format(bvo.regDate, 'yyyy-MM-dd HH:mm:ss')}]]</td>
-<!--      <td>[[${bvo.regDate}]]</td>-->
       <td>[[${bvo.comment}]]</td>
     </tr>
     </tbody>
