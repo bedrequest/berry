@@ -59,8 +59,35 @@ body {
 
 /* 짧은 input-box (카테고리 등) */
 .input-box.short {
-  width: 160px;              /* 고정 너비 유지 */
+  width: 100px;
+   height: 42px;                /* 기존 높이와 동일 */
+    padding: 0;
+    line-height: 42px;          /* height와 동일하게 맞춰 수직 중앙 정렬 */
+    text-align: center;         /* 수평 중앙 정렬 */
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    background-color: #fefefe;
+    color: #333;
+    box-sizing: border-box;
 }
+
+.input-box.title {
+  width: 100%;
+  max-width: 780px;
+  border: none;                        /* 전체 테두리 제거 */
+  border-bottom: 1px solid #ccc;       /* 아래줄만 남김 */
+  background-color: transparent;       /* 배경 투명 */
+  outline: none;
+  border-radius: 0;
+  box-shadow: none;
+  color: #333;
+  height: 42px;
+  font-size: 15px;
+  padding: 0;                          /* 위아래 여백 제거 */
+  line-height: 42px;                  /* 텍스트 수직 가운데 정렬 */
+  box-sizing: border-box;
+}
+
 
 /* 작성자 + 작성일 줄 */
 .form-group-inline {
@@ -288,3 +315,27 @@ textarea.form-control {
 }
 
 
+.input-box.email {
+  width: 200px;
+}
+
+.input-box.date {
+  width: 155px;
+}
+
+/* 작성자 + 작성일 input 스타일 수정 */
+.form-group-inline input {
+  border: none;
+  border-bottom: 1px solid #ccc;     /* 아래 테두리만 얇게 */
+  background-color: transparent;
+  outline: none;
+  box-shadow: none;
+  border-radius: 0;
+  color: #333;
+  width: 400px;
+  height: 36px;
+  font-size: 15px;
+  padding: 0;                        /* 패딩 제거로 위아래 균형 맞춤 */
+  line-height: 42px;                /* 세로 가운데 정렬 유지 */
+  box-sizing: border-box;
+}

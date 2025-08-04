@@ -57,6 +57,13 @@ textarea {
     overflow: hidden;
 }
 
+#content {
+  min-height: 200px; /* 원하는 최소 높이 설정 */
+  resize: none;      /* 사용자가 직접 사이즈 변경 못하게 할 경우 */
+  overflow-y: hidden; /* 스크롤 안 생기게 */
+}
+
+
 .flex-row {
     display: flex;
     align-items: center; /* 자식 요소들을 수직 중앙 정렬 */
@@ -65,7 +72,7 @@ textarea {
 }
 
 #category {
-    width: 200px;
+    width: 100px;
     /* select에 이미 height와 line-height가 적용되었으므로 별도 수정 불필요 */
 }
 
@@ -95,10 +102,6 @@ button {
     border-radius: 4px;
     font-size: 14px;
     font-weight: bold;
-    cursor: pointer;
-    /* 버튼의 패딩으로 높이가 충분히 확보되어 있어 명시적 height 지정은 불필요하지만,
-       원하는 경우 height: 42px; line-height: 26px; (42 - 16 = 26)을 적용할 수도 있습니다.
-       현재 패딩만으로도 잘 정렬됩니다. */
 }
 
 #listBtn {
