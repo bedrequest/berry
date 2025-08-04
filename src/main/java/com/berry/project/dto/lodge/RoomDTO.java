@@ -43,6 +43,7 @@ public class RoomDTO {
     if (stayTime == null || stayTime.isEmpty()) return null;
     return stayTime.split("·")[0];
   }
+
   public String getStayCheckOut() {
     if (stayTime == null || stayTime.isEmpty()) return null;
     return stayTime.split("·")[1];

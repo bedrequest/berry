@@ -51,7 +51,7 @@ public class BoardCustomerIqRepositoryImpl implements BoardCustomerIqRepository 
 
     // 날짜 조건 (필수)
     BooleanExpression condition = QCustomerIqBoard.customerIqBoard.regDate.between(start, end);
-    condition = condition.and(QCustomerIqBoard.customerIqBoard.category.ne("공지"));
+//    condition = condition.and(QCustomerIqBoard.customerIqBoard.category.ne("공지"));
 
     if (type != null && !type.isEmpty()) {
       condition = condition.and(QCustomerIqBoard.customerIqBoard.category.eq(type));

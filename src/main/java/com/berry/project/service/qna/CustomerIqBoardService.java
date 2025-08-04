@@ -13,6 +13,7 @@ import java.util.Map;
 public interface CustomerIqBoardService  {
 
   Long insert(CustomerIqBoardDTO customeriqboardDTO);
+
   Long insert(CustomerIqBoardFileDTO customeriqboardfileDTO);
 
   default CustomerIqBoard convertDtoToEntity(CustomerIqBoardDTO customeriqboardDTO){

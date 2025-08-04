@@ -99,7 +99,9 @@
 
   <!-- duorpeb, For redirect -->
   <script th:inline="javascript">
-    let redirectTo = /*[[${param.redirectTo}]]*/;
+    <th:block th:if="${param.redirectTo ne null}">
+      <input type="hidden" name="redirectTo" th:value="${param.redirectTo}" />
+    </th:block>
   </script>
 
   <script th:src="@{/js/user/userLoginModal.js}"></script>
