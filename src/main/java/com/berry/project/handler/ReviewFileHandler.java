@@ -10,6 +10,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
@@ -30,53 +31,55 @@ public class ReviewFileHandler {
             throw new RuntimeException("업로드 디렉토리 생성 실패: " + folder.getAbsolutePath());
         }
 
+        List<ReviewImageDTO> result = new ArrayList<>();
         // 2) 각 파일 처리
-        return List.of(files).stream()
-                .map(file -> {
-                    try {
-                        // UUID 생성 및 저장 파일명
-                        String uuid = UUID.randomUUID().toString();
-                        String original = file.getOriginalFilename();
-                        String saveName = uuid + "_" + original;
-                        String thumbName = uuid + "_th_" + original;
+        for (MultipartFile file : files) {
+            if (file.isEmpty()) continue;
+            try {
+                // UUID 생성 및 저장 파일명
+                String uuid = UUID.randomUUID().toString();
+                String original = file.getOriginalFilename();
+                String saveName = uuid + "_" + original;
+                String thumbName = uuid + "_th_" + original;
 
-                        // 물리 저장
-                        File dest = new File(folder, saveName);
-                        file.transferTo(dest);
+                // 물리 저장
+                File dest = new File(folder, saveName);
+                file.transferTo(dest);
 
-                        // 이미지 3× 해상도 썸네일 생성 (630×630)
-                        if (file.getContentType() != null && file.getContentType().startsWith("image")) {
-                            Thumbnails.of(dest)
-                                    .size(630, 630)            // 3배 크기로 설정
-                                    .outputQuality(0.9f)        // 품질 90%
-                                    .toFile(new File(folder, thumbName));
-                        }
+                // 이미지 3× 해상도 썸네일 생성 (630×630)
+                if (file.getContentType() != null && file.getContentType().startsWith("image")) {
+                    Thumbnails.of(dest)
+                            .size(630, 630)            // 3배 크기로 설정
+                            .outputQuality(0.9f)        // 품질 90%
+                            .toFile(new File(folder, thumbName));
+                }
 
-                        // 엔티티 생성 & 저장
-                        ReviewImage img = ReviewImage.builder()
-                                .reviewUuid(uuid)
-                                .reviewId(reviewId)
-                                .reviewSaveDir(datePath)
-                                .reviewFileName(original)
-                                .reviewFileSize(file.getSize())
-                                .build();
-                        ReviewImage saved = reviewImageRepository.save(img);
+                // 엔티티 생성 & 저장
+                ReviewImage img = ReviewImage.builder()
+                        .reviewUuid(uuid)
+                        .reviewId(reviewId)
+                        .reviewSaveDir(datePath)
+                        .reviewFileName(original)
+                        .reviewFileSize(file.getSize())
+                        .build();
+                ReviewImage saved = reviewImageRepository.save(img);
 
-                        // DTO 반환
-                        return ReviewImageDTO.builder()
-                                .reviewUuid(saved.getReviewUuid())
-                                .reviewId(saved.getReviewId())
-                                .reviewSaveDir(saved.getReviewSaveDir())
-                                .reviewFileName(saved.getReviewFileName())
-                                .reviewFileSize(saved.getReviewFileSize())
-                                .regDate(saved.getRegDate())
-                                .modDate(saved.getModDate())
-                                .build();
-                    } catch (Exception e) {
-                        throw new RuntimeException("리뷰 파일 처리 중 오류 발생", e);
-                    }
-                })
-                .collect(Collectors.toList());
+                // DTO 생성 및 저장
+                result.add(ReviewImageDTO.builder()
+                        .reviewUuid(saved.getReviewUuid())
+                        .reviewId(saved.getReviewId())
+                        .reviewSaveDir(saved.getReviewSaveDir())
+                        .reviewFileName(saved.getReviewFileName())
+                        .reviewFileSize(saved.getReviewFileSize())
+                        .regDate(saved.getRegDate())
+                        .modDate(saved.getModDate())
+                        .build());
+            } catch (Exception e) {
+                throw new RuntimeException("리뷰 파일 처리 중 오류 발생", e);
+            }
+        }
+
+        return result;
     }
 
     public void deleteFile(ReviewImage img) {
@@ -95,4 +98,3 @@ public class ReviewFileHandler {
     }
 
 }
-
