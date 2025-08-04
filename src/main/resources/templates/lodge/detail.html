@@ -23,7 +23,8 @@
 
   <div sec:authorize="isAuthenticated()">
     <script th:inline="javascript">
-      user = [[${#authentication.principal.userDTO.userId}]];
+      user = [[${userDTO.userId}]];
+      userData = [[${userDTO}]];
     </script>
   </div>
 

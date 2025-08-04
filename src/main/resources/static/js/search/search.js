@@ -19,7 +19,7 @@ const [
 const [adultCount, childCount] = ['adultCount', 'childCount'].map(e => document.querySelectorAll("." + e));
 
 // 변수 선언
-const today  = new Date(), tomorrow = new Date();
+const today = new Date(), tomorrow = new Date();
 tomorrow.setDate(today.getDate() + 1);
 
 let suggestions = [];
@@ -33,9 +33,15 @@ try {
   const {lodge, list} = window.initialOption;
 
   if (lodge) {
-    if (window.lodgeDTO) searchKeywordInput.value = window.lodgeDTO.lodgeName;
-    checkInInput.value = lodge.checkIn;
-    checkOutInput.value = lodge.checkOut;
+    if (window.lodgeDTO) {
+      searchKeywordInput.value = window.lodgeDTO.lodgeName;
+      lodgeId = window.lodgeDTO.lodgeId;
+      console.log(freeForm);
+    }
+    document.addEventListener('DOMContentLoaded', () => {
+      window.flatpickr[0].setDate(lodge.checkIn);
+      window.flatpickr[1].setDate(lodge.checkOut);
+    });
     adult = lodge.adult;
     child = lodge.child;
   } else throw Error("insert defalut value");

@@ -7,6 +7,7 @@ import com.berry.project.dto.lodge.LodgeOptionDTO;
 import com.berry.project.entity.lodge.*;
 import com.berry.project.handler.PagingHandler;
 import com.berry.project.repository.lodge.*;
+import com.berry.project.repository.review.ReviewRepository;
 import com.berry.project.util.FacilityMaskDecoder;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -29,6 +30,7 @@ public class LodgeServiceImpl implements LodgeService {
   private final RoomRepository roomRepository;
   private final RoomImgRepository roomImgRepository;
   private final LodgeDescriptionRepository lodgeDescriptionRepository;
+  private final ReviewRepository reviewRepository;
 
   private final FacilityMaskDecoder facilityMaskDecoder;
 
@@ -41,7 +43,9 @@ public class LodgeServiceImpl implements LodgeService {
         optionalLodge.get(),
         facilityMaskDecoder,
         lodgeDescriptionRepository.findByLodgeId(optionalLodge.get().getLodgeId()),
-        0, null, null);
+        0,
+        reviewRepository.findAverageRatingByLodgeId(lodgeId).orElse(0.0),
+        null);
     fillImages(lodgeDTO);
     fillRooms(lodgeDTO, true);
 
