@@ -117,7 +117,7 @@
       <!-- 이전 페이지 버튼: 1페이지 이상일 때만 보이기 -->
       <li class="page-item" th:if="${ph.hasPrev}">
         <a class="page-link"
-           th:href="@{/qna /list(pageNo=${ph.startPage - 1}, type=${ph.type}, keyword=${ph.keyword}, tripStart=${ph.tripStart}, tripEnd=${ph.tripEnd})}"
+           th:href="@{/qna/list(pageNo=${ph.startPage - 1}, type=${ph.type}, keyword=${ph.keyword}, tripStart=${ph.tripStart}, tripEnd=${ph.tripEnd})}"
            aria-label="Previous">
           <span aria-hidden="true">&laquo;</span>
         </a>
