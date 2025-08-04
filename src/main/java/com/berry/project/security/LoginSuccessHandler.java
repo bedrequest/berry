@@ -51,12 +51,12 @@ public class LoginSuccessHandler implements AuthenticationSuccessHandler {
      * > /user/login?redirectTo={ref}
      * */
      // Step 1
-//    String queryParam = request.getParameter("redirectTo");
-//     // Step 2
-//    if(queryParam != null){
-//      redirectStrategy.sendRedirect(request, response, queryParam);
-//      return;
-//    }
+    String queryParam = request.getParameter("redirectTo");
+     // Step 2
+    if(queryParam != null){
+      redirectStrategy.sendRedirect(request, response, queryParam);
+      return;
+    }
 
     // 이전 맵핑 경로 가져오기
     SavedRequest savedRequest = requestCache.getRequest(request, response);

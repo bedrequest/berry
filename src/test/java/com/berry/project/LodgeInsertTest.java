@@ -2,6 +2,7 @@ package com.berry.project;
 
 import com.berry.project.entity.lodge.*;
 import com.berry.project.repository.search.SearchRepository;
+import com.berry.project.repository.search.SearchRepository;
 import com.berry.project.util.FacilityMaskDecoder;
 import com.berry.project.repository.lodge.*;
 import com.berry.project.util.RegionNameUtils;
@@ -36,12 +37,16 @@ public class LodgeInsertTest {
 
   @Autowired
   private LodgeRepository lodgeRepository;
+
   @Autowired
   private LodgeImgRepository lodgeImgRepository;
+
   @Autowired
   private RoomRepository roomRepository;
+
   @Autowired
   private RoomImgRepository roomImgRepository;
+
   @Autowired
   private WaysRepository waysRepository;
   @Autowired
@@ -107,7 +112,7 @@ public class LodgeInsertTest {
             manager = step(accommodationInfo, "manager"),
             location = step(meta, "location"),
             traffic = step(accommodationInfo, "traffic");
-        log.info("> 숙소 데이터 로드");
+        System.out.println("> 숙소 데이터 로드");
 
         // facilities 마스크 전처리
         List<String> facilities = new ArrayList<>();
@@ -116,7 +121,7 @@ public class LodgeInsertTest {
           JSONObject facilityJSON = (JSONObject) parser.parse(o.toString());
           facilities.add(facilityJSON.get("name").toString());
         }
-        log.info("> facility 마스킹 완료");
+        System.out.println("> facility 마스킹 완료");
 
         String intro = null;
         try {
@@ -146,6 +151,7 @@ public class LodgeInsertTest {
             .lodgeAddr(lodgeAddress)
             .facility(facilityMaskDecoder.encode(facilities))
             .intro(intro)
+            // .description(accommodationInfo.get("details").toString())
             .businessCall(meta.get("tel").toString())
             .latitude(Double.parseDouble(location.get("latitude").toString()))
             .longitude(Double.parseDouble(location.get("longitude").toString()))

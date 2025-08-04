@@ -20,7 +20,10 @@
           로그인
         </h2>
         <form th:action="@{/user/login}" method="post">
-<!--          <input type="hidden" name="redirectTo" th:value="${param.redirectTo}" />-->
+          <!-- duorpeb, redirect 를 위한 hidden Input -->
+          <th:block th:if="${param.redirectTo ne null}">
+            <input type="hidden" name="redirectTo" th:value="${param.redirectTo}" />
+          </th:block>
 
           <div class="user-input-group">
             <input type="text" name="userEmail" placeholder="이메일(example@domain.com)" required>

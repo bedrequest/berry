@@ -13,6 +13,8 @@ import org.springframework.security.web.authentication.AuthenticationFailureHand
 import org.springframework.stereotype.Component;
 
 import java.io.IOException;
+import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
 
 @Slf4j
 @Component
@@ -39,6 +41,19 @@ public class LoginFailureHandler implements AuthenticationFailureHandler {
     String url = "/user/login";
     request.getSession().setAttribute("email", loginFailEmail);
     request.getSession().setAttribute("errorMessage", errorMessage);
+
+    /** duorpeb, 로그인 실패 시에도 redirect 되도록 초기화
+     * */
+    String redirectTo = request.getParameter("redirectTo");
+
+    // redirectTo 가 있다면 인코딩해서 붙여주기
+    if(redirectTo != null){
+      // 로그인 실패 시 돌려보낼 url 기본값 설정
+      url = "/user/login?error";
+      
+      String encode = URLEncoder.encode(redirectTo, StandardCharsets.UTF_8);
+      url += "&redirectTo=" + encode;
+    }
 
     redirectStrategy.sendRedirect(request, response, url);
 

@@ -200,7 +200,7 @@
                 <div class="stayPriceArea">
                   <th:block th:if="${room.stayPrice != 0}">
                     <div class="stayPrice">[[${room.stayPrice}]]원</div>
-                    <div class="reserveBtn paymentBtn_stay">
+                    <div class="reserveBtn paymentBtn_stay" th:data-roomid="${room.roomId}">
                       <span>숙박 예약</span>
                     </div>
                   </th:block>

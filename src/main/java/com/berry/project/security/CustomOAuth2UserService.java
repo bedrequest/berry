@@ -276,7 +276,6 @@
       log.info(">> naver year >> {}",birthYear);
       log.info(">> naver day >> {}",birthDay);
       log.info("naver login------------------------");
-      userPhone.replace("-", "");
 
       // 로그인 시 들어오는 데이터 DB 에 저장하기
       UserDTO userDTO = new UserDTO();
@@ -339,6 +338,7 @@
       String birthDay = (String) kakaoAccount.get("birthday"); // month,day
       String userUid = oAuth2User.getName(); // Uid
       userPhone = userPhone.replace("+82 ", "0");
+
       log.info("kakao login------------------------");
       log.info("kakao Info >> {}",kakaoAccount);
       log.info(">> kakao user_uid >> {}", userUid); // Uid
