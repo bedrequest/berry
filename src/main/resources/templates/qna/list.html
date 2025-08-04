@@ -113,25 +113,39 @@
   <!-- 페이지네이션 PagingHandler -->
   <nav aria-label="Page navigation example">
     <ul class="pagination justify-content-center">
-      <li class="page-item" th:classappend="${ph.hasPrev eq false ? 'disabled' : ''}">
-        <a class="page-link" th:href="@{/qna/list(pageNo=${ph.startPage-1}, type=${ph.type}, keyword=${ph.keyword}, tripStart=${ph.tripStart}, tripEnd=${ph.tripEnd})}" aria-label="Previous">
+
+      <!-- 이전 페이지 버튼: 1페이지 이상일 때만 보이기 -->
+      <li class="page-item" th:if="${ph.hasPrev}">
+        <a class="page-link"
+           th:href="@{/qna/list(pageNo=${ph.startPage - 1}, type=${ph.type}, keyword=${ph.keyword}, tripStart=${ph.tripStart}, tripEnd=${ph.tripEnd})}"
+           aria-label="Previous">
           <span aria-hidden="true">&laquo;</span>
         </a>
       </li>
-      <!--/* begin end 옵션이 없음. ${#numbers.sequence(from, to)} */-->
-      <th:block th:each="i:${#numbers.sequence(ph.startPage, ph.endPage)}">
-        <li class="page-item" th:classappend="${ph.pageNo eq i ? 'active' : ''}">
-          <a class="page-link" th:href="@{/qna/list(pageNo=${i}, type=${ph.type}, keyword=${ph.keyword}, tripStart=${ph.tripStart}, tripEnd=${ph.tripEnd})}">[[${i}]]</a>
+
+      <!-- 페이지 번호 버튼 -->
+      <th:block th:each="i : ${#numbers.sequence(ph.startPage, ph.endPage)}">
+        <li class="page-item" th:classappend="${ph.pageNo == i} ? 'active'">
+          <a class="page-link"
+             th:href="@{/qna/list(pageNo=${i}, type=${ph.type}, keyword=${ph.keyword}, tripStart=${ph.tripStart}, tripEnd=${ph.tripEnd})}">
+            [[${i}]]
+          </a>
         </li>
       </th:block>
 
-      <li class="page-item" th:classappend="${ph.hasNext eq false ? 'disabled' : ''}">
-        <a class="page-link" th:href="@{/qna/list(pageNo=${ph.endPage+1}, type=${ph.type}, keyword=${ph.keyword}, tripStart=${ph.tripStart}, tripEnd=${ph.tripEnd})}" aria-label="Next">
+      <!-- 다음 페이지 버튼: 마지막 페이지가 아닐 때만 보이기 -->
+      <li class="page-item" th:if="${ph.hasNext}">
+        <a class="page-link"
+           th:href="@{/qna/list(pageNo=${ph.endPage + 1}, type=${ph.type}, keyword=${ph.keyword}, tripStart=${ph.tripStart}, tripEnd=${ph.tripEnd})}"
+           aria-label="Next">
           <span aria-hidden="true">&raquo;</span>
         </a>
       </li>
+
     </ul>
   </nav>
+
+
 <script>
   document.addEventListener('DOMContentLoaded', function () {
     const today = new Date();
