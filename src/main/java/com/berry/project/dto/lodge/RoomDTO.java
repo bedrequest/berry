@@ -29,6 +29,7 @@ public class RoomDTO {
     if (rentTime == null || rentTime.isEmpty()) return 0;
 
     int result = rentTime.charAt(0) - '0';
+
     if (rentTime.charAt(1) >= '0' &&
         rentTime.charAt(1) <= '9') {
       result *= 10;
@@ -42,6 +43,7 @@ public class RoomDTO {
     if (stayTime == null || stayTime.isEmpty()) return null;
     return stayTime.split("·")[0];
   }
+
   public String getStayCheckOut() {
     if (stayTime == null || stayTime.isEmpty()) return null;
     return stayTime.split("·")[1];

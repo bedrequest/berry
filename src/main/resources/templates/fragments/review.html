@@ -178,13 +178,17 @@
       </div>
 
       <!-- 3) 이미지 썸네일 -->
-      <div class="review-images mb-3"
-           th:if="${review.images != null and !review.images.isEmpty()}">
-        <div th:each="img : ${review.images}" class="me-2 d-inline-block">
-          <img th:src="@{|/upload/${img.reviewSaveDir}/${img.reviewUuid}_th_${img.reviewFileName}|}"
-               onerror="this.style.display='none';"
-               class="review-thumbnail"/>
+      <div th:if="${review.images != null and !review.images.isEmpty()}"
+           class="review-images swiper-container">
+        <div class="swiper-wrapper">
+          <div th:each="img : ${review.images}" class="swiper-slide">
+            <img th:src="@{|/upload/${img.reviewSaveDir}/${img.reviewUuid}_th_${img.reviewFileName}|}"
+                 onerror="this.style.display='none';"
+                 class="review-thumbnail"/>
+          </div>
         </div>
+        <div class="swiper-button-prev"></div>
+        <div class="swiper-button-next"></div>
       </div>
 
       <!-- 4) 리뷰 내용 + 접기/펼치기 -->
@@ -231,7 +235,7 @@
   </section>
 
   <!-- 6) 페이징 바 -->
-  <nav aria-label="페이지 네비게이션" class="mt-4">
+  <nav aria-label="페이지 네비게이션" class="mt-4" th:if="${!#lists.isEmpty(reviews)}">
     <ul class="pagination justify-content-center">
       <li class="page-item" th:if="${hasPrev}">
         <a class="page-link" href="#" th:attr="data-page=${startPage - 1}">&laquo;</a>

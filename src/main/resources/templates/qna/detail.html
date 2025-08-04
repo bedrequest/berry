@@ -31,25 +31,29 @@
             <option th:value="기타">기타</option>
           </select>
 
-          <input type="text" class="input-box" name="title" th:value="${customeriqboardfileDTO.boardDTO.title}" id="t" readonly placeholder="제목">
+          <input type="text" class="input-box title" name="title" th:value="${customeriqboardfileDTO.boardDTO.title}" id="t" readonly placeholder="제목" maxlength="50">
         </div>
       </div>
 
   <!-- 작성자 + 작성일 -->
-  <div class="form-group-inline">
-    <div class="inline-group">
-      <input type="text" id="w" name="userEmail" th:value="${customeriqboardfileDTO.boardDTO.userEmail}" class="input-box short" readonly/>
-    </div>
-    <div class="inline-group">
-      <input id="date" name="regDate" th:value="${customeriqboardfileDTO.boardDTO.regDate}" class="input-box short" readonly/>
-    </div>
-  </div>
+        <div class="form-group-inline">
+            <div class="inline-group">
+                <input type="text" id="w" name="userEmail"
+                       th:value="${customeriqboardfileDTO.boardDTO.userEmail}"
+                       class="input-box email" readonly />
+            </div>
+            <div class="inline-group">
+                <input id="date"
+                       th:value="${#temporals.format(customeriqboardfileDTO.boardDTO.regDate, 'yyyy-MM-dd HH:mm:ss')}"
+                       class="input-box date" readonly />
+            </div>
+        </div>
 
-      <!-- 내용 -->
+
+        <!-- 내용 -->
       <div class="form-group">
   <textarea class="form-control" name="content" id="con" cols="30" rows="10" readonly
-            maxlength="1000"
-            placeholder="문의 내용을 표시합니다.">[[${customeriqboardfileDTO.boardDTO.content}]]</textarea>
+            maxlength="1000">[[${customeriqboardfileDTO.boardDTO.content}]]</textarea>
       </div>
 
       <div class="char-count-container" style="text-align: right; margin-top: -24px; margin-bottom: 24px;">
@@ -102,6 +106,9 @@
 
         <!-- Submit 버튼 (처음엔 숨김) -->
         <button type="submit" id="submitBtn" class="btn btn-warning" style="display: none;">Submit</button>
+
+          <!-- 답변완료 버튼 (처음엔 숨김) -->
+          <button type="button" id="completeBtn" class="btn btn-success" style="display: none;">답변완료</button>
 
         <!-- List 버튼은 항상 보임 -->
         <button type="button" id="listBtn" class="btn btn-primary">List</button>

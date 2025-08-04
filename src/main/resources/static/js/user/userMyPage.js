@@ -416,12 +416,16 @@ document.querySelectorAll(".reservationInfoBtn").forEach(btn => {
 
         const index = e.target.dataset.index;
         const checkDate = e.target.dataset.customcheckdate;
-        console.log(checkDate);
         const customOrderId = e.target.dataset.customorderid;
+        const orderId = e.target.dataset.orderid;
+        console.log(orderId);
+        console.log(checkDate);
         console.log(customOrderId);
         console.log(index);
 
         const ul = document.getElementById("reservationDetailUl");
+        const modalActions = document.getElementById("detailInfoModalActions");
+        console.log(modalActions);
 
         let str = `
                 <li>
@@ -438,7 +442,7 @@ document.querySelectorAll(".reservationInfoBtn").forEach(btn => {
                 </li>
                 <li>
                     <p class="reservation-left-tit">숙소 유형</p>
-                    <p class="reservation-right-tit">${reservationPresentList[index].lodgeType}</p>
+                    <p class="reservation-right-tit">${reservationPresentList[index].lodgeType}${reservationPresentList[index].reservationType === 'STAY' ? '(숙박)' : '(대실)'}</p>
                 </li>
                 <li>
                     <p class="reservation-left-tit">${reservationPresentList[index].reservationType === 'STAY' ? '숙박이용시간' : '대실이용시간'}</p>
@@ -466,16 +470,94 @@ document.querySelectorAll(".reservationInfoBtn").forEach(btn => {
                 </li>
                 `; 
                 ul.innerHTML = str;
+        let str2 = `
+                <button
+                type="button"
+                class="cancel-reservation"
+                data-index="${index}"
+                data-orderid="${orderId}"
+                id="cancelReservation${index}">예약취소</button>        
+                `;
+                // 마지막 자식요소로 추가
+                modalActions.insertAdjacentHTML('afterbegin', str2);
+
     })
 })
-    
-    
 
 // 세부예약정보 모달창 닫기
-document.getElementById("reservationDetailInfoCloseModal").addEventListener("click", () => {
-
+document.getElementById("reservationDetailInfoCloseModal").addEventListener("click", (e) => {
+    const modalActions = document.getElementById("detailInfoModalActions");
+    
+    if(document.querySelector(".cancel-reservation")){
+        // 버튼 중복 생성 방지
+        const closeBtn = document.querySelector(".cancel-reservation");
+        modalActions.removeChild(closeBtn);
+    }
+    
+    
     closeModal();
     document.getElementById("reservationDetailInfoModal").style.display = "none";
+})
+
+// 예약 취소 모달 띄우기
+document.addEventListener("click", (e) => {
+    if(e.target.classList.contains("cancel-reservation")){
+        console.log(2);
+            document.getElementById("reservationDetailInfoModal").style.display = "none";
+
+            document.getElementById("reservationCancelModal").style.display = "block";
+
+            const orderId = e.target.dataset.orderid;
+            const index = e.target.dataset.index;
+            console.log(orderId);
+            console.log(index);
+            document.getElementById("reservationOrderId").value = orderId;
+    }
+})
+
+// 예약 취소 모달 제출버튼 클릭
+document.getElementById("subRefundBtn").addEventListener("click", () => {
+    const orderId = document.getElementById("reservationOrderId").value;
+    const otherReason = document.getElementById("otherReason");
+    console.log("orderId 최종확인용 >> ", orderId);
+        
+    
+    if(otherReason.value != ""){
+        
+        // 기타 일 경우 가져갈 값
+        console.log("기타 사유 최종확인용 >> ", otherReason.value);
+    }else{
+
+        // select 가 기타가 아닐경우 가져갈 값
+        const selected = document.getElementById("refundReason");
+        console.log(selected.value);
+    }
+
+})
+
+// 환불 사유가 기타 일 경우 직접 작성 란 보여주기
+document.getElementById("refundReason").addEventListener("change", function () {
+    const otherBox = document.getElementById("otherReasonBox");
+    if (this.value === "other") {
+      otherBox.style.display = "block";
+    } else {
+      otherBox.style.display = "none";
+    }
+  });
+
+
+// 예약 취소 모달 닫기
+document.getElementById("rcCloseModal").addEventListener("click", () => {
+    const modalActions = document.getElementById("detailInfoModalActions");
+    
+    if(document.querySelector(".cancel-reservation")){
+        // 버튼 중복 생성 방지
+        const closeBtn = document.querySelector(".cancel-reservation");
+        modalActions.removeChild(closeBtn);
+    }
+    closeModal();
+    document.getElementById("reservationCancelModal").style.display = "none";
+
 })
 
 
