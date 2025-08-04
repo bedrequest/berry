@@ -108,7 +108,7 @@ public class TossPaymentsAPIHandler {
 
 
   /** callCancelAPI(String paymentKey, String cancelReason) - 결제 취소 API */
-  public ReturnCancelsDTO callCancelAPI(String paymentKey, PaymentCancelDTOFromJS pcdtoFromJs) throws IOException, InterruptedException {
+  public ReturnCancelsDTO callCancelAPI(String paymentKey, PaymentCancelDTOFromJS pcdtoFromJs, long cancelAmount) throws IOException, InterruptedException {
     // 확인
     log.info("in callCancelAPI");
     
@@ -124,7 +124,8 @@ public class TossPaymentsAPIHandler {
 
     // 요청 객체 직렬화
     String jsonBody = objectMapper.writeValueAsString(Map.of(
-        "cancelReason", pcdtoFromJs.getCancelReason()
+        "cancelReason", pcdtoFromJs.getCancelReason(),
+        "cancelAmount", cancelAmount
     ));
 
     // 요청 생성

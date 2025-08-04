@@ -38,7 +38,7 @@
         <h2 class="section-title">이용 정보</h2>
         <div class="info-box">
           <div class="info-item">
-            <span class="label">숙소명</span>
+            <span class="label">객실명</span>
             <span class="lodgeDetails roomName">[[${pInfoDto.roomName}]]</span>
           </div>
           <div class="info-item">
@@ -107,7 +107,7 @@
 
           <div class="cupon-select-section">
             <label for="cupon-select1" class="cupon-label"></label>
-            <select id="cupon-select1" class="cupon-select1 not-exists select-cupon">
+            <select id="cupon-select1" class="cupon-select1 not-exists">
               <option value="999">사용 가능한 쿠폰이 없습니다.</option>
             </select>
           </div>
@@ -126,25 +126,34 @@
 
           <div class="cupon-select-section" style="margin-bottom: 30px;">
             <label for="cupon-select2" class="cupon-label">사용 가능한 쿠폰 : [[${pInfoDto.cuponCnt}]] 장</label>
+              <select id="cupon-select2" class="cupon-select2 select-cupon">
+                <!-- unchecked -->
+                <option value="" disabled selected hidden>사용할 쿠폰을 선택하세요.</option>
 
-            <th:block th:each="cupon : ${pInfoDto.cuponList}">
-              <th:block th:switch="${cupon.cuponType}">
-                <select id="cupon-select2" class="cupon-select2 select-cupon">
-                  <!-- unchecked -->
-                  <option value="" disabled selected hidden>사용할 쿠폰을 선택하세요.</option>
+                <th:block th:each="cupon : ${pInfoDto.cuponList}">
+                  <th:block th:switch="${cupon.cuponType}">
+                    <!-- 첫 회원가입 쿠폰 -->
+                    <option th:case="1" class="appliedCupon" value="3000" th:data-cupon-id="${cupon.cuponId}">
+                      신규 가입 할인 쿠폰
+                    </option>
 
-                  <!-- 첫 회원가입 쿠폰 -->
-                  <option th:case="1" value="3000">
-                    신규 가입 할인 쿠폰
-                  </option>
+                    <!-- 등급업 쿠폰 - 실버 -->
+                    <option th:case="2" class="appliedCupon" value="5000" th:data-cupon-id="${cupon.cuponId}">
+                      Silver 등급업 쿠폰
+                    </option>
 
-                  <!-- 등급업 쿠폰 -->
-                  <option th:case="2" value="5000">Silver 등급업 쿠폰</option>
-                  <option th:case="3" value="5000">Gold 등급업 쿠폰</option>
-                  <option th:case="4" value="5000">Platinum 등급업 쿠폰</option>
-                </select>
-              </th:block>
-            </th:block>
+                    <!-- 등급업 쿠폰 - 골드 -->
+                    <option th:case="3" class="appliedCupon" value="5000" th:data-cupon-id="${cupon.cuponId}">
+                      Gold 등급업 쿠폰
+                    </option>
+
+                    <!-- 등급업 쿠폰 - 플레티넘 -->
+                    <option th:case="4" class="appliedCupon" value="5000" th:data-cupon-id="${cupon.cuponId}">
+                      Platinum 등급업 쿠폰
+                    </option>
+                  </th:block>
+                </th:block>
+              </select>
           </div>
 
           <div class="cupon-box">
@@ -163,16 +172,16 @@
         <div class="info-box amount-box">
             <div class="info-item">
                 <span class="label">주문 금액</span>
-                <span class="lodgeDetails strikePrice">[[${pInfoDto.strikePrice}]] 원</span>
+                <span class="lodgeDetails strikePrice">[[${pInfoDto.strikePrice}]]</span>
             </div>
             <div class="info-item discount">
                 <span class="label">할인 금액</span>
-                <span class="lodgeDetails cuponPrice">0 원</span>
+                <span class="lodgeDetails cuponPrice">0</span>
             </div>
             <hr class="divider">
             <div class="info-item total">
                 <span id="label">총 결제 금액</span>
-                <span class="lodgeDetails pbpTotalAmount">[[${pInfoDto.strikePrice}]] 원</span>
+                <span class="lodgeDetails pbpTotalAmount">[[${pInfoDto.strikePrice}]]</span>
             </div>
         </div>
       </div>
@@ -243,7 +252,15 @@
 
     const isTodayInfo = [[${pInfoDto.isToday}]];
 
-    const rentNum = [[${pInfoDto.rentTime.substring(0,1)}]]
+    const rentNum = [[${pInfoDto.rentTime.substring(0,1)}]];
+
+    const userIdInfo = [[${pInfoDto.userId}]];
+
+    const roomIdInfo = [[${pInfoDto.roomId}]];
+
+    const startDateInfo = [[${pInfoDto.startDate}]];
+
+    const endDateInfo = [[${pInfoDto.endDate}]];
   </script>
 
   <script th:src="@{/js/payment/paymentRent.js}"></script>
