@@ -18,6 +18,9 @@ public class ListOptionDTO {
   private int lowestPrice, highestPrice;
   private Integer facilityMask;
 
+  @Setter
+  private int favoriteMask;
+
   private String sort;
 
   public ListOptionDTO() {

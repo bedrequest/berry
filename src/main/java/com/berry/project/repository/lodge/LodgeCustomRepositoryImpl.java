@@ -3,6 +3,7 @@ package com.berry.project.repository.lodge;
 import com.berry.project.dto.lodge.ListOptionDTO;
 import com.berry.project.dto.lodge.LodgeOptionDTO;
 import com.berry.project.entity.lodge.Lodge;
+import com.berry.project.util.TagMaskDecoder;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.Query;
 import lombok.extern.slf4j.Slf4j;
@@ -11,7 +12,10 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 
+import java.nio.charset.StandardCharsets;
+import java.util.Arrays;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 @Slf4j
@@ -24,16 +28,31 @@ public class LodgeCustomRepositoryImpl implements LodgeCustomRepository {
   public Page<Lodge> searchLodges(ListOptionDTO listOptionDTO, LodgeOptionDTO lodgeOptionDTO, Pageable pageable) {
     Map<String, String> parameters = new HashMap<>();
 
-    String searchKeyword = "%" + listOptionDTO.getKeyword() + "%";
+    String[] split = listOptionDTO.getKeyword().split(" ");
+    StringBuilder searchByAddress = new StringBuilder("("),
+        searchByName = new StringBuilder("(");
+
+    for (int i = 0; i < split.length; i++) {
+      searchByAddress.append("l.lodge_addr like '%").append(split[i]).append("%'");
+      searchByName.append("l.lodge_name like '%").append(split[i]).append("%'");
+
+      if (i < split.length - 1) {
+        searchByAddress.append(" and ");
+        searchByName.append(" and ");
+      } else {
+        searchByAddress.append(")");
+        searchByName.append(")");
+      }
+    }
+
     String subquery = "with subquery as ",
         source = " from lodge l left join subquery s on (s.lodge_id = l.lodge_id)",
         sortOption = " order by s.sort_option is null, ";
-    StringBuilder condition = new StringBuilder(" where (l.lodge_addr like :keyword");
-    parameters.put("keyword", searchKeyword);
+    StringBuilder condition = new StringBuilder(" where (").append(searchByAddress);
 
     // 1. freeForm 대응
-    if (listOptionDTO.isFreeForm()) condition.append(" or l.lodge_name like :keyword)");
-    else condition.append(")");
+    if (listOptionDTO.isFreeForm()) condition.append(" or ").append(searchByName);
+    condition.append(")");
 
     // 2. lodgeType 대응
     if (listOptionDTO.getLodgeType() != null) {
@@ -58,6 +77,15 @@ public class LodgeCustomRepositoryImpl implements LodgeCustomRepository {
     condition.append(subQuery);
 
     // 5. 태그 대응(리뷰 완성 이후)
+    if (listOptionDTO.getFavoriteMask() != 0) {
+      condition.append(" and (l.lodge_id in (select lodge_id from review r left join review_tag_mapping m on r.review_id = m.review_id where tag_id in (");
+      List<Integer> tagIdList = new TagMaskDecoder().decodeAsNumber(listOptionDTO.getFavoriteMask());
+      for (int i = 0; i < tagIdList.size(); i++) {
+        condition.append(tagIdList.get(i));
+        if (i < tagIdList.size() - 1) condition.append(", ");
+      }
+      condition.append(")))");
+    }
 
     // 6. 정렬 옵션
     switch (listOptionDTO.getSort()) {

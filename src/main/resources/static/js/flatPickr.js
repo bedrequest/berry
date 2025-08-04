@@ -4,14 +4,16 @@ const today = new Date();
 today.setHours(0,0,0,0);
  // 최대 지정 날짜
 const maxDate = new Date();
- // 현재 날짜로부터 180 일 뒤까지만 선택 가능
+ // 현재 날짜로부터 90 일 뒤까지만 선택 가능
 maxDate.setDate(maxDate.getDate() + 90);
 maxDate.setHours(23,59,59,999);
 
- // 녇도, const nextYear = today.getFullYear() + (today.getMonth() >= 9 ? 1 : 0);
+ // 년도, const nextYear = today.getFullYear() + (today.getMonth() >= 9 ? 1 : 0);
 
 // 달력 라이브러리
-flatpickr("#checkInInput, #checkOutInput", {
+
+document.addEventListener('DOMContentLoaded', () => {
+  window.flatpickr = flatpickr("#checkInInput, #checkOutInput", {
   // 월 셀렉터 사용 X
   monthSelectorType: "static",
 
@@ -60,3 +62,4 @@ flatpickr("#checkInInput, #checkOutInput", {
     console.log("dateFormat : ", instance.config.dateFormat);
   }
 });
+})
