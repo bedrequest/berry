@@ -14,13 +14,11 @@ import com.berry.project.entity.user.User;
 import com.berry.project.repository.lodge.RoomRepository;
 import com.berry.project.repository.payment.*;
 import com.berry.project.repository.user.UserRepository;
-
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.transaction.interceptor.TransactionAspectSupport;
 
 import java.time.*;
 import java.util.ArrayList;
@@ -446,15 +444,16 @@ public class PaymentServiceImpl implements PaymentService {
      * */
     if(diffTime.toMinutes() <= 60) {
       cancelAmount = res.getTotalAmount();
+      return cancelAmount;
     }
 
-    if (diffDays.toDays() <= 3){ cancelAmount = -1; }
+    if (diffDays.toDays() <= 3){ return cancelAmount = -1; }
 
     if(diffDays.toDays() > 3 && diffDays.toDays() <= 7){
-      cancelAmount = res.getTotalAmount() / 2;
+      return cancelAmount = res.getTotalAmount() / 2;
     }
 
-    if(diffDays.toDays() >= 14){ cancelAmount = res.getTotalAmount(); }
+    if(diffDays.toDays() >= 14){ return cancelAmount = res.getTotalAmount(); }
 
     return cancelAmount;
   }

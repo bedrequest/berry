@@ -42,8 +42,10 @@ public class MyPageReservationDTO {
   }
   // <td>yyyy.mm.dd - yyyy.mm.dd</td> 체크인 체크아웃
   public String customCheckDate(){
-    String sDate = startDate.format(DateTimeFormatter.ofPattern("yyyy.MM.dd HH:mm"));
-    String eDate = endDate.format(DateTimeFormatter.ofPattern("yyyy.MM.dd HH:mm"));
+    LocalDateTime startDateUTF = this.startDate.plusHours(9);
+    LocalDateTime endDateUTF = this.endDate.plusHours(9);
+    String sDate = startDateUTF.format(DateTimeFormatter.ofPattern("yyyy.MM.dd HH:mm"));
+    String eDate = endDateUTF.format(DateTimeFormatter.ofPattern("yyyy.MM.dd HH:mm"));
     String customCheckDate = sDate + " - " + eDate;
 
     return customCheckDate;

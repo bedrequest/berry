@@ -1,13 +1,9 @@
 package com.berry.project.entity.payment;
 
-import com.berry.project.entity.TimeBase;
 import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
-import org.springframework.data.jpa.domain.support.AuditingEntityListener;
-import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
 
-import java.time.LocalDateTime;
 import java.time.OffsetDateTime;
 
 @Table
@@ -34,7 +30,7 @@ public class PaymentBeforePayment {
   private String orderId;
 
   // 쿠폰 사용 시 적용된 쿠폰 ID
-  @Column(name="cupon_id", nullable = false, length = 200)
+  @Column(name="cupon_id", length = 200)
   private Long cuponId;
 
   @Column(length = 50)

@@ -3,7 +3,7 @@ console.log("======================== paymentCacncel.js in =====================
 
 // 초기화
  // 환불 버튼
-const paymentCancel = document.getElementById('cancelReservation');  
+const paymentCancel = document.getElementById('subRefundBtn');  
  // 환불 사유 
 const cancelReason = document.querySelector('.cancelReason');
 
@@ -18,7 +18,6 @@ paymentCancel.addEventListener('click', async () => {
     // 환불 사유 적는 요소
     const otherReason = document.getElementById("otherReason");
     // 확인
-    console.log("orderId 최종확인용 >> ", orderId);
         
     
     if(otherReason.value != ""){
@@ -26,7 +25,6 @@ paymentCancel.addEventListener('click', async () => {
       cancelReason_info = otherReason.value;
 
       // 기타 일 경우 가져갈 값
-      console.log("기타 사유 최종확인용 >> ", otherReason.value);
 
     } else{
         // select 가 기타가 아닐경우 가져갈 값
@@ -34,7 +32,6 @@ paymentCancel.addEventListener('click', async () => {
         // 환불 사유 초기화
         cancelReason_info = selected.value;
 
-        console.log(selected.value);
     }
     
     // payload
@@ -42,10 +39,13 @@ paymentCancel.addEventListener('click', async () => {
       orderId : orderId_info,
       cancelReason : cancelReason_info
     }
+    console.log("cancelPayload >>");
+    console.log(cancelPayload);
 
     postPaymentCancelToServer(cancelPayload).then(result => {
       if(result == '0'){ 
         alert('결제 취소가 성공적으로 완료되었습니다!');
+        location.reload(true);
       } 
         else if(result == '-1'){ 
           alert('결제 취소가 성공적으로 완료되지 못했습니다!');
