@@ -140,7 +140,7 @@
         <p style="padding-left:1rem;">예약정보가 없습니다.</p>
       </th:block>
 
-          <table class="reservation-table">
+          <table class="reservation-table" th:if="${#lists.size(reservationList) > 0}">
             <thead>
             <tr>
               <th>예약 번호</th>

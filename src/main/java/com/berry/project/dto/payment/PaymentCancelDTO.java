@@ -3,7 +3,6 @@ package com.berry.project.dto.payment;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.*;
 
-import java.time.LocalDateTime;
 import java.time.OffsetDateTime;
 
 @Getter
@@ -23,7 +22,7 @@ public class PaymentCancelDTO {
 
   private int cancelAmount;
 
-  @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss.SSSXXX")
+  @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ssXXX")
   private OffsetDateTime canceledAt;
 
   private String rawData;

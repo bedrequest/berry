@@ -516,24 +516,24 @@ document.addEventListener("click", (e) => {
 })
 
 // 예약 취소 모달 제출버튼 클릭
-document.getElementById("subRefundBtn").addEventListener("click", () => {
-    const orderId = document.getElementById("reservationOrderId").value;
-    const otherReason = document.getElementById("otherReason");
-    console.log("orderId 최종확인용 >> ", orderId);
+// document.getElementById("subRefundBtn").addEventListener("click", () => {
+//     const orderId = document.getElementById("reservationOrderId").value;
+//     const otherReason = document.getElementById("otherReason");
+//     console.log("orderId 최종확인용 >> ", orderId);
         
     
-    if(otherReason.value != ""){
+//     if(otherReason.value != ""){
         
-        // 기타 일 경우 가져갈 값
-        console.log("기타 사유 최종확인용 >> ", otherReason.value);
-    }else{
+//         // 기타 일 경우 가져갈 값
+//         console.log("기타 사유 최종확인용 >> ", otherReason.value);
+//     }else{
 
-        // select 가 기타가 아닐경우 가져갈 값
-        const selected = document.getElementById("refundReason");
-        console.log(selected.value);
-    }
+//         // select 가 기타가 아닐경우 가져갈 값
+//         const selected = document.getElementById("refundReason");
+//         console.log(selected.value);
+//     }
 
-})
+// })
 
 // 환불 사유가 기타 일 경우 직접 작성 란 보여주기
 document.getElementById("refundReason").addEventListener("change", function () {

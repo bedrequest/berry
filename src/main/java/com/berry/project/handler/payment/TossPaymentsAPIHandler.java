@@ -1,11 +1,9 @@
 package com.berry.project.handler.payment;
 
 import com.berry.project.api.TossApi;
-import com.berry.project.dto.payment.PaymentCancelDTO;
 import com.berry.project.dto.payment.PaymentCancelDTOFromJS;
 import com.berry.project.dto.payment.PaymentReceiptDTO;
 import com.berry.project.dto.payment.ReturnCancelsDTO;
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -111,7 +109,9 @@ public class TossPaymentsAPIHandler {
   public ReturnCancelsDTO callCancelAPI(String paymentKey, PaymentCancelDTOFromJS pcdtoFromJs, long cancelAmount) throws IOException, InterruptedException {
     // 확인
     log.info("in callCancelAPI");
-    
+    log.info("cancelAmount : {}", cancelAmount);
+    log.info("pcdtoFromJs : {}", pcdtoFromJs);
+
     // 초기화
     HttpClient httpClient = HttpClient.newHttpClient();
      // Secret Key
