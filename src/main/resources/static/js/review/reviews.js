@@ -3,7 +3,7 @@
 (function(window, document) {
   // 리뷰 관련 UI 인터랙션 초기화
   function initReviewScripts() {
-    // 1) 리뷰 작성 폼 토글
+    // 리뷰 작성 폼 토글
     const toggleBtn     = document.getElementById('toggleReviewFormBtn');
     const formContainer = document.getElementById('reviewFormContainer');
     if (toggleBtn && formContainer) {
@@ -12,7 +12,7 @@
       });
     }
 
-    // 2) 정렬 드롭다운 토글
+    // 정렬 드롭다운 토글
     const sortToggle = document.getElementById('sortToggle');
     const sortMenu   = document.getElementById('sortMenu');
     const sortWrap   = sortToggle?.closest('.sort-dropdown');
@@ -30,7 +30,7 @@
       });
     }
 
-    // 3) 리뷰 내용 자동 접기 + 더보기
+    // 리뷰 내용 자동 접기 + 더보기
     document.querySelectorAll('.review-content').forEach(content => {
       content.classList.add('collapsed');
       const btn = content.parentElement.querySelector('.toggle-more');
@@ -44,7 +44,7 @@
       }
     });
 
-    // 4) 더보기/접기
+    // 더보기/접기
     document.querySelectorAll('.toggle-more').forEach(btn => {
       btn.addEventListener('click', () => {
         const content = btn.closest('.review-content-container')
@@ -57,7 +57,7 @@
       });
     });
 
-    // 5) 좋아요·신고 
+    //  좋아요·신고 
     document.querySelectorAll('button[data-like], button[data-report]').forEach(btn => {
       const isLike = btn.hasAttribute('data-like');
       btn.addEventListener('click', () => {
@@ -91,39 +91,46 @@
       });
     });
 
-// 6) 도넛 차트 초기화
+//  도넛 차트 초기화
 const canvas   = document.getElementById('tagChart');
 const dataElem = document.getElementById('reviewChartData');
 if (canvas && dataElem && typeof Chart !== 'undefined') {
-  // 원본 레이블·카운트 파싱
-  const labels = JSON.parse(dataElem.dataset.labels || '[]');
-  const counts = JSON.parse(dataElem.dataset.counts || '[]');
+  // 1) 원본 배열 파싱
+  const rawLabels = JSON.parse(dataElem.dataset.labels || '[]');
+  const rawCounts = JSON.parse(dataElem.dataset.counts || '[]');
 
-  // 상위 3개만 추출
-  const topLabels = labels.slice(0, 4);
-  const topCounts = counts.slice(0, 4);
+  // 2) 라벨–카운트 쌍으로 묶어서 내림차순 정렬
+  const items = rawLabels.map((label, i) => ({
+    label,
+    count: rawCounts[i] || 0
+  }));
+  items.sort((a, b) => b.count - a.count);
 
-  // 나머지 합산해서 "기타"로 추가
-  const otherCount = counts.slice(4).reduce((sum, v) => sum + v, 0);
+  // 3) 상위 4개 뽑고 나머지는 기타로 합산
+  const topItems = items.slice(0, 4);
+  const otherCount = items.slice(4).reduce((sum, it) => sum + it.count, 0);
+
+  // 4) 차트용 배열 재생성
+  const topLabels = topItems.map(it => it.label);
+  const topCounts = topItems.map(it => it.count);
   if (otherCount > 0) {
     topLabels.push('기타');
     topCounts.push(otherCount);
   }
 
-  // 차트 생성
+  // 5) 차트 생성
   new Chart(canvas.getContext('2d'), {
     type: 'doughnut',
     data: {
       labels: topLabels,
       datasets: [{
         data: topCounts,
-        // backgroundColor: ['#E74B60', '#F39C12', '#2ECC71', '	#3498DB','	#BDC3C7'],
         backgroundColor: [
-          '#E74B60',  // 메인 강조 색
-          '#50E3C2',  // 밝고 생기 있는 민트
-          '#F5A623',  // 따뜻한 보완 색
-          '#4A90E2',  // 깔끔한 블루톤
-          '#BDC3C7'   // 기타 회색 (중립 영역)
+          '#E74B60',  
+          '#50E3C2',  
+          '#9B59B6',
+          '#d7f52f',  
+          '#BDC3C7'  
         ],
         hoverOffset: 6
       }]
@@ -139,7 +146,29 @@ if (canvas && dataElem && typeof Chart !== 'undefined') {
       }
     }
   });
+  // Swiper 슬라이더 초기화
+  document.querySelectorAll('.swiper-container').forEach(container => {
+    if (container.swiper) container.swiper.destroy(true, true);
+    new Swiper(container, {
+      slidesPerView: 5,    // 필요에 따라 숫자 or 'auto'
+      spaceBetween: 2,
+      freeMode: false,
+      navigation: {
+        prevEl: container.querySelector('.swiper-button-prev'),
+        nextEl: container.querySelector('.swiper-button-next'),
+      },
+      // breakpoints: {
+      //   576:  { slidesPerView: 1, spaceBetween: 8 },
+      //   768:  { slidesPerView: 2, spaceBetween: 12 },
+      //   992:  { slidesPerView: 3, spaceBetween: 16 },
+      //   1200: { slidesPerView: 4, spaceBetween: 16 },
+      // }
+    });
+  });
+
+
 }
+
   }
 
   // 페이징 링크 바인딩
