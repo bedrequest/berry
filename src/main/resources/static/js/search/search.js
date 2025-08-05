@@ -3,7 +3,7 @@ import debounce from '../util/debounce.js';
 // HTML 요소 불러오기
 const [
   searchBox,
-  searchKeywordArea, noKeywordWarning, searchKeywordInput, searchSuggestions, 
+  searchKeywordArea, noKeywordWarning, searchKeywordInput, searchSuggestions,
   checkInInput, checkOutInput,
   peopleCountArea, peopleCountInputArea, adultInput, childInput,
   adultMinusBtn, adultPlusBtn, childMinusBtn, childPlusBtn,
@@ -18,43 +18,12 @@ const [
 
 const [adultCount, childCount] = ['adultCount', 'childCount'].map(e => document.querySelectorAll("." + e));
 
-// 변수 선언
-const today = new Date(), tomorrow = new Date();
-tomorrow.setDate(today.getDate() + 1);
-
 let suggestions = [];
 let lodgeId = null;
 let adult = 2, child = 0;
 /* ------------------------------------------- */
 
 /* Main */
-// 기존의 검색 조건 불러오기 및 기본값 설정
-try {
-  const {lodge, list} = window.initialOption;
-
-  if (lodge) {
-    if (window.lodgeDTO) {
-      searchKeywordInput.value = window.lodgeDTO.lodgeName;
-      lodgeId = window.lodgeDTO.lodgeId;
-      console.log(freeForm);
-    }
-    document.addEventListener('DOMContentLoaded', () => {
-      window.flatpickr[0].setDate(lodge.checkIn);
-      window.flatpickr[1].setDate(lodge.checkOut);
-    });
-    adult = lodge.adult;
-    child = lodge.child;
-  } else throw Error("insert defalut value");
-  if (list) {
-    searchKeywordInput.value = list.keyword;
-    freeForm.value = list.freeForm;
-  }
-} catch (insertDefaultValueHere) {
-  checkInInput.value = formatDate(today);
-  checkOutInput.value = formatDate(tomorrow);
-}
-updateHeadCount(adult, child);
-
 // 컨트롤
 document.addEventListener('click', e => {
   // 1. 검색어 입력창이 선택됐는가
@@ -63,7 +32,7 @@ document.addEventListener('click', e => {
     return;
   }
   searchSuggestions.classList.add('invisible');
-  
+
   // 2. 추천 검색어를 클릭했는가
   let idx = undefined;
   if (e.target.closest('.keywordSuggestion') != null)
@@ -72,7 +41,7 @@ document.addEventListener('click', e => {
     searchKeywordInput.value = suggestions[idx].keyword;
     lodgeId = suggestions[idx].lodgeId;
     freeForm.value = "false";
-  
+
     checkInInput.select();
     return;
   }
@@ -100,37 +69,37 @@ searchKeywordInput.addEventListener('input', debounce(getKeywords, 400));
 if (searchKeywordInput.value != '') getKeywords();
 
 function getKeywords() {
-lodgeId = null;
+  lodgeId = null;
   freeForm.value = "true";
   const keyword = searchKeywordInput.value;
   if (keyword == '') {
     searchSuggestions.innerHTML = '';
     return;
   }
-  
+
   fetch('/search/' + keyword)
-  .then(resp => resp.json())
-  .then(results => {
-    suggestions = results;
-    searchSuggestions.innerHTML = '';
-    if (results.length == 0) searchSuggestions.innerHTML = `
+    .then(resp => resp.json())
+    .then(results => {
+      suggestions = results;
+      searchSuggestions.innerHTML = '';
+      if (results.length == 0) searchSuggestions.innerHTML = `
     <div id="noSearchResult">
       <span>검색 결과가 없어요</span>
       <span>목적지 이름 또는 띄어쓰기를 다시 확인해주세요.</span>
     </div>
     `;
-    
-    for (let i = 0; i < results.length; i++) {
-      let html = `<div class="keywordSuggestion" data-no="${i}">`;
-      html += results[i].lodgeId == '0' || !results[i].lodgeId ? 
-      iconGeoAlt() : iconBuilding();
-      html += '<div class="suggestionTextArea">';
-      html += `<span class="keyword">${results[i].keyword}</span><br>`;
-      html += `<span class="detail">${results[i].detail}</span>`;
-      html += '</div><div>';
-      searchSuggestions.innerHTML += html;
-    }
-  });
+
+      for (let i = 0; i < results.length; i++) {
+        let html = `<div class="keywordSuggestion" data-no="${i}">`;
+        html += results[i].lodgeId == '0' || !results[i].lodgeId ?
+          iconGeoAlt() : iconBuilding();
+        html += '<div class="suggestionTextArea">';
+        html += `<span class="keyword">${results[i].keyword}</span><br>`;
+        html += `<span class="detail">${results[i].detail}</span>`;
+        html += '</div><div>';
+        searchSuggestions.innerHTML += html;
+      }
+    });
 }
 /* ------------------------------------------- */
 
@@ -242,4 +211,36 @@ function iconBuilding(width = 16, height = width) {
   <path d="M4 2.5a.5.5 0 0 1 .5-.5h1a.5.5 0 0 1 .5.5v1a.5.5 0 0 1-.5.5h-1a.5.5 0 0 1-.5-.5zm3 0a.5.5 0 0 1 .5-.5h1a.5.5 0 0 1 .5.5v1a.5.5 0 0 1-.5.5h-1a.5.5 0 0 1-.5-.5zm3.5-.5a.5.5 0 0 0-.5.5v1a.5.5 0 0 0 .5.5h1a.5.5 0 0 0 .5-.5v-1a.5.5 0 0 0-.5-.5zM4 5.5a.5.5 0 0 1 .5-.5h1a.5.5 0 0 1 .5.5v1a.5.5 0 0 1-.5.5h-1a.5.5 0 0 1-.5-.5zM7.5 5a.5.5 0 0 0-.5.5v1a.5.5 0 0 0 .5.5h1a.5.5 0 0 0 .5-.5v-1a.5.5 0 0 0-.5-.5zm2.5.5a.5.5 0 0 1 .5-.5h1a.5.5 0 0 1 .5.5v1a.5.5 0 0 1-.5.5h-1a.5.5 0 0 1-.5-.5zM4.5 8a.5.5 0 0 0-.5.5v1a.5.5 0 0 0 .5.5h1a.5.5 0 0 0 .5-.5v-1a.5.5 0 0 0-.5-.5zm2.5.5a.5.5 0 0 1 .5-.5h1a.5.5 0 0 1 .5.5v1a.5.5 0 0 1-.5.5h-1a.5.5 0 0 1-.5-.5zm3.5-.5a.5.5 0 0 0-.5.5v1a.5.5 0 0 0 .5.5h1a.5.5 0 0 0 .5-.5v-1a.5.5 0 0 0-.5-.5z"/>
   <path d="M2 1a1 1 0 0 1 1-1h10a1 1 0 0 1 1 1v14a1 1 0 0 1-1 1H3a1 1 0 0 1-1-1zm11 0H3v14h3v-2.5a.5.5 0 0 1 .5-.5h3a.5.5 0 0 1 .5.5V15h3z"/>
 </svg>`;
+}
+
+// 초깃값 세팅
+export default function init(initialOption, lodgeDTO) {
+  const today = new Date(), tomorrow = new Date();
+  tomorrow.setDate(today.getDate() + 1);
+
+  try {
+    const { lodge, list } = initialOption;
+
+    if (lodge) {
+      if (lodgeDTO) {
+        searchKeywordInput.value = lodgeDTO.lodgeName;
+        lodgeId = lodgeDTO.lodgeId;
+        console.log(freeForm);
+      }
+      document.addEventListener('DOMContentLoaded', () => {
+        window.flatpickr[0].setDate(lodge.checkIn);
+        window.flatpickr[1].setDate(lodge.checkOut);
+      });
+      adult = lodge.adult;
+      child = lodge.child;
+    } else throw Error("insert defalut value");
+    if (list) {
+      searchKeywordInput.value = list.keyword;
+      freeForm.value = list.freeForm;
+    }
+  } catch (insertDefaultValueHere) {
+    window.flatpickr[0].setDate(today);
+    window.flatpickr[1].setDate(tomorrow);
+  }
+  updateHeadCount(adult, child);
 }

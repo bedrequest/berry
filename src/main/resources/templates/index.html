@@ -2,7 +2,31 @@
 <html lang="en"
       xmlns:th="http://www.thymeleaf.org"
       xmlns:layout="http://www.ultraq.next.nz/thymeleaf/layout"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
       layout:decorate="~{layout/layout}">
+<section layout:fragment="customStyle">
+  <link rel="stylesheet" th:href="@{/css/index.css}">
+</section>
 <div layout:fragment="content">
-   <div th:insert="~{fragments/search :: search}"></div>
+  <div th:insert="~{fragments/search :: search}">
+  </div>
+  <div class="container">
+    <div id="suggestByTagArea" class="area" sec:authorize="isAuthenticated()">
+      <div class="areaTitle">
+        <span>선호 태그별 추천</span>
+      </div>
+      <div class="tag" th:each="entry:${tagMap}">
+        <div>
+          <span th:text="${entry.key}"></span>
+          <div th:each="lodge:${entry.value}">
+
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div id="reviewPickUpArea" class="area"></div>
+
+    <div id="eventArea" class="area"></div>
+  </div>
 </div>

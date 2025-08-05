@@ -37,4 +37,7 @@ public interface ReviewRepository extends JpaRepository<Review, Long> {
             Pageable pageable
     );
 
+
+    // 이유현 : index.html용 메서드
+  List<Review> findTop10ByOrderByCreatedAtDesc();
 }

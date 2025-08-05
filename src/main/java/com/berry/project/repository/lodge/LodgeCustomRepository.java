@@ -10,4 +10,6 @@ public interface LodgeCustomRepository {
 
   Page<Lodge> searchLodges(ListOptionDTO listOptionDTO, LodgeOptionDTO lodgeOptionDTO, Pageable pageable);
 
+  Page<Lodge> searchByTag(int tag, Pageable pageable);
+
 }

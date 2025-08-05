@@ -1,9 +1,9 @@
 package com.berry.project.service.lodge;
 
-import com.berry.project.dto.lodge.LodgeDTO;
-import com.berry.project.dto.lodge.RoomDTO;
 import com.berry.project.dto.lodge.ListOptionDTO;
+import com.berry.project.dto.lodge.LodgeDTO;
 import com.berry.project.dto.lodge.LodgeOptionDTO;
+import com.berry.project.dto.lodge.RoomDTO;
 import com.berry.project.entity.lodge.*;
 import com.berry.project.handler.PagingHandler;
 import com.berry.project.repository.lodge.*;
@@ -16,7 +16,6 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
 import java.util.Optional;
 
 @RequiredArgsConstructor
@@ -43,7 +42,7 @@ public class LodgeServiceImpl implements LodgeService {
         optionalLodge.get(),
         facilityMaskDecoder,
         lodgeDescriptionRepository.findByLodgeId(optionalLodge.get().getLodgeId()),
-        0,
+        reviewRepository.countByLodgeId(lodgeId),
         reviewRepository.findAverageRatingByLodgeId(lodgeId).orElse(0.0),
         null);
     fillImages(lodgeDTO);
@@ -62,11 +61,7 @@ public class LodgeServiceImpl implements LodgeService {
     Pageable pageable = PageRequest.of(pageNo - 1, 10);
 
     Page<LodgeDTO> result = lodgeRepository.searchLodges(listOptionDTO, lodgeOptionDTO, pageable)
-        .map(entry -> convertEntityToDto(
-            entry,
-            facilityMaskDecoder,
-            lodgeDescriptionRepository.findByLodgeId(entry.getLodgeId()),
-            0, null, null));
+        .map(this::convertEntityToDtoWithoutReview);
 
     for (LodgeDTO lodgeDTO : result) {
       fillImages(lodgeDTO);
@@ -74,6 +69,14 @@ public class LodgeServiceImpl implements LodgeService {
     }
 
     return new PagingHandler<>(result, listOptionDTO);
+  }
+
+  private LodgeDTO convertEntityToDtoWithoutReview(Lodge lodge) {
+    return convertEntityToDto(
+        lodge,
+        facilityMaskDecoder,
+        lodgeDescriptionRepository.findByLodgeId(lodge.getLodgeId()),
+        0, null, null);
   }
 
   private void fillImages(LodgeDTO lodgeDTO) {

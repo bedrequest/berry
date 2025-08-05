@@ -19,12 +19,9 @@ public class PagingHandler<T> {
   private final int pageNo;
   List<T> list;
 
-  private final ListOptionDTO listOptionDTO;
+  private ListOptionDTO listOptionDTO;
 
-  /**
-   * Creates a paging handler with custom group size.
-   */
-  public PagingHandler(Page<T> page, ListOptionDTO listOptionDTO) {
+  public PagingHandler(Page<T> page) {
     int groupSize = 5;
 
     this.pageNo = page.getNumber() + 1;
@@ -39,6 +36,13 @@ public class PagingHandler<T> {
     hasNext = endPage < totalPage;
 
     list = page.toList();
+  }
+
+  /**
+   * Creates a paging handler with custom group size.
+   */
+  public PagingHandler(Page<T> page, ListOptionDTO listOptionDTO) {
+    this(page);
 
     this.listOptionDTO = listOptionDTO;
   }

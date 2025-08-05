@@ -6,12 +6,12 @@
       layout:decorate="~{layout/layout}">
 <section layout:fragment="customStyle">
   <link rel="stylesheet" th:href="@{/css/lodge/detail.css}" />
+  <link rel="stylesheet" th:href="@{/css/lodge/bookmark.css}" />
   <link rel="stylesheet" th:href="@{/css/review/reviews.css}" />
 </section>
 <div layout:fragment="content">
 
   <script th:inline="javascript">
-    window.lodgeDTO = /*[[${lodgeDTO}]]*/;
     const jquerySwiperLink = document.createElement('link');
     jquerySwiperLink.rel = "stylesheet";
     jquerySwiperLink.href = "https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css";
@@ -19,7 +19,8 @@
     
     let user = null;
   </script>
-  <div th:insert="~{fragments/search :: search}" class="sticky"></div>
+  <div th:insert="~{fragments/search :: search}" class="sticky"
+       th:with="lodgeOption=${lodgeOption}, lodgeDTO=${lodgeDTO}"></div>
 
   <div sec:authorize="isAuthenticated()">
     <script th:inline="javascript">
@@ -63,7 +64,7 @@
         <span>[[${lodgeDTO.cheapestPrice}]]</span>
       </div>
 
-      <div class="bookmark">
+      <div class="bookmark" th:data-id="${lodgeDTO.lodgeId}">
         <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="#999999" class="bi bi-heart-fill" viewBox="0 0 16 16">
           <path fill-rule="evenodd" d="M8 1.314C12.438-3.248 23.534 4.735 8 15-7.534 4.736 3.562-3.248 8 1.314"/>
         </svg>
@@ -322,9 +323,9 @@
 
       <!-- 이유현 : 네이버 지도 -->
     <script type="text/javascript" th:src="'https://oapi.map.naver.com/openapi/v3/maps.js?ncpKeyId=' + ${naverMapId}"></script>
-    <script>
+    <script th:inline="javascript">
       /* 네이버 지도 API */
-      let myLatLng = new naver.maps.LatLng(window.lodgeDTO.latitude, window.lodgeDTO.longitude);
+      let myLatLng = new naver.maps.LatLng(/*[[${lodgeDTO.latitude}]]*/, /*[[${lodgeDTO.longitude}]]*/);
       let mapOptions = {
           center: myLatLng,
           zoom: 16,
@@ -343,5 +344,15 @@
     </script>
 
     <script type="module" th:src="@{/js/lodge/detail.js}"></script>
+    <script type="module" th:inline="javascript">
+      import(/*[[@{/js/lodge/detail.js}]]*/).then(module => {
+        module.default(/*[[${lodgeDTO}]]*/);
+      });
+    </script>
+    <script type="module" th:inline="javascript" sec:authorize="isAuthenticated()">
+      import(/*[[@{/js/lodge/bookmark.js}]]*/).then(module => {
+        module.default(/*[[${userDTO.userId}]]*/);
+      });
+    </script>
   </div>
 </div>

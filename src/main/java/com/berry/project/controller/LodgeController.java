@@ -78,7 +78,6 @@ public class LodgeController {
     LodgeDTO lodgeDTO = lodgeService.detail(lodgeId, lodgeOptionDTO);
     if (lodgeDTO == null) return "/";
     lodgeDTO.setBestReview(reviewService.getTopLikedReviewByLodge(lodgeId));
-    lodgeDTO.setReviewCount(reviewService.getTotalReviewCountByLodge(lodgeId));
 
     model.addAttribute("lodgeOption", lodgeOptionDTO);
     model.addAttribute("lodgeDTO", lodgeDTO);
