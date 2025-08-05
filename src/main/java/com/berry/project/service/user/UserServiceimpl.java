@@ -1,20 +1,26 @@
 package com.berry.project.service.user;
 
+import com.berry.project.dto.alarm.AlarmDTO;
 import com.berry.project.dto.user.MyPageReservationDTO;
+import com.berry.project.dto.user.UserBookmarkDTO;
 import com.berry.project.dto.user.UserDTO;
+import com.berry.project.entity.alarm.Alarm;
 import com.berry.project.entity.cupon.Cupon;
-import com.berry.project.repository.payment.CuponRepository;
 import com.berry.project.entity.lodge.Lodge;
 import com.berry.project.entity.lodge.Room;
 import com.berry.project.entity.lodge.RoomImg;
 import com.berry.project.entity.payment.Reservation;
 import com.berry.project.entity.user.AuthUser;
 import com.berry.project.entity.user.User;
+import com.berry.project.entity.user.UserBookmark;
 import com.berry.project.repository.lodge.LodgeRepository;
 import com.berry.project.repository.lodge.RoomImgRepository;
 import com.berry.project.repository.lodge.RoomRepository;
+import com.berry.project.repository.payment.CuponRepository;
 import com.berry.project.repository.payment.ReservationRepository;
+import com.berry.project.repository.user.AlarmRepository;
 import com.berry.project.repository.user.AuthUserRepository;
+import com.berry.project.repository.user.UserBookmarkRepository;
 import com.berry.project.repository.user.UserRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -33,6 +39,8 @@ public class UserServiceimpl implements UserService {
 
   private final UserRepository userRepository;
   private final AuthUserRepository authUserRepository;
+  private final UserBookmarkRepository userBookmarkRepository;
+  private final AlarmRepository alarmRepository;
   // YSL, 쿠폰 발급을 위한 초기화
   private final CuponRepository cuponRepository;
   private final ReservationRepository reservationRepository;
@@ -73,6 +81,15 @@ public class UserServiceimpl implements UserService {
 
     if(userId > 0){
       authUserRepository.save(convertUserDTOToAuthEntity(userDTO));
+      
+      // 회원가입 알림 저장
+      Alarm alarm = Alarm.builder()
+          .userId(userId)
+          .targetId(userId)
+          .code("s_signup")
+          .build();
+
+      alarmRepository.save(alarm);
 
       // duorpeb, 쿠폰 발급
       Cupon registerCupon
@@ -83,7 +100,14 @@ public class UserServiceimpl implements UserService {
           .isValid(true)
           .build();
 
-      cuponRepository.save(registerCupon);
+      Long cuponId = cuponRepository.save(registerCupon).getCuponId();
+
+      alarm = Alarm.builder()
+          .userId(userId)
+          .targetId(cuponId)
+          .code("newSign_coupon")
+          .build();
+      alarmRepository.save(alarm);
     }
 
   }
@@ -160,6 +184,15 @@ public class UserServiceimpl implements UserService {
     if(userId > 0){
       authUserRepository.save(convertUserDTOToAuthEntity(userDTO));
 
+      // 회원가입 알림 저장
+      Alarm alarm = Alarm.builder()
+          .userId(userId)
+          .targetId(userId)
+          .code("s_signup")
+          .build();
+
+      alarmRepository.save(alarm);
+
       // duorpeb, 쿠폰 발급
       Cupon registerCupon
           = Cupon.builder()
@@ -169,7 +202,14 @@ public class UserServiceimpl implements UserService {
                  .isValid(true)
                  .build();
 
-      cuponRepository.save(registerCupon);
+      Long cuponId = cuponRepository.save(registerCupon).getCuponId();
+
+      alarm = Alarm.builder()
+          .userId(userId)
+          .targetId(cuponId)
+          .code("newSign_coupon")
+          .build();
+      alarmRepository.save(alarm);
     }
 
     return userId;
@@ -363,13 +403,49 @@ public class UserServiceimpl implements UserService {
       return reservationDTOList;
     }
 
-//    if(reservationList != null){
-//      List<MyPageReservationDTO> reservationDTOList = reservationList.stream()
-//          .map(reservation -> printConvertReservationEntityToReservationDto(reservation)).toList();
-//      return reservationDTOList;
-//    }
-
     return null;
+  }
+
+  @Transactional
+  @Override
+  public Long toggleBookmark(UserBookmarkDTO userBookmarkDTO) {
+
+    Optional<UserBookmark> optional = userBookmarkRepository.findByUserId(userBookmarkDTO.getUserId());
+
+    if(optional.isPresent()){
+      // 있다면 지우고 0 return
+      userBookmarkRepository.delete(optional.get());
+
+      return 0L;
+    }else{
+      // 없으면 DB 에 저장 후 Id return
+      Long isOk = userBookmarkRepository.save(convertUserBookmarkDTOToUserBookmarkEntity(userBookmarkDTO)).getUserId();
+
+      return isOk;
+    }
+
+  }
+
+  @Override
+  public List<AlarmDTO> getAlarmList(Long userId) {
+    List<Alarm> alarmList = alarmRepository.findByUserIdOrderByRegDateDesc(userId);
+
+    List<AlarmDTO> alarmDTOList = alarmList.stream().map(this::convertAlarmEntityToAlarmDTO).toList();
+
+    return alarmDTOList;
+  }
+
+  // 이메일로 유저 존재 여부 찾기 (비밀번호 재설정)
+  @Override
+  public Long findWebUserEmail(String userEmail) {
+
+    UserDTO userDTO = getWebUserDTO(userEmail);
+
+    if(userDTO == null) {
+      return 0L;
+    }
+
+    return userDTO.getUserId();
   }
 
   private UserDTO getWebUserDTO(String userEmail){

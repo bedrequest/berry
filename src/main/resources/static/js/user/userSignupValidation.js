@@ -59,7 +59,7 @@ function isValidUserEmail(inputs) {
 // 2. 유효성 검사 비밀번호
 function isValidUserPassword(inputs) {
   // 비밀번호 유효성 (영문 대소문자, 숫자, 특수문자 포함 8자리 이상)
-  const regexPassword = /^(?=.*[a-z])(?=.*[!@#$%^*+=-])(?=.*[0-9]).{8,}$/
+  const regexPassword = /^(?=.*[a-z])(?=.*[!@#$%^*=])(?=.*[0-9]).{8,}$/
   
   return regexPassword.test(inputs[2].value);
 

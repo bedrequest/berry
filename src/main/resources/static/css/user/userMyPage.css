@@ -31,44 +31,57 @@
 
 /* 1. 유저정보 */
 .user-info, .user-notice-box {
-    background: white;
-    padding: 1.5rem;
-    border-radius: 12px;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.05);
-    margin-bottom: 100px;
+  background: white;
+  padding: 1.5rem;
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+  margin-bottom: 100px;
 }
 
 .user-info-ul {
-    list-style: none;
-    padding: 0;
-    margin: 0 0 1rem;
+  list-style: none;
+  padding: 0;
+  margin: 0 0 1rem;
 }
 
 .user-info-ul li {
-    display: flex;
-    justify-content: space-between;
-    padding: 0.75rem 0;
-    border-bottom: 1px solid #eee;
+  display: flex;
+  justify-content: space-between;
+  padding: 0.75rem 0;
+  border-bottom: 1px solid #eee;
+  align-items: center;
 }
 
 .user-info-left p, .user-info-right p {
-    margin: 0;
-    color: var(--font-dark);
+  margin: 0;
+  color: var(--font-dark);
+}
+.user-info-right > .cuponList-ul li {
+  color: var(--font-dark);
+  border: 1px solid #a7a7a781 !important;
+  border-radius: 5px;
+  padding: 8px 12px !important;
+  background-color: var(--gray-light);
 }
 
 
 .user-info .user-info-btn {
-    background: var(--primary-color);
-    color: white;
-    border: none;
-    padding: 0.6rem 1.2rem;
-    border-radius: 6px;
-    cursor: pointer;
-    margin-right: 0.5rem;
+  background: var(--primary-color);
+  color: white;
+  border: none;
+  padding: 0.6rem 1.2rem;
+  border-radius: 6px;
+  cursor: pointer;
+  margin-right: 0.5rem;
 }
 /* 2. 알림 */
 .user-notice-box ul {
-     padding-left: 1rem;
+  padding-left: 1rem;
+}
+.user-notice-ul li {
+  display: flex;
+  justify-content: space-between;
+  padding: 10px 0;
 }
 
 /* 태그가 있는 li*/

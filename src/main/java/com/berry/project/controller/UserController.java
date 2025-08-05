@@ -1,9 +1,8 @@
 package com.berry.project.controller;
 
-import com.berry.project.dto.user.ChangePwDTO;
-import com.berry.project.dto.user.DeactivatedUserDTO;
-import com.berry.project.dto.user.MyPageReservationDTO;
-import com.berry.project.dto.user.UserDTO;
+import com.berry.project.dto.alarm.AlarmDTO;
+import com.berry.project.dto.cupon.CuponDTO;
+import com.berry.project.dto.user.*;
 import com.berry.project.handler.user.CoolSMSHandler;
 import com.berry.project.handler.user.StarterMailHandler;
 import com.berry.project.service.lodge.LodgeService;
@@ -101,10 +100,19 @@ public class UserController {
       }
     }
     log.info("이용 전 숙박내역 >>>>> {}", reservationPresentList);
+    
+    // 알림 내역 가져오기
+    List<AlarmDTO> alarmList = userService.getAlarmList(userDTO.getUserId());
+    log.info("alarmList >>> {}", alarmList);
+    
+    // 보유 쿠폰 내역 가져오기
+    List<CuponDTO> cuponList = paymentService.getCuponList(userDTO.getUserId());
 
     model.addAttribute("reservationPresentList", reservationPresentList);
     model.addAttribute("userDTO", userDTO);
     model.addAttribute("reservationList", reservationList);
+    model.addAttribute("alarmList", alarmList);
+    model.addAttribute("cuponList", cuponList);
   }
 
   
@@ -279,6 +287,39 @@ public class UserController {
 
 
   // --비동기--
+  
+  // 비밀번호 재설정 이메일 확인
+  @GetMapping("/findWebUserEmail/{email}")
+  @ResponseBody
+  public String findWebUserEmail(@PathVariable("email") String userEmail){
+
+    log.info("inputEmail > {}", userEmail);
+    Long userId = userService.findWebUserEmail(userEmail);
+
+    return userId > 0 ? userId.toString() : "fail";
+  }
+  
+  // 비밀번호 재설정
+  @GetMapping("/resetPassword/{userId}")
+  @ResponseBody
+  public String resetPassword(@PathVariable("userId") Long userId){
+
+    UserDTO userDTO = userService.getUserFindById(userId);
+    String password = starterMailHandler.generateRandomMixStr(15);
+    String encodePassword = passwordEncoder.encode(password);
+
+    if(userDTO.getUserId() > 0 && password != null){
+      starterMailHandler.sendPasswordHtml(userDTO.getUserEmail(), password);
+      userService.updatePassword(encodePassword, userDTO.getUserId());
+
+      return "ok";
+    }else{
+
+      return "fail";
+    }
+  }
+
+
   // 휴대폰 인증
   @GetMapping("/getCertifiedNumber/{myPageUserId}")
   @ResponseBody
@@ -314,7 +355,7 @@ public class UserController {
 
     String secureCode = starterMailHandler.generateRandomMixStr(10);
     log.info("secureCode >>> {}", secureCode);
-    starterMailHandler.sendCertifiedCode(userDTO.getUserEmail(), secureCode);
+    starterMailHandler.sendCertifiedCodeHtml(userDTO.getUserEmail(), secureCode);
 
     return secureCode != null ? secureCode : "fail";
   }
@@ -340,6 +381,17 @@ public class UserController {
     log.info("duplicateCheckedEmail isOk >>>> {}",isOk);
 
     return isOk == 0 ? "ok" : "fail";
+
+  }
+
+  // 북마크 등록
+  @ResponseBody
+  @PostMapping("/user/toggleBookmark")
+  public String toggleBookmark(UserBookmarkDTO userBookmarkDTO){
+    log.info("userBookmarkDTO >> {}",userBookmarkDTO);
+    Long isOk = userService.toggleBookmark(userBookmarkDTO);
+
+    return isOk > 0 ? "1" : "0";
 
   }
 

@@ -45,7 +45,8 @@ public class SecurityConfig {
         .authorizeHttpRequests(authorize -> authorize
             .requestMatchers(
                 "/","/css/**","/js/**","/image/**","/upload/**","/user/signup/**","/user/login/**"
-                ,"/user/duplicateCheckedEmail/**",
+                ,"/user/duplicateCheckedEmail/**", "/user/findWebUserEmail/**", "/user/getCertifiedCode/**",
+                "/user/resetPassword/**",
                 "/lodge/**", "/search/**",
                 "/reviews/list/**", "/review-tags/**", "/.well-known/**", "/error/**",
                 "/reviews/view/**"

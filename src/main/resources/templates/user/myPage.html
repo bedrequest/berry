@@ -49,6 +49,43 @@
               </p>
             </div>
           </li>
+          <li>
+            <div class="user-info-left"><p>보유쿠폰</p></div>
+            <div class="user-info-right">
+              <!-- 쿠폰 미보유시-->
+              <th:block th:if="${#lists.size(cuponList) == 0}">
+                <p>보유한 쿠폰이 없습니다.</p>
+              </th:block>
+              <!-- 쿠폰 보유시 -->
+              <th:block th:if="${#lists.size(cuponList) > 0}">
+                <th:block th:each="cupon : ${cuponList}">
+                  <th:block th:switch="${cupon.cuponType}">
+                    <ul class="cuponList-ul">
+                      <!-- 첫 회원가입 쿠폰 -->
+                      <li th:case="1">
+                        신규 가입 할인 쿠폰 3,000 원
+                      </li>
+
+                      <!-- 등급업 쿠폰 - 실버 -->
+                      <li th:case="2">
+                        Silver 등급업 쿠폰 5,000 원
+                      </li>
+
+                      <!-- 등급업 쿠폰 - 골드 -->
+                      <li th:case="3">
+                        Gold 등급업 쿠폰 5,000 원
+                      </li>
+
+                      <!-- 등급업 쿠폰 - 플레티넘 -->
+                      <li th:case="4">
+                        Platinum 등급업 쿠폰 5,000 원
+                      </li>
+                    </ul>
+                  </th:block>
+                </th:block>
+              </th:block>
+            </div>
+          </li>
           <li th:if="${userDTO.isMobileCertified}">
             <div class="user-info-left"><p>휴대폰 인증</p></div>
             <div class="user-info-right"><p>✔️</p></div>
@@ -65,71 +102,78 @@
 
       <p class="top-section-headTit">알림</p>
       <div class="user-notice-box">
-        <ul class="user-notice-ul">
-          <li>알림입니다.</li>
-        </ul>
+        <!-- 알림이 없는경우 -->
+        <th:block th:if="${#lists.size(alarmList) == 0}">
+          <p>현재 알림이 없습니다.</p>
+        </th:block>
+        <!-- 알림이 있는경우 -->
+        <th:block th:if="${#lists.size(alarmList) > 0}">
+          <ul class="user-notice-ul" id="myPageNoticeUl">
+            <!-- JS로 내용 넣어주기 -->
+          </ul>
+        </th:block>
       </div>
     </div>
 
     <div class="myPage-content-group mid-section">
       <p class="mid-section-headTit">예약정보</p>
 
-        <!-- 예약정보가 없을경우 -->
-        <th:block th:if="${reservationPresentList == null or #lists.isEmpty(reservationPresentList)}">
-          <p>현재 예약정보가 없습니다.</p>
-        </th:block>
+      <!-- 예약정보가 없을경우 -->
+      <th:block th:if="${reservationPresentList == null or #lists.isEmpty(reservationPresentList)}">
+        <p>현재 예약정보가 없습니다.</p>
+      </th:block>
 
-          <!-- 예약정보가 있을경우 -->
+      <!-- 예약정보가 있을경우 -->
 
-          <th:block th:each="presentReservationDTO, iterStart : ${reservationPresentList}">
-              <div style="margin-bottom:50px; height:400px;">
-                <div class="reservation-left-box">
-                  <img th:src="${presentReservationDTO.roomImageUrls[0]}" width="600" height="400" alt="대표 이미지" />
-                </div>
+      <th:block th:each="presentReservationDTO, iterStart : ${reservationPresentList}">
+        <div style="margin-bottom:50px; height:400px;">
+          <div class="reservation-left-box">
+            <img th:src="${presentReservationDTO.roomImageUrls[0]}" width="600" height="400" alt="대표 이미지" />
+          </div>
 
-                <div class="reservation-right-box">
-                  <ul>
-                    <li>
-                      <p class="reservation-left-tit">호텔 정보</p>
-                      <p class="reservation-right-tit">[[${presentReservationDTO.lodgeName}]]</p>
-                    </li>
-                    <li>
-                      <p class="reservation-left-tit">객실명</p>
-                      <p class="reservation-right-tit">[[${presentReservationDTO.roomName}]]</p>
-                    </li>
-                    <li>
-                      <p class="reservation-left-tit">장소</p>
-                      <p class="reservation-right-tit">[[${presentReservationDTO.lodgeAddr}]]</p>
-                    </li>
-                    <li>
-                      <p class="reservation-left-tit">예약 번호</p>
-                      <p class="reservation-right-tit">[[${presentReservationDTO.customOrderId()}]]</p>
-                    </li>
-                    <li>
-                      <p class="reservation-left-tit">결제 금액</p>
-                      <p class="reservation-right-tit">[[${presentReservationDTO.totalAmount}]]원</p>
-                    </li>
-                    <li>
-                      <p class="reservation-left-tit">인원</p>
-                      <p class="reservation-right-tit">[[${presentReservationDTO.guestsAmount}]]명</p>
-                    </li>
-                    <li>
-                      <p class="reservation-left-tit">체크인/체크아웃</p>
-                      <p class="reservation-right-tit">[[${presentReservationDTO.customCheckDate()}]]</p>
-                    </li>
-                  </ul>
-                  <!-- 환불 사유는 optional-select -->
-                  <button
-                    type="button"
-                    class="reservationInfoBtn"
-                    th:data-index="${iterStart.index}"
-                    th:data-customcheckdate="${presentReservationDTO.customCheckDate()}"
-                    th:data-customorderid="${presentReservationDTO.customOrderId()}"
-                    th:data-orderid="${presentReservationDTO.orderId}"
-                    th:id="'reservationDetailInfoBtn' + ${iterStart.index}">세부예약 내용확인</button>
-                </div>
-              </div>
-          </th:block>
+          <div class="reservation-right-box">
+            <ul>
+              <li>
+                <p class="reservation-left-tit">호텔 정보</p>
+                <p class="reservation-right-tit">[[${presentReservationDTO.lodgeName}]]</p>
+              </li>
+              <li>
+                <p class="reservation-left-tit">객실명</p>
+                <p class="reservation-right-tit">[[${presentReservationDTO.roomName}]]</p>
+              </li>
+              <li>
+                <p class="reservation-left-tit">장소</p>
+                <p class="reservation-right-tit">[[${presentReservationDTO.lodgeAddr}]]</p>
+              </li>
+              <li>
+                <p class="reservation-left-tit">예약 번호</p>
+                <p class="reservation-right-tit">[[${presentReservationDTO.customOrderId()}]]</p>
+              </li>
+              <li>
+                <p class="reservation-left-tit">결제 금액</p>
+                <p class="reservation-right-tit">[[${presentReservationDTO.totalAmount}]]원</p>
+              </li>
+              <li>
+                <p class="reservation-left-tit">인원</p>
+                <p class="reservation-right-tit">[[${presentReservationDTO.guestsAmount}]]명</p>
+              </li>
+              <li>
+                <p class="reservation-left-tit">체크인/체크아웃</p>
+                <p class="reservation-right-tit">[[${presentReservationDTO.customCheckDate()}]]</p>
+              </li>
+            </ul>
+            <!-- 환불 사유는 optional-select -->
+            <button
+              type="button"
+              class="reservationInfoBtn"
+              th:data-index="${iterStart.index}"
+              th:data-customcheckdate="${presentReservationDTO.customCheckDate()}"
+              th:data-customorderid="${presentReservationDTO.customOrderId()}"
+              th:data-orderid="${presentReservationDTO.orderId}"
+              th:id="'reservationDetailInfoBtn' + ${iterStart.index}">세부예약 내용확인</button>
+          </div>
+        </div>
+      </th:block>
 
     </div>
 
@@ -140,38 +184,38 @@
         <p style="padding-left:1rem;">예약정보가 없습니다.</p>
       </th:block>
 
-          <table class="reservation-table" th:if="${#lists.size(reservationList) > 0}">
-            <thead>
+      <table class="reservation-table" th:if="${#lists.size(reservationList) > 0}">
+        <thead>
+        <tr>
+          <th>예약 번호</th>
+          <th>호텔 정보</th>
+          <th>인원</th>
+          <th>예약자</th>
+          <th>체크인/체크아웃</th>
+          <th>결제 금액</th>
+          <th>예약 일시</th>
+          <th>숙박 유형</th>
+        </tr>
+        </thead>
+        <th:block th:each="reservationDTO : ${reservationList}">
+          <th:block th:if="${reservationDTO.bookingStatus == 'DONE'}">
+            <tbody>
             <tr>
-              <th>예약 번호</th>
-              <th>호텔 정보</th>
-              <th>인원</th>
-              <th>예약자</th>
-              <th>체크인/체크아웃</th>
-              <th>결제 금액</th>
-              <th>예약 일시</th>
-              <th>숙박 유형</th>
+              <td>[[${reservationDTO.customOrderId()}]]</td>
+              <td>[[${reservationDTO.lodgeName}]]</td>
+              <td>[[${reservationDTO.guestsAmount}]]명</td>
+              <td>[[${userDTO.userName}]]</td>
+              <td>[[${reservationDTO.customCheckDate()}]]</td>
+              <td>[[${reservationDTO.totalAmount}]]원</td>
+              <td>[[${reservationDTO.customReservationRegDate()}]]</td>
+              <td th:if="${reservationDTO.reservationType == 'RENT'}">대실</td>
+              <td th:if="${reservationDTO.reservationType == 'STAY'}">숙박</td>
             </tr>
-            </thead>
-            <th:block th:each="reservationDTO : ${reservationList}">
-              <th:block th:if="${reservationDTO.bookingStatus == 'DONE'}">
-                <tbody>
-                <tr>
-                  <td>[[${reservationDTO.customOrderId()}]]</td>
-                  <td>[[${reservationDTO.lodgeName}]]</td>
-                  <td>[[${reservationDTO.guestsAmount}]]명</td>
-                  <td>[[${userDTO.userName}]]</td>
-                  <td>[[${reservationDTO.customCheckDate()}]]</td>
-                  <td>[[${reservationDTO.totalAmount}]]원</td>
-                  <td>[[${reservationDTO.customReservationRegDate()}]]</td>
-                  <td th:if="${reservationDTO.reservationType == 'RENT'}">대실</td>
-                  <td th:if="${reservationDTO.reservationType == 'STAY'}">숙박</td>
-                </tr>
-                </tbody>
-              </th:block>
+            </tbody>
+          </th:block>
 
-            </th:block>
-          </table>
+        </th:block>
+      </table>
 
     </div>
   </div>
@@ -282,23 +326,23 @@
 
       <div class="modal-content">
 
-          <div class="modal-input-group">
-            <p class="tit-title">[[${userDTO.userPhone}]]</p>
-          </div>
-          <button type="button" class="get-certified-btn" id="getCertifiedPhoneBtn">인증번호 받기</button>
+        <div class="modal-input-group">
+          <p class="tit-title">[[${userDTO.userPhone}]]</p>
+        </div>
+        <button type="button" class="get-certified-btn" id="getCertifiedPhoneBtn">인증번호 받기</button>
 
-          <div class="modal-input-group" id="verifyBox">
-            <input type="text" id="certifiedNumber" placeholder="인증번호를 입력해주세요">
-          </div>
+        <div class="modal-input-group" id="verifyBox">
+          <input type="text" id="certifiedNumber" placeholder="인증번호를 입력해주세요">
+        </div>
 
-          <div class="modal-actions">
-            <div class="modal-action-left">
-            </div>
-            <div class="modal-action-right">
-              <button type="button" class="modal-sub-btn" id="certifiedUserPhoneSubBtn">인증</button>
-              <button type="button" class="modal-close-btn" id="certifiedUserPhoneModalClose">닫기</button>
-            </div>
+        <div class="modal-actions">
+          <div class="modal-action-left">
           </div>
+          <div class="modal-action-right">
+            <button type="button" class="modal-sub-btn" id="certifiedUserPhoneSubBtn">인증</button>
+            <button type="button" class="modal-close-btn" id="certifiedUserPhoneModalClose">닫기</button>
+          </div>
+        </div>
         </form>
       </div>
     </div>
@@ -396,7 +440,7 @@
         <p class="modal-info-tit">※자세한 내용은 고객문의 및 고객센터로 연락바랍니다.(1234-5678)</p>
       </div>
       <div class="modal-actions" id="detailInfoModalActions">
-<!--        <button type="button" id="cancelReservation">예약취소</button>-->
+        <!--        <button type="button" id="cancelReservation">예약취소</button>-->
         <button type="button" id="reservationDetailInfoCloseModal">닫기</button>
       </div>
     </div>
@@ -412,50 +456,50 @@
 
       <div class="modal-content">
 
-          <div class="modal-input-group">
-            <input type="hidden" id="reservationOrderId">
+        <div class="modal-input-group">
+          <input type="hidden" id="reservationOrderId">
 
-            <select class="refundReason-select" id="refundReason">
-              <optgroup label="환불 사유를 선택해주세요">
-                <option>
-                  단순 변심
-                </option>
-                <option>
-                  일정 변경
-                </option>
-                <option>
-                  예약 정보 오류
-                </option>
-                <option>
-                  결제 오류 또는 중복 결제
-                </option>
-                <option>
-                  숙소 시설 문제
-                </option>
-                <option>
-                  호스트 연락 불가
-                </option>
-                <option value="other">
-                  기타 (직접 입력)
-                </option>
-              </optgroup>
-            </select>
+          <select class="refundReason-select" id="refundReason">
+            <optgroup label="환불 사유를 선택해주세요">
+              <option>
+                단순 변심
+              </option>
+              <option>
+                일정 변경
+              </option>
+              <option>
+                예약 정보 오류
+              </option>
+              <option>
+                결제 오류 또는 중복 결제
+              </option>
+              <option>
+                숙소 시설 문제
+              </option>
+              <option>
+                호스트 연락 불가
+              </option>
+              <option value="other">
+                기타 (직접 입력)
+              </option>
+            </optgroup>
+          </select>
 
+        </div>
+
+        <div class="modal-input-group" id="otherReasonBox" style="display: none;">
+          <p>기타 사유를 입력해주세요.</p>
+          <textarea id="otherReason" class="auto-fit-textarea"></textarea>
+        </div>
+
+        <div class="modal-actions">
+          <div class="modal-action-left">
           </div>
-
-          <div class="modal-input-group" id="otherReasonBox" style="display: none;">
-              <p>기타 사유를 입력해주세요.</p>
-              <textarea id="otherReason" class="auto-fit-textarea"></textarea>
+          <div class="modal-action-right">
+            <button type="button" class="modal-sub-btn" id="subRefundBtn">제출</button>
+            <button type="button" class="modal-close-btn" id="rcCloseModal">닫기</button>
           </div>
-
-          <div class="modal-actions">
-            <div class="modal-action-left">
-            </div>
-            <div class="modal-action-right">
-              <button type="button" class="modal-sub-btn" id="subRefundBtn">제출</button>
-              <button type="button" class="modal-close-btn" id="rcCloseModal">닫기</button>
-            </div>
-          </div>
+        </div>
       </div>
     </div>
   </div>
@@ -467,6 +511,7 @@
     const checkedPassword = [[${checkedPassword}]];
     const userTagMask = [[${userDTO.userFavoriteTag}]];
     const reservationPresentList = [[${reservationPresentList}]];
+    const alarmList = [[${alarmList}]];
   </script>
   <script th:src="@{/js/user/userMyPage.js}"></script>
 
@@ -475,3 +520,4 @@
 </div>
 
 
+</th:block>
