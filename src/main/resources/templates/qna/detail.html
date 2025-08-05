@@ -20,7 +20,7 @@
       <div class="form-group">
         <div style="display: flex; gap: 12px; flex: 1;">
           <!-- 기존 readonly input (평소에 보임) -->
-          <input type="text" id="c" class="input-box short" th:value="${customeriqboardfileDTO.boardDTO.category}" readonly placeholder="카테고리">
+          <input type="text" id="c" class="input-box short" name="category" th:value="${customeriqboardfileDTO.boardDTO.category}" readonly placeholder="카테고리">
 
           <!-- Modify 시 보일 select (초기 숨김) -->
           <select id="categorySelect" class="input-box short" name="category" style="display:none;">
@@ -50,7 +50,7 @@
         </div>
 
 
-        <!-- 내용 -->
+        <!-- 본문 -->
       <div class="form-group">
   <textarea class="form-control" name="content" id="con" cols="30" rows="10" readonly
             maxlength="1000">[[${customeriqboardfileDTO.boardDTO.content}]]</textarea>
@@ -60,8 +60,13 @@
         <div id="charCount" class="char-count" style="display: none;">0 / 1000</div>
       </div>
 
+        <!-- 댓글 -->
+        <div class="comment-area">
+            <textarea class="form-control comment-input" name="comment" id="comment" rows="1" maxlength="500" placeholder="댓글을 입력하세요" readonly></textarea>
+        </div>
 
-      <!-- 첨부파일 미리보기 -->
+
+        <!-- 첨부파일 미리보기 -->
       <div class="attached-files" th:if="${customeriqboardfileDTO.fileList != null}">
         <div class="file-list" th:each="file : ${customeriqboardfileDTO.fileList}">
           <div class="file-item">
@@ -99,16 +104,20 @@
         <input type="hidden" name="bno" th:value="${customeriqboardfileDTO.boardDTO.bno}">
 
         <!-- Modify & Delete 영역 -->
-        <div id="action-buttons" style="display: flex; gap: 8px;">
-          <button type="button" id="modBtn" class="btn btn-warning">Modify</button>
-          <button type="button" id="delBtn" class="btn btn-danger">Remove</button>
+        <div id="action-buttons" style="display: flex; gap: 12px;">
+          <button type="button" id="modBtn" class="btn btn-warning">수정</button>
+          <button type="button" id="delBtn" class="btn btn-danger">삭제</button>
         </div>
+
+          <!-- 답변완료 버튼 (처음엔 숨김) -->
+          <button type="button" id="completeBtn" class="btn btn-success" style="display: none;">답변완료</button>
 
         <!-- Submit 버튼 (처음엔 숨김) -->
         <button type="submit" id="submitBtn" class="btn btn-warning" style="display: none;">Submit</button>
 
-          <!-- 답변완료 버튼 (처음엔 숨김) -->
-          <button type="button" id="completeBtn" class="btn btn-success" style="display: none;">답변완료</button>
+
+          <!-- Cancle 버튼 (처음엔 숨김) -->
+          <button type="button" id="CancelBtn" class="btn btn-warning" style="display: none;">취소</button>
 
         <!-- List 버튼은 항상 보임 -->
         <button type="button" id="listBtn" class="btn btn-primary">List</button>

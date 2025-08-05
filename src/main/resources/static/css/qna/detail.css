@@ -1,3 +1,11 @@
+:root {
+  --primary-color: #e74b60;
+  --gray-light: #f5f5f5;
+  --gray-dark: #666;
+  --font-dark: #333;
+  --disabled: #b85766c7;
+}
+
 /* 전체 레이아웃 설정 */
 body {
   font-family: 'Noto Sans KR', sans-serif;
@@ -10,7 +18,7 @@ body {
 
 /* 메인 컨테이너 */
 .container {
-  width: 1080px;          /* 고정 너비 1080px */
+  width: 1080px;
   background-color: #ffffff;
   padding: 40px;
   margin: auto;
@@ -29,12 +37,11 @@ body {
   padding-bottom: 10px;
 }
 
-/* 공통 form-group: label + input */
+/* form-group */
 .form-group {
   display: flex;
   align-items: center;
   margin-bottom: 20px;
-
 }
 
 .form-group label {
@@ -44,9 +51,9 @@ body {
   margin-right: 10px;
 }
 
-/* input-box 기본 스타일 */
+/* input-box */
 .input-box {
-  width: 400px;              /* 고정 너비 유지 */
+  width: 400px;
   padding: 10px 14px;
   font-size: 15px;
   border: 1px solid #ccc;
@@ -57,37 +64,36 @@ body {
   box-sizing: border-box;
 }
 
-/* 짧은 input-box (카테고리 등) */
 .input-box.short {
   width: 100px;
-   height: 42px;                /* 기존 높이와 동일 */
-    padding: 0;
-    line-height: 42px;          /* height와 동일하게 맞춰 수직 중앙 정렬 */
-    text-align: center;         /* 수평 중앙 정렬 */
-    border: 1px solid #ccc;
-    border-radius: 4px;
-    background-color: #fefefe;
-    color: #333;
-    box-sizing: border-box;
+  height: 42px;
+  padding: 0;
+  line-height: 42px;
+  text-align: center;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  background-color: #fefefe;
+  color: #333;
+  box-sizing: border-box;
+  cursor: pointer;
 }
 
 .input-box.title {
   width: 100%;
   max-width: 780px;
-  border: none;                        /* 전체 테두리 제거 */
-  border-bottom: 1px solid #ccc;       /* 아래줄만 남김 */
-  background-color: transparent;       /* 배경 투명 */
+  border: none;
+  border-bottom: 1px solid #ccc;
+  background-color: transparent;
   outline: none;
   border-radius: 0;
   box-shadow: none;
   color: #333;
   height: 42px;
   font-size: 15px;
-  padding: 0;                          /* 위아래 여백 제거 */
-  line-height: 42px;                  /* 텍스트 수직 가운데 정렬 */
+  padding: 0;
+  line-height: 42px;
   box-sizing: border-box;
 }
-
 
 /* 작성자 + 작성일 줄 */
 .form-group-inline {
@@ -109,10 +115,8 @@ body {
   box-sizing: border-box;
 }
 
-/* textarea 영역 */
 textarea.form-control {
   width: 100%;
-  min-height: 200px;
   padding: 14px;
   font-size: 15px;
   border: 1px solid #ccc;
@@ -135,8 +139,25 @@ textarea.form-control {
   color: #dc3545;
 }
 
+/* 댓글 입력 영역 */
+.comment-area {
+  margin-top: 16px;
+  margin-bottom: 16px;
+}
 
-
+.comment-input {
+  height: auto;
+  padding: 4px 8px;
+  line-height: 1.2em;
+  overflow-y: hidden;
+  font-size: 14px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  resize: none;
+  background-color: #fefefe;
+  color: #333;
+  box-sizing: border-box;
+}
 
 /* 파일 첨부 줄 */
 .file-upload {
@@ -147,7 +168,6 @@ textarea.form-control {
   margin-bottom: 30px;
 }
 
-/* 업로드 버튼 스타일 (label for="ex_filename") */
 .file-upload label {
   background-color: #007bff;
   color: white;
@@ -168,21 +188,15 @@ textarea.form-control {
   background-color: #0056b3;
 }
 
-/* 비활성화된 업로드 버튼 스타일 */
 .file-upload label.disabled {
-  background-color: #ccc;        /* 연한 회색 */
-  color: #666;                   /* 어두운 회색 글자 */
-  cursor: default;               /* 기본 커서 */
-  pointer-events: none;          /* 클릭 및 호버 무효화 */
+  background-color: #ccc;
+  color: #666;
+  cursor: default;
+  pointer-events: none;
   user-select: none;
-  transition: none;              /* 호버 효과 제거 */
+  transition: none;
 }
 
-.file-upload label.disabled:hover {
-  background-color: #ccc;        /* 호버시 색 변화 없음 */
-}
-
-/* 숨김 처리된 파일 입력 */
 .file-upload input[type="file"],
 .upload-hidden {
   position: absolute;
@@ -195,7 +209,6 @@ textarea.form-control {
   border: 0;
 }
 
-/* 파일명 표시 칸 */
 .file-upload .upload-name {
   height: 42px;
   width: 930px;
@@ -231,8 +244,8 @@ textarea.form-control {
 }
 
 .btn-warning {
-  background-color: #ffc107;
-  color: #212529;
+  background-color: #007bff;
+  color: white;
 }
 
 .btn-danger {
@@ -240,8 +253,28 @@ textarea.form-control {
 }
 
 .btn-primary {
-  background-color: #007bff;
+  background-color: var(--primary-color);
 }
+
+#CancelBtn{
+    background-color: var(--primary-color);
+    color: white;
+}
+
+#CancelBtn:hover{
+    opacity: 0.9
+}
+
+#completeBtn{
+    background-color: black;
+}
+
+
+
+
+/* .btn-primary:hover {
+  background-color: #c93b4e;
+} */
 
 .btn:hover,
 .action-btn:hover {
@@ -255,6 +288,8 @@ textarea.form-control {
 
 .file-item {
   margin-bottom: 10px;
+  position: relative;
+  display: inline-block;
 }
 
 .preview-image {
@@ -283,19 +318,14 @@ textarea.form-control {
 }
 
 /* 이미지 X 버튼 스타일 */
-.file-item {
-  position: relative;  /* 자식 요소인 .file-x 위치 기준 */
-  display: inline-block;
-}
-
 .file-x {
   position: absolute;
-  bottom: 85%; /* 살짝 위로 */
-  left: 85%;   /* 살짝 오른쪽 */
-  transform: translate(50%, -50%); /* 정확한 겹침 조정 */
+  bottom: 85%;
+  left: 85%;
+  transform: translate(50%, -50%);
   width: 24px;
   height: 24px;
-  background-color: #dc3545; /* 부트스트랩 빨강 */
+  background-color: #dc3545;
   color: white;
   border: none;
   border-radius: 50%;
@@ -305,7 +335,7 @@ textarea.form-control {
   text-align: center;
   cursor: pointer;
   box-shadow: 0 2px 6px rgba(0,0,0,0.2);
-  visibility: visible; /* JavaScript에서 제어하는 경우 초기엔 hidden */
+  visibility: visible;
   z-index: 10;
   padding: 0;
 }
@@ -313,7 +343,6 @@ textarea.form-control {
 .file-x:hover {
   background-color: #c82333;
 }
-
 
 .input-box.email {
   width: 200px;
@@ -323,10 +352,10 @@ textarea.form-control {
   width: 155px;
 }
 
-/* 작성자 + 작성일 input 스타일 수정 */
+/* 작성자 + 작성일 input 스타일 재정의 */
 .form-group-inline input {
   border: none;
-  border-bottom: 1px solid #ccc;     /* 아래 테두리만 얇게 */
+  border-bottom: 1px solid #ccc;
   background-color: transparent;
   outline: none;
   box-shadow: none;
@@ -335,7 +364,7 @@ textarea.form-control {
   width: 400px;
   height: 36px;
   font-size: 15px;
-  padding: 0;                        /* 패딩 제거로 위아래 균형 맞춤 */
-  line-height: 42px;                /* 세로 가운데 정렬 유지 */
+  padding: 0;
+  line-height: 42px;
   box-sizing: border-box;
 }

@@ -129,6 +129,7 @@ p {
 
 .btn.btn-primary:hover {
   cursor: pointer;
+  opacity: 0.9
 }
 
 /* 작성 버튼 컨테이너 */
