@@ -135,10 +135,10 @@ public class LodgeCustomRepositoryImpl implements LodgeCustomRepository {
         "select l from Lodge l left join Review r on l.lodgeId = r.lodgeId " +
             "where l.lodgeId in (select r.lodgeId" +
             source +
-            ") group by l order by avg(r.rating) desc limit :offset, :page", Lodge.class)
+            ") group by l order by avg(r.rating) desc", Lodge.class)
         .setParameter("tag", tag)
-        .setParameter("offset", pageable.getOffset())
-        .setParameter("page", pageable.getPageNumber());
+        .setFirstResult(pageable.getPageNumber()* pageable.getPageSize())
+        .setMaxResults(pageable.getPageSize());
     TypedQuery<Long> count = entityManager.createQuery("select count(distinct r.lodgeId)" + source, Long.class)
             .setParameter("tag", tag);
 

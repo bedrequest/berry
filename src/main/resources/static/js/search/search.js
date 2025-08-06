@@ -214,31 +214,26 @@ function iconBuilding(width = 16, height = width) {
 }
 
 // 초깃값 세팅
-export default function init(initialOption, lodgeDTO) {
-  const today = new Date(), tomorrow = new Date();
-  tomorrow.setDate(today.getDate() + 1);
-
+export default function init(lodgeOption, listOption, lodgeDTO) {
   try {
-    const { lodge, list } = initialOption;
-
-    if (lodge) {
+    if (lodgeOption) {
       if (lodgeDTO) {
         searchKeywordInput.value = lodgeDTO.lodgeName;
         lodgeId = lodgeDTO.lodgeId;
         console.log(freeForm);
       }
-      document.addEventListener('DOMContentLoaded', () => {
-        window.flatpickr[0].setDate(lodge.checkIn);
-        window.flatpickr[1].setDate(lodge.checkOut);
-      });
-      adult = lodge.adult;
-      child = lodge.child;
+      window.flatpickr[0].setDate(lodgeOption.checkIn);
+      window.flatpickr[1].setDate(lodgeOption.checkOut);
+      adult = lodgeOption.adult;
+      child = lodgeOption.child;
     } else throw Error("insert defalut value");
-    if (list) {
-      searchKeywordInput.value = list.keyword;
-      freeForm.value = list.freeForm;
+    if (listOption) {
+      searchKeywordInput.value = listOption.keyword;
+      freeForm.value = listOption.freeForm;
     }
   } catch (insertDefaultValueHere) {
+    const today = new Date(), tomorrow = new Date();
+    tomorrow.setDate(today.getDate() + 1);
     window.flatpickr[0].setDate(today);
     window.flatpickr[1].setDate(tomorrow);
   }

@@ -95,14 +95,12 @@
   </button>
   <input type="hidden" id="freeForm" name="freeForm">
   <script type="module" th:src="@{/js/util/debounce.js}"></script>
-  <script type="module" th:inline="javascript">
-    import(/*[[@{/js/search/search.js}]]*/).then(module => {
-      module.default({
-        lodge: /*[[${lodgeOption}]]*/,
-        list: /*[[${listOption}]]*/
-      }, /*[[${lodgeDTO}]]*/);
-    });
-  </script>
   <!-- duorpeb, 달력 JS -->
   <script th:src="@{/js/flatPickr.js}"></script>
+
+  <script type="module" th:inline="javascript">
+    import(/*[[@{/js/search/search.js}]]*/).then(module => {
+      module.default(/*[[${lodgeOption}]]*/, /*[[${listOption}]]*/, /*[[${lodgeDTO}]]*/);
+    });
+  </script>
 </form>

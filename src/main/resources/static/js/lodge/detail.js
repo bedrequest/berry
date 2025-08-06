@@ -201,7 +201,6 @@ function updateScrollItems(roomIndex) {
 }
 
 function createScrollItems(roomIndex) {
-    const lodgeDTO = window.lodgeDTO;
     let items = [];
     let target = roomIndex == null ? lodgeDTO.lodgeImages : lodgeDTO.rooms[roomIndex].roomImageUrls;
     maxImageIndex = target.length - 1;
@@ -212,7 +211,6 @@ function createScrollItems(roomIndex) {
 }
 
 function updateFooterItems(roomIndex) {
-    const lodgeDTO = window.lodgeDTO;
     let target = roomIndex == null ? lodgeDTO.lodgeImages : lodgeDTO.rooms[roomIndex].roomImageUrls;
 
     imageSlide.innerHTML = '';

@@ -66,6 +66,11 @@ public class LodgeServiceImpl implements LodgeService {
     for (LodgeDTO lodgeDTO : result) {
       fillImages(lodgeDTO);
       fillRooms(lodgeDTO, false);
+
+      lodgeDTO.setAverageReviewScore(
+          reviewRepository.findAverageRatingByLodgeId(lodgeDTO.getLodgeId())
+              .orElse(0.0));
+      lodgeDTO.setReviewCount(reviewRepository.countByLodgeId(lodgeDTO.getLodgeId()));
     }
 
     return new PagingHandler<>(result, listOptionDTO);
