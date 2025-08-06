@@ -66,7 +66,9 @@ public class CustomerIqBoardController {
                      @RequestParam(name = "type", required = false) String type,
                      @RequestParam(name = "keyword", required = false) String keyword,
                      @RequestParam(name = "tripStart", required = false) String tripStart,
-                     @RequestParam(name = "tripEnd", required = false) String tripEnd) {
+                     @RequestParam(name = "tripEnd", required = false) String tripEnd
+
+    ) {
 
         log.info("pageNo {}", pageNo);
         log.info("type {}", type);
