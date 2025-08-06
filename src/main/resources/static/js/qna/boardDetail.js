@@ -190,38 +190,30 @@ document.addEventListener('DOMContentLoaded', () => {
       event.preventDefault();
       if (!confirm('답변완료로 처리하시겠습니까?')) return;
 
-      console.log('답변완료 버튼 클릭');
-      console.log('modBtn:', modBtn);
-      console.log('delBtn:', delBtn);
+      isAnswered = true;
 
-      isAnswered = true;  // 답변완료 상태로 변경
-
-      if (modBtn) {
-        modBtn.style.setProperty('display', 'none', 'important');
-        console.log('modBtn 숨김 처리 완료');
-      }
-      if (delBtn) {
-        delBtn.style.setProperty('display', 'none', 'important');
-        console.log('delBtn 숨김 처리 완료');
-      }
-      if (listBtn) listBtn.style.display = 'none';      // 리스트 버튼도 숨김
+      // 버튼들 숨김 처리
+      if (modBtn) modBtn.style.setProperty('display', 'none', 'important');
+      if (delBtn) delBtn.style.setProperty('display', 'none', 'important');
+      if (listBtn) listBtn.style.display = 'none';
       if (submitBtn) submitBtn.style.display = 'none';
       if (completeBtn) completeBtn.style.display = 'none';
       if (cancelBtn) cancelBtn.style.display = 'none';
 
-      // 제목, 내용, 댓글 모두 readonly 처리
+      // 읽기 전용 처리
       if (title) title.setAttribute('readonly', true);
       if (content) content.setAttribute('readonly', true);
       if (comment) comment.setAttribute('readonly', true);
 
-      // 카테고리 셀렉트 숨기고, input 보여주기
-      if (categorySelect) {
+      // 카테고리 값 반영
+      if (categoryInput && categorySelect) {
+        categoryInput.value = categorySelect.value; // ← 요거 추가
         categorySelect.style.display = 'none';
         categorySelect.disabled = true;
+        categoryInput.style.display = 'inline-block';
       }
-      if (categoryInput) categoryInput.style.display = 'inline-block';
 
-      // 파일 업로드 비활성화 및 미리보기 초기화
+      // 파일 업로드 비활성화
       if (uploadInput) {
         uploadInput.disabled = true;
         uploadInput.value = '';
@@ -235,6 +227,7 @@ document.addEventListener('DOMContentLoaded', () => {
       // 폼 제출
       modForm.submit();
     });
+
 
     if (isAnswered) {
       [modBtn, delBtn, listBtn, submitBtn, completeBtn, cancelBtn].forEach(btn => {
