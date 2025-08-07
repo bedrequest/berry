@@ -10,7 +10,6 @@
   <link rel="stylesheet" th:href="@{/css/review/reviews.css}" />
 </section>
 <div layout:fragment="content">
-
   <script th:inline="javascript">
     const jquerySwiperLink = document.createElement('link');
     jquerySwiperLink.rel = "stylesheet";
@@ -19,15 +18,13 @@
     
     let user = null;
   </script>
+  <script th:inline="javascript" sec:authorize="isAuthenticated()">
+    user = [[${userDTO.userId}]];
+    userData = [[${userDTO}]];
+  </script>
+
   <div th:insert="~{fragments/search :: search}" class="sticky"
        th:with="lodgeOption=${lodgeOption}, lodgeDTO=${lodgeDTO}"></div>
-
-  <div sec:authorize="isAuthenticated()">
-    <script th:inline="javascript">
-      user = [[${userDTO.userId}]];
-      userData = [[${userDTO}]];
-    </script>
-  </div>
 
   <div class="navBar">
     <div class="container">

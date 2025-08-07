@@ -24,11 +24,6 @@
     flatpickrTheme.type = "text/css";
     flatpickrTheme.href = "https://npmcdn.com/flatpickr/dist/themes/material_red.css";
     document.head.appendChild(flatpickrTheme);
-
-    const flatpickrJs = document.createElement('script');
-    flatpickrJs.src = "https://cdn.jsdelivr.net/npm/flatpickr";
-    flatpickrJs.defer = true;
-    document.head.appendChild(flatpickrJs);
   </script>
   <div id="searchKeywordArea">
     <div id="noKeywordWarning" class="invisible">
@@ -95,8 +90,6 @@
   </button>
   <input type="hidden" id="freeForm" name="freeForm">
   <script type="module" th:src="@{/js/util/debounce.js}"></script>
-  <!-- duorpeb, 달력 JS -->
-  <script th:src="@{/js/flatPickr.js}"></script>
 
   <script type="module" th:inline="javascript">
     import(/*[[@{/js/search/search.js}]]*/).then(module => {

@@ -12,6 +12,9 @@
 .section {
   position: relative;
 }
+img {
+  border-radius: 10px;
+}
 
 /* 1-1. 스와이퍼 관련 */
 .swiper {

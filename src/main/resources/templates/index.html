@@ -82,7 +82,8 @@
       <div class="swiper area">
         <div th:text="${entry.key}" class="tagTitle"></div>
         <div class="swiper-wrapper">
-          <div th:each="lodge:${entry.value.list}" class="lodge swiper-slide">
+          <div th:each="lodgeWithTagCount:${entry.value.list}" class="lodge swiper-slide"
+               th:with="lodge=${lodgeWithTagCount.lodgeDTO}, tagCount=${lodgeWithTagCount.tagCount}">
             <div class="swiper-slide-container">
               <div class="bookmark" th:data-id="${lodge.lodgeId}">
                 <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" class="bi bi-heart-fill"
@@ -105,7 +106,7 @@
                           ★ [[${lodge.averageReviewScore != null ? lodge.averageReviewScore : '-'}]]
                         </div>
                         <div class="reviewCount">
-                          <span>[[${lodge.reviewCount}]]명 평가</span>
+                          <span>[[${lodge.reviewCount}]]명 중 [[${tagCount}]]명 추천</span>
                         </div>
                       </div>
                     </div>

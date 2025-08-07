@@ -1,6 +1,18 @@
 import debounce from '../util/debounce.js';
+import flatpickr from "https://esm.sh/flatpickr";
 
-// HTML 요소 불러오기
+/* 목차
+0. HTML 요소 불러오기
+1. Main
+2. 검색어 입력 부분
+3. 여행 첫날, 마지막날
+4. 인원 입력
+5. 검색 버튼
+6. 기타 유틸리티
+7. Export : 초깃값 세팅
+*/
+
+// 0. HTML 요소 불러오기
 const [
   searchBox,
   searchKeywordArea, noKeywordWarning, searchKeywordInput, searchSuggestions,
@@ -23,8 +35,7 @@ let lodgeId = null;
 let adult = 2, child = 0;
 /* ------------------------------------------- */
 
-/* Main */
-// 컨트롤
+// 1. Main : 컨트롤
 document.addEventListener('click', e => {
   // 1. 검색어 입력창이 선택됐는가
   if (e.target == searchKeywordArea || e.target == searchKeywordInput) {
@@ -53,14 +64,7 @@ document.addEventListener('click', e => {
     peopleCountInputArea.classList.toggle('invisible');
 });
 
-// 엔터키 적용(취소)
-/*
-document.addEventListener('keydown', e => {
-  if (e.key === 'Enter') searchBtn.click();
-})*/
-/* ------------------------------------------- */
-
-/* 1. 검색어 입력 부분(#searchKeywordArea) */
+// 1. 검색어 입력 부분(#searchKeywordArea)
 searchKeywordArea.addEventListener('click', () => {
   searchKeywordInput.click();
 });
@@ -103,10 +107,50 @@ function getKeywords() {
 }
 /* ------------------------------------------- */
 
-/* 2. 여행 첫날, 마지막날 */
+// 2. 여행 첫날, 마지막날
+// flatpickr 적용
+const today = new Date();
+today.setHours(0, 0, 0, 0);
+
+const maxDate = new Date();
+maxDate.setDate(today.getDate() + 90);
+maxDate.setHours(23, 59, 59, 999);
+
+const calendars = flatpickr("#checkInInput, #checkOutInput", {
+  monthSelectorType: "static",
+
+  minDate: today,
+  maxDate: maxDate,
+
+  altInput: true,
+  altFormat: "Y년 m월 d일",
+
+  defaultDate: today,
+
+  yearRange: [today.getFullYear(), maxDate.getFullYear()],
+
+  position: "below center",
+  locale: {
+    months: {
+      longhand: [
+        "01", "02", "03", "04", "05", "06",
+        "07", "08", "09", "10", "11", "12"
+      ],
+      shorthand: [
+        "01", "02", "03", "04", "05", "06",
+        "07", "08", "09", "10", "11", "12"
+      ]
+    },
+    weekdays: {
+      shorthand: ["월", "화", "수", "목", "금", "토", "일"],
+      longhand: ["월요일", "화요일", "수요일", "목요일", "금요일", "토요일", "일요일"]
+    }
+  }
+});
+
 /* ------------------------------------------- */
 
-/* 3. 인원 입력 */
+// 3. 인원 입력
 // 3-1. 인원을 받으면 화면과 input에 반영하는 hook
 function updateHeadCount(adult, child) {
   updateAdultCount(adult);
@@ -144,7 +188,7 @@ childPlusBtn.addEventListener('click', () => {
 })
 /* ------------------------------------------- */
 
-/* 4. 검색 버튼 */
+// 4. 검색 버튼
 // 검색어가 비어있으면 경고문 출력(timeout을 이용한 비동기), 아니라면 searchOption을 통해 검색
 let noKeywordWarningTimeout = null;
 
@@ -182,22 +226,10 @@ searchBtn.addEventListener('click', () => {
 });
 /* ------------------------------------------- */
 
-/* 5. 기타 유틸리티 */
-/**
- * Date 객체를 YYYY-MM-DD 형식의 String으로 변환
-*/
-function formatDate(date) {
-  const year = date.getFullYear();
-  const month = String(date.getMonth() + 1).padStart(2, '0');
-  const day = String(date.getDate()).padStart(2, '0');
-  return `${year}-${month}-${day}`;
-}
-
-/**
- * width와 height를 받아서 그 사이즈의 부트스트랩 아이콘을 리턴하는 함수들
+// 5. 기타 유틸리티
+/* width와 height를 받아서 그 사이즈의 부트스트랩 아이콘을 리턴하는 함수들
  * width만 주면 height는 width와 같은 값으로 지정됨
  */
-
 function iconGeoAlt(width = 16, height = width) {
   if (width == undefined) return;
   return `<svg xmlns="http://www.w3.org/2000/svg" width="${width}" height="${height}" fill="currentColor" class="bi bi-geo-alt" viewBox="0 0 16 16">
@@ -213,7 +245,7 @@ function iconBuilding(width = 16, height = width) {
 </svg>`;
 }
 
-// 초깃값 세팅
+// 6. Export : 초깃값 세팅
 export default function init(lodgeOption, listOption, lodgeDTO) {
   try {
     if (lodgeOption) {
@@ -222,8 +254,8 @@ export default function init(lodgeOption, listOption, lodgeDTO) {
         lodgeId = lodgeDTO.lodgeId;
         console.log(freeForm);
       }
-      window.flatpickr[0].setDate(lodgeOption.checkIn);
-      window.flatpickr[1].setDate(lodgeOption.checkOut);
+      calendars[0].setDate(lodgeOption.checkIn);
+      calendars[1].setDate(lodgeOption.checkOut);
       adult = lodgeOption.adult;
       child = lodgeOption.child;
     } else throw Error("insert defalut value");
@@ -234,8 +266,8 @@ export default function init(lodgeOption, listOption, lodgeDTO) {
   } catch (insertDefaultValueHere) {
     const today = new Date(), tomorrow = new Date();
     tomorrow.setDate(today.getDate() + 1);
-    window.flatpickr[0].setDate(today);
-    window.flatpickr[1].setDate(tomorrow);
+    calendars[0].setDate(today);
+    calendars[1].setDate(tomorrow);
   }
   updateHeadCount(adult, child);
 }

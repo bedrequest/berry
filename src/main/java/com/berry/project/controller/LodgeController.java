@@ -1,6 +1,6 @@
 package com.berry.project.controller;
 
-import com.berry.project.api.NaverMapApi;
+import com.berry.project.api.NaverApi;
 import com.berry.project.data.LodgeData;
 import com.berry.project.dto.lodge.ListOptionDTO;
 import com.berry.project.dto.lodge.LodgeDTO;
@@ -20,7 +20,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import java.security.Principal;
-import java.util.List;
 
 @RequestMapping("/lodge")
 @RequiredArgsConstructor
@@ -33,7 +32,7 @@ public class LodgeController {
   private final ReviewService reviewService;
 
   private final FacilityMaskDecoder facilityMaskDecoder;
-  private final NaverMapApi naverMapApi;
+  private final NaverApi naverMapApi;
   private final LodgeData lodgeData;
 
   @GetMapping("/list")

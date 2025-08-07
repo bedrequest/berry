@@ -1,13 +1,13 @@
 package com.berry.project.controller;
 
-import com.berry.project.dto.lodge.LodgeDTO;
+import com.berry.project.dto.lodge.LodgeWithTagCountDTO;
 import com.berry.project.dto.user.UserDTO;
 import com.berry.project.handler.PagingHandler;
 import com.berry.project.service.IndexService;
 import com.berry.project.service.user.UserService;
 import com.berry.project.util.TagMaskDecoder;
-import groovy.util.logging.Slf4j;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -32,7 +32,7 @@ public class IndexController {
     // 1. 로그인한 유저의 선호 태그로 lodgeDTO 목록 가져오기
     if (principal != null) {
       UserDTO user = userService.getUserInfo(principal.getName());
-      Map<String, PagingHandler<LodgeDTO>> tagMap = new HashMap<>();
+      Map<String, PagingHandler<LodgeWithTagCountDTO>> tagMap = new HashMap<>();
       int count = 1;
       for (int i = 1; i <= 9; i++) {
         if ((count & user.getUserFavoriteTag()) != 0)
@@ -40,6 +40,9 @@ public class IndexController {
 
         count <<= 1;
       }
+
+      for (String key : tagMap.keySet())
+        log.info(">> 태그 : {}, 숙소 : {}", key, tagMap.get(key));
       model.addAttribute("tagMap", tagMap);
     }
 

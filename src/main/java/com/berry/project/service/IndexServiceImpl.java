@@ -2,6 +2,7 @@ package com.berry.project.service;
 
 import com.berry.project.dto.ReviewLodgeDTO;
 import com.berry.project.dto.lodge.LodgeDTO;
+import com.berry.project.dto.lodge.LodgeWithTagCountDTO;
 import com.berry.project.dto.lodge.RoomDTO;
 import com.berry.project.entity.lodge.LodgeImg;
 import com.berry.project.handler.PagingHandler;
@@ -33,10 +34,10 @@ public class IndexServiceImpl implements IndexService {
   private final TagMaskDecoder tagMaskDecoder;
 
   @Override
-  public PagingHandler<LodgeDTO> getLodgeListByTag(int pageNo, int tagId) {
+  public PagingHandler<LodgeWithTagCountDTO> getLodgeListByTag(int pageNo, int tagId) {
     Pageable pageable = PageRequest.of(pageNo - 1, 10);
 
-    Page<LodgeDTO> result = lodgeRepository.searchByTag(tagId, pageable)
+    Page<LodgeWithTagCountDTO> result = lodgeRepository.searchByTag(tagId, pageable)
         .map(entry -> {
           List<String> lodgeImages = lodgeImgRepository.findByLodgeId(entry.getLodgeId())
               .stream().map(LodgeImg::getLodgeImgUrl)
@@ -51,7 +52,7 @@ public class IndexServiceImpl implements IndexService {
                   .stayTime(room.getStayTime())
                   .build()).toList();
 
-          return LodgeDTO.builder()
+          return new LodgeWithTagCountDTO(LodgeDTO.builder()
             .lodgeId(entry.getLodgeId())
             .lodgeName(entry.getLodgeName())
             .lodgeAddr(entry.getLodgeAddr())
@@ -59,7 +60,7 @@ public class IndexServiceImpl implements IndexService {
             .rooms(roomDTOList)
             .averageReviewScore(reviewRepository.findAverageRatingByLodgeId(entry.getLodgeId()).orElse(0.0))
             .reviewCount(reviewRepository.countByLodgeId(entry.getLodgeId()))
-            .build();
+            .build(), reviewRepository.countReviewByLodgeIdAndTagId(entry.getLodgeId(), tagId));
         });
     return new PagingHandler<>(result);
   }
@@ -71,7 +72,7 @@ public class IndexServiceImpl implements IndexService {
           Long reviewId = entry.getReviewId();
           List<String> tags = reviewTagMappingRepository.findByReviewId(reviewId)
               .stream()
-              .map(tagMapping -> tagMaskDecoder.get(tagMapping.getTagId().intValue()))
+              .map(tagMapping -> tagMaskDecoder.get(tagMapping.getTagId().intValue() - 1))
               .toList();
           Long lodgeId = entry.getLodgeId();
 
