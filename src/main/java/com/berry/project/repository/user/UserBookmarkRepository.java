@@ -7,7 +7,7 @@ import java.util.List;
 import java.util.Optional;
 
 public interface UserBookmarkRepository extends JpaRepository<UserBookmark, Long>{
-  Optional<UserBookmark> findByUserId(Long userId);
+  Optional<UserBookmark> findByUserIdAndLodgeId(Long userId, Long lodge_id);
 
   List<UserBookmark> findByUserIdOrderByRegDateDesc(Long userId);
 }

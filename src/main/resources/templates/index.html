@@ -85,7 +85,8 @@
           <div th:each="lodgeWithTagCount:${entry.value.list}" class="lodge swiper-slide"
                th:with="lodge=${lodgeWithTagCount.lodgeDTO}, tagCount=${lodgeWithTagCount.tagCount}">
             <div class="swiper-slide-container">
-              <div class="bookmark" th:data-id="${lodge.lodgeId}">
+              <div class="bookmark" th:data-id="${lodge.lodgeId}"
+                   th:classappend="${bookmarks.contains(lodge.lodgeId) ? 'selected' : ''}">
                 <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" class="bi bi-heart-fill"
                      viewBox="0 0 16 16">
                   <path fill-rule="evenodd"
@@ -136,5 +137,9 @@
   </div>
 
   <script type="module" th:src="@{/js/index.js}"></script>
-  <script type="module" th:src="@{/js/lodge/bookmark.js}"></script>
+  <script type="module" th:inline="javascript" sec:authorize="${isAuthenticated()}">
+    import(/*[[@{/js/lodge/bookmark.js}]]*/).then(module => {
+      module.default(/*[[${userId}]]*/);
+    });
+  </script>
 </div>

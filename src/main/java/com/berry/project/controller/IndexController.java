@@ -1,6 +1,7 @@
 package com.berry.project.controller;
 
 import com.berry.project.dto.lodge.LodgeWithTagCountDTO;
+import com.berry.project.dto.user.BookmarkLodgeDTO;
 import com.berry.project.dto.user.UserDTO;
 import com.berry.project.handler.PagingHandler;
 import com.berry.project.service.IndexService;
@@ -14,6 +15,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 
 import java.security.Principal;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.NoSuchElementException;
 
@@ -44,6 +46,13 @@ public class IndexController {
       for (String key : tagMap.keySet())
         log.info(">> 태그 : {}, 숙소 : {}", key, tagMap.get(key));
       model.addAttribute("tagMap", tagMap);
+
+      model.addAttribute("userId", user.getUserId());
+      // 북마크 내역 가져오기
+      List<BookmarkLodgeDTO> bookmarkLodgeList = userService.getBookmarkLodgeList(user.getUserId());
+      log.info("bookmarkLodgeList > {}", bookmarkLodgeList);
+      model.addAttribute("bookmarks", bookmarkLodgeList
+          .stream().map(BookmarkLodgeDTO::getLodgeId).toList());
     }
 
     // 2. 최신 리뷰 (10개)

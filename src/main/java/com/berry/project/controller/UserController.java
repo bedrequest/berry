@@ -414,7 +414,7 @@ public class UserController {
   // 북마크 등록
   @ResponseBody
   @PostMapping("/toggleBookmark")
-  public String toggleBookmark(UserBookmarkDTO userBookmarkDTO){
+  public String toggleBookmark(@RequestBody UserBookmarkDTO userBookmarkDTO){
     log.info("userBookmarkDTO >> {}",userBookmarkDTO);
     Long isOk = userService.toggleBookmark(userBookmarkDTO);
 

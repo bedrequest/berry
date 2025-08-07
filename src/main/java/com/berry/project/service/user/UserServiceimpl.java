@@ -471,8 +471,10 @@ public class UserServiceimpl implements UserService {
   @Transactional
   @Override
   public Long toggleBookmark(UserBookmarkDTO userBookmarkDTO) {
+    log.info(">> User Bookmark Input > {}", userBookmarkDTO);
 
-    Optional<UserBookmark> optional = userBookmarkRepository.findByUserId(userBookmarkDTO.getUserId());
+    Optional<UserBookmark> optional = userBookmarkRepository.findByUserIdAndLodgeId(userBookmarkDTO.getUserId(), userBookmarkDTO.getLodgeId());
+    log.info(">> search result > {}", optional);
 
     if(optional.isPresent()){
       // 있다면 지우고 0 return
