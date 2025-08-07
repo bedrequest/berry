@@ -1,7 +1,7 @@
+
 <!DOCTYPE html>
 <html lang="en"
       xmlns:th="http://www.thymeleaf.org"
-      xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
       xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
       layout:decorate="~{layout/layout}">
 
@@ -20,19 +20,9 @@
             <!-- 카테고리 + 제목 -->
             <div class="form-group">
                 <div class="category-title-wrapper">
-                    <!-- 기본엔 input 보여주고 readonly -->
-                    <input type="text" id="c" class="input-box short"
+                    <input type="text" id="c" name="category" class="input-box short"
                            th:value="${customeriqboardfileDTO.boardDTO.category}"
                            readonly placeholder="카테고리">
-
-                    <!-- 수정 모드에서 보여줄 select (초기엔 숨김) -->
-                    <select id="categorySelect" name="category" class="input-box short" style="display: none;">
-                        <option value="결제">결제</option>
-                        <option value="환불">환불</option>
-                        <option value="시설">시설</option>
-                        <option value="서비스">서비스</option>
-                        <option value="기타">기타</option>
-                    </select>
 
                     <input type="text" class="input-box title" name="title"
                            th:value="${customeriqboardfileDTO.boardDTO.title}"
@@ -68,7 +58,7 @@
             </div>
 
             <!-- 댓글 -->
-            <div class="comment-area" sec:authorize="hasRole('ROLE_ADMIN')">
+            <div class="comment-area">
                 <textarea class="form-control comment-input" name="comment" id="comment" rows="1" maxlength="500" placeholder="댓글을 입력하세요" readonly></textarea>
             </div>
 
@@ -117,14 +107,14 @@
                 </div>
 
                 <!-- 답변완료 버튼 (처음엔 숨김) -->
-                <button type="button" id="completeBtn" class="btn btn-success" style="display: none;" sec:authorize="hasRole('ROLE_ADMIN')">답변완료</button>
+                <button type="button" id="completeBtn" class="btn btn-success" style="display: none;">답변완료</button>
 
                 <!-- Submit 버튼 (처음엔 숨김) -->
                 <button type="submit" id="submitBtn" class="btn btn-warning" style="display: none;">Submit</button>
 
 
                 <!-- Cancle 버튼 (처음엔 숨김) -->
-                <button type="button" id="CancelBtn" class="btn btn-warning2" style="display: none;">취소</button>
+                <button type="button" id="CancelBtn" class="btn btn-warning" style="display: none;">취소</button>
 
                 <!-- List 버튼은 항상 보임 -->
                 <button type="button" id="listBtn" class="btn btn-primary">List</button>
@@ -132,7 +122,7 @@
 
         </form>
         <body data-answered="[[${customeriqboardfileDTO.boardDTO.answered}]]">
-            <script th:src="@{/js/qna/boardDetail.js}"></script>
+        <script th:src="@{/js/qna/boardDetail.js}"></script>
         </body>
 
 

@@ -80,7 +80,7 @@ textarea {
 }
 
 #category {
-    width: 100px;
+    width: 130px;
     cursor: pointer;
     /* select에 이미 height와 line-height가 적용되었으므로 별도 수정 불필요 */
 }

@@ -1,3 +1,4 @@
+
 document.addEventListener('DOMContentLoaded', () => {
   const isAnsweredAttr = document.body.getAttribute('data-answered');
   const bnoValue = document.querySelector('input[name="bno"]').value;
@@ -101,24 +102,6 @@ document.addEventListener('DOMContentLoaded', () => {
         return;
       }
 
-
-      const categoryInput = document.getElementById('c');
-      const categorySelect = document.getElementById('categorySelect');
-
-      if (categoryInput && categorySelect) {
-          categoryInput.style.display = 'none';
-          categorySelect.style.display = 'inline-block';
-
-          // 기존 값과 같은 옵션 선택되게
-          const rawValue = categoryInput.value.replace(/\[|\]/g, '').trim();
-          categorySelect.value = rawValue;
-
-          // ⚠️ input의 name 제거해서 중복 전송 방지
-          categoryInput.removeAttribute('name');
-          categorySelect.setAttribute('name', 'category');
-        }
-
-
       saveOriginalState();
 
       title.removeAttribute('readonly');
@@ -188,55 +171,44 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
- if (cancelBtn) {
-   cancelBtn.addEventListener('click', () => {
-     restoreOriginalState();
+  if (cancelBtn) {
+    cancelBtn.addEventListener('click', () => {
+      restoreOriginalState();
 
-     title.setAttribute('readonly', true);
-     content.setAttribute('readonly', true);
-     if (comment) comment.setAttribute('readonly', true);
+      title.setAttribute('readonly', true);
+      content.setAttribute('readonly', true);
+      if (comment) comment.setAttribute('readonly', true);
 
-     modBtn.style.display = 'inline-block';
-     delBtn.style.display = 'inline-block';
-     listBtn.style.display = 'inline-block';
+      modBtn.style.display = 'inline-block';
+      delBtn.style.display = 'inline-block';
+      listBtn.style.display = 'inline-block';
 
-     submitBtn.style.display = 'none';
-     completeBtn.style.display = 'none';
-     cancelBtn.style.display = 'none';
+      submitBtn.style.display = 'none';
+      completeBtn.style.display = 'none';
+      cancelBtn.style.display = 'none';
 
-     if (uploadLabel) {
-       uploadLabel.classList.add('disabled');
-       uploadLabel.style.cursor = 'default';
-     }
-     if (uploadInput) {
-       uploadInput.disabled = true;
-       uploadInput.value = '';
-     }
+      if (uploadLabel) {
+        uploadLabel.classList.add('disabled');
+        uploadLabel.style.cursor = 'default';
+      }
+      if (uploadInput) {
+        uploadInput.disabled = true;
+        uploadInput.value = '';
+      }
 
-     if (charCount) {
-       charCount.style.display = 'none';
-     }
+      if (charCount) {
+        charCount.style.display = 'none';
+      }
 
-     autoResize(content);
-     if (comment) autoResize(comment);
+      autoResize(content);
+      if (comment) autoResize(comment);
 
-     document.querySelectorAll('.file-x').forEach(btn => {
-       btn.style.visibility = 'hidden';
-       btn.onclick = null;
-     });
-
-     // ✅ 카테고리 select → input으로 복원
-     const categoryInput = document.getElementById('c');
-     const categorySelect = document.getElementById('categorySelect');
-     if (categoryInput && categorySelect) {
-       categorySelect.style.display = 'none';
-       categoryInput.style.display = 'inline-block';
-
-       categorySelect.removeAttribute('name');
-       categoryInput.setAttribute('name', 'category');
-     }
-   });
- }
+      document.querySelectorAll('.file-x').forEach(btn => {
+        btn.style.visibility = 'hidden';
+        btn.onclick = null;
+      });
+    });
+  }
 
   if (uploadInput) {
     uploadInput.addEventListener('change', () => {
@@ -262,39 +234,33 @@ document.addEventListener('DOMContentLoaded', () => {
     completeBtn.addEventListener('click', () => {
       if (!confirm("답변을 완료하시겠습니까?")) return;
 
-      // ✅ category select에서 input으로 값 옮기기
-      const categoryInput = document.getElementById('c');
-      const categorySelect = document.getElementById('categorySelect');
-
-      if (categorySelect && categoryInput) {
-        // 서버에 전송할 때는 대괄호 없이 순수한 값만 넣기
-        categoryInput.value = categorySelect.value.trim();
-
-        // name 속성 변경
-        categorySelect.removeAttribute('name');
-        categoryInput.setAttribute('name', 'category');
-
-        // 화면 표시를 위해 대괄호 붙인 값 보여주기 (선택사항)
-        setTimeout(() => {
-          categoryInput.value = `[ ${categoryInput.value} ]`;
-        }, 0);
-
-        categorySelect.style.display = 'none';
-        categoryInput.style.display = 'inline-block';
-      }
-
-      // ✅ sessionStorage 저장
       sessionStorage.setItem(`answered-${bnoValue}`, 'true');
       isAnswered = true;
 
-      // ✅ 폼 제출로 서버에 저장 요청
-      const form = document.querySelector('form');
-      if (form) {
-        form.submit();  // 실제 저장 처리
+      [modBtn, delBtn, submitBtn, cancelBtn, completeBtn].forEach(btn => {
+        if (btn) btn.style.display = "none";
+      });
+
+      if (listBtn) listBtn.style.display = "inline-block";
+      if (title) title.setAttribute('readonly', true);
+      if (content) content.setAttribute('readonly', true);
+      if (comment) comment.setAttribute('readonly', true);
+
+      if (uploadInput) {
+        uploadInput.disabled = true;
+        uploadInput.value = '';
       }
+      if (uploadLabel) {
+        uploadLabel.classList.add('disabled');
+        uploadLabel.style.cursor = 'default';
+      }
+
+      document.querySelectorAll('.file-x').forEach(btn => {
+        btn.style.visibility = 'hidden';
+        btn.onclick = null;
+      });
     });
   }
-
 });
 
 async function fileRemoveToServer(uuid) {

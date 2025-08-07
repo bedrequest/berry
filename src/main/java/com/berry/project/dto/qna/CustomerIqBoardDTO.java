@@ -22,4 +22,5 @@ public class CustomerIqBoardDTO {
   private LocalDateTime commentRegDate;
   private LocalDateTime regDate,modDate;
 
+
 }

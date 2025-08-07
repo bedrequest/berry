@@ -6,6 +6,9 @@
 
 <section layout:fragment="customStyle">
   <link rel="stylesheet" th:href="@{/css/qna/list.css}" />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+  <link rel="stylesheet" th:href="@{/css/flatpickrCustom.css}" />
+  <link rel="stylesheet" href="https://npmcdn.com/flatpickr/dist/themes/material_red.css" />
 </section>
 
 <body>
@@ -30,15 +33,17 @@
     <form action="/qna/list" method="get" role="search">
 
       <!-- 날짜 줄 -->
-      <div class="search-line">
+      <div class="date-range">
         <input
                 type="date"
+                class="date-picker"
                 id="start"
                 name="tripStart"
                 />
         <span style="align-self: center;">~</span>
         <input
                 type="date"
+                class="date-picker"
                 id="end"
                 name="tripEnd"
                  />
@@ -142,25 +147,36 @@
     </ul>
   </nav>
 
-<script>
-  document.addEventListener('DOMContentLoaded', function () {
-    const today = new Date();
-    const todayFormatted = today.toISOString().split('T')[0];
+  <!-- flatpickr JS 로딩 -->
+  <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
 
-    const lastMonth = new Date(today);
-    lastMonth.setMonth(today.getMonth() - 1);
-    const lastMonthFormatted = lastMonth.toISOString().split('T')[0];
+  <!-- flatpickr 초기화 -->
+  <script>
+    document.addEventListener('DOMContentLoaded', function () {
+      const today = new Date();
+      const todayFormatted = today.toISOString().split('T')[0];
 
-    const startInput = document.getElementById('start');
-    const endInput = document.getElementById('end');
+      const oneMonthAgo = new Date(today);
+      oneMonthAgo.setMonth(today.getMonth() - 1);
+      const oneMonthAgoFormatted = oneMonthAgo.toISOString().split('T')[0];
 
-    startInput.value = lastMonthFormatted;
-    endInput.value = todayFormatted;
+      flatpickr("#start", {
+        defaultDate: oneMonthAgoFormatted,
+        maxDate: todayFormatted,
+        dateFormat: "Y-m-d",
+        locale: "ko"
+      });
 
-    startInput.max = todayFormatted;
-    endInput.max = todayFormatted;
-  });
-</script>
+      flatpickr("#end", {
+        defaultDate: todayFormatted,
+        maxDate: todayFormatted,
+        dateFormat: "Y-m-d",
+        locale: "ko"
+      });
+    });
+  </script>
+
+  <script th:src="@{/js/qna/boardList.js}"></script>
 </div>
 
 </body>

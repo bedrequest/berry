@@ -157,4 +157,12 @@ public class CustomerIqBoardServiceImpl implements CustomerIqBoardService {
     return customeriqfile.get().getBno();
   }
 
+
+
+
+
+
+
+
+
 }

@@ -40,7 +40,7 @@ body {
 /* form-group */
 .form-group {
   display: flex;
-  align-items: center;
+  flex-direction: column;
   margin-bottom: 20px;
 }
 
@@ -51,9 +51,15 @@ body {
   margin-right: 10px;
 }
 
-/* input-box */
+/* 카테고리 + 제목 묶음 wrapper */
+.category-title-wrapper {
+  display: flex;
+  gap: 12px;
+  width: 100%;
+}
+
+/* input-box 기본 스타일 */
 .input-box {
-  width: 400px;
   padding: 10px 14px;
   font-size: 15px;
   border: 1px solid #ccc;
@@ -64,35 +70,45 @@ body {
   box-sizing: border-box;
 }
 
+/* 카테고리 input: 밑줄 제거, 너비 고정 */
 .input-box.short {
   width: 100px;
   height: 42px;
-  padding: 0;
+  padding: 0 10px;
+  text-align: left;
   line-height: 42px;
-  text-align: center;
-  border: 1px solid #ccc;
-  border-radius: 4px;
   background-color: #fefefe;
   color: #333;
   box-sizing: border-box;
-  cursor: pointer;
+
+  /* 밑줄 제거 */
+  border: none;
+  outline: none;
+  box-shadow: none;
 }
 
+/* 제목 input: 밑줄 제거, flex-grow */
 .input-box.title {
-  width: 100%;
-  max-width: 780px;
-  border: none;
-  border-bottom: 1px solid #ccc;
-  background-color: transparent;
-  outline: none;
-  border-radius: 0;
-  box-shadow: none;
-  color: #333;
-  height: 42px;
+  flex: 1;
   font-size: 15px;
   padding: 0;
+  height: 42px;
   line-height: 42px;
+  background-color: transparent;
+  color: #333;
   box-sizing: border-box;
+
+  /* 밑줄 제거 */
+  border: none;
+  outline: none;
+  box-shadow: none;
+}
+
+/* 카테고리 + 제목 밑에 그려질 밑줄 */
+.category-title-underline {
+  margin-top: 4px;
+  border-bottom: 1px solid #ccc;
+  width: 100%;
 }
 
 /* 작성자 + 작성일 줄 */
@@ -103,18 +119,46 @@ body {
   gap: 12px;
 }
 
+/* 작성자 + 작성일 input 기본 스타일: 밑줄만 있고 투명배경 */
 .form-group-inline input {
-  width: 400px;
-  height: 42px;
-  font-size: 15px;
-  padding: 10px 14px;
-  border: 1px solid #ccc;
-  border-radius: 4px;
-  background-color: #fefefe;
+  border: none;
+  border-bottom: 1px solid #ccc;
+  background-color: transparent;
+  outline: none;
+  box-shadow: none;
+  border-radius: 0;
   color: #333;
+  width: 400px;
+  height: 36px;
+  font-size: 15px;
+  padding: 0;
+  line-height: 42px;
   box-sizing: border-box;
 }
 
+/* 작성자 이메일 칸 너비 */
+.input-box.email {
+  width: 200px;
+  font-size: 15px;
+  padding: 0 8px;
+  height: 36px;
+  border: none;
+  border-bottom: 1px solid #ccc;
+  background-color: transparent;
+  outline: none;
+  box-shadow: none;
+  border-radius: 0;
+  color: #333;
+  width: auto; /* 동적 너비 가능 */
+}
+
+/* 작성일 칸 너비 */
+.input-box.date {
+  width: 155px;
+  text-align: center;
+}
+
+/* textarea 기본 스타일 */
 textarea.form-control {
   width: 100%;
   padding: 14px;
@@ -129,6 +173,17 @@ textarea.form-control {
   margin-bottom: 20px;
 }
 
+/* readonly 상태 textarea가 클릭(focus)되어도 테두리 변화 없음 */
+textarea[readonly]:focus {
+  outline: none;
+  border-width: 1px;        /* 기본 테두리 두께 유지 */
+  border-color: #ccc;       /* 기본 테두리 색 유지 */
+  box-shadow: none;         /* 그림자 효과 제거 */
+  background-color: #fefefe;/* 배경색 유지 */
+  cursor: default;          /* 커서 기본 모양 */
+}
+
+/* 글자 수 카운트 */
 .char-count {
   font-size: 12px;
   color: #6c757d;
@@ -256,25 +311,18 @@ textarea.form-control {
   background-color: var(--primary-color);
 }
 
-#CancelBtn{
-    background-color: var(--primary-color);
-    color: white;
+#CancelBtn {
+  background-color: var(--primary-color);
+  color: white;
 }
 
-#CancelBtn:hover{
-    opacity: 0.9
+#CancelBtn:hover {
+  opacity: 0.9;
 }
 
-#completeBtn{
-    background-color: black;
+#completeBtn {
+  background-color: black;
 }
-
-
-
-
-/* .btn-primary:hover {
-  background-color: #c93b4e;
-} */
 
 .btn:hover,
 .action-btn:hover {
@@ -342,29 +390,4 @@ textarea.form-control {
 
 .file-x:hover {
   background-color: #c82333;
-}
-
-.input-box.email {
-  width: 200px;
-}
-
-.input-box.date {
-  width: 155px;
-}
-
-/* 작성자 + 작성일 input 스타일 재정의 */
-.form-group-inline input {
-  border: none;
-  border-bottom: 1px solid #ccc;
-  background-color: transparent;
-  outline: none;
-  box-shadow: none;
-  border-radius: 0;
-  color: #333;
-  width: 400px;
-  height: 36px;
-  font-size: 15px;
-  padding: 0;
-  line-height: 42px;
-  box-sizing: border-box;
 }

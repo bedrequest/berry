@@ -45,6 +45,23 @@ p {
   box-shadow: 0 0 8px rgba(0, 0, 0, 0.03);
 }
 
+.date-range {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 10px;
+}
+
+.date-picker {
+  width: 150px;
+  height: 36px;
+  font-size: 15px;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  padding: 6px 10px;
+}
+
 /* 검색 폼 전체 wrapper */
 .search-box-wrapper {
   display: flex;
@@ -53,7 +70,7 @@ p {
   width: 100%;
 }
 
-/* 날짜줄 & 검색줄 공통 스타일 */
+/* 검색줄 스타일 */
 .search-line {
   display: flex;
   justify-content: center;
@@ -62,7 +79,7 @@ p {
   margin-bottom: 10px;
 }
 
-/* 날짜 선택, 셀렉트박스, 검색창, 버튼 스타일 고정 */
+/* 셀렉트박스, 검색창, 버튼 스타일 고정 */
 .search-line input[type="date"] {
   width: 150px;
   height: 32px;
