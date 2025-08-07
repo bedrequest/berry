@@ -10,7 +10,8 @@
 <div layout:fragment="content">
   <div class="inner">
     <div class="myPage-content-group top-section">
-      <p class="top-section-headTit">회원정보</p>
+      <!-- 회원 정보 -->
+      <p class="myPage-headTit">회원정보</p>
       <div class="user-info">
         <div class="top-section-headBox">
           <button type="button" id="userInfoUpdateBtn" class="top-section-btn">정보 수정</button>
@@ -100,27 +101,110 @@
         <button class="user-info-btn" type="button" id="changePwModalBtn" th:if="${userDTO.provider == 'web'}">비밀번호 변경</button>
       </div>
 
-      <p class="top-section-headTit">알림</p>
-      <div class="user-notice-box">
-        <!-- 알림이 없는경우 -->
-        <th:block th:if="${#lists.size(alarmList) == 0}">
-          <p>현재 알림이 없습니다.</p>
-        </th:block>
-        <!-- 알림이 있는경우 -->
-        <th:block th:if="${#lists.size(alarmList) > 0}">
-          <ul class="user-notice-ul" id="myPageNoticeUl">
-            <!-- JS로 내용 넣어주기 -->
-          </ul>
-        </th:block>
+      <!-- select ul -->
+      <ul class="myPage-select-ul">
+        <li>
+          <button type="button" class="myPage-select-btn myPage-selected-btn" data-number="0">전체</button>
+        </li>
+        <li>
+          <button type="button" class="myPage-select-btn" data-number="1">알림</button>
+        </li>
+        <li>
+          <button type="button" class="myPage-select-btn" data-number="2">북마크</button>
+        </li>
+        <li>
+          <button type="button" class="myPage-select-btn" data-number="3">예약정보</button>
+        </li>
+        <li>
+          <button type="button" class="myPage-select-btn" data-number="4">예약내역</button>
+        </li>
+      </ul>
+
+
+      <!-- 알림 -->
+      <div id="myPageDisplay1">
+        <p class="myPage-headTit">알림</p>
+          <!-- 알림이 없는경우 -->
+          <th:block th:if="${#lists.size(alarmList) == 0}">
+            <div class="myPage-wrapper">
+              <p class="myPage-wrapper-tit">현재 알림이 없습니다.</p>
+            </div>
+          </th:block>
+          <!-- 알림이 있는경우 -->
+          <th:block th:if="${#lists.size(alarmList) > 0}">
+            <div class="user-notice-box">
+              <ul class="user-notice-ul" id="myPageNoticeUl">
+                <!-- JS로 내용 넣어주기 -->
+              </ul>
+            </div>
+          </th:block>
       </div>
     </div>
 
-    <div class="myPage-content-group mid-section">
-      <p class="mid-section-headTit">예약정보</p>
+    <div class="myPage-content-group mid-bookmark-section" id="myPageDisplay2">
+
+      <p class="myPage-headTit">북마크</p>
+      <!-- 북마크가 없을경우 -->
+      <div class="myPage-wrapper">
+        <p class="myPage-wrapper-tit">현재 북마크가 없습니다.</p>
+      </div>
+
+      <!-- 북마크가 있을경우 -->
+      <ul>
+        <li th:each="lodge : ${bookmarkLodgeList}">
+          <div class="bookmark" th:data-id="${lodge.lodgeId}">
+            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="#999999" class="bi bi-heart-fill" viewBox="0 0 16 16">
+              <path fill-rule="evenodd" d="M8 1.314C12.438-3.248 23.534 4.735 8 15-7.534 4.736 3.562-3.248 8 1.314"/>
+            </svg>
+          </div>
+          <a th:href="@{/lodge/detail/{id}(
+             id=${lodge.lodgeId},
+             checkIn=${lodgeOption.checkIn},
+             checkOut=${lodgeOption.checkOut},
+             adult=${lodgeOption.adult},
+             child=${lodgeOption.child})}">
+            <div class="lodgePreview">
+              <div class="lodgePreviewImg" th:style="'background-image: url(' + ${lodge.lodgeImages.get(0)} + ');'"></div>
+              <div class="lodgePreviewTexts">
+                <div class="lodgeInfo">
+                  <span class="lodgeType" th:text="${lodge.lodgeType}"></span>
+                  <span class="lodgeName" th:text="${lodge.lodgeName}"></span>
+                  <span class="lodgeAddr" th:text="${lodge.shortAddress}"></span>
+                  <div class="lodgeReviewStatusArea">별점 영역</div>
+                </div>
+                <div class="lodgePrice">
+                  <p class="rent time" th:if="${lodge.cheapestRent != null}">
+                    <span class="timeTitle">대실</span>
+                    <span class="timeValue">[[${lodge.cheapestRent.rentTime}]]</span>
+                  </p>
+                  <p class="rent price" th:if="${lodge.cheapestRent != null}">
+                    [[${lodge.cheapestRent.rentPrice}]]원~
+                  </p>
+                  <p class="stay time" th:if="${lodge.cheapestStay != null}">
+                    <span class="timeTitle">숙박</span>
+                    <span class="timeValue">[[${lodge.cheapestStay.stayTime}]]</span>
+                  </p>
+                  <p class="stay price" th:if="${lodge.cheapestStay != null}">
+                    [[${lodge.cheapestStay.stayPrice}]]원~
+                  </p>
+                </div>
+              </div>
+            </div>
+          </a>
+        </li>
+      </ul>
+
+    </div>
+
+    <div class="myPage-content-group mid-reservation-section" id="myPageDisplay3">
+      <!-- 예약 정보 -->
+      <p class="myPage-headTit">예약정보</p>
 
       <!-- 예약정보가 없을경우 -->
       <th:block th:if="${reservationPresentList == null or #lists.isEmpty(reservationPresentList)}">
-        <p>현재 예약정보가 없습니다.</p>
+        <div class="myPage-wrapper">
+          <p class="myPage-wrapper-tit">현재 예약정보가 없습니다.</p>
+        </div>
       </th:block>
 
       <!-- 예약정보가 있을경우 -->
@@ -128,7 +212,7 @@
       <th:block th:each="presentReservationDTO, iterStart : ${reservationPresentList}">
         <div style="margin-bottom:50px; height:400px;">
           <div class="reservation-left-box">
-            <img th:src="${presentReservationDTO.roomImageUrls[0]}" width="600" height="400" alt="대표 이미지" />
+            <img th:src="${presentReservationDTO.lodgeImageUrls[0]}" width="600" height="400" alt="대표 이미지" />
           </div>
 
           <div class="reservation-right-box">
@@ -177,11 +261,14 @@
 
     </div>
 
-    <div class="myPage-content-group bottom-section">
-      <p class="bottom-section-headTit">예약내역</p>
+    <div class="myPage-content-group bottom-section" id="myPageDisplay4">
+      <!-- 예약 내역 -->
+      <p class="myPage-headTit">예약내역</p>
 
       <th:block th:if="${#lists.size(reservationList) eq 0}">
-        <p style="padding-left:1rem;">예약정보가 없습니다.</p>
+        <div class="myPage-wrapper">
+          <p class="myPage-wrapper-tit">현재 예약내역이 없습니다.</p>
+        </div>
       </th:block>
 
       <table class="reservation-table" th:if="${#lists.size(reservationList) > 0}">
@@ -514,6 +601,7 @@
     const alarmList = [[${alarmList}]];
   </script>
   <script th:src="@{/js/user/userMyPage.js}"></script>
+  <script th:src="@{/js/user/userMyPageSelected.js}"></script>
 
   <!-- duorpeb, 결제 환불 -->
   <script th:src="@{/js/payment/paymentCancel.js}"></script>

@@ -2,6 +2,7 @@ package com.berry.project.controller;
 
 import com.berry.project.dto.alarm.AlarmDTO;
 import com.berry.project.dto.cupon.CuponDTO;
+import com.berry.project.dto.lodge.LodgeOptionDTO;
 import com.berry.project.dto.user.*;
 import com.berry.project.handler.user.CoolSMSHandler;
 import com.berry.project.handler.user.StarterMailHandler;
@@ -32,6 +33,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.UUID;
 
@@ -67,7 +69,22 @@ public class UserController {
 
   // -- 동기 --
   @GetMapping("/login")
-  public void login(@RequestParam(name="redirectTo", required = false) String redirectTo){}
+  public void login(
+      @RequestParam(name="redirectTo", required = false) String redirectTo,
+      HttpServletRequest request,
+      Model model
+  ){
+
+    String errorMessage = (String) request.getSession().getAttribute("errorMessage");
+    log.info("Login fail errorMessage >> {}", errorMessage);
+
+    model.addAttribute("errorMessage", errorMessage);
+
+    if(errorMessage != null && errorMessage != ""){
+      request.getSession().removeAttribute("errorMessage");
+    }
+
+  }
 
   @GetMapping("/signup")
   public String signup(Model model, @RequestParam(required = false) Boolean marketing){
@@ -79,7 +96,11 @@ public class UserController {
   }
 
   @GetMapping("/myPage")
-  public void myPage(Principal principal, Model model){
+  public void myPage(
+      Principal principal,
+      Model model,
+      LodgeOptionDTO lodgeOptionDTO
+  ){
     // web 은 email, oauth2 는 uid
     String username = principal.getName();
     log.info("myPage Principal username >>> {}", username);
@@ -107,12 +128,18 @@ public class UserController {
     
     // 보유 쿠폰 내역 가져오기
     List<CuponDTO> cuponList = paymentService.getCuponList(userDTO.getUserId());
+    
+    // 북마크 내역 가져오기
+    List<BookmarkLodgeDTO> bookmarkLodgeList = userService.getBookmarkLodgeList(userDTO.getUserId());
+    log.info("bookmarkLodgeList > {}", bookmarkLodgeList);
 
     model.addAttribute("reservationPresentList", reservationPresentList);
     model.addAttribute("userDTO", userDTO);
     model.addAttribute("reservationList", reservationList);
     model.addAttribute("alarmList", alarmList);
     model.addAttribute("cuponList", cuponList);
+    model.addAttribute("lodgeOption", lodgeOptionDTO);
+    model.addAttribute("bookmarkLodgeList", bookmarkLodgeList);
   }
 
   
@@ -386,7 +413,7 @@ public class UserController {
 
   // 북마크 등록
   @ResponseBody
-  @PostMapping("/user/toggleBookmark")
+  @PostMapping("/toggleBookmark")
   public String toggleBookmark(UserBookmarkDTO userBookmarkDTO){
     log.info("userBookmarkDTO >> {}",userBookmarkDTO);
     Long isOk = userService.toggleBookmark(userBookmarkDTO);
@@ -394,5 +421,16 @@ public class UserController {
     return isOk > 0 ? "1" : "0";
 
   }
+
+  // 알림 리스트
+  @ResponseBody
+  @GetMapping("/getAlarmList/{userId}")
+  public List<AlarmDTO> getAlarmList(@PathVariable Long userId){
+
+    List<AlarmDTO> alarmList = userService.getAlarmList(userId);
+
+    return alarmList != null ? alarmList : Collections.emptyList();
+  }
+
 
 }

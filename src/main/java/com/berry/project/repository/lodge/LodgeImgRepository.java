@@ -7,4 +7,6 @@ import java.util.List;
 
 public interface LodgeImgRepository extends JpaRepository<LodgeImg, Long> {
   List<LodgeImg> findByLodgeId(Long lodgeId);
+
+  List<LodgeImg> findByLodgeIdIn(List<Long> roomIds);
 }

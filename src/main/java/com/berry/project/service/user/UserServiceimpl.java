@@ -1,20 +1,22 @@
 package com.berry.project.service.user;
 
 import com.berry.project.dto.alarm.AlarmDTO;
+import com.berry.project.dto.lodge.RoomDTO;
+import com.berry.project.dto.user.BookmarkLodgeDTO;
 import com.berry.project.dto.user.MyPageReservationDTO;
 import com.berry.project.dto.user.UserBookmarkDTO;
 import com.berry.project.dto.user.UserDTO;
 import com.berry.project.entity.alarm.Alarm;
 import com.berry.project.entity.cupon.Cupon;
 import com.berry.project.entity.lodge.Lodge;
+import com.berry.project.entity.lodge.LodgeImg;
 import com.berry.project.entity.lodge.Room;
-import com.berry.project.entity.lodge.RoomImg;
 import com.berry.project.entity.payment.Reservation;
 import com.berry.project.entity.user.AuthUser;
 import com.berry.project.entity.user.User;
 import com.berry.project.entity.user.UserBookmark;
+import com.berry.project.repository.lodge.LodgeImgRepository;
 import com.berry.project.repository.lodge.LodgeRepository;
-import com.berry.project.repository.lodge.RoomImgRepository;
 import com.berry.project.repository.lodge.RoomRepository;
 import com.berry.project.repository.payment.CuponRepository;
 import com.berry.project.repository.payment.ReservationRepository;
@@ -45,7 +47,7 @@ public class UserServiceimpl implements UserService {
   private final CuponRepository cuponRepository;
   private final ReservationRepository reservationRepository;
   private final RoomRepository roomRepository;
-  private final RoomImgRepository roomImgRepository;
+  private final LodgeImgRepository lodgeImgRepository;
   private final LodgeRepository lodgeRepository;
 
   // 소셜로그인 중복검사
@@ -343,11 +345,11 @@ public class UserServiceimpl implements UserService {
     List<Room> roomList = roomRepository.findByRoomIdIn(roomIds);
     log.info("roomList >>>> {}", roomList);
 
-    // RoomImg 조회
-    List<RoomImg> roomImgList = roomImgRepository.findByRoomIdIn(roomIds);
-
     // lodgeId 추출
     List<Long> lodgeIds = roomList.stream().map(Room::getLodgeId).toList();
+
+    // LodgeImg 조회
+    List<LodgeImg> lodgeImgList = lodgeImgRepository.findByLodgeIdIn(lodgeIds);
 
     // Lodge 조회
     List<Lodge> lodgeList = lodgeRepository.findByLodgeIdIn(lodgeIds);
@@ -367,9 +369,9 @@ public class UserServiceimpl implements UserService {
                 .orElse(null)
             : null;
 
-        List<String> roomImageUrls = roomImgList.stream()
-            .filter(img -> img.getRoomId() == reservation.getRoomId())
-            .map(RoomImg::getRoomImgUrl)
+        List<String> lodgeImageUrls = lodgeImgList.stream()
+            .filter(img -> img.getLodgeId() == room.getLodgeId())
+            .map(LodgeImg::getLodgeImgUrl)
             .toList();
 
         // MyPageReservationDTO 생성 후 반환
@@ -395,12 +397,72 @@ public class UserServiceimpl implements UserService {
             .lodgeAddr(lodge != null ? lodge.getLodgeAddr() : null)
             .lodgeType(lodge != null ? lodge.getLodgeType() : null)
             .businessCall(lodge != null ? lodge.getBusinessCall() : null)
-            // roomImg
-            .roomImageUrls(roomImageUrls)
+            // lodgeImg
+            .lodgeImageUrls(lodgeImageUrls)
             .build();
           }).toList();
 
       return reservationDTOList;
+    }
+
+    return null;
+  }
+
+  @Transactional
+  @Override
+  public List<BookmarkLodgeDTO> getBookmarkLodgeList(Long userId) {
+
+    // 1. userId 를 통해 bookmarkId 조회
+    List<UserBookmark> userBookmarkList = userBookmarkRepository.findByUserIdOrderByRegDateDesc(userId);
+    
+    // 2. 조회한 bookmarkId 를 통해 lodgeId 조회
+    List<Long> lodgeIds = userBookmarkList.stream().map(UserBookmark::getLodgeId).toList();
+    
+    // 3. lodgeId 를 통해 lodge 조회
+    List<Lodge> lodgeList = lodgeRepository.findByLodgeIdIn(lodgeIds);
+    
+    // 4. lodgeImg 조회
+    List<LodgeImg> lodgeImgList = lodgeImgRepository.findByLodgeIdIn(lodgeIds);
+
+    // 5. room 조회
+    List<Room> roomList = roomRepository.findByLodgeIdIn(lodgeIds);
+
+    if(userBookmarkList != null) {
+      List<BookmarkLodgeDTO> bookmarkLodgeDTOList = userBookmarkList.stream().map(userBookmark -> {
+        Room room = roomList.stream()
+            .filter(r -> r.getLodgeId() == userBookmark.getLodgeId())
+            .findFirst()
+            .orElse(null);
+
+        Lodge lodge = (userBookmark.getLodgeId() != null) ?
+            lodgeList.stream()
+                .filter(l -> l.getLodgeId().equals(room.getLodgeId()))
+                .findFirst()
+                .orElse(null)
+            : null;
+
+        List<String> lodgeImageUrls = lodgeImgList.stream()
+            .filter(img -> img.getLodgeId() == room.getLodgeId())
+            .map(LodgeImg::getLodgeImgUrl)
+            .toList();
+
+        // roomDTO
+        List<RoomDTO> rooms = roomList.stream().map(this :: convertEntityToDto).toList();
+
+        // bookmarkLodgeDTO builder
+        return BookmarkLodgeDTO.builder()
+            .userId(userBookmark.getUserId())
+            .bookmarkId(userBookmark.getUserBookmarkId())
+            .lodgeId(lodge != null ? lodge.getLodgeId() : null)
+            .lodgeType(lodge != null ? lodge.getLodgeType() : null)
+            .lodgeAddr(lodge != null ? lodge.getLodgeAddr() : null)
+            .lodgeName(lodge != null ? lodge.getLodgeName() : null)
+            .lodgeImages(lodgeImageUrls)
+            .rooms(rooms)
+            .build();
+      }).toList();
+
+      return bookmarkLodgeDTOList;
     }
 
     return null;

@@ -1,11 +1,10 @@
 package com.berry.project.service.user;
 
 import com.berry.project.dto.alarm.AlarmDTO;
-import com.berry.project.dto.user.AuthUserDTO;
-import com.berry.project.dto.user.MyPageReservationDTO;
-import com.berry.project.dto.user.UserBookmarkDTO;
-import com.berry.project.dto.user.UserDTO;
+import com.berry.project.dto.lodge.RoomDTO;
+import com.berry.project.dto.user.*;
 import com.berry.project.entity.alarm.Alarm;
+import com.berry.project.entity.lodge.Room;
 import com.berry.project.entity.user.AuthUser;
 import com.berry.project.entity.user.User;
 import com.berry.project.entity.user.UserBookmark;
@@ -109,6 +108,24 @@ public interface UserService {
         .build();
   }
 
+  // lodgeService 에서 가져온 convert
+  default RoomDTO convertEntityToDto(Room room) {
+    return RoomDTO.builder()
+        .roomId(room.getRoomId())
+        .lodgeId(room.getLodgeId())
+        .roomName(room.getRoomName())
+        .info(room.getInfo())
+        .rentPrice(room.getRentPrice())
+        .rentTime(room.getRentTime())
+        .stayPrice(room.getStayPrice())
+        .stayOption(room.getStayOption())
+        .stayTime(room.getStayTime())
+        .stockCount(room.getStockCount())
+        .standardCount(room.getStandardCount())
+        .maxCount(room.getMaxCount())
+        .build();
+  }
+
 
   UserDTO isSocialDuplicateUser(String userUid);
 
@@ -143,4 +160,6 @@ public interface UserService {
   List<AlarmDTO> getAlarmList(Long userId);
 
   Long findWebUserEmail(String userEmail);
+
+  List<BookmarkLodgeDTO> getBookmarkLodgeList(Long userId);
 }

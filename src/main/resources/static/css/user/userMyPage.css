@@ -6,20 +6,87 @@
     --disabled: #b85766c7;
 }
 
-/* top-section */
-.top-section {
-  margin-top: 100px;
+/* headTit */
+.myPage-headTit {
+  font-size: 1.5rem;
+  font-weight: bold;
+  color: var(--primary-color);
+  margin-bottom: 1rem;
 }
+/* content-group */
+.myPage-content-group {
+  margin: 100px 0;
+}
+
+/* myPage-wrapper */
+.myPage-wrapper {
+  background: white;
+  height: 200px;
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+  margin-bottom: 100px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.myPage-wrapper-tit {
+  font-size: 24px;
+  font-weight: bold;
+  color: rgba(128, 128, 128, 0.4);
+  text-align: center;
+  
+}
+
+/* myPage-select-ul */
+.myPage-select-ul {
+  display: flex;
+  justify-content: left;
+  margin-bottom: 100px;
+  border-bottom: 1px solid rgba(128, 128, 128, 0.2);
+}
+
+.myPage-select-ul li:first-child {
+  margin-left: 0 !important;
+}
+.myPage-select-ul li {
+  margin-left: 50px;
+}
+
+.myPage-select-ul button {
+  background-color: transparent;
+  padding: 0 0 15px 0;
+  border: 2px solid transparent;
+  font-size: 22px;
+  font-weight: 500;
+  color: var(--font-dark);
+}
+
+.myPage-select-ul button:hover {
+  cursor: pointer;
+  border-bottom: 2px solid var(--primary-color);
+  box-sizing: border-box;
+  color: var(--primary-color);
+}
+
+/* 토글용 클래스 */
+.myPage-selected-btn {
+  border-bottom: 2px solid var(--primary-color) !important;
+  box-sizing: border-box !important;
+  color: var(--primary-color) !important;
+}
+
+/* display-none */
+.myPage-display-none {
+  display: none;
+}
+
+/* top-section */
 .top-section-headBox {
   display: flex;
   justify-content: right;
 }
-.top-section-headTit {
-    font-size: 1.5rem;
-    font-weight: bold;
-    color: var(--primary-color);
-    margin-bottom: 1rem;
-}
+
 .top-section-btn {
   background: var(--primary-color);
   color: white;
@@ -111,15 +178,7 @@
 }
 
 /* mid-section */
-.mid-section {
-  /* padding: 1.5rem; */
-}
-.mid-section-headTit{
-  font-size: 1.5rem;
-  font-weight: bold;
-  color: var(--primary-color);
-  margin-bottom: 1rem;
-}
+
 .reservation-left-box {
     float: left;
     width: 50%;
@@ -180,16 +239,6 @@
 }
 
 /* bottom-section */
-.bottom-section{
-    margin: 100px 0;
-    /* padding: 1.5rem; */
-}
-.bottom-section-headTit {
-    font-size: 1.5rem;
-    font-weight: bold;
-    color: var(--primary-color);
-    margin-bottom: 1rem;
-}
 
 .reservation-table {
     width: 100%;

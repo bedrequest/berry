@@ -60,6 +60,15 @@
   font-size: 24px;
 }
 
+.error-message {
+  font-size: 12px;
+  color: red;
+  position: absolute;
+  top: 142px;
+  left: 224px;
+
+}
+
 .user-input-group {
   margin-bottom: 20px;
 }

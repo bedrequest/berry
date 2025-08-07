@@ -23,6 +23,7 @@ public class MyPageReservationDTO {
   private String reservationType;
   private LocalDateTime reservationRegDate;
   // lodge
+  private Long lodgeId;
   private String lodgeName; // 숙박업소명
   private String lodgeAddr; // 숙박업소 주소
   private String lodgeType; // 호텔, 모텔, 리조트 등등..
@@ -32,8 +33,8 @@ public class MyPageReservationDTO {
   private String roomName; // 객실명
   private String rentTime; // 대실 이용시간
   private String stayTime; // 숙박 이용시간
-  // roomImg
-  private List<String> roomImageUrls;
+  // lodgeImg
+  private List<String> lodgeImageUrls;
 
   public String customOrderId(){
     String customOrderId = orderId.replace("order_", "");
