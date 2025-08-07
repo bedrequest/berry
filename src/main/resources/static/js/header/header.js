@@ -142,4 +142,21 @@ async function getAlarmList(userId) {
 
 }
 
+// top btn
+document.getElementById("topBtn").addEventListener("click", (e) => {
+
+    e.preventDefault();
+
+    const scrollSpeed = 40;
+    const interval = setInterval(() => {
+    const currentPos = window.scrollY;
+
+    if (currentPos <= 0) {
+      clearInterval(interval);
+    } else {
+      window.scrollTo(0, currentPos - scrollSpeed);
+    }
+  }, 3);
+  });
+
 

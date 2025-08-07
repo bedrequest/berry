@@ -283,6 +283,7 @@ document.getElementById("certifiedUserPhoneModalClose").addEventListener("click"
     closeModal();
     document.getElementById("certifiedUserPhone").style.display = "none"
 })
+
 // 인증번호 받기 버튼 클릭
 document.getElementById("getCertifiedPhoneBtn").addEventListener("click", () => {
 
@@ -291,11 +292,11 @@ document.getElementById("getCertifiedPhoneBtn").addEventListener("click", () => 
     getCertifiedNumber(myPageUserId).then(result => {
         console.log(result);
         if(result == "fail"){
-            alert("인증번호 받기가 실패했습니다.")
+            alert("인증번호 받기가 실패했습니다.");
         }else{
             certifiedNumber = result;
             document.getElementById("verifyBox").style.display = "block";
-            document.getElementById("certifiedUserPhoneSubBtn").style.display = "block";
+            document.getElementById("certifiedUserPhoneSubBtn").style.display = "inline-block";
         }
     })
 
@@ -342,6 +343,7 @@ document.getElementById("getCertifiedEmailBtn").addEventListener("click", () => 
             alert("인증코드 받기가 실패했습니다.")
         }else{
             certifiedCode = result;
+            document.getElementById("verifyEmailBox").style.display = "block";
         }
     })
 
@@ -650,9 +652,30 @@ document.getElementById("rcCloseModal").addEventListener("click", () => {
 
 })
 
+// 복사 버튼
+document.querySelectorAll(".print-number").forEach(btn => {
+    btn.addEventListener("click", () => {
+        const reservationNumber = document.querySelectorAll(".reservation-right-tit");
 
+        reservationNumber.forEach(data => {
+            if(Number(data.dataset.rid) ==  Number(btn.dataset.bid)){
+                let text = data.textContent.replace("복사", "").trim();
+                copyToClipboard(text);
+            }
+        })
+    })
+})
 
-
+// Clipboard API
+async function copyToClipboard(text) {
+    try {
+      await navigator.clipboard.writeText(text);
+      console.log('텍스트가 클립보드에 복사되었습니다.');
+    } catch (err) {
+      console.error('클립보드 복사 실패: ', err);
+    }
+  }
+  
 
 
 // 비동기

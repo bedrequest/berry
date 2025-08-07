@@ -20,6 +20,7 @@ import com.berry.project.repository.lodge.LodgeRepository;
 import com.berry.project.repository.lodge.RoomRepository;
 import com.berry.project.repository.payment.CuponRepository;
 import com.berry.project.repository.payment.ReservationRepository;
+import com.berry.project.repository.review.ReviewRepository;
 import com.berry.project.repository.user.AlarmRepository;
 import com.berry.project.repository.user.AuthUserRepository;
 import com.berry.project.repository.user.UserBookmarkRepository;
@@ -43,6 +44,7 @@ public class UserServiceimpl implements UserService {
   private final AuthUserRepository authUserRepository;
   private final UserBookmarkRepository userBookmarkRepository;
   private final AlarmRepository alarmRepository;
+  private final ReviewRepository reviewRepository;
   // YSL, 쿠폰 발급을 위한 초기화
   private final CuponRepository cuponRepository;
   private final ReservationRepository reservationRepository;
@@ -414,18 +416,23 @@ public class UserServiceimpl implements UserService {
 
     // 1. userId 를 통해 bookmarkId 조회
     List<UserBookmark> userBookmarkList = userBookmarkRepository.findByUserIdOrderByRegDateDesc(userId);
-    
+    log.info("impl userBookmarkList >> {}", userBookmarkList);
+
     // 2. 조회한 bookmarkId 를 통해 lodgeId 조회
     List<Long> lodgeIds = userBookmarkList.stream().map(UserBookmark::getLodgeId).toList();
-    
+    log.info("impl lodgeIds >> {}", lodgeIds);
+
     // 3. lodgeId 를 통해 lodge 조회
     List<Lodge> lodgeList = lodgeRepository.findByLodgeIdIn(lodgeIds);
-    
+    log.info("impl lodgeList >> {}", lodgeList);
+
     // 4. lodgeImg 조회
     List<LodgeImg> lodgeImgList = lodgeImgRepository.findByLodgeIdIn(lodgeIds);
+    log.info("impl lodgeImgList >> {}", lodgeImgList);
 
     // 5. room 조회
     List<Room> roomList = roomRepository.findByLodgeIdIn(lodgeIds);
+    log.info("impl roomList >> {}", roomList);
 
     if(userBookmarkList != null) {
       List<BookmarkLodgeDTO> bookmarkLodgeDTOList = userBookmarkList.stream().map(userBookmark -> {
@@ -447,7 +454,11 @@ public class UserServiceimpl implements UserService {
             .toList();
 
         // roomDTO
-        List<RoomDTO> rooms = roomList.stream().map(this :: convertEntityToDto).toList();
+        List<RoomDTO> rooms = roomList.stream()
+            .filter(room1 -> room1.getLodgeId() == lodge.getLodgeId())
+            .map(this :: convertEntityToDto).toList();
+        log.info("impl rooms >> {}", rooms);
+
 
         // bookmarkLodgeDTO builder
         return BookmarkLodgeDTO.builder()
@@ -459,6 +470,8 @@ public class UserServiceimpl implements UserService {
             .lodgeName(lodge != null ? lodge.getLodgeName() : null)
             .lodgeImages(lodgeImageUrls)
             .rooms(rooms)
+            .averageReviewScore(reviewRepository.findAverageRatingByLodgeId(lodge.getLodgeId()).orElse(0.0))
+            .reviewCount(reviewRepository.countByLodgeId(lodge.getLodgeId()))
             .build();
       }).toList();
 
@@ -471,8 +484,10 @@ public class UserServiceimpl implements UserService {
   @Transactional
   @Override
   public Long toggleBookmark(UserBookmarkDTO userBookmarkDTO) {
+    log.info(">> User Bookmark Input > {}", userBookmarkDTO);
 
-    Optional<UserBookmark> optional = userBookmarkRepository.findByUserId(userBookmarkDTO.getUserId());
+    Optional<UserBookmark> optional = userBookmarkRepository.findByUserIdAndLodgeId(userBookmarkDTO.getUserId(), userBookmarkDTO.getLodgeId());
+    log.info(">> search result > {}", optional);
 
     if(optional.isPresent()){
       // 있다면 지우고 0 return
@@ -522,5 +537,7 @@ public class UserServiceimpl implements UserService {
     }
     return null;
   }
+
+
 
 }

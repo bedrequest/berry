@@ -414,7 +414,7 @@ public class UserController {
   // 북마크 등록
   @ResponseBody
   @PostMapping("/toggleBookmark")
-  public String toggleBookmark(UserBookmarkDTO userBookmarkDTO){
+  public String toggleBookmark(@RequestBody UserBookmarkDTO userBookmarkDTO){
     log.info("userBookmarkDTO >> {}",userBookmarkDTO);
     Long isOk = userService.toggleBookmark(userBookmarkDTO);
 
@@ -431,6 +431,32 @@ public class UserController {
 
     return alarmList != null ? alarmList : Collections.emptyList();
   }
+  
+  // 회원가입 이메일 인증
+  @ResponseBody
+  @GetMapping("/getSignInCertifiedCode/{email}")
+  public String getSignInCertifiedCode(@PathVariable("email") String email){
 
+
+    String secureCode = starterMailHandler.generateRandomMixStr(10);
+    starterMailHandler.sendCertifiedCodeHtml(email, secureCode);
+
+    return secureCode != null ? secureCode : "fail";
+  }
+  
+  // 회원가입 모바일 인증
+  @GetMapping("/getSignInCertifiedNumber/{phoneNumber}")
+  @ResponseBody
+  public String getSignInCertifiedNumber(@PathVariable("phoneNumber") String phoneNumber){
+
+    CoolSMSHandler coolSMSHandler = new CoolSMSHandler();
+
+    // Math.random 보다 보안이 더 좋은 SecureRandom을 사용해보자.
+    String secureNumber = coolSMSHandler.createSecureNumber(6);
+
+    coolSMSHandler.sendCertifiedNumber(phoneNumber, secureNumber, coolSmsApiKey, coolSmsSecretKey, fromNumber);
+
+    return secureNumber != null ? secureNumber : "fail";
+  }
 
 }

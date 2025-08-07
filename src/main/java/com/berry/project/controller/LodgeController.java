@@ -5,6 +5,8 @@ import com.berry.project.data.LodgeData;
 import com.berry.project.dto.lodge.ListOptionDTO;
 import com.berry.project.dto.lodge.LodgeDTO;
 import com.berry.project.dto.lodge.LodgeOptionDTO;
+import com.berry.project.dto.user.BookmarkLodgeDTO;
+import com.berry.project.dto.user.UserDTO;
 import com.berry.project.service.lodge.LodgeService;
 import com.berry.project.service.review.ReviewService;
 import com.berry.project.service.user.UserService;
@@ -20,6 +22,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import java.security.Principal;
+import java.util.List;
 
 @RequestMapping("/lodge")
 @RequiredArgsConstructor
@@ -61,7 +64,16 @@ public class LodgeController {
     model.addAttribute("favorites", lodgeData.getFavorites());
     model.addAttribute("sortOptions", lodgeData.getLodgeSortOptions());
     model.addAttribute("priceTable", lodgeData.getPriceTable());
-    model.addAttribute("principal", principal);
+
+    if(principal != null) {
+      UserDTO userDTO = userService.getUserInfo(principal.getName());
+      model.addAttribute("userDTO", userDTO);
+
+      // 북마크 내역 가져오기
+      List<BookmarkLodgeDTO> bookmarkLodgeList = userService.getBookmarkLodgeList(userDTO.getUserId());
+      model.addAttribute("bookmarks", bookmarkLodgeList
+          .stream().map(BookmarkLodgeDTO::getLodgeId).toList());
+    }
 
     return "/lodge/list";
   }
@@ -80,7 +92,11 @@ public class LodgeController {
 
     model.addAttribute("lodgeOption", lodgeOptionDTO);
     model.addAttribute("lodgeDTO", lodgeDTO);
-    if (principal != null) model.addAttribute("userDTO", userService.getUserInfo(principal.getName()));
+    if (principal != null) {
+      UserDTO userDTO = userService.getUserInfo(principal.getName());
+      log.info(">> user : {}", userDTO);
+      model.addAttribute("userDTO", userDTO);
+    }
     // 고정값들
     model.addAttribute("naverMapId", naverMapApi.getNaverMapApiKey());
     model.addAttribute("facilityIconMap", lodgeData.getFacilityIconMap());

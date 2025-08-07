@@ -340,7 +340,6 @@
       });
     </script>
 
-    <script type="module" th:src="@{/js/lodge/detail.js}"></script>
     <script type="module" th:inline="javascript">
       import(/*[[@{/js/lodge/detail.js}]]*/).then(module => {
         module.default(/*[[${lodgeDTO}]]*/);

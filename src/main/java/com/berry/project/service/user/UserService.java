@@ -29,14 +29,14 @@ public interface UserService {
         .isEmailCertified(userDTO.isEmailCertified())
         .isMobileCertified(userDTO.isMobileCertified())
         .userTermOption(userDTO.isUserTermOption())
-        .userGrade("silver")
+        .userGrade("SILVER")
         .build();
   }
 
   default AuthUser convertUserDTOToAuthEntity(UserDTO userDTO) {
     return AuthUser.builder()
         .userId(userDTO.getUserId())
-        .authRole("USER_ROLE")
+        .authRole("ROLE_USER")
         .build();
   }
 

@@ -1,9 +1,11 @@
 :root {
     --primary-color: #e74b60;
+    --primary-hover: #eb6476;
     --gray-light: #f5f5f5;
     --gray-dark: #666;
     --font-dark: #333;
     --disabled: #b85766c7;
+
 }
 
 /* headTit */
@@ -16,6 +18,12 @@
 /* content-group */
 .myPage-content-group {
   margin: 100px 0;
+}
+
+/* gray-tit */
+.gray-tit {
+  font-size: 14px !important;
+  color: rgba(128, 128, 128, 0.6) !important;
 }
 
 /* myPage-wrapper */
@@ -105,6 +113,10 @@
   margin-bottom: 100px;
 }
 
+#userInfoUpdateBtn:hover {
+  background-color: var(--primary-hover);
+}
+
 .user-info-ul {
   list-style: none;
   padding: 0;
@@ -131,6 +143,51 @@
   background-color: var(--gray-light);
 }
 
+/* 유저 등급 */
+.user-info-right {
+  position: relative;
+}
+
+.user-grade-badge img{
+  height: 30px;
+  width: 30px;
+  position: absolute;
+  top: -7px;
+  left: -30px;
+}
+
+.silver-tit, .gold-tit, .diamond-tit {
+  padding: 3px 0;
+}
+
+/* 등급별 반짝이는 효과 */
+
+/* 반짝이는 오버레이 */
+.user-grade-badge::after {
+  content: "";
+  position: absolute;
+  left: -30px;
+  width: 50%;
+  height: 100%;
+  background: linear-gradient(
+    120deg,
+    rgba(255, 255, 255, 0) 0%,
+    rgba(255, 255, 255, 0.6) 50%,
+    rgba(255, 255, 255, 0) 100%
+  );
+  transform: skewX(-20deg);
+  animation: shine 4s infinite;
+  z-index: 2;
+}
+
+@keyframes shine {
+  0% {
+    left: -75%;
+  }
+  100% {
+    left: 125%;
+  }
+}
 
 .user-info .user-info-btn {
   background: var(--primary-color);
@@ -140,6 +197,10 @@
   border-radius: 6px;
   cursor: pointer;
   margin-right: 0.5rem;
+}
+
+.user-info-btn:hover {
+  background-color: var(--primary-hover) !important;
 }
 /* 2. 알림 */
 .user-notice-box ul {
@@ -177,6 +238,11 @@
 
 }
 
+/* 3. 북마크*/
+.myPage-bookmarkList li {
+  position: relative;
+}
+
 /* mid-section */
 
 .reservation-left-box {
@@ -191,8 +257,22 @@
     font-weight: bold;
 }
 
-.reservation-left-box img {
+.reservation-left-box .reservation-img {
   border-radius: 12px;
+  width: 600px;
+  height: 400px;
+  background-size: cover;
+  position: relative;
+}
+
+.reservation-img:hover::before {
+  content: "";
+  position: absolute;
+  top: 0; left: 0;
+  width: 100%; height: 100%;
+
+  background-color: rgba(0, 0, 0, 0.2);
+  z-index: 1;
 }
 
 .reservation-right-box {
@@ -225,7 +305,7 @@
   width: 70%;
 }
 
-.reservation-right-box button {
+.reservation-right-box .reservationInfoBtn {
     background: var(--primary-color);
     color: white;
     border: none;
@@ -400,7 +480,7 @@
     cursor: pointer;
     font-size: 14px;
   }
-  
+
   #wmMembership {
     background-color: var(--primary-color);
     color: white;
@@ -517,3 +597,23 @@
   padding-bottom: 5px;
   color: var(--font-dark);
 }
+
+.print-number {
+  border: transparent;
+  background-color: transparent;
+  text-decoration-line: underline;
+}
+
+.print-number:hover {
+  color: rgb(73, 73, 73) !important;
+}
+
+.print-number:active {
+}
+
+.print-number svg {
+  color: gray !important; 
+  width: 12px;
+  height: 12px;
+}
+
