@@ -19,19 +19,24 @@
         <h2>
           로그인
         </h2>
-        <form th:action="@{/user/login}" method="post">
+        <form th:action="@{/user/login}" method="post" class="login-form">
           <!-- duorpeb, redirect 를 위한 hidden Input -->
           <th:block th:if="${param.redirectTo ne null}">
             <input type="hidden" name="redirectTo" th:value="${param.redirectTo}" />
           </th:block>
 
           <div class="user-input-group">
-            <input type="text" name="userEmail" placeholder="이메일(example@domain.com)" required>
+            <input type="text" name="userEmail" id="userInputEmail" placeholder="이메일(example@domain.com)" required>
           </div>
+          <p class="error-message">[[${errorMessage}]]</p>
           <div class="user-input-group">
-            <input type="password" name="password" placeholder="비밀번호" required>
+            <input type="password" name="password" id="userInputPassword" placeholder="비밀번호" required>
           </div>
-          <button type="submit" class="login-btn">로그인</button>
+          <div class="find-password-box">
+            <div class="find-password-box-left"></div>
+            <div class="find-password-box-right"><button type="button" id="resetPasswordBtn">비밀번호 재설정</button></div>
+          </div>
+          <button type="submit" class="login-btn" disabled>로그인</button>
         </form>
         <div class="signup-link">
           <p>아직 회원이 아니신가요?
@@ -60,6 +65,7 @@
           </button>
         </a>
       </div>
+
     </div>
 
     <!-- 개인정보 활용동의 및 마케팅 정보 수신동의 모달창-->
@@ -92,6 +98,39 @@
       </div>
     </div>
     <!--#e74b60, #e73c8, #a9439a -->
+  </div>
+
+  <!-- 비밀번호 재설정 modal -->
+  <div class="modal" id="resetPasswordModal">
+    <div class="modal-body">
+      <div class="logo-position-div">
+        <img class="modal-logo" src="/image/Berry_logo.png" alt="로고">
+      </div>
+      <h2 class="modal-main-tit">비밀번호 재발급</h2>
+
+      <div class="modal-content">
+        <p class="reset-tit-1">가입시 사용한 이메일을 입력해주세요.</p>
+        <p class="reset-tit-2">이메일로 전송된 인증번호를 입력해주세요.</p>
+        <div class="modal-input-group flex-sb" id="resetFirstCertified">
+          <input type="text" id="resetModalInputEmail" placeholder="example@test.com">
+          <button type="button" class="get-certified-btn" id="emailCheckBtn" disabled>확인</button>
+        </div>
+
+        <div class="modal-input-group" id="verifyEmailBox">
+          <input type="text" id="resetCertifiedCodeInput" placeholder="인증코드를 입력해주세요">
+        </div>
+
+        <div class="modal-actions">
+          <div class="modal-action-left">
+          </div>
+          <div class="modal-action-right">
+            <button type="button" class="modal-sub-btn" id="resetPasswordCertifiedUserEmailSubBtn">인증</button>
+            <button type="button" class="modal-close-btn" id="resetPasswordModalClose">닫기</button>
+          </div>
+        </div>
+        </form>
+      </div>
+    </div>
   </div>
 
   <!-- duorpeb, redirect 를 위한 div -->

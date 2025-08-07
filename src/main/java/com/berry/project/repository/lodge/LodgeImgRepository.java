@@ -12,4 +12,6 @@ public interface LodgeImgRepository extends JpaRepository<LodgeImg, Long> {
 
   @Query("SELECT i.lodgeImgUrl FROM LodgeImg i WHERE i.lodgeId = :lodgeId ORDER BY i.lodgeImgId limit 1")
   String findFirstLodgeImage(@Param("lodgeId") long lodgeId);
+
+  List<LodgeImg> findByLodgeIdIn(List<Long> roomIds);
 }

@@ -1,8 +1,9 @@
 console.log("userMyPage in");
-console.log(myPageUserId);
-console.log(checkedPassword);
+console.log("userId > ", myPageUserId);
+console.log("checkedPassword", checkedPassword);
 console.log(userTagMask);
-console.log(reservationPresentList);
+console.log("reservationPresentList > ", reservationPresentList);
+console.log("alarmList > ", alarmList);
 
 if(checkedPassword == "fail"){
     alert("현재 비밀번호가 일치하지 않습니다.");
@@ -396,15 +397,104 @@ pwdInputs.forEach(input => {
 // 유효성 검사 비밀번호
 function isValidUserPassword(inputs) {
     // 비밀번호 유효성 (영문 대소문자, 숫자, 특수문자 포함 8자리 이상)
-    const regexPassword = /^(?=.*[a-z])(?=.*[!@#$%^*+=-])(?=.*[0-9]).{8,}$/
+    const regexPassword = /^(?=.*[a-z])(?=.*[!@#$%^*=])(?=.*[0-9]).{8,}$/
     
     return regexPassword.test(inputs[1].value);
   
   }
 
-//세부예약 내용확인 Modal
+// 알림 리스트 출력
+if(alarmList.length > 0){
+    const myPageNoticeUl = document.getElementById("myPageNoticeUl");
 
-//세부예약정보 모달창 띄우기
+
+    // code 에 따른 상태 구분
+    /*
+    <code>
+    "s_reservation" (예약 성공문구)
+    "c_reservation" (예약 취소문구)
+
+    "s_signup" (회원가입 환영문구)
+
+    "newSign_coupon" (신규 회원가입 쿠폰)
+
+    "l_review" (리뷰 좋아요)
+    "r_review" (리뷰 신고누적)
+
+    "s_qna" (qna 답변 완료)
+    */
+    let str = "";
+    let totalReviewLike = 0;
+    for(let alarm of alarmList){
+        const formatted = alarm.regDate.substring(0, 19).replace("T", " ");
+        switch(alarm.code){
+            case "s_reservation" :
+
+                str += `<li>
+                <span>숙소 예약에 성공했습니다.</span>
+                <span>[결제일자 : ${formatted}]</span>
+                </li>`;
+
+                break;
+            case "c_reservation" :
+                
+
+                str += `<li>
+                <span>숙소 예약 취소가 되었습니다.</span>
+                <span>[취소일자 : ${formatted}]</span>
+                </li>`;
+
+                break;
+            case "s_signup" :
+
+                str += `<li>
+                <span>회원가입을 환영합니다.</span>
+                <span>[가입일자 : ${formatted}]</span>
+                </li>`;
+
+                break;
+            case "newSign_coupon" :
+                str += `<li>
+                <span>신규 회원 가입 쿠폰이 발급되었습니다.</span>
+                <span>[발급일자 : ${formatted}]</span>
+                </li>`;
+
+                break;
+            case "l_review" :
+                totalReviewLike ++;
+
+                break;
+            case "r_review" :
+
+                str += `<li>
+                <span>작성한 리뷰의 신고 누적으로 인해 삭제되었습니다.</span>
+                <span>[삭제일자 : ${formatted}]</span>
+                </li>`;
+                
+                break;
+            case "s_qna" :
+
+                str += `<li>
+                <span>고객문의에 남기신 글에 답변 되었습니다.</span>
+                <span>[답변일자 : ${formatted}]</span>
+                </li>`;
+                break;
+                
+        }
+
+    }
+    if(totalReviewLike > 0){
+        str += `<li>
+        <span>작성한 리뷰를 ${totalReviewLike}명이 좋아합니다.</span>
+        </li>`;
+    }
+
+    myPageNoticeUl.innerHTML = str;
+}
+
+// 세부예약 내용확인 Modal
+
+// 세부예약정보 모달창 띄우기
 
 
 document.querySelectorAll(".reservationInfoBtn").forEach(btn => {
