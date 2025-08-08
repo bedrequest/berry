@@ -116,7 +116,7 @@ body {
   align-items: center;
   margin-top: 0;
   margin-bottom: 20px;
-  gap: 12px;
+  gap: 6px;
 }
 
 /* 작성자 + 작성일 */
@@ -136,9 +136,10 @@ body {
   box-sizing: border-box;
 }
 
-/* 작성자 이메일 칸 너비 */
 .input-box.email {
-  width: 200px;
+  width: auto;             /* 고정 너비 제거 */
+  min-width: 50px;         /* 너무 작아지지 않도록 최소 너비 */
+  max-width: 400px;        /* 최대 너비 제한 */
   font-size: 12px;
   padding: 0 8px;
   height: 36px;
@@ -149,14 +150,15 @@ body {
   box-shadow: none;
   border-radius: 0;
   color: #333;
-  width: auto; /* 동적 너비 가능 */
+  box-sizing: content-box; /* 패딩과 너비 분리 */
 }
+
 
 /* 작성일 칸 너비 */
 .input-box.date {
   font-size: 12px;
   width: 155px;
-  text-align: center;
+  text-align: left;
 }
 
 .input-box.email,

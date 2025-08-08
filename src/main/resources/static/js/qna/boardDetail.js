@@ -391,3 +391,29 @@ document.addEventListener('DOMContentLoaded', () => {
     categoryInput.value = `[ ${inner} ]`;
   });
 });
+
+
+window.addEventListener('DOMContentLoaded', () => {
+  const emailInput = document.querySelector('.input-box.email');
+  if (!emailInput) return;
+
+  function resizeEmailInput() {
+    const span = document.createElement('span');
+    span.style.visibility = 'hidden';
+    span.style.position = 'absolute';
+    span.style.whiteSpace = 'pre';
+    span.style.font = window.getComputedStyle(emailInput).font;
+    span.textContent = emailInput.value || emailInput.placeholder || '';
+    document.body.appendChild(span);
+    const width = span.offsetWidth + 20; // 여유 공간 포함
+    document.body.removeChild(span);
+
+    // 최소, 최대 너비 제한 적용
+    emailInput.style.width = Math.min(Math.max(width, 50), 400) + 'px';
+  }
+
+  resizeEmailInput();
+
+  // 값이 바뀔 때마다 크기 조절
+  emailInput.addEventListener('input', resizeEmailInput);
+});
