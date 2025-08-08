@@ -1,7 +1,7 @@
-
 <!DOCTYPE html>
 <html lang="en"
       xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
       xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
       layout:decorate="~{layout/layout}">
 
@@ -20,9 +20,19 @@
             <!-- 카테고리 + 제목 -->
             <div class="form-group">
                 <div class="category-title-wrapper">
-                    <input type="text" id="c" name="category" class="input-box short"
+                    <!-- 기본엔 input 보여주고 readonly -->
+                    <input type="text" id="c" class="input-box short"
                            th:value="${customeriqboardfileDTO.boardDTO.category}"
                            readonly placeholder="카테고리">
+
+                    <!-- 수정 모드에서 보여줄 select (초기엔 숨김) -->
+                    <select id="categorySelect" name="category" class="input-box short" style="display: none;">
+                        <option value="결제">결제</option>
+                        <option value="환불">환불</option>
+                        <option value="시설">시설</option>
+                        <option value="서비스">서비스</option>
+                        <option value="기타">기타</option>
+                    </select>
 
                     <input type="text" class="input-box title" name="title"
                            th:value="${customeriqboardfileDTO.boardDTO.title}"
@@ -30,7 +40,6 @@
                 </div>
                 <div class="category-title-underline"></div>
             </div>
-
 
             <!-- 작성자 + 작성일 -->
             <div class="form-group-inline">
@@ -47,18 +56,20 @@
             </div>
 
 
+
+
             <!-- 본문 -->
             <div class="form-group">
   <textarea class="form-control" name="content" id="con" cols="30" rows="10" readonly
             maxlength="1000">[[${customeriqboardfileDTO.boardDTO.content}]]</textarea>
             </div>
 
-            <div class="char-count-container" style="text-align: right; margin-top: -24px; margin-bottom: 24px;">
+            <div class="char-count-container">
                 <div id="charCount" class="char-count" style="display: none;">0 / 1000</div>
             </div>
 
             <!-- 댓글 -->
-            <div class="comment-area">
+            <div class="comment-area" sec:authorize="hasRole('ROLE_ADMIN')">
                 <textarea class="form-control comment-input" name="comment" id="comment" rows="1" maxlength="500" placeholder="댓글을 입력하세요" readonly></textarea>
             </div>
 
@@ -107,14 +118,14 @@
                 </div>
 
                 <!-- 답변완료 버튼 (처음엔 숨김) -->
-                <button type="button" id="completeBtn" class="btn btn-success" style="display: none;">답변완료</button>
+                <button type="button" id="completeBtn" class="btn btn-success" style="display: none;" sec:authorize="hasRole('ROLE_ADMIN')">답변완료</button>
 
                 <!-- Submit 버튼 (처음엔 숨김) -->
                 <button type="submit" id="submitBtn" class="btn btn-warning" style="display: none;">Submit</button>
 
 
                 <!-- Cancle 버튼 (처음엔 숨김) -->
-                <button type="button" id="CancelBtn" class="btn btn-warning" style="display: none;">취소</button>
+                <button type="button" id="CancelBtn" class="btn btn-warning2" style="display: none;">취소</button>
 
                 <!-- List 버튼은 항상 보임 -->
                 <button type="button" id="listBtn" class="btn btn-primary">List</button>
@@ -141,7 +152,7 @@
                 document.body.appendChild(span);
 
                 const newWidth = span.offsetWidth + 16; // + padding 여유
-                input.style.width = `${newWidth}px`;
+                input.style.width = ${newWidth}px;
 
                 document.body.removeChild(span);
               }

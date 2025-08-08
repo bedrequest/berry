@@ -41,7 +41,6 @@
                 <div class="category-title-underline"></div>
             </div>
 
-
             <!-- 작성자 + 작성일 -->
             <div class="form-group-inline">
                 <div class="inline-group">
@@ -57,13 +56,15 @@
             </div>
 
 
+
+
             <!-- 본문 -->
             <div class="form-group">
   <textarea class="form-control" name="content" id="con" cols="30" rows="10" readonly
             maxlength="1000">[[${customeriqboardfileDTO.boardDTO.content}]]</textarea>
             </div>
 
-            <div class="char-count-container" style="text-align: right; margin-top: -24px; margin-bottom: 24px;">
+            <div class="char-count-container">
                 <div id="charCount" class="char-count" style="display: none;">0 / 1000</div>
             </div>
 
@@ -132,7 +133,7 @@
 
         </form>
         <body data-answered="[[${customeriqboardfileDTO.boardDTO.answered}]]">
-            <script th:src="@{/js/qna/boardDetail.js}"></script>
+        <script th:src="@{/js/qna/boardDetail.js}"></script>
         </body>
 
 
@@ -151,7 +152,7 @@
                 document.body.appendChild(span);
 
                 const newWidth = span.offsetWidth + 16; // + padding 여유
-                input.style.width = `${newWidth}px`;
+                input.style.width = ${newWidth}px;
 
                 document.body.removeChild(span);
               }

@@ -202,6 +202,11 @@ p {
   text-decoration: underline;
 }
 
+.table tbody tr:nth-child(-n+5) {
+  background-color: #e6e6e6;
+}
+
+
 /* 배지 스타일 */
 .badge {
   font-size: 12px;
@@ -235,6 +240,12 @@ p {
 .date-picker-wrapper {
   position: relative;
   display: inline-block;
+
+   align-items: center;
+}
+
+.date-picker-wrapper svg {
+  pointer-events: none; /* 클릭을 input으로 전달 */
 }
 
 .date-picker {
