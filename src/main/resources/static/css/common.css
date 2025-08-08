@@ -1,18 +1,18 @@
 /* Layout */
 .wrapper {
-  width: 1573px;
-  max-width: 100%;
+  width: 100%;
+  max-width: 1573px;
   margin: 0 auto;
 }
 .inner {
-  width: 1200px;
+  width: 100%;
+  max-width: 1200px;
   margin: 0 auto;
 }
-
 /* Header Styles - Vertical center alignment */
 .site-header {
   width: 100%;
-  height: 80px; /* 전체 헤더 높이 */
+  height: 61px; /* 전체 헤더 높이 */
   background-color: #fff;
   box-shadow: 0 2px 4px rgba(0,0,0,0.1);
   position: sticky;
@@ -40,8 +40,21 @@
 .header-actions {
   display: flex;
   align-items: center;
+  gap: 2px;
 }
 
+.header-actions > a {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0 12px;     /* 좌우 여백 */
+  text-decoration: none;
+  line-height: 1;
+}
+ /* 아이콘 버튼만 site-header 높이에 꽉 차도록 */
+.header-actions > a.icon-btn {
+  height: 100%;
+}
 /* 아이콘 버튼 */
 .icon-btn {
   display: flex;
@@ -49,28 +62,30 @@
   justify-content: center;
   height: 100%;
   padding: 0 12px;
+  background: none;
 }
 
+
 /* 로그인/회원가입 버튼 */
-.btn-login,
-.btn-signup {
+.header-actions > a.btn-login,
+.header-actions > a.btn-logout  {
   display: inline-flex;
   align-items: center;
   justify-content: center;
   height: auto;      /* 텍스트와 패딩 기준 높이 */
-  padding: 8px 16px;
-  border-radius: 8px;
+  padding: 10px 16px;
+  border-radius: 10px;
   text-decoration: none;
   line-height: 1;
+  font-weight: bold;
 }
 .btn-login {
-  background-color: #E74B60;
-  color: #fff;
-}
-.btn-signup {
   background-color: #FFE4EC;
   color: #E74B60;
-  margin-left: 16px;
+}
+.btn-logout {
+  background-color: #E74B60;
+  color: #fff;
 }
 
 /* 로고 이미지 크기 */

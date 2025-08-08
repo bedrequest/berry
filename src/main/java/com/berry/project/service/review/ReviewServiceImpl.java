@@ -298,6 +298,7 @@ public class ReviewServiceImpl implements ReviewService {
         Long userId = userDTO.getUserId();
 
         boolean already = reviewReportRepository.existsByReviewIdAndUserId(reviewId, userId);
+
         if (already) {
             reviewReportRepository.deleteByReviewIdAndUserId(reviewId, userId);
         } else {
@@ -306,7 +307,13 @@ public class ReviewServiceImpl implements ReviewService {
                     .userId(userId)
                     .build());
         }
+
         long count = reviewReportRepository.countByReviewId(reviewId);
+
+        Review review = reviewRepository.findById(reviewId)
+                .orElseThrow(() -> new IllegalArgumentException("리뷰가 존재하지 않습니다."));
+        review.setReportedCount((int) count);
+
         return Map.of("reportCount", count, "reportedByMe", !already);
     }
 }
