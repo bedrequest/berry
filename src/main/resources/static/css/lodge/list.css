@@ -329,19 +329,7 @@ button:disabled {
   top: 5px;
   right: 30px;
 
-  width: 18px;
-  height: 18px;
-  padding: 6px;
-
-  display: flex;
-  justify-content: center;
-  align-items: center;
-
-  background-color: #efefef;
-  border-radius: 18px;
-
   z-index: 2;
-  cursor: pointer;
 }
 .bookmark>svg {
   margin-top: 2px;

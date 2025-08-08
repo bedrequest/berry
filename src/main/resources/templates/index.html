@@ -11,6 +11,10 @@
 </section>
 <div layout:fragment="content">
   <div th:insert="~{fragments/search :: search}"></div>
+
+  <!--/*이벤트(이미지)*/-->
+  <div id="eventSection"></div>
+
   <!--/*최근 리뷰(10개)*/-->
   <!--/*형식은 /fragments/review.html에서 가져옴*/-->
   <div id="reviewPickUpSection" th:if="${recentReviews != null}" class="section">
@@ -64,19 +68,11 @@
     </div>
   </div>
 
-  <!-- 검색 -->
-  <!-- input 하나 받아서 투어 API (관광정보) 랑 네이버 검색 API 로 던져서 -->
-  <!-- div1, 투어 API 정보 -->
-  <!-- div2, 네이버 검색 API 정보 -->
-  <div id="outerSearchSection" class="section"></div>
-
-  <!--/*이벤트(이미지)*/-->
-  <div id="eventSection"></div>
-
   <!--/* 비회원이면 정석적인 정렬 (최신순, 추천순, 평점순) 회원이면 (기존에 선택한 태그 키워드가 높은 숙소 보여주기) */-->
-  <div id="suggestByTagSection" sec:authorize="isAuthenticated()">
+  <div id="suggestByTagSection">
     <div class="areaTitle">
-      <span>취향에 맞춘 추천 숙소</span>
+      <span sec:authorize="isAuthenticated()">취향에 맞춘 추천 숙소</span>
+      <span sec:authorize="isAnonymous()">인기 추천 숙소</span>
     </div>
     <div class="tag section" th:each="entry:${tagMap}" th:if="${entry.value.list.size() > 0}">
       <div class="swiper area">
@@ -133,6 +129,19 @@
               d="m12.14 8.753-5.482 4.796c-.646.566-1.658.106-1.658-.753V3.204a1 1 0 0 1 1.659-.753l5.48 4.796a1 1 0 0 1 0 1.506z"/>
         </svg>
       </div>
+    </div>
+  </div>
+
+  <!-- 검색 -->
+  <!-- input 하나 받아서 투어 API (관광정보) 랑 네이버 검색 API 로 던져서 -->
+  <!-- div1, 투어 API 정보 -->
+  <!-- div2, 네이버 검색 API 정보 -->
+  <div id="outerSearchSection" class="section">
+    <span class="areaTitle">네이버 검색</span>
+    <div id="outerSearchArea" class="area">
+      <input type="text" id="outerSearchInput" name="outerSearchKeyword" aria-label="outerSearch">
+      <button type="button" id="outerSearchButton">검색</button>
+      <div id="outerSearchResultArea"></div>
     </div>
   </div>
 

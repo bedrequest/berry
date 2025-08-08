@@ -16,6 +16,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Optional;
 
 @RequiredArgsConstructor
@@ -43,7 +44,7 @@ public class LodgeServiceImpl implements LodgeService {
         facilityMaskDecoder,
         lodgeDescriptionRepository.findByLodgeId(optionalLodge.get().getLodgeId()),
         reviewRepository.countByLodgeId(lodgeId),
-        reviewRepository.findAverageRatingByLodgeId(lodgeId).orElse(0.0),
+        reviewRepository.findAverageRatingByLodgeId(lodgeId).orElse(0.0)*2,
         null);
     fillImages(lodgeDTO);
     fillRooms(lodgeDTO, true);
@@ -69,11 +70,26 @@ public class LodgeServiceImpl implements LodgeService {
 
       lodgeDTO.setAverageReviewScore(
           reviewRepository.findAverageRatingByLodgeId(lodgeDTO.getLodgeId())
-              .orElse(0.0));
+              .orElse(0.0)*2);
       lodgeDTO.setReviewCount(reviewRepository.countByLodgeId(lodgeDTO.getLodgeId()));
     }
 
     return new PagingHandler<>(result, listOptionDTO);
+  }
+
+  @Override
+  public List<LodgeDTO> getTop5Lodges() {
+    return lodgeRepository.getTop5ByReservation()
+        .stream().map(lodge -> {
+          LodgeDTO lodgeDTO = convertEntityToDto(lodge,
+              facilityMaskDecoder,
+              lodgeDescriptionRepository.findByLodgeId(lodge.getLodgeId()),
+              reviewRepository.countByLodgeId(lodge.getLodgeId()),
+              reviewRepository.findAverageRatingByLodgeId(lodge.getLodgeId()).orElse(0.0),
+              null);
+          fillImages(lodgeDTO);
+          return lodgeDTO;
+        }).toList();
   }
 
   private LodgeDTO convertEntityToDtoWithoutReview(Lodge lodge) {

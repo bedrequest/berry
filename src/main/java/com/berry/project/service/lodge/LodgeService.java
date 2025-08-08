@@ -79,6 +79,7 @@ public interface LodgeService {
         .build();
   }
 
-
   PagingHandler<LodgeDTO> getLodgeList(int pageNo, ListOptionDTO listOptionDTO, LodgeOptionDTO lodgeOptionDTO);
+
+  List<LodgeDTO> getTop5Lodges();
 }
