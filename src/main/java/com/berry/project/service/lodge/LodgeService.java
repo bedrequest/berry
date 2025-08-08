@@ -81,5 +81,13 @@ public interface LodgeService {
 
   PagingHandler<LodgeDTO> getLodgeList(int pageNo, ListOptionDTO listOptionDTO, LodgeOptionDTO lodgeOptionDTO);
 
+  // ===== Top N 예약 숙소 집계 =====
+  /**
+   * 예약 건수 상위 Top N개의 숙소를 조회합니다.
+   * @param topN 가져올 개수 (예: 5)
+   * @return LodgeSummaryDTO 리스트
+   */
+  List<LodgeSummaryDTO> getTopBookedLodges(int topN);
+
   List<LodgeDTO> getTop5Lodges();
 }

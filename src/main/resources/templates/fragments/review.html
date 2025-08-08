@@ -1,6 +1,8 @@
 <div xmlns:th="http://www.thymeleaf.org"
      xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
-     th:fragment="review(reviews, lodgeId, currentPage, startPage, endPage, hasPrev, hasNext, reviewRequest, tags, currentUserEmail, sort, topTags, tagStats, tagLabels, tagCounts, avgRating, totalReviews)">
+     th:fragment="review(reviews, lodgeId, currentPage, startPage, endPage, hasPrev, hasNext, reviewRequest, tags, currentUserEmail,
+     sort, topTags, tagStats, tagLabels, tagCounts, avgRating, totalReviews, aiSummary)">
+
 
   <!-- 1) 리뷰 요약 통계 -->
   <section class="review-summary mb-4">
@@ -10,7 +12,6 @@
       <div class="total-count ms-3">총<span th:text="${totalReviews}">123</span>명 평가</div>
     </div>
   </section>
-
   <!-- 2) 태그 & 차트 -->
   <section class="tag-chart-section mb-4">
     <h5 class="section-title mb-2 text-danger" style="color:#E74B60;">이런점이 좋았어요!</h5>
@@ -30,6 +31,25 @@
              th:attr="data-labels=${tagLabelsJson},data-counts=${tagCountsJson}"
              style="display:none;"></div>
       </div>
+    </div>
+  </section>
+
+  <!-- 2-1) 수동 요약 생성 버튼 -->
+  <section class="mb-3">
+    <form th:action="@{/reviews/{lodgeId}/generate-summary(lodgeId=${lodgeId})}"
+          method="post" class="d-inline">
+      <input type="hidden" sec:csrfInput=""/>
+      <button type="submit" class="btn-text">
+        요약 생성 (수동)
+      </button>
+    </form>
+  </section>
+  <section class="review-summary mb-5">
+    <!-- 2-2) 브리핑 -->
+    <div th:if="${aiSummary}" class="ai-summary-box">
+      <h2 class="ai-summary-title">AI 브리핑</h2>
+      <p class="ai-summary-content"
+         th:utext="${#strings.replace(aiSummary, '\n', '<br/>')}"></p>
     </div>
   </section>
 
@@ -84,9 +104,12 @@
             th:object="${reviewRequest}"
             method="post"
             enctype="multipart/form-data"
-            class="border p-3 rounded bg-white shadow-sm">
+            class="border p-3 rounded bg-white shadow-sm"
+            onsubmit="const cnt = document.querySelectorAll('input[name=tagNames]:checked').length;
+            if (cnt > 3) {alert('태그는 최대 3개까지 선택 가능합니다.'); return false;}">
         <input type="hidden" sec:csrfInput=""/>
         <input type="hidden" th:field="*{lodgeId}"/>
+        <input type="hidden" name="pageParam" th:value="${currentPage}" />
 
         <!-- 별점 -->
         <div class="mb-3">
@@ -216,18 +239,26 @@
               좋아요 <span th:text="${review.likeCount}">0</span>
             </button>
           </form>
-          <form th:action="@{/reviews/{id}/report(id=${review.reviewId})}"
-                method="post"
-                class="d-inline">
-            <input type="hidden" sec:csrfInput=""/>
-            <input type="hidden" name="pageParam" th:value="${currentPage}"/>
-            <button type="submit" class="btn-text">신고</button>
-          </form>
+          <th:block th:if="${currentUserEmail != review.userEmail}">
+            <form th:action="@{/reviews/{id}/report(id=${review.reviewId})}"
+                  method="post"
+                  class="d-inline"
+                  onsubmit="alert('신고 상태가 업데이트되었습니다.');">
+              <input type="hidden" sec:csrfInput=""/>
+              <input type="hidden" name="pageParam" th:value="${currentPage}"/>
+              <button type="submit" class="btn-text">신고</button>
+            </form>
+          </th:block>
         </div>
         <div th:if="${currentUserEmail == review.userEmail}"
              class="footer-right d-flex align-items-center">
-          <a th:href="@{/reviews/modify(reviewId=${review.reviewId})}" class="btn-text me-4">수정</a>
-          <a th:href="@{/reviews/remove/{reviewId}(reviewId=${review.reviewId})}" class="btn-text">삭제</a>
+          <a th:href="@{/reviews/modify(reviewId=${review.reviewId},page=${currentPage})}" class="btn-text me-4">수정</a>
+          <form th:action="@{/reviews/remove/{reviewId}(reviewId=${review.reviewId})}"
+                method="get"
+                class="d-inline ms-3"
+                onsubmit="return confirm('정말 삭제하시겠습니까?');">
+            <button type="submit" class="btn-text">삭제</button>
+          </form>
         </div>
       </div>
 

@@ -57,39 +57,7 @@
       });
     });
 
-    //  좋아요·신고 
-    document.querySelectorAll('button[data-like], button[data-report]').forEach(btn => {
-      const isLike = btn.hasAttribute('data-like');
-      btn.addEventListener('click', () => {
-        const reviewId  = btn.dataset.reviewId;
-        const pageParam = btn.dataset.pageParam;
-        const url       = isLike
-          ? `/reviews/${reviewId}/like?pageParam=${pageParam}`
-          : `/reviews/${reviewId}/report?pageParam=${pageParam}`;
-        if (!isLike && !confirm('정말 이 리뷰를 신고하시겠습니까?')) return;
-
-        fetch(url, {
-          method: 'POST',
-          headers: { 'X-Requested-With': 'XMLHttpRequest' }
-        })
-        .then(res => {
-          if (!res.ok) throw new Error(`HTTP ${res.status}`);
-          return res.json();
-        })
-        .then(data => {
-          if (isLike) {
-            btn.classList.toggle('active');
-            btn.querySelector('.like-count').innerText = data.likeCount;
-          } else {
-            alert(data.message || '신고가 접수되었습니다.');
-          }
-        })
-        .catch(err => {
-          console.error(err);
-          alert((isLike ? '좋아요' : '신고') + ' 중 오류가 발생했습니다.');
-        });
-      });
-    });
+    
 
 //  도넛 차트 초기화
 const canvas   = document.getElementById('tagChart');
@@ -126,12 +94,13 @@ if (canvas && dataElem && typeof Chart !== 'undefined') {
       datasets: [{
         data: topCounts,
         backgroundColor: [
-          '#E74B60',  
-          '#50E3C2',  
-          '#9B59B6',
-          '#d7f52f',  
-          '#BDC3C7'  
-        ],
+          '#ff6c80',  // 밝은 에르메스 코랄 오렌지 (부드럽고 따뜻함)
+          '#A3D9A5',  // 보테가 무드의 밝은 세이지 민트 (깔끔하고 신선함)
+          '#EAC8A0',  // 로에베 감성의 연한 누드 베이지 (따뜻하고 화사)
+          '#C2B5E3',  // 발렌시아가의 연보라 블루 (세련되고 시크하게)
+          '#C7D3D4'   // 기존 실버그레이 유지 (밸런스용)
+        ]
+        ,
         hoverOffset: 6
       }]
     },
@@ -210,6 +179,10 @@ if (canvas && dataElem && typeof Chart !== 'undefined') {
         reviewArea.innerHTML = html;
         initReviewScripts();
         bindPaginationLinks();
+        if (window.location.hash) {
+        const target = document.querySelector(window.location.hash);
+        if (target) target.scrollIntoView({ behavior: 'auto' });
+        }
       })
       .catch(err => {
         console.error('Fetch error:', err);

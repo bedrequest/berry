@@ -36,6 +36,29 @@ public interface ReviewRepository extends JpaRepository<Review, Long> {
             @Param("lodgeId") Long lodgeId,
             Pageable pageable
     );
+    // 6) lodgeId별 전체 리뷰 조회
+    List<Review> findByLodgeId(Long lodgeId);
+
+    /**
+     * Projection 인터페이스: 태그명(tagName) 과 해당 태그의 사용 횟수(cnt)
+     */
+    interface TagCount {
+        String getTagName();
+        Long   getCnt();
+    }
+
+    /**
+     * lodgeId 에 달린 모든 리뷰의 태그를 집계해서, 태그별 사용 횟수를 반환
+     * - ReviewTagMapping → Review → Lodge 관계를 타고
+     */
+    @Query("""
+    SELECT m.tag.tagName AS tagName,
+           COUNT(m)          AS cnt
+      FROM ReviewTagMapping m
+     WHERE m.review.lodgeId = :lodgeId
+     GROUP BY m.tag.tagName
+  """)
+    List<TagCount> findTagCountsByLodgeId(@Param("lodgeId") Long lodgeId);
 
     // 이유현 : index.html용 메서드
     List<Review> findTop10ByOrderByCreatedAtDesc();
