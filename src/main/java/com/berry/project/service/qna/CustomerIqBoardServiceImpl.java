@@ -17,14 +17,15 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
+@Service
 @Slf4j
 @RequiredArgsConstructor
-@Service
 public class CustomerIqBoardServiceImpl implements CustomerIqBoardService {
 
   private final CustomerIqBoardRepository customeriqboardrepository;
@@ -85,9 +86,9 @@ public class CustomerIqBoardServiceImpl implements CustomerIqBoardService {
     // 1. 공지글은 항상 고정
     List<CustomerIqBoard> noticeList = customeriqboardrepository.findNoticeBoards();
     List<CustomerIqBoardDTO> noticeDTOList = noticeList
-            .stream()
-            .map(this::convertEntityToDto)
-            .toList();
+        .stream()
+        .map(this::convertEntityToDto)
+        .toList();
 
     Page<CustomerIqBoard> list = customeriqboardrepository.searchcoustomeriqboard(type, keyword, startDate, endDate, pageable);
     log.info(">>> list serviceImpl >> {}", list.getContent());
@@ -147,9 +148,9 @@ public class CustomerIqBoardServiceImpl implements CustomerIqBoardService {
   @Override
   public long fileRemove(String uuid) {
     Optional<CustomerIqFile> customeriqfile = customeriqfilerepository.findById(uuid);
-    if(customeriqfile.isPresent()){
+    if (customeriqfile.isPresent()) {
       Optional<CustomerIqBoard> optional = customeriqboardrepository.findById(customeriqfile.get().getBno());
-      if(optional.isPresent()){
+      if (optional.isPresent()) {
         CustomerIqBoard customerIqBoard = optional.get();
       }
       customeriqfilerepository.deleteById(uuid);
@@ -165,4 +166,19 @@ public class CustomerIqBoardServiceImpl implements CustomerIqBoardService {
 
 
 
+
+  @Transactional
+  @Override
+  public long post(CustomerIqBoardDTO customeriqboardDTO) {
+    Optional<CustomerIqBoard> optional = customeriqboardrepository.findById(customeriqboardDTO.getBno());
+    log.info("optional CustomerIqBoard >> {}", optional.get());
+    if (optional.isPresent()) {
+      CustomerIqBoard customeriqboard = optional.get();
+      customeriqboard.setComment(customeriqboardDTO.getComment());
+      customeriqboard.setCommentRegDate(LocalDateTime.now());
+
+      return customeriqboardrepository.save(customeriqboard).getBno();
+    }
+    return 0L;
+  }
 }

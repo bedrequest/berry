@@ -83,4 +83,7 @@ public interface CustomerIqBoardService  {
   Page<CustomerIqBoardDTO> getPageList(int pageNo);
 
   long fileRemove(String uuid);
+
+  long post(CustomerIqBoardDTO customeriqboardDTO);
+
 }

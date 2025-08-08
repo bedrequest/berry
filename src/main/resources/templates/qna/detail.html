@@ -131,11 +131,27 @@
                 <button type="button" id="listBtn" class="btn btn-primary">List</button>
             </div>
 
+
+                     <!--      추가된 부분      -->
         </form>
         <body data-answered="[[${customeriqboardfileDTO.boardDTO.answered}]]">
-        <script th:src="@{/js/qna/boardDetail.js}"></script>
-        </body>
 
+        <script th:inline="javascript">
+          let bnoValue = [[${customeriqboardfileDTO.boardDTO.bno}]];
+        </script>
+        <th:blcok sec:authorize="isAuthenticated()">
+
+          <script th:inline="javascript">
+            const userEmail = [[${authEmail}]];
+            console.log(userEmail);
+          </script>
+        </th:blcok>
+
+        <script th:src="@{/js/qna/boardDetail.js}"></script>
+        <script th:src="@{/js/qna/boardComment.js}"></script>
+        <script th:src="@{/js/qna/boardRegister.js}"></script>
+
+        </body>
 
         <script>
             window.addEventListener('DOMContentLoaded', () => {

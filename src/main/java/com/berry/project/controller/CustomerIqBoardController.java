@@ -129,4 +129,12 @@ public class CustomerIqBoardController {
         return bno > 0 ? "1":"0";
     }
 
+    @PostMapping("/post")
+    @ResponseBody
+    public String post(@RequestBody CustomerIqBoardDTO customeriqboardDTO){
+        log.info("customeriqboardDTO >> {}", customeriqboardDTO);
+        long comment = boardservice.post(customeriqboardDTO);
+        return comment > 0 ? "1" : "0";
+    }
+
 }

@@ -14,6 +14,7 @@ import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 import java.time.LocalDateTime;
+import java.util.Optional;
 
 @Slf4j
 public class BoardCustomerIqRepositoryImpl implements BoardCustomerIqRepository {
@@ -51,7 +52,7 @@ public class BoardCustomerIqRepositoryImpl implements BoardCustomerIqRepository 
 
     // 날짜 조건 (필수)
     BooleanExpression condition = QCustomerIqBoard.customerIqBoard.regDate.between(start, end);
-//    condition = condition.and(QCustomerIqBoard.customerIqBoard.category.ne("공지"));
+////    condition = condition.and(QCustomerIqBoard.customerIqBoard.category.ne("공지"));
 
     if (type != null && !type.isEmpty()) {
       condition = condition.and(QCustomerIqBoard.customerIqBoard.category.eq(type));
@@ -74,11 +75,12 @@ public class BoardCustomerIqRepositoryImpl implements BoardCustomerIqRepository 
         .limit(pageable.getPageSize())
         .fetch();
 
-    long total = queryFactory
+    long total = Optional.ofNullable(queryFactory
         .select(QCustomerIqBoard.customerIqBoard.count())
         .from(QCustomerIqBoard.customerIqBoard)
         .where(condition)
-        .fetchOne();
+        .fetchOne())
+        .orElse(0L);
 
     return new PageImpl<>(result, pageable, total);
 
