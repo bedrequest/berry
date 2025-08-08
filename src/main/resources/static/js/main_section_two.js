@@ -1,5 +1,7 @@
-import Swiper from 'swiper';
-import { Chart } from 'chart.js';
+import Swiper from 'https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.mjs';
+import {Chart, registerables} from 'https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.min.js';
+
+Chart.register(...registerables);
 
 function initMainSectionTwo() {
   // 1) Swiper 풀스크린 슬라이더

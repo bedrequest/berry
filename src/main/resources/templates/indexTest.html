@@ -8,6 +8,7 @@
   <link rel="stylesheet" th:href="@{/css/indexTest.css}">
   <link rel="stylesheet" th:href="@{/css/lodge/bookmark.css}">
   <link rel="stylesheet" th:href="@{/css/review/review.css}">
+  <link rel="stylesheet" th:href="@{/css/main_section_two.css}">
 </section>
 <div layout:fragment="content">
 
@@ -16,7 +17,45 @@
   </div>
 
   <div id="best-lodges-section" class="section">
-    best lodges section
+    <h2 class="ms2__title sr-only">가장 많이 예약된 숙소 Top 5</h2>
+
+    <div class="ms2__slider swiper-container full-screen-slider">
+      <div class="swiper-wrapper">
+        <div class="ms2__slide swiper-slide"
+             th:each="lodge : ${top5}"
+             th:style="|background-image: url(${lodge.lodgeImgUrl});|">
+
+          <div class="ms2__overlay slide-overlay">
+            <!-- A) 정보 패널 -->
+            <div class="ms2__info-panel info-panel">
+              <h3 class="ms2__name"
+                  th:text="${lodge.lodgeName}">숙소 이름</h3>
+              <p class="ms2__location location"
+                 th:text="${lodge.lodgeAddr} + ' · ₩' + ${lodge.minStayPrice} + '/박'">
+                위치 · ₩123,000/박
+              </p>
+            </div>
+
+            <!-- B) 차트 & 요약 -->
+            <div class="ms2__data-panel data-panel">
+              <div class="ms2__chart chart"
+                   th:attr="data-stats=${lodge.tagStatsJson}">
+                <canvas class="ms2__chart-canvas"></canvas>
+              </div>
+              <div class="ms2__summary ai-summary"
+                   th:text="${lodge.aiSummary}">
+                AI 요약 텍스트…
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+      <div class="ms2__nav-prev swiper-button-prev" aria-label="이전 숙소"></div>
+      <div class="ms2__nav-next swiper-button-next" aria-label="다음 숙소"></div>
+      <div class="ms2__pagination swiper-pagination"></div>
+    </div>
   </div>
 
   <div id="search-section" class="section">
@@ -49,4 +88,5 @@
       module.default(/*[[${userId}]]*/);
     });
   </script>
+  <script type="module" th:src="@{/js/main_section_two.js}"></script>
 </div>
