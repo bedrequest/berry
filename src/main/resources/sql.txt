@@ -19,3 +19,5 @@ insert into review_tag (tag_name) values
  ('아이와 가기 좋아요'),
  ('즐길거리가 많아요'),
  ('조용히 쉬기 좋아요');
+
+ drop table if exists review_summary;
