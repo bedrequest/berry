@@ -34,20 +34,26 @@
 
       <!-- 날짜 줄 -->
       <div class="date-range">
-        <input
-                type="date"
-                class="date-picker"
-                id="start"
-                name="tripStart"
-                />
+        <div class="date-picker-wrapper">
+          <input type="date" class="date-picker" id="start" name="tripStart" />
+          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="calendar-icon" viewBox="0 0 16 16">
+            <path d="M10.854 7.146a.5.5 0 0 1 0 .708l-3 3a.5.5 0 0 1-.708 0l-1.5-1.5a.5.5 0 1 1 .708-.708L7.5 9.793l2.646-2.647a.5.5 0 0 1 .708 0"/>
+            <path d="M3.5 0a.5.5 0 0 1 .5.5V1h8V.5a.5.5 0 0 1 1 0V1h1a2 2 0 0 1 2 2v11a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2V3a2 2 0 0 1 2-2h1V.5a.5.5 0 0 1 .5-.5M1 4v10a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1V4z"/>
+          </svg>
+        </div>
+
         <span style="align-self: center;">~</span>
-        <input
-                type="date"
-                class="date-picker"
-                id="end"
-                name="tripEnd"
-                 />
+
+        <div class="date-picker-wrapper">
+          <input type="date" class="date-picker" id="end" name="tripEnd" />
+          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="calendar-icon" viewBox="0 0 16 16">
+            <path d="M10.854 7.146a.5.5 0 0 1 0 .708l-3 3a.5.5 0 0 1-.708 0l-1.5-1.5a.5.5 0 1 1 .708-.708L7.5 9.793l2.646-2.647a.5.5 0 0 1 .708 0"/>
+            <path d="M3.5 0a.5.5 0 0 1 .5.5V1h8V.5a.5.5 0 0 1 1 0V1h1a2 2 0 0 1 2 2v11a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2V3a2 2 0 0 1 2-2h1V.5a.5.5 0 0 1 .5-.5M1 4v10a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1V4z"/>
+          </svg>
+        </div>
       </div>
+
+
 
       <!-- 검색줄 -->
       <div class="search-line">
@@ -153,6 +159,7 @@
   <!-- flatpickr 초기화 -->
   <script>
     document.addEventListener('DOMContentLoaded', function () {
+      // 날짜 기본값과 제한 날짜 계산
       const today = new Date();
       const todayFormatted = today.toISOString().split('T')[0];
 
@@ -160,6 +167,7 @@
       oneMonthAgo.setMonth(today.getMonth() - 1);
       const oneMonthAgoFormatted = oneMonthAgo.toISOString().split('T')[0];
 
+      // flatpickr 초기화 - 시작일
       flatpickr("#start", {
         defaultDate: oneMonthAgoFormatted,
         maxDate: todayFormatted,
@@ -167,13 +175,28 @@
         locale: "ko"
       });
 
+      // flatpickr 초기화 - 종료일
       flatpickr("#end", {
         defaultDate: todayFormatted,
         maxDate: todayFormatted,
         dateFormat: "Y-m-d",
         locale: "ko"
       });
+
+      // 달력 아이콘 클릭 시 input 포커스 처리
+      document.querySelectorAll('.date-picker-wrapper').forEach(wrapper => {
+        const icon = wrapper.querySelector('.calendar-icon');
+        const input = wrapper.querySelector('input');
+
+        if (icon && input) {
+          icon.style.cursor = 'pointer'; // 커서 포인터 설정 (추가 안전)
+          icon.addEventListener('click', () => {
+            input.focus();
+          });
+        }
+      });
     });
+
   </script>
 
   <script th:src="@{/js/qna/boardList.js}"></script>

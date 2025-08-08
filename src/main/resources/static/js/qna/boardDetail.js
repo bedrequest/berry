@@ -94,85 +94,82 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
-  if (modBtn) {
-    modBtn.addEventListener('click', () => {
-      if (isAnswered) {
-        alert('답변 완료된 문의는 수정할 수 없습니다.');
-        return;
-      }
+  modBtn.addEventListener('click', () => {
+    if (isAnswered) {
+      alert('답변 완료된 문의는 수정할 수 없습니다.');
+      return;
+    }
 
+    // 카테고리 input → select 전환
+    const categoryInput = document.getElementById('c');
+    const categorySelect = document.getElementById('categorySelect');
 
-      const categoryInput = document.getElementById('c');
-      const categorySelect = document.getElementById('categorySelect');
+    if (categoryInput && categorySelect) {
+      categoryInput.style.display = 'none';
+      categorySelect.style.display = 'inline-block';
+      const rawValue = categoryInput.value.replace(/\[|\]/g, '').trim();
+      categorySelect.value = rawValue;
+      categoryInput.removeAttribute('name');
+      categorySelect.setAttribute('name', 'category');
+    }
 
-      if (categoryInput && categorySelect) {
-          categoryInput.style.display = 'none';
-          categorySelect.style.display = 'inline-block';
+    saveOriginalState();
 
-          // 기존 값과 같은 옵션 선택되게
-          const rawValue = categoryInput.value.replace(/\[|\]/g, '').trim();
-          categorySelect.value = rawValue;
+    title.removeAttribute('readonly');
+    content.removeAttribute('readonly');
+    if (comment) comment.removeAttribute('readonly');
 
-          // ⚠️ input의 name 제거해서 중복 전송 방지
-          categoryInput.removeAttribute('name');
-          categorySelect.setAttribute('name', 'category');
-        }
+    modBtn.style.display = 'none';
+    delBtn.style.display = 'none';
+    listBtn.style.display = 'none';
+    submitBtn.style.display = 'inline-block';
 
+    // ✅ completeBtn이 존재할 때만 실행
+    if (completeBtn) completeBtn.style.display = 'inline-block';
 
-      saveOriginalState();
+    cancelBtn.style.display = 'inline-block';
 
-      title.removeAttribute('readonly');
-      content.removeAttribute('readonly');
-      if (comment) comment.removeAttribute('readonly');
+    if (uploadLabel) {
+      uploadLabel.classList.remove('disabled');
+      uploadLabel.style.cursor = 'pointer';
+    }
+    if (uploadInput) uploadInput.disabled = false;
 
-      modBtn.style.display = 'none';
-      delBtn.style.display = 'none';
-      listBtn.style.display = 'none';
-      submitBtn.style.display = 'inline-block';
-      completeBtn.style.display = 'inline-block';
-      cancelBtn.style.display = 'inline-block';
+    if (charCount) {
+      charCount.style.display = 'block';
+      updateCharCount();
+    }
 
-      if (uploadLabel) {
-        uploadLabel.classList.remove('disabled');
-        uploadLabel.style.cursor = 'pointer';
-      }
-      if (uploadInput) uploadInput.disabled = false;
-
-      if (charCount) {
-        charCount.style.display = 'block';
-        updateCharCount();
-      }
-
+    autoResize(content);
+    content.addEventListener('input', () => {
       autoResize(content);
-      content.addEventListener('input', () => {
-        autoResize(content);
-        updateCharCount();
-      });
-
-      if (comment) {
-        autoResize(comment);
-        comment.addEventListener('input', () => {
-          autoResize(comment);
-        });
-      }
-
-      document.querySelectorAll('.file-x').forEach(btn => {
-        btn.style.visibility = 'visible';
-        btn.onclick = async () => {
-          const uuid = btn.dataset.uuid;
-          const result = await fileRemoveToServer(uuid);
-          if (result == "1") {
-            alert("파일삭제 성공");
-            const fileElement = btn.previousElementSibling || btn.parentElement.querySelector('.fileX');
-            if (fileElement) fileElement.remove();
-            btn.remove();
-          } else {
-            alert("파일삭제 실패");
-          }
-        };
-      });
+      updateCharCount();
     });
-  }
+
+    if (comment) {
+      autoResize(comment);
+      comment.addEventListener('input', () => {
+        autoResize(comment);
+      });
+    }
+
+    document.querySelectorAll('.file-x').forEach(btn => {
+      btn.style.visibility = 'visible';
+      btn.onclick = async () => {
+        const uuid = btn.dataset.uuid;
+        const result = await fileRemoveToServer(uuid);
+        if (result == "1") {
+          alert("파일삭제 성공");
+          const fileElement = btn.previousElementSibling || btn.parentElement.querySelector('.fileX');
+          if (fileElement) fileElement.remove();
+          btn.remove();
+        } else {
+          alert("파일삭제 실패");
+        }
+      };
+    });
+  });
+
 
   if (delBtn) {
     delBtn.addEventListener('click', () => {
@@ -196,12 +193,13 @@ document.addEventListener('DOMContentLoaded', () => {
      content.setAttribute('readonly', true);
      if (comment) comment.setAttribute('readonly', true);
 
+     // 원래 보기 모드 버튼 상태 복원
      modBtn.style.display = 'inline-block';
      delBtn.style.display = 'inline-block';
      listBtn.style.display = 'inline-block';
 
      submitBtn.style.display = 'none';
-     completeBtn.style.display = 'none';
+     if (completeBtn) completeBtn.style.display = 'none'; // ✅ 조건문 추가
      cancelBtn.style.display = 'none';
 
      if (uploadLabel) {
@@ -225,7 +223,7 @@ document.addEventListener('DOMContentLoaded', () => {
        btn.onclick = null;
      });
 
-     // ✅ 카테고리 select → input으로 복원
+     // ✅ 카테고리 select → input 복원
      const categoryInput = document.getElementById('c');
      const categorySelect = document.getElementById('categorySelect');
      if (categoryInput && categorySelect) {
@@ -236,6 +234,7 @@ document.addEventListener('DOMContentLoaded', () => {
        categoryInput.setAttribute('name', 'category');
      }
    });
+
  }
 
   if (uploadInput) {

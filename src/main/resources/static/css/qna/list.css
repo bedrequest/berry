@@ -98,6 +98,7 @@ p {
   border: 1px solid #ccc !important;
   border-radius: 8px;
   padding: 6px 10px;
+  cursor: pointer;
   box-shadow: none !important;
   transition: background-color 0.2s, border-color 0.2s;
 }
@@ -231,27 +232,30 @@ p {
   color: #ccc;
 }
 
-/* 반응형 제거 → 고정 레이아웃 유지 (요청에 따라 삭제) */
-/* @media (max-width: 768px) {
-  .search-line {
-    flex-direction: column;
-    align-items: center;
-    width: 100%;
-  }
+.date-picker-wrapper {
+  position: relative;
+  display: inline-block;
+}
 
-  .search-line input[type="date"],
-  .search-line select,
-  .search-line input[type="search"],
-  .search-line .btn {
-    width: 100%;
-    max-width: 300px;
-    margin-bottom: 10px;
-  }
+.date-picker {
+  cursor: pointer;
+  padding-right: 36px; /* 오른쪽 아이콘 공간 확보 */
+  height: 36px;
+  font-size: 15px;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+}
 
-  .d-grid.gap-2.d-md-flex.justify-content-md-end {
-    justify-content: center;
-  }
-} */
+.calendar-icon {
+  position: absolute;
+  right: 12px;       /* 오른쪽 12px 위치 */
+  top: 50%;
+  transform: translateY(-50%);
+  color: var(--primary-color);
+  cursor: pointer;   /* 커서 포인터로 변경 */
+  user-select: none; /* 드래그 방지 */
+}
+
 
 .table thead th:nth-child(1) { width: 7%; }
 .table thead th:nth-child(2) { width: 13%; }
