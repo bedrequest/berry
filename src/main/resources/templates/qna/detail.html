@@ -69,10 +69,11 @@
             </div>
 
             <!-- 댓글 -->
-            <div class="comment-area" sec:authorize="hasRole('ROLE_ADMIN')">
-                <textarea class="form-control comment-input" name="comment" id="comment" rows="1" maxlength="500" placeholder="댓글을 입력하세요" readonly></textarea>
+            <div class="comment-area">
+                <textarea class="form-control comment-input" name="comment" id="comment" rows="1" maxlength="500" placeholder="댓글을 입력하세요" readonly>[[${customeriqboardfileDTO.boardDTO.comment}]]</textarea>
             </div>
 
+            <!-- sec:authorize="hasRole('ROLE_ADMIN')" -->
 
             <!-- 첨부파일 미리보기 -->
             <div class="attached-files" th:if="${customeriqboardfileDTO.fileList != null}">

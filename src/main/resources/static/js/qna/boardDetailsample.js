@@ -417,3 +417,4 @@ window.addEventListener('DOMContentLoaded', () => {
   // 값이 바뀔 때마다 크기 조절
   emailInput.addEventListener('input', resizeEmailInput);
 });
+/*댓글칸 작업전 js*/
