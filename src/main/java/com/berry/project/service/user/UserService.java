@@ -1,13 +1,13 @@
 package com.berry.project.service.user;
 
-import com.berry.project.dto.user.AuthUserDTO;
-import com.berry.project.dto.user.MyPageReservationDTO;
-import com.berry.project.dto.user.UserDTO;
-import com.berry.project.entity.lodge.Lodge;
+import com.berry.project.dto.alarm.AlarmDTO;
+import com.berry.project.dto.lodge.RoomDTO;
+import com.berry.project.dto.user.*;
+import com.berry.project.entity.alarm.Alarm;
 import com.berry.project.entity.lodge.Room;
-import com.berry.project.entity.payment.Reservation;
 import com.berry.project.entity.user.AuthUser;
 import com.berry.project.entity.user.User;
+import com.berry.project.entity.user.UserBookmark;
 
 import java.util.List;
 
@@ -71,43 +71,59 @@ public interface UserService {
         .isEmailCertified(user.isEmailCertified())
         .build();
   }
-  // 해찬
-  /** Reservation -> ReservationDTO */
-  default MyPageReservationDTO printConvertReservationEntityToReservationDto(Reservation reservation){
-    if(reservation == null) { return null; }
 
-    return
-        MyPageReservationDTO.builder()
-            .reservationId(reservation.getReservationId())
-            .roomId(reservation.getRoomId())
-            .userId(reservation.getUserId())
-            .orderId(reservation.getOrderId())
-            .startDate(reservation.getStartDate().toLocalDateTime())
-            .bookingStatus(reservation.getBookingStatus())
-            .endDate(reservation.getEndDate().toLocalDateTime())
-            .totalAmount(reservation.getTotalAmount())
-            .guestsAmount(reservation.getGuestsAmount())
-            .reservationType(reservation.getReservationType())
-            .reservationRegDate(reservation.getReservationRegDate().toLocalDateTime())
-            .build();
+  default UserBookmarkDTO convertUserBookmarkEntityToUserBookmarkDTO(UserBookmark userBookmark){
+    return UserBookmarkDTO.builder()
+        .userBookmarkId(userBookmark.getUserBookmarkId())
+        .userId(userBookmark.getUserId())
+        .lodgeId(userBookmark.getLodgeId())
+        .regDate(userBookmark.getRegDate())
+        .modDate(userBookmark.getModDate())
+        .build();
   }
 
-  default MyPageReservationDTO printConvertLodgeEntityToReservationDto(Room room){
-    if(room == null) { return null; }
-
-    return
-        MyPageReservationDTO.builder()
-            .roomName(room.getRoomName())
-            .build();
+  default UserBookmark convertUserBookmarkDTOToUserBookmarkEntity(UserBookmarkDTO userBookmarkDTO){
+    return UserBookmark.builder()
+        .userId(userBookmarkDTO.getUserId())
+        .lodgeId(userBookmarkDTO.getLodgeId())
+        .build();
   }
 
-  default MyPageReservationDTO printConvertLodgeEntityToReservationDto(Lodge lodge){
-    if(lodge == null) { return null; }
+  default Alarm convertAlarmDTOToAlarmEntity(AlarmDTO alarmDTO){
+    return Alarm.builder()
+        .userId(alarmDTO.getUserId())
+        .targetId(alarmDTO.getTargetId())
+        .code(alarmDTO.getCode())
+        .build();
+  }
 
-    return
-        MyPageReservationDTO.builder()
-            .lodgeName(lodge.getLodgeName())
-            .build();
+  default AlarmDTO convertAlarmEntityToAlarmDTO(Alarm alarm){
+    return AlarmDTO.builder()
+        .alarmId(alarm.getAlarmId())
+        .userId(alarm.getUserId())
+        .targetId(alarm.getTargetId())
+        .code(alarm.getCode())
+        .regDate(alarm.getRegDate())
+        .modDate(alarm.getModDate())
+        .build();
+  }
+
+  // lodgeService 에서 가져온 convert
+  default RoomDTO convertEntityToDto(Room room) {
+    return RoomDTO.builder()
+        .roomId(room.getRoomId())
+        .lodgeId(room.getLodgeId())
+        .roomName(room.getRoomName())
+        .info(room.getInfo())
+        .rentPrice(room.getRentPrice())
+        .rentTime(room.getRentTime())
+        .stayPrice(room.getStayPrice())
+        .stayOption(room.getStayOption())
+        .stayTime(room.getStayTime())
+        .stockCount(room.getStockCount())
+        .standardCount(room.getStandardCount())
+        .maxCount(room.getMaxCount())
+        .build();
   }
 
 
@@ -138,4 +154,12 @@ public interface UserService {
   void updatePassword(String changePassword, Long userId);
 
   List<MyPageReservationDTO> getReservationList(Long userId);
+
+  Long toggleBookmark(UserBookmarkDTO userBookmarkDTO);
+
+  List<AlarmDTO> getAlarmList(Long userId);
+
+  Long findWebUserEmail(String userEmail);
+
+  List<BookmarkLodgeDTO> getBookmarkLodgeList(Long userId);
 }

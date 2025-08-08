@@ -1,0 +1,216 @@
+/* 1. 전역 설정 */
+/* 1-1. 기본 css */
+.area {
+  width: 1200px;
+  margin: 0 auto 20px;
+}
+.areaTitle {
+  margin: 0 calc(50vw - 610px);
+  font-size: 18px;
+  font-weight: 600;
+}
+.section {
+  position: relative;
+}
+img {
+  border-radius: 10px;
+}
+
+/* 1-1. 스와이퍼 관련 */
+.swiper {
+  position: relative;
+  margin: 20px auto;
+}
+.swiper-wrapper {
+  position: relative;
+}
+.swiper-slide-container {
+  width: 100%;
+}
+.custom-nav {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  padding: 0 9px;
+
+  background-color: white;
+  border-radius: 23px;
+  
+  color: black;
+
+  cursor: pointer;
+  z-index: 1;
+}
+.custom-nav::after {
+  display: none;
+}
+.custom-nav.disabled {
+  color: #dddddd;
+  cursor: default;
+}
+.swiper-button-prev {
+  left: calc(50vw - 630px);
+}
+.swiper-button-next {
+  right: calc(50vw - 630px);
+}
+
+/* 2. 리뷰 */
+#reviewPickUpSection .swiper-slide {
+  display: flex !important;
+}
+#reviewPickUpSection .swiper-slide>a {
+  display: flex;
+  justify-content: space-between;
+}
+#reviewPickUpSection .swiper-slide>a>img {
+  width: 50%;
+  height: fit-content;
+}
+.swiper-slide>a>* {
+  margin-bottom: 5px;
+}
+.reviewTextArea {
+  width: 49%;
+}
+.review-meta {
+  margin-bottom: 5px;
+
+  color: #e74b60;
+}
+.review-tags {
+  display: flex;
+  gap: 15px;
+}
+.review-tag-badge {
+  padding: 4px 12px;
+  margin: 0 0.3rem;
+
+  font-size: 0.85rem;
+  color: white;
+
+  background-color: #e74b60;
+  border-radius: 999px;
+}
+.review-content {
+  height: 50%;
+  
+  color: #444;
+  font-size: 0.95rem;
+  font-weight: 400;
+  line-height: 1.6;
+
+  white-space: pre-line;
+  overflow: hidden;
+  -webkit-box-orient: vertical;
+}
+
+.review-footer {
+  display: flex;
+  justify-content: space-between;
+
+  color: #505050;
+  font-weight: 400;
+}
+
+/* 3. 검색 */
+.naver-search-header {
+  padding-top: 20px;
+  display: flex;
+}
+.naver-search-writer {
+  margin-right: 20px;
+  
+  font-size: 16px;
+  font-weight: 400;
+  color: #333333;
+}
+.naver-search-postdate {
+  color: #707070;
+  font-weight: 300;
+}
+.naver-search-title {
+  margin: 10px 0;
+
+  font-size: 20px;
+  font-weight: 300;
+  color: mediumblue;
+}
+.naver-search-title>b {
+  font-weight: 700;
+}
+.naver-search-description {
+  padding-bottom: 20px;
+
+  font-size: 16px;
+  font-weight: 400;
+  line-height: 22px;
+
+  border-bottom: 1px solid #dddddd;
+}
+/* 4. 이벤트 */
+
+/* 5. 회원별 태그 추천 */
+#suggestByTagSection {
+  height: 1200px;
+}
+.tag {
+  position: relative;
+  margin-bottom: 20px;
+}
+.tag:first-of-type {
+  margin-top: 20px;
+}
+.tagTitle {
+  width: fit-content;
+  padding: 6px;
+  margin-bottom: 10px;
+  
+  color: white;
+  font-weight: 500;
+
+  background-color: #e74b60;
+  border-radius: 10px;
+}
+.lodge {
+  width: 300px !important;
+  position: relative;
+}
+.lodge>.bookmark {
+  position: absolute;
+  bottom: 0;
+  right: 0;
+
+  cursor: pointer;
+}
+.lodgePreviewImg {
+  width: 300px;
+  height: 180px;
+  margin-bottom: 10px;
+
+  background-size: cover;
+  border-radius: 10px;
+}
+
+.lodgeReviewStatusArea {
+  display: flex;
+  margin: 8px 0;
+
+  align-items: center;
+  gap: 8px;
+}
+.averageReviewScore {
+  padding: 5px 10px;
+  
+  font-size: 14px;
+  font-weight: 600;
+
+  background-color: #ffc550;
+  border-radius: 15px;
+}
+
+.bookmark {
+  position: absolute;
+  bottom: 0;
+  right: 0;
+}

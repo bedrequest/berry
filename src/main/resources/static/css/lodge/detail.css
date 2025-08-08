@@ -600,8 +600,8 @@ p {
 }
 
 /* 13. 모달 */
+/* 모달이 열렸을 때 바깥 화면의 스크롤 방지 */
 body.modal-open {
-  /* 모달이 열렸을 때 바깥 화면의 스크롤 방지 */
   overflow: hidden;
 }
 #modal {
@@ -706,12 +706,15 @@ body.modal-open {
 }
 
 #modalImages {
+  margin: 0;
   height: 600px;
 }
 #modalMain.roomModal>#modalImages {
   height: 550px;
 }
 #modalImages .swiper-slide {
+  padding: 0;
+
   background-color: #eeeeee;
 }
 #modalImages .swiper-slide>img {

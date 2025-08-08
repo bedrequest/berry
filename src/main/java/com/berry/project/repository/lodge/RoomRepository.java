@@ -12,7 +12,6 @@ public interface RoomRepository extends JpaRepository<Room, Long> {
 
   List<Room> findByRoomIdIn(List<Long> roomIds);
 
-
   // ===== Top N 예약 숙소 집계 =====
 
   /**
@@ -26,5 +25,7 @@ public interface RoomRepository extends JpaRepository<Room, Long> {
      WHERE r.lodgeId = :lodgeId
   """)
   Integer findMinStayPriceByLodgeId(@Param("lodgeId") Long lodgeId);
+
+  List<Room> findByLodgeIdIn(List<Long> lodgeIds);
 
 }

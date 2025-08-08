@@ -1,6 +1,10 @@
 package com.berry.project.service.lodge;
 
 import com.berry.project.dto.lodge.*;
+import com.berry.project.dto.lodge.ListOptionDTO;
+import com.berry.project.dto.lodge.LodgeDTO;
+import com.berry.project.dto.lodge.LodgeOptionDTO;
+import com.berry.project.dto.lodge.RoomDTO;
 import com.berry.project.entity.lodge.*;
 import com.berry.project.handler.PagingHandler;
 import com.berry.project.repository.lodge.*;
@@ -47,8 +51,8 @@ public class LodgeServiceImpl implements LodgeService {
         optionalLodge.get(),
         facilityMaskDecoder,
         lodgeDescriptionRepository.findByLodgeId(optionalLodge.get().getLodgeId()),
-        0,
-        reviewRepository.findAverageRatingByLodgeId(lodgeId).orElse(0.0),
+        reviewRepository.countByLodgeId(lodgeId),
+        reviewRepository.findAverageRatingByLodgeId(lodgeId).orElse(0.0)*2,
         null);
     fillImages(lodgeDTO);
     fillRooms(lodgeDTO, true);
@@ -66,18 +70,42 @@ public class LodgeServiceImpl implements LodgeService {
     Pageable pageable = PageRequest.of(pageNo - 1, 10);
 
     Page<LodgeDTO> result = lodgeRepository.searchLodges(listOptionDTO, lodgeOptionDTO, pageable)
-        .map(entry -> convertEntityToDto(
-            entry,
-            facilityMaskDecoder,
-            lodgeDescriptionRepository.findByLodgeId(entry.getLodgeId()),
-            0, null, null));
+        .map(this::convertEntityToDtoWithoutReview);
 
     for (LodgeDTO lodgeDTO : result) {
       fillImages(lodgeDTO);
       fillRooms(lodgeDTO, false);
+
+      lodgeDTO.setAverageReviewScore(
+          reviewRepository.findAverageRatingByLodgeId(lodgeDTO.getLodgeId())
+              .orElse(0.0)*2);
+      lodgeDTO.setReviewCount(reviewRepository.countByLodgeId(lodgeDTO.getLodgeId()));
     }
 
     return new PagingHandler<>(result, listOptionDTO);
+  }
+
+  @Override
+  public List<LodgeDTO> getTop5Lodges() {
+    return lodgeRepository.getTop5ByReservation()
+        .stream().map(lodge -> {
+          LodgeDTO lodgeDTO = convertEntityToDto(lodge,
+              facilityMaskDecoder,
+              lodgeDescriptionRepository.findByLodgeId(lodge.getLodgeId()),
+              reviewRepository.countByLodgeId(lodge.getLodgeId()),
+              reviewRepository.findAverageRatingByLodgeId(lodge.getLodgeId()).orElse(0.0),
+              null);
+          fillImages(lodgeDTO);
+          return lodgeDTO;
+        }).toList();
+  }
+
+  private LodgeDTO convertEntityToDtoWithoutReview(Lodge lodge) {
+    return convertEntityToDto(
+        lodge,
+        facilityMaskDecoder,
+        lodgeDescriptionRepository.findByLodgeId(lodge.getLodgeId()),
+        0, null, null);
   }
 
   private void fillImages(LodgeDTO lodgeDTO) {

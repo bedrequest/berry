@@ -60,4 +60,10 @@ public interface ReviewRepository extends JpaRepository<Review, Long> {
   """)
     List<TagCount> findTagCountsByLodgeId(@Param("lodgeId") Long lodgeId);
 
+    // 이유현 : index.html용 메서드
+    List<Review> findTop10ByOrderByCreatedAtDesc();
+    @Query("SELECT COUNT(r) FROM Review r " +
+        "LEFT JOIN ReviewTagMapping m ON r.reviewId = m.reviewId " +
+        "WHERE r.lodgeId=:lodgeId AND m.tagId=:tagId")
+    long countReviewByLodgeIdAndTagId(@Param("lodgeId")Long lodgeId, @Param("tagId")int tagId);
 }

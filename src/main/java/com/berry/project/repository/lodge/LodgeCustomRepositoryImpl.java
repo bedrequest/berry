@@ -4,26 +4,37 @@ import com.berry.project.dto.lodge.ListOptionDTO;
 import com.berry.project.dto.lodge.LodgeOptionDTO;
 import com.berry.project.entity.lodge.Lodge;
 import com.berry.project.util.TagMaskDecoder;
+import com.querydsl.jpa.impl.JPAQueryFactory;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.Query;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 
-import java.nio.charset.StandardCharsets;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
+
+import static com.berry.project.entity.lodge.QLodge.lodge;
+import static com.berry.project.entity.lodge.QRoom.room;
+import static com.berry.project.entity.payment.QReservation.reservation;
+import static com.berry.project.entity.review.QReview.review;
+import static com.berry.project.entity.review.QReviewTagMapping.reviewTagMapping;
 
 @Slf4j
 public class LodgeCustomRepositoryImpl implements LodgeCustomRepository {
 
-  @Autowired
-  private EntityManager entityManager;
+  private final EntityManager entityManager;
+  private final JPAQueryFactory queryFactory;
 
+  public LodgeCustomRepositoryImpl(EntityManager entityManager) {
+    this.entityManager = entityManager;
+    this.queryFactory = new JPAQueryFactory(entityManager);
+  }
+
+  @SuppressWarnings("unchecked")
   @Override
   public Page<Lodge> searchLodges(ListOptionDTO listOptionDTO, LodgeOptionDTO lodgeOptionDTO, Pageable pageable) {
     Map<String, String> parameters = new HashMap<>();
@@ -127,4 +138,39 @@ public class LodgeCustomRepositoryImpl implements LodgeCustomRepository {
     return new PageImpl<Lodge>(query.getResultList(), pageable, (long) totalCount.getSingleResult());
   }
 
+  @Override
+  public Page<Lodge> searchByTag(long tag, Pageable pageable) {
+    List<Lodge> list = queryFactory
+        .select(lodge).from(lodge)
+        .leftJoin(review).on(lodge.lodgeId.eq(review.lodgeId))
+        .leftJoin(reviewTagMapping).on(review.reviewId.eq(reviewTagMapping.reviewId))
+        .where(reviewTagMapping.tagId.eq(tag))
+        .groupBy(lodge.lodgeId)
+        .orderBy(reviewTagMapping.mappingId.count().desc())
+        .offset(pageable.getOffset())
+        .limit(pageable.getPageSize())
+        .fetch();
+    long count = Optional.ofNullable(queryFactory
+        .select(review.lodgeId.countDistinct())
+        .from(review)
+        .leftJoin(reviewTagMapping).on(review.reviewId.eq(reviewTagMapping.reviewId))
+        .where(reviewTagMapping.mappingId.eq(tag))
+        .fetchOne()
+    ).orElse(0L);
+
+    return new PageImpl<>(list, pageable, count);
+  }
+
+  @Override
+  public List<Lodge> getTop5ByReservation() {
+    return queryFactory
+        .select(lodge).from(lodge)
+        .leftJoin(room).on(lodge.lodgeId.eq(room.lodgeId))
+        .leftJoin(reservation).on(room.roomId.eq(reservation.reservationId))
+        .where(reservation.bookingStatus.eq("DONE"))
+        .groupBy(lodge.lodgeId)
+        .orderBy(reservation.reservationId.count().desc())
+        .limit(5)
+        .fetch();
+  }
 }

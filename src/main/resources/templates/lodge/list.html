@@ -2,9 +2,11 @@
 <html lang="en"
       xmlns:th="http://www.thymeleaf.org"
       xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
       layout:decorate="~{layout/layout}">
 <section layout:fragment="customStyle">
   <link rel="stylesheet" th:href="@{/css/lodge/list.css}" />
+  <link rel="stylesheet" th:href="@{/css/lodge/bookmark.css}" />
 </section>
 <div layout:fragment="content">
   <div th:insert="~{fragments/search :: search}"
@@ -143,8 +145,9 @@
       <div class="listBody" th:if="${pagingHandler.totalCount > 0}">
         <ul>
           <li th:each="lodge : ${pagingHandler.list}">
-            <div class="bookmark" th:data-id="${lodge.lodgeId}">
-              <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="#999999" class="bi bi-heart-fill" viewBox="0 0 16 16">
+            <div class="bookmark" th:data-id="${lodge.lodgeId}"
+                 th:classappend="${(userDTO != null && bookmarks.contains(lodge.lodgeId)) ? 'selected' : ''}">
+              <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" class="bi bi-heart-fill" viewBox="0 0 16 16">
                 <path fill-rule="evenodd" d="M8 1.314C12.438-3.248 23.534 4.735 8 15-7.534 4.736 3.562-3.248 8 1.314"/>
               </svg>
             </div>
@@ -161,7 +164,14 @@
                     <span class="lodgeType" th:text="${lodge.lodgeType}"></span>
                     <span class="lodgeName" th:text="${lodge.lodgeName}"></span>
                     <span class="lodgeAddr" th:text="${lodge.shortAddress}"></span>
-                    <div class="lodgeReviewStatusArea">별점 영역</div>
+                    <div class="lodgeReviewStatusArea">
+                      <div class="averageReviewScore">
+                        ★ [[${lodge.averageReviewScore != null ? lodge.averageReviewScore : '-'}]]
+                      </div>
+                      <div class="reviewCount">
+                        <span class="areaTitle">[[${lodge.reviewCount}]]명 평가</span>
+                      </div>
+                    </div>
                   </div>
                   <div class="lodgePrice">
                     <p class="rent time" th:if="${lodge.cheapestRent != null}">
@@ -215,4 +225,9 @@
     const priceTable = /*[[${priceTable}]]*/;
   </script>
   <script th:src="@{/js/lodge/list.js}"></script>
+  <script type="module" th:inline="javascript" sec:authorize="isAuthenticated()">
+    import(/*[[@{/js/lodge/bookmark.js}]]*/).then(module => {
+      module.default(/*[[${userDTO.userId}]]*/);
+    });
+  </script>
 </div>

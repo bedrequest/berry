@@ -6,6 +6,7 @@ import com.berry.project.entity.lodge.Lodge;
 import com.berry.project.entity.lodge.LodgeDescription;
 import com.berry.project.entity.lodge.Room;
 import com.berry.project.handler.CustomerIqPagingHandler;
+import com.berry.project.handler.PagingHandler;
 import com.berry.project.util.FacilityMaskDecoder;
 import org.json.simple.JSONArray;
 import org.json.simple.parser.JSONParser;
@@ -78,9 +79,7 @@ public interface LodgeService {
         .build();
   }
 
-
-  Object getLodgeList(int pageNo, ListOptionDTO listOptionDTO, LodgeOptionDTO lodgeOptionDTO);
-
+  PagingHandler<LodgeDTO> getLodgeList(int pageNo, ListOptionDTO listOptionDTO, LodgeOptionDTO lodgeOptionDTO);
 
   // ===== Top N 예약 숙소 집계 =====
   /**
@@ -90,4 +89,5 @@ public interface LodgeService {
    */
   List<LodgeSummaryDTO> getTopBookedLodges(int topN);
 
+  List<LodgeDTO> getTop5Lodges();
 }
