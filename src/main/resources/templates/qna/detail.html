@@ -27,6 +27,7 @@
 
                     <!-- 수정 모드에서 보여줄 select (초기엔 숨김) -->
                     <select id="categorySelect" name="category" class="input-box short" style="display: none;">
+                        <option th:value="공지" sec:authorize="hasRole('ROLE_ADMIN')">공지</option>
                         <option value="결제">결제</option>
                         <option value="환불">환불</option>
                         <option value="시설">시설</option>
