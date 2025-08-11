@@ -46,8 +46,8 @@ public class CustomerIqBoardController {
                            @RequestParam(name = "files", required = false)
                            MultipartFile[] files) {
         log.info("DTO {}", customeriqboardDTO);
-        if (customeriqboardDTO.getIsSecret() == null) {
-            customeriqboardDTO.setIsSecret(false);
+        if (customeriqboardDTO.getSecret() == null) {
+            customeriqboardDTO.setSecret(false);
         }
         // file
         List<CustomerIqFileDTO> fileList = null;
@@ -95,21 +95,56 @@ public class CustomerIqBoardController {
         model.addAttribute("ph", paginghandler);
     }
 
+//    @GetMapping("/detail")
+//    public void detail(Model model, @RequestParam("bno") Long bno, Principal principal){
+//        CustomerIqBoardFileDTO customeriqboardfileDTO = boardservice.getDetail(bno);
+//        log.info(">>>> customeriqboardfileDTO > {} ", customeriqboardfileDTO);
+//        model.addAttribute("customeriqboardfileDTO", customeriqboardfileDTO);
+//
+//        UserDTO userDTO = userService.getUserInfo(principal.getName());
+//        boolean modifiable = false;
+//        if (userDTO != null)
+//            modifiable = userDTO.getUserEmail().equals(customeriqboardfileDTO.getBoardDTO().getUserEmail())
+//                    || userDTO.getAuthList()
+//                    .stream().map(AuthUserDTO::getAuthRole)
+//                    .anyMatch(str -> str.equals("ROLE_ADMIN"));
+//        model.addAttribute("modifiable", modifiable);
+//    }
+
     @GetMapping("/detail")
-    public void detail(Model model, @RequestParam("bno") Long bno, Principal principal){
+    public String detail(Model model, @RequestParam("bno") Long bno, Principal principal, RedirectAttributes redirectAttributes){
         CustomerIqBoardFileDTO customeriqboardfileDTO = boardservice.getDetail(bno);
         log.info(">>>> customeriqboardfileDTO > {} ", customeriqboardfileDTO);
-        model.addAttribute("customeriqboardfileDTO", customeriqboardfileDTO);
 
         UserDTO userDTO = userService.getUserInfo(principal.getName());
-        boolean modifiable = false;
-        if (userDTO != null)
-            modifiable = userDTO.getUserEmail().equals(customeriqboardfileDTO.getBoardDTO().getUserEmail())
-                    || userDTO.getAuthList()
-                    .stream().map(AuthUserDTO::getAuthRole)
-                    .anyMatch(str -> str.equals("ROLE_ADMIN"));
+
+        boolean isOwner = false;
+        boolean isAdmin = false;
+
+        if(userDTO != null){
+            String loginEmail = userDTO.getUserEmail();
+            String writerEmail = customeriqboardfileDTO.getBoardDTO().getUserEmail();
+
+            isOwner = loginEmail.equals(writerEmail);
+            isAdmin = userDTO.getAuthList().stream()
+                .map(AuthUserDTO::getAuthRole)
+                .anyMatch(role -> role.equals("ROLE_ADMIN"));
+        }
+
+        // 비밀글 접근 제한
+        Boolean isSecret = customeriqboardfileDTO.getBoardDTO().getSecret();
+        if(Boolean.TRUE.equals(isSecret) && !(isOwner || isAdmin)){
+            redirectAttributes.addFlashAttribute("error", "비밀글입니다. 접근 권한이 없습니다.");
+            return "redirect:/qna/list";
+        }
+
+        boolean modifiable = isOwner || isAdmin;
         model.addAttribute("modifiable", modifiable);
+        model.addAttribute("customeriqboardfileDTO", customeriqboardfileDTO);
+
+        return "/qna/detail";
     }
+
     @PostMapping("/update")
     public String modify(CustomerIqBoardDTO customeriqboardDTO,
                        RedirectAttributes redirectAttributes,

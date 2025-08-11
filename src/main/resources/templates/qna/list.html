@@ -9,6 +9,16 @@
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
   <link rel="stylesheet" th:href="@{/css/flatpickrCustom.css}" />
   <link rel="stylesheet" href="https://npmcdn.com/flatpickr/dist/themes/material_red.css" />
+
+<!-- 추가(25-08-11) -->
+  <style>
+    .lock-icon {
+      color: red;
+      margin-left: 5px;
+      font-size: 0.9em;
+    }
+  </style>
+
 </section>
 
 <body>
@@ -53,8 +63,6 @@
         </div>
       </div>
 
-
-
       <!-- 검색줄 -->
       <div class="search-line">
         <select class="form-select" name="type" aria-label="Select Category">
@@ -91,19 +99,29 @@
     <tr th:each="notice : ${noticeList}">
       <th scope="row">[[${notice.bno}]]</th>
       <td>[[${notice.category}]]</td>
-      <td><a th:href="@{/qna/detail(bno=${notice.bno})}">
-        [[${notice.title}]]</a>
+      <td>
+        <a th:href="@{/qna/detail(bno=${notice.bno})}">
+        [[${notice.title}]]
+        <!-- 추가(25-08-11) -->
+          <span th:if="${notice.secret}" class="lock-icon" title="비밀글입니다">🔒</span>
+        </a>
 
       </td>
       <td>[[${notice.userEmail}]]</td>
       <td>[[${#temporals.format(notice.regDate, 'yyyy-MM-dd HH:mm:ss')}]]</td>
       <td>[[${notice.comment}]]</td>
     </tr>
+
+    <!-- 일반글 -->
     <tr th:each="bvo:${ph.list}">
       <th scope="row">[[${bvo.bno}]]</th>
       <td>[[${bvo.category}]]</td>
-      <td><a th:href="@{/qna/detail(bno=${bvo.bno})}">
-        [[${bvo.title}]]</a>
+      <td>
+        <a th:href="@{/qna/detail(bno=${bvo.bno})}">
+        [[${bvo.title}]]
+          <!-- 추가(25-08-11) -->
+          <span th:if="${bvo.secret}" class="lock-icon" title="비밀글입니다">🔒</span>
+      </a>
 
       </td>
       <td>[[${bvo.userEmail}]]</td>
@@ -154,6 +172,14 @@
     </ul>
   </nav>
 
+  <!--    추가(25-08-11)      -->
+  <div th:if="${error}">
+    <script>
+      alert([[${error}]]);
+    </script>
+  </div>
+</div>
+
   <!-- flatpickr JS 로딩 -->
   <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
 
@@ -201,6 +227,6 @@
   </script>
 
   <script th:src="@{/js/qna/boardList.js}"></script>
-</div>
 
+</div>
 </body>
