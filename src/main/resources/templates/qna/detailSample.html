@@ -12,7 +12,7 @@
 
 <!-- 실제 콘텐츠 시작 -->
 <div layout:fragment="content">
-    <div class="container">
+    <div class="container" th:data-answered="${customeriqboardfileDTO.boardDTO.comment != null}">
         <h2 class="page-title">문의내용</h2>
 
         <form action="/qna/update" method="post" id="modForm" enctype="multipart/form-data">
@@ -55,9 +55,6 @@
                 </div>
             </div>
 
-
-
-
             <!-- 본문 -->
             <div class="form-group">
   <textarea class="form-control" name="content" id="con" cols="30" rows="10" readonly
@@ -72,8 +69,6 @@
             <div class="comment-area">
                 <textarea class="form-control comment-input" name="comment" id="comment" rows="1" maxlength="500" placeholder="댓글을 입력하세요" readonly>[[${customeriqboardfileDTO.boardDTO.comment}]]</textarea>
             </div>
-
-            <!-- sec:authorize="hasRole('ROLE_ADMIN')" -->
 
             <!-- 첨부파일 미리보기 -->
             <div class="attached-files" th:if="${customeriqboardfileDTO.fileList != null}">
@@ -113,7 +108,8 @@
                 <input type="hidden" name="bno" th:value="${customeriqboardfileDTO.boardDTO.bno}">
 
                 <!-- Modify & Delete 영역 -->
-                <div id="action-buttons" style="display: flex; gap: 12px;">
+                <div id="action-buttons" style="display: flex; gap: 12px;"
+                     th:if="${modifiable}">
                     <button type="button" id="modBtn" class="btn btn-warning">수정</button>
                     <button type="button" id="delBtn" class="btn btn-danger">삭제</button>
                 </div>
@@ -132,10 +128,7 @@
                 <button type="button" id="listBtn" class="btn btn-primary">List</button>
             </div>
 
-
-            <!--      추가된 부분      -->
         </form>
-        <body data-answered="[[${customeriqboardfileDTO.boardDTO.answered}]]">
 
         <script th:inline="javascript">
             let bnoValue = [[${customeriqboardfileDTO.boardDTO.bno}]];
@@ -186,4 +179,4 @@
 
 </html>
 
-<!-- 본문칸 작업전 js-->
+<!-- 이미지 작업전 html-->

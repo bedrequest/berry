@@ -1,13 +1,7 @@
 document.addEventListener('DOMContentLoaded', () => {
-  const isAnsweredAttr = document.body.getAttribute('data-answered');
+  const isAnsweredAttr = document.querySelector('.container').dataset.answered;
   const bnoValue = document.querySelector('input[name="bno"]').value;
   let isAnswered = isAnsweredAttr === 'true';
-
-  // sessionStorage에서 답변완료 여부 확인
-  const isSessionAnswered = sessionStorage.getItem(`answered-${bnoValue}`) === 'true';
-  if (isSessionAnswered) {
-    isAnswered = true;
-  }
 
   // 주요 버튼 및 요소 선택
   const modBtn = document.getElementById('modBtn');
@@ -61,16 +55,33 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   // 원본 상태 복원
+  // 복원 전 로그 (문제 확인용)
+  console.log('Restoring state:', originalState);
+
+
   function restoreOriginalState() {
-    title.value = originalState.title;
-    content.value = originalState.content;
-    if (comment) comment.value = originalState.comment;
-    categoryInput.value = originalState.category;
-    previewContainer.innerHTML = originalState.files;
-    if (charCount) {
-      charCount.innerText = originalState.charCount;
-      charCount.classList.toggle('warning', content.value.length >= 900);
-    }
+      title.value = originalState.title;
+      content.value = originalState.content;
+      if (comment) comment.value = originalState.comment;
+      categoryInput.value = originalState.category;
+
+      previewContainer.innerHTML = originalState.files;
+
+      // 파일 input 초기화 (선택된 파일 초기화)
+      if (uploadInput) {
+        uploadInput.value = '';
+      }
+
+      if (charCount) {
+        charCount.innerText = originalState.charCount;
+        charCount.classList.toggle('warning', content.value.length >= 900);
+      }
+
+      // 복원된 이미지 미리보기 내 삭제 버튼 이벤트 다시 연결
+      document.querySelectorAll('.file-x').forEach(btn => {
+        btn.style.visibility = 'hidden'; // 수정모드 아니면 숨김
+        btn.onclick = null;
+      });
   }
 
   // 초기 본문 높이 맞춤
@@ -81,7 +92,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // 답변완료 상태 처리
   if (isAnswered) {
-    // 수정, 삭제, 제출, 답변완료, 취소 버튼 숨기기
+  console.log("답변완료된 게시글");
+    // 수정, 제출, 답변완료, 취소 버튼 숨기기
     [modBtn, submitBtn, cancelBtn, completeBtn].forEach(btn => {
       if (btn) btn.style.display = 'none';
     });
@@ -318,14 +330,12 @@ document.addEventListener('DOMContentLoaded', () => {
     completeBtn.addEventListener('click', () => {
       if (!confirm("답변을 완료하시겠습니까?")) return;
 
-      // 카테고리 select → input으로 값 이동
       if (categorySelect && categoryInput) {
         categoryInput.value = categorySelect.value.trim();
 
         categorySelect.removeAttribute('name');
         categoryInput.setAttribute('name', 'category');
 
-        // 화면 표시용으로 대괄호 추가 (선택 사항)
         setTimeout(() => {
           categoryInput.value = `[ ${categoryInput.value} ]`;
         }, 0);
@@ -334,19 +344,23 @@ document.addEventListener('DOMContentLoaded', () => {
         categoryInput.style.display = 'inline-block';
       }
 
-      // sessionStorage에 답변 완료 표시
       sessionStorage.setItem(`answered-${bnoValue}`, 'true');
       isAnswered = true;
 
-      // 댓글칸 항상 보이게 하기
-      if (commentArea) commentArea.style.display = 'block';
+      console.log('답변완료 버튼 클릭 - 댓글 영역:', commentArea);
+      if (commentArea) {
+        commentArea.style.display = 'block';
+        console.log('댓글 영역 보이도록 처리 완료');
+      } else {
+        console.log('댓글 영역을 찾을 수 없습니다.');
+      }
 
-      // 폼 제출 (서버에 저장)
       const form = document.querySelector('form');
       if (form) {
         form.submit();
       }
     });
+
   }
 });
 
@@ -433,7 +447,7 @@ window.addEventListener('DOMContentLoaded', () => {
 
   resizeEmailInput();
 
+  // 값이 바뀔 때마다 크기 조절
   emailInput.addEventListener('input', resizeEmailInput);
 });
-
-/*본문칸 작업전 js*/
+/* 이미지 작업전 js */
