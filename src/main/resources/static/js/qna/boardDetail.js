@@ -82,12 +82,13 @@ document.addEventListener('DOMContentLoaded', () => {
   // 답변완료 상태 처리
   if (isAnswered) {
     // 수정, 삭제, 제출, 답변완료, 취소 버튼 숨기기
-    [modBtn, delBtn, submitBtn, cancelBtn, completeBtn].forEach(btn => {
+    [modBtn, submitBtn, cancelBtn, completeBtn].forEach(btn => {
       if (btn) btn.style.display = 'none';
     });
 
     // List 버튼은 보이기
     if (listBtn) listBtn.style.display = 'inline-block';
+    if (delBtn) listBtn.style.display = 'inline-block';
 
     // 댓글칸 항상 보이기 (관리자/일반 모두)
     if (commentArea) commentArea.style.display = 'block';
@@ -126,91 +127,100 @@ document.addEventListener('DOMContentLoaded', () => {
   let contentInputHandler = null;
 
   // 수정 버튼 클릭 이벤트
-  modBtn.addEventListener('click', () => {
-    if (isAnswered) {
-      alert('답변 완료된 문의는 수정할 수 없습니다.');
-      return;
-    }
+ modBtn.addEventListener('click', () => {
+   if (isAnswered) {
+     alert('답변 완료된 문의는 수정할 수 없습니다.');
+     return;
+   }
 
-    // 카테고리 input → select 전환
-    if (categoryInput && categorySelect) {
-      categoryInput.style.display = 'none';
-      categorySelect.style.display = 'inline-block';
+   // 카테고리 input → select 전환
+   if (categoryInput && categorySelect) {
+     categoryInput.style.display = 'none';
+     categorySelect.style.display = 'inline-block';
 
-      const rawValue = categoryInput.value.replace(/\[|\]/g, '').trim();
-      categorySelect.value = rawValue;
+     const rawValue = categoryInput.value.replace(/\[|\]/g, '').trim();
+     categorySelect.value = rawValue;
 
-      categoryInput.removeAttribute('name');
-      categorySelect.setAttribute('name', 'category');
-    }
+     categoryInput.removeAttribute('name');
+     categorySelect.setAttribute('name', 'category');
+   }
 
-    title.removeAttribute('readonly');
-    content.removeAttribute('readonly');
-    if (comment) comment.removeAttribute('readonly');
+   title.removeAttribute('readonly');
+   content.removeAttribute('readonly');
 
-    modBtn.style.display = 'none';
-    delBtn.style.display = 'none';
-    listBtn.style.display = 'none';
-    submitBtn.style.display = 'inline-block';
+   if (comment) {
+     if (isAdmin) {
+       comment.removeAttribute('readonly');
+       if (commentArea) commentArea.style.display = 'block';
+     } else {
+       if (commentArea) commentArea.style.display = 'none';
+     }
+   }
 
-    if (completeBtn) completeBtn.style.display = 'inline-block';
-    cancelBtn.style.display = 'inline-block';
+   modBtn.style.display = 'none';
+   delBtn.style.display = 'none';
+   listBtn.style.display = 'none';
+   submitBtn.style.display = 'inline-block';
 
-    if (uploadLabel) {
-      uploadLabel.classList.remove('disabled');
-      uploadLabel.style.cursor = 'pointer';
-    }
-    if (uploadInput) {
-      uploadInput.disabled = false;
-    }
-    if (fileUploadDiv) {
-      fileUploadDiv.style.display = 'flex';
-    }
+   if (completeBtn) completeBtn.style.display = 'inline-block';
+   cancelBtn.style.display = 'inline-block';
 
-    if (charCount) {
-      charCount.style.display = 'block';
-      updateCharCount();
-    }
+   if (uploadLabel) {
+     uploadLabel.classList.remove('disabled');
+     uploadLabel.style.cursor = 'pointer';
+   }
+   if (uploadInput) {
+     uploadInput.disabled = false;
+   }
+   if (fileUploadDiv) {
+     fileUploadDiv.style.display = 'flex';
+   }
 
-    // 댓글 영역 보이기
-    if (commentArea) commentArea.style.display = 'block';
+   if (charCount) {
+     charCount.style.display = 'block';
+     updateCharCount();
+   }
 
-    // 기존 핸들러 제거 (중복 방지)
-    if (contentInputHandler) {
-      content.removeEventListener('input', contentInputHandler);
-    }
-    contentInputHandler = () => {
-      autoResize(content);
-      updateCharCount();
-    };
-    content.addEventListener('input', contentInputHandler);
+   // 기존 핸들러 제거 (중복 방지)
+   if (contentInputHandler) {
+     content.removeEventListener('input', contentInputHandler);
+   }
 
-    autoResize(content);
+   // 새 input 이벤트 핸들러 붙이기 (본문 높이 자동조절 + 글자수 카운트)
+   contentInputHandler = () => {
+     autoResize(content);
+     updateCharCount();
+   };
+   content.addEventListener('input', contentInputHandler);
 
-    if (comment) {
-      autoResize(comment);
-      comment.addEventListener('input', () => {
-        autoResize(comment);
-      });
-    }
+   autoResize(content);
 
-    // 파일 삭제 버튼 보이기 및 삭제 기능 활성화
-    document.querySelectorAll('.file-x').forEach(btn => {
-      btn.style.visibility = 'visible';
-      btn.onclick = async () => {
-        const uuid = btn.dataset.uuid;
-        const result = await fileRemoveToServer(uuid);
-        if (result == "1") {
-          alert("파일삭제 성공");
-          const fileElement = btn.previousElementSibling || btn.parentElement.querySelector('.fileX');
-          if (fileElement) fileElement.remove();
-          btn.remove();
-        } else {
-          alert("파일삭제 실패");
-        }
-      };
-    });
-  });
+   if (comment) {
+     autoResize(comment);
+     // 댓글도 높이 자동조절 (필요시)
+     comment.addEventListener('input', () => {
+       autoResize(comment);
+     });
+   }
+
+   // 파일 삭제 버튼 보이기 및 삭제 기능 활성화
+   document.querySelectorAll('.file-x').forEach(btn => {
+     btn.style.visibility = 'visible';
+     btn.onclick = async () => {
+       const uuid = btn.dataset.uuid;
+       const result = await fileRemoveToServer(uuid);
+       if (result == "1") {
+         alert("파일삭제 성공");
+         const fileElement = btn.previousElementSibling || btn.parentElement.querySelector('.fileX');
+         if (fileElement) fileElement.remove();
+         btn.remove();
+       } else {
+         alert("파일삭제 실패");
+       }
+     };
+   });
+ });
+
 
   // 삭제 버튼 클릭
   delBtn.addEventListener('click', () => {

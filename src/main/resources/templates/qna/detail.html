@@ -113,7 +113,8 @@
                 <input type="hidden" name="bno" th:value="${customeriqboardfileDTO.boardDTO.bno}">
 
                 <!-- Modify & Delete 영역 -->
-                <div id="action-buttons" style="display: flex; gap: 12px;">
+                <div id="action-buttons" style="display: flex; gap: 12px;"
+                     th:if="${isAdmin() || user_email == customeriqboardfileDTO.boardDTO.userEmail}">
                     <button type="button" id="modBtn" class="btn btn-warning">수정</button>
                     <button type="button" id="delBtn" class="btn btn-danger">삭제</button>
                 </div>
@@ -132,21 +133,19 @@
                 <button type="button" id="listBtn" class="btn btn-primary">List</button>
             </div>
 
-
-                     <!--      추가된 부분      -->
         </form>
         <body data-answered="[[${customeriqboardfileDTO.boardDTO.answered}]]">
 
         <script th:inline="javascript">
-          let bnoValue = [[${customeriqboardfileDTO.boardDTO.bno}]];
+            let bnoValue = [[${customeriqboardfileDTO.boardDTO.bno}]];
         </script>
-        <th:blcok sec:authorize="isAuthenticated()">
+        <th:block sec:authorize="isAuthenticated()">
 
-          <script th:inline="javascript">
-            const userEmail = [[${authEmail}]];
-            console.log(userEmail);
-          </script>
-        </th:blcok>
+            <script th:inline="javascript">
+                const userEmail = [[${authEmail}]];
+                console.log(userEmail);
+            </script>
+        </th:block>
 
         <script th:src="@{/js/qna/boardDetail.js}"></script>
         <script th:src="@{/js/qna/boardComment.js}"></script>
@@ -175,6 +174,11 @@
               }
             });
         </script>
+
+        <script th:inline="javascript">
+            const isAdmin = /*[[${#authorization.expression('hasRole(''ROLE_ADMIN'')')}]]*/ false;
+        </script>
+
     </div>
 
 </div>

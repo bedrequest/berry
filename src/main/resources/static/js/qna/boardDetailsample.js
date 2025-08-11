@@ -3,13 +3,13 @@ document.addEventListener('DOMContentLoaded', () => {
   const bnoValue = document.querySelector('input[name="bno"]').value;
   let isAnswered = isAnsweredAttr === 'true';
 
-  // sessionStorage에서 답변완료 여부 가져오기
+  // sessionStorage에서 답변완료 여부 확인
   const isSessionAnswered = sessionStorage.getItem(`answered-${bnoValue}`) === 'true';
   if (isSessionAnswered) {
     isAnswered = true;
   }
 
-  // 버튼 및 주요 요소 선택
+  // 주요 버튼 및 요소 선택
   const modBtn = document.getElementById('modBtn');
   const delBtn = document.getElementById('delBtn');
   const submitBtn = document.getElementById('submitBtn');
@@ -33,13 +33,14 @@ document.addEventListener('DOMContentLoaded', () => {
 
   let originalState = {};
 
-  // 본문 높이 자동조절 함수
+  // 본문 높이 자동 조절 함수
   function autoResize(el) {
     if (!el) return;
     el.style.height = 'auto';
     el.style.height = el.scrollHeight + 'px';
   }
 
+  // 글자 수 업데이트
   function updateCharCount() {
     if (!charCount || !content) return;
     const len = content.value.length;
@@ -47,6 +48,7 @@ document.addEventListener('DOMContentLoaded', () => {
     charCount.classList.toggle('warning', len >= 900);
   }
 
+  // 원본 상태 저장
   function saveOriginalState() {
     originalState = {
       title: title.value,
@@ -58,10 +60,8 @@ document.addEventListener('DOMContentLoaded', () => {
     };
   }
 
+  // 원본 상태 복원
   function restoreOriginalState() {
-    // 복원 전 로그 (문제 확인용)
-    console.log('Restoring state:', originalState);
-
     title.value = originalState.title;
     content.value = originalState.content;
     if (comment) comment.value = originalState.comment;
@@ -76,20 +76,29 @@ document.addEventListener('DOMContentLoaded', () => {
   // 초기 본문 높이 맞춤
   autoResize(content);
 
-  // **페이지 로드 시점에 원본 상태 저장**
+  // 원본 상태 저장
   saveOriginalState();
 
-  // readonly 상태면 버튼 숨기고, 업로드 비활성화, 댓글 숨김
+  // 답변완료 상태 처리
   if (isAnswered) {
-    [modBtn, delBtn, submitBtn, cancelBtn, completeBtn].forEach(btn => {
-      if (btn) btn.style.display = "none";
+    // 수정, 삭제, 제출, 답변완료, 취소 버튼 숨기기
+    [modBtn, submitBtn, cancelBtn, completeBtn].forEach(btn => {
+      if (btn) btn.style.display = 'none';
     });
-    if (listBtn) listBtn.style.display = "inline-block";
 
+    // List 버튼은 보이기
+    if (listBtn) listBtn.style.display = 'inline-block';
+    if (delBtn) listBtn.style.display = 'inline-block';
+
+    // 댓글칸 항상 보이기 (관리자/일반 모두)
+    if (commentArea) commentArea.style.display = 'block';
+
+    // 본문, 제목, 댓글 읽기 전용 유지
     title.setAttribute('readonly', true);
     content.setAttribute('readonly', true);
     if (comment) comment.setAttribute('readonly', true);
 
+    // 파일 업로드 비활성화 및 숨김
     if (uploadInput) {
       uploadInput.disabled = true;
       uploadInput.value = '';
@@ -100,111 +109,118 @@ document.addEventListener('DOMContentLoaded', () => {
     }
     if (fileUploadDiv) fileUploadDiv.style.display = 'none';
 
-    if (commentArea) commentArea.style.display = 'none';
-
+    // 파일 삭제 버튼 숨김
     document.querySelectorAll('.file-x').forEach(btn => {
       btn.style.visibility = 'hidden';
       btn.onclick = null;
     });
   } else {
-    // 답변 완료 안된 상태일 때는 업로드 영역 기본 숨김
+    // 답변 완료 전 상태
+
+    // 업로드 영역 기본 숨김
     if (fileUploadDiv) fileUploadDiv.style.display = 'none';
 
-    // 댓글 영역 기본 숨김 (수정 클릭 시 보임)
+    // 댓글 영역 기본 숨김 (수정 모드에서 보임)
     if (commentArea) commentArea.style.display = 'none';
   }
 
-  // 중복 방지를 위한 변수
   let contentInputHandler = null;
 
   // 수정 버튼 클릭 이벤트
-  modBtn.addEventListener('click', () => {
-    if (isAnswered) {
-      alert('답변 완료된 문의는 수정할 수 없습니다.');
-      return;
-    }
+ modBtn.addEventListener('click', () => {
+   if (isAnswered) {
+     alert('답변 완료된 문의는 수정할 수 없습니다.');
+     return;
+   }
 
-    // 카테고리 input → select 전환
-    if (categoryInput && categorySelect) {
-      categoryInput.style.display = 'none';
-      categorySelect.style.display = 'inline-block';
+   // 카테고리 input → select 전환
+   if (categoryInput && categorySelect) {
+     categoryInput.style.display = 'none';
+     categorySelect.style.display = 'inline-block';
 
-      const rawValue = categoryInput.value.replace(/\[|\]/g, '').trim();
-      categorySelect.value = rawValue;
+     const rawValue = categoryInput.value.replace(/\[|\]/g, '').trim();
+     categorySelect.value = rawValue;
 
-      categoryInput.removeAttribute('name');
-      categorySelect.setAttribute('name', 'category');
-    }
+     categoryInput.removeAttribute('name');
+     categorySelect.setAttribute('name', 'category');
+   }
 
-    // **수정 모드 진입 시에는 원본 상태 재저장하지 않음**
-    // saveOriginalState();
+   title.removeAttribute('readonly');
+   content.removeAttribute('readonly');
 
-    title.removeAttribute('readonly');
-    content.removeAttribute('readonly');
-    if (comment) comment.removeAttribute('readonly');
+   if (comment) {
+     if (isAdmin) {
+       comment.removeAttribute('readonly');
+       if (commentArea) commentArea.style.display = 'block';
+     } else {
+       if (commentArea) commentArea.style.display = 'none';
+     }
+   }
 
-    modBtn.style.display = 'none';
-    delBtn.style.display = 'none';
-    listBtn.style.display = 'none';
-    submitBtn.style.display = 'inline-block';
+   modBtn.style.display = 'none';
+   delBtn.style.display = 'none';
+   listBtn.style.display = 'none';
+   submitBtn.style.display = 'inline-block';
 
-    if (completeBtn) completeBtn.style.display = 'inline-block';
-    cancelBtn.style.display = 'inline-block';
+   if (completeBtn) completeBtn.style.display = 'inline-block';
+   cancelBtn.style.display = 'inline-block';
 
-    if (uploadLabel) {
-      uploadLabel.classList.remove('disabled');
-      uploadLabel.style.cursor = 'pointer';
-    }
-    if (uploadInput) {
-      uploadInput.disabled = false;
-    }
-    if (fileUploadDiv) {
-      fileUploadDiv.style.display = 'flex';
-    }
+   if (uploadLabel) {
+     uploadLabel.classList.remove('disabled');
+     uploadLabel.style.cursor = 'pointer';
+   }
+   if (uploadInput) {
+     uploadInput.disabled = false;
+   }
+   if (fileUploadDiv) {
+     fileUploadDiv.style.display = 'flex';
+   }
 
-    if (charCount) {
-      charCount.style.display = 'block';
-      updateCharCount();
-    }
+   if (charCount) {
+     charCount.style.display = 'block';
+     updateCharCount();
+   }
 
-    // 댓글 영역 보이기
-    if (commentArea) commentArea.style.display = 'block';
+   // 기존 핸들러 제거 (중복 방지)
+   if (contentInputHandler) {
+     content.removeEventListener('input', contentInputHandler);
+   }
 
-    // 기존 핸들러 제거 (중복방지)
-    if (contentInputHandler) {
-      content.removeEventListener('input', contentInputHandler);
-    }
-    contentInputHandler = () => {
-      autoResize(content);
-      updateCharCount();
-    };
-    content.addEventListener('input', contentInputHandler);
+   // 새 input 이벤트 핸들러 붙이기 (본문 높이 자동조절 + 글자수 카운트)
+   contentInputHandler = () => {
+     autoResize(content);
+     updateCharCount();
+   };
+   content.addEventListener('input', contentInputHandler);
 
-    autoResize(content);
+   autoResize(content);
 
-    if (comment) {
-      autoResize(comment);
-      comment.addEventListener('input', () => {
-        autoResize(comment);
-      });
-    }
+   if (comment) {
+     autoResize(comment);
+     // 댓글도 높이 자동조절 (필요시)
+     comment.addEventListener('input', () => {
+       autoResize(comment);
+     });
+   }
 
-    document.querySelectorAll('.file-x').forEach(btn => {
-      btn.style.visibility = 'visible';
-      btn.onclick = async () => {
-        const uuid = btn.dataset.uuid;
-        const result = await fileRemoveToServer(uuid);
-        if (result == "1") {
-          alert("파일삭제 성공");
-          const fileElement = btn.previousElementSibling || btn.parentElement.querySelector('.fileX');
-          if (fileElement) fileElement.remove();
-          btn.remove();
-        } else {
-          alert("파일삭제 실패");
-        }
-      };
-    });
-  });
+   // 파일 삭제 버튼 보이기 및 삭제 기능 활성화
+   document.querySelectorAll('.file-x').forEach(btn => {
+     btn.style.visibility = 'visible';
+     btn.onclick = async () => {
+       const uuid = btn.dataset.uuid;
+       const result = await fileRemoveToServer(uuid);
+       if (result == "1") {
+         alert("파일삭제 성공");
+         const fileElement = btn.previousElementSibling || btn.parentElement.querySelector('.fileX');
+         if (fileElement) fileElement.remove();
+         btn.remove();
+       } else {
+         alert("파일삭제 실패");
+       }
+     };
+   });
+ });
+
 
   // 삭제 버튼 클릭
   delBtn.addEventListener('click', () => {
@@ -276,7 +292,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   });
 
-  // 파일 선택시 파일명 표시 및 이미지 미리보기
+  // 파일 선택 시 파일명 표시 및 이미지 미리보기
   if (uploadInput) {
     uploadInput.addEventListener('change', () => {
       const files = Array.from(uploadInput.files);
@@ -302,7 +318,7 @@ document.addEventListener('DOMContentLoaded', () => {
     completeBtn.addEventListener('click', () => {
       if (!confirm("답변을 완료하시겠습니까?")) return;
 
-      // category select -> input으로 값 이동
+      // 카테고리 select → input으로 값 이동
       if (categorySelect && categoryInput) {
         categoryInput.value = categorySelect.value.trim();
 
@@ -321,6 +337,9 @@ document.addEventListener('DOMContentLoaded', () => {
       // sessionStorage에 답변 완료 표시
       sessionStorage.setItem(`answered-${bnoValue}`, 'true');
       isAnswered = true;
+
+      // 댓글칸 항상 보이게 하기
+      if (commentArea) commentArea.style.display = 'block';
 
       // 폼 제출 (서버에 저장)
       const form = document.querySelector('form');
@@ -343,7 +362,7 @@ async function fileRemoveToServer(uuid) {
   }
 }
 
-// 카테고리 input 너비 자동조절
+// 카테고리 input 너비 자동 조절
 window.addEventListener('DOMContentLoaded', () => {
   const categoryInput = document.getElementById('c');
   if (!categoryInput) return;
@@ -392,7 +411,7 @@ document.addEventListener('DOMContentLoaded', () => {
   });
 });
 
-
+// 이메일 input 너비 자동 조절
 window.addEventListener('DOMContentLoaded', () => {
   const emailInput = document.querySelector('.input-box.email');
   if (!emailInput) return;
@@ -414,7 +433,7 @@ window.addEventListener('DOMContentLoaded', () => {
 
   resizeEmailInput();
 
-  // 값이 바뀔 때마다 크기 조절
   emailInput.addEventListener('input', resizeEmailInput);
 });
-/*댓글칸 작업전 js*/
+
+/*본문칸 작업전 js*/
