@@ -126,7 +126,7 @@
       </td>
       <td>[[${bvo.userEmail}]]</td>
       <td>[[${#temporals.format(bvo.regDate, 'yyyy-MM-dd HH:mm:ss')}]]</td>
-      <td>[[${bvo.comment}]]</td>
+      <td>[[${bvo.comment == null ? '처리중' : '완료'}]]</td>
     </tr>
     </tbody>
 
