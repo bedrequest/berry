@@ -95,10 +95,13 @@ public class CustomerIqBoardController {
     }
 
     @GetMapping("/detail")
-    public void detail(Model model, @RequestParam("bno") Long bno){
+    public void detail(Model model, @RequestParam("bno") Long bno, Principal principal){
         CustomerIqBoardFileDTO customeriqboardfileDTO = boardservice.getDetail(bno);
         log.info(">>>> customeriqboardfileDTO > {} ", customeriqboardfileDTO);
         model.addAttribute("customeriqboardfileDTO", customeriqboardfileDTO);
+
+        UserDTO userDTO = userService.getUserInfo(principal.getName());
+        model.addAttribute("userEmail", userDTO.getUserEmail());
     }
     @PostMapping("/update")
     public String modify(CustomerIqBoardDTO customeriqboardDTO,

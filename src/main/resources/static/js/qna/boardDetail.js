@@ -61,6 +61,10 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   // 원본 상태 복원
+  // 복원 전 로그 (문제 확인용)
+  console.log('Restoring state:', originalState);
+
+
   function restoreOriginalState() {
     title.value = originalState.title;
     content.value = originalState.content;
@@ -107,6 +111,8 @@ document.addEventListener('DOMContentLoaded', () => {
       uploadLabel.style.cursor = 'default';
     }
     if (fileUploadDiv) fileUploadDiv.style.display = 'none';
+
+    if (commentArea) commentArea.style.display = 'none';
 
     // 파일 삭제 버튼 숨김
     document.querySelectorAll('.file-x').forEach(btn => {
@@ -423,5 +429,6 @@ window.addEventListener('DOMContentLoaded', () => {
 
   resizeEmailInput();
 
+  // 값이 바뀔 때마다 크기 조절
   emailInput.addEventListener('input', resizeEmailInput);
 });

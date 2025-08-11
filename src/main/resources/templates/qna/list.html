@@ -59,6 +59,7 @@
       <div class="search-line">
         <select class="form-select" name="type" aria-label="Select Category">
           <option th:selected="${ph.type == null ? true : false}">--선택--</option>
+          <option th:selected="${ph.type == '공지' ? true : false}">공지</option>
           <option th:selected="${ph.type == '결제' ? true : false}">결제</option>
           <option th:selected="${ph.type == '환불' ? true : false}">환불</option>
           <option th:selected="${ph.type == '시설' ? true : false}">시설</option>
