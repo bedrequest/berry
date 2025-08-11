@@ -3,6 +3,7 @@ package com.berry.project.controller;
 import com.berry.project.dto.qna.CustomerIqBoardDTO;
 import com.berry.project.dto.qna.CustomerIqBoardFileDTO;
 import com.berry.project.dto.qna.CustomerIqFileDTO;
+import com.berry.project.dto.user.AuthUserDTO;
 import com.berry.project.dto.user.UserDTO;
 import com.berry.project.handler.CustomerIqFileHandler;
 import com.berry.project.handler.CustomerIqPagingHandler;
@@ -90,7 +91,7 @@ public class CustomerIqBoardController {
 
         Page<CustomerIqBoardDTO> customerIqBoardDTOPageList = (Page<CustomerIqBoardDTO>)list.get("list");
 
-        CustomerIqPagingHandler<CustomerIqBoardDTO> paginghandler = new CustomerIqPagingHandler(customerIqBoardDTOPageList, pageNo, type, keyword,tripStart, tripEnd);
+        CustomerIqPagingHandler<CustomerIqBoardDTO> paginghandler = new CustomerIqPagingHandler<>(customerIqBoardDTOPageList, pageNo, type, keyword,tripStart, tripEnd);
         model.addAttribute("ph", paginghandler);
     }
 
@@ -101,7 +102,13 @@ public class CustomerIqBoardController {
         model.addAttribute("customeriqboardfileDTO", customeriqboardfileDTO);
 
         UserDTO userDTO = userService.getUserInfo(principal.getName());
-        model.addAttribute("userEmail", userDTO.getUserEmail());
+        boolean modifiable = false;
+        if (userDTO != null)
+            modifiable = userDTO.getUserEmail().equals(customeriqboardfileDTO.getBoardDTO().getUserEmail())
+                    || userDTO.getAuthList()
+                    .stream().map(AuthUserDTO::getAuthRole)
+                    .anyMatch(str -> str.equals("ROLE_ADMIN"));
+        model.addAttribute("modifiable", modifiable);
     }
     @PostMapping("/update")
     public String modify(CustomerIqBoardDTO customeriqboardDTO,
