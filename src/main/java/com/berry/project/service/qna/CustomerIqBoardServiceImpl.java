@@ -80,7 +80,7 @@ public class CustomerIqBoardServiceImpl implements CustomerIqBoardService {
   @Override
   public Map<String, Object> getList(int page, String type, String keyword, String startDate, String endDate) {
 
-    Pageable pageable = PageRequest.of(page, 10,
+    Pageable pageable = PageRequest.of(page, 15,
         Sort.by("bno").descending());
 
     // 1. 공지글은 항상 고정
