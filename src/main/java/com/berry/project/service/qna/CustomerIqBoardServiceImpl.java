@@ -76,7 +76,6 @@ public class CustomerIqBoardServiceImpl implements CustomerIqBoardService {
     return customeriqboardDTOPageList;
   }
 
-
   @Override
   public Map<String, Object> getList(int page, String type, String keyword, String startDate, String endDate) {
 
@@ -98,7 +97,6 @@ public class CustomerIqBoardServiceImpl implements CustomerIqBoardService {
     Map<String, Object> result = new HashMap<>();
     result.put("noticeList", noticeDTOList);           // 공지글 따로
     result.put("list", customeriqboardDTOList);
-
 
     return result;
   }
@@ -157,15 +155,6 @@ public class CustomerIqBoardServiceImpl implements CustomerIqBoardService {
     }
     return customeriqfile.get().getBno();
   }
-
-
-
-
-
-
-
-
-
 
   @Transactional
   @Override
