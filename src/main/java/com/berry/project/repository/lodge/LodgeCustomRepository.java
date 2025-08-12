@@ -16,4 +16,6 @@ public interface LodgeCustomRepository {
 
   List<Lodge> getTop5ByReservation();
 
+  Lodge findBestByTagId(long tagId);
+
 }

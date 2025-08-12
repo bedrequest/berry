@@ -4,151 +4,195 @@
       xmlns:layout="http://www.ultraq.next.nz/thymeleaf/layout"
       xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
       layout:decorate="~{layout/layout}">
-<section layout:fragment="customStyle">
+<th:block layout:fragment="customStyle">
   <link rel="stylesheet" th:href="@{/css/index.css}">
   <link rel="stylesheet" th:href="@{/css/lodge/bookmark.css}">
-  <link rel="stylesheet" th:href="@{/css/review/review.css}">
-</section>
+  <link rel="stylesheet" th:href="@{/css/review/reviews.css}">
+  <link rel="stylesheet" th:href="@{/css/main_section_two.css}">
+  <link rel="stylesheet" th:href="@{/css/bannerSlide.css}" />
+</th:block>
 <div layout:fragment="content">
-  <div th:insert="~{fragments/search :: search}"></div>
 
-  <!--/*이벤트(이미지)*/-->
-  <div id="eventSection"></div>
+  <!-- 조해찬 -->
+  <div id="image-slide-section" class="section">
+    <!-- 포지션 relative 가 될 div -->
+    <div class="banner-top-section">
+      <!-- 뒷 배경 색 -->
+      <div class="banner-background"></div>
 
-  <!--/*최근 리뷰(10개)*/-->
-  <!--/*형식은 /fragments/review.html에서 가져옴*/-->
-  <div id="reviewPickUpSection" th:if="${recentReviews != null}" class="section">
-    <span class="areaTitle">최신 리뷰</span>
-    <div class="swiper reviewSwiper area">
-      <div class="swiper-wrapper">
-        <div th:each="review:${recentReviews}" class="swiper-slide">
-          <a th:href="@{/lodge/detail/{id}(id=${review.lodgeId})}">
-            <img th:src="${review.lodgeImage}" th:alt="${review.lodgeName}">
-            <div class="reviewTextArea">
-              <!-- 1. 숙소 이름-->
-              <div th:text="${review.lodgeName}"></div>
-              <!-- 2. 별점, 태그-->
-              <div class="d-flex align-items-center review-meta mb-3">
-                <div class="review-rating me-4">
-                    <span th:each="i : ${#numbers.sequence(1,5)}"
-                          th:text="${i <= review.rating} ? '★' : '☆'"></span>
-                </div>
-                <div class="review-tags d-flex flex-wrap gap-2">
-                    <span th:each="tag : ${review.tags}"
-                          class="badge review-tag-badge"
-                          th:text="${tag}">태그명</span>
-                </div>
+      <!-- 글자 슬라이드 -->
+      <div class="text-slide-wrapper">
+        <div id="textSlideSection">
+          <div class="text-slide-list">
+            <div class="text-slide-resource" th:each="item:${mainSlide}">
+              <div class="text-side-tit-wrapper">
+                <div class="text-slide-top-tit" th:text="${item.top}"></div>
+                <div class="text-slide-bottom-tit" th:utext="${item.bottom}"></div>
               </div>
-              <!-- 3. 리뷰 내용 -->
-              <p class="review-content" th:text="${review.content}"></p>
-              <!-- 4. 작성자, 날짜 -->
-              <div class="review-footer">
-                <div class="nickname fw-bold" th:text="${review.userEmail}"></div>
-                <span class="review-date me-3"
-                      th:text="${#temporals.format(review.createdAt, 'yyyy-MM-dd')}"></span>
-              </div>
-            </div>
-          </a>
-        </div>
-      </div>
-    </div>
-    <div class="swiper-button-prev custom-nav">
-      <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" fill="currentColor"
-           class="bi bi-caret-left-fill" viewBox="0 0 16 16">
-        <path
-            d="m3.86 8.753 5.482 4.796c.646.566 1.658.106 1.658-.753V3.204a1 1 0 0 0-1.659-.753l-5.48 4.796a1 1 0 0 0 0 1.506z"/>
-      </svg>
-    </div>
-    <div class="swiper-button-next custom-nav">
-      <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" fill="currentColor"
-           class="bi bi-caret-right-fill" viewBox="0 0 16 16">
-        <path
-            d="m12.14 8.753-5.482 4.796c-.646.566-1.658.106-1.658-.753V3.204a1 1 0 0 1 1.659-.753l5.48 4.796a1 1 0 0 1 0 1.506z"/>
-      </svg>
-    </div>
-  </div>
-
-  <!--/* 비회원이면 정석적인 정렬 (최신순, 추천순, 평점순) 회원이면 (기존에 선택한 태그 키워드가 높은 숙소 보여주기) */-->
-  <div id="suggestByTagSection">
-    <div class="areaTitle">
-      <span sec:authorize="isAuthenticated()">취향에 맞춘 추천 숙소</span>
-      <span sec:authorize="isAnonymous()">인기 추천 숙소</span>
-    </div>
-    <div class="tag section" th:each="entry:${tagMap}" th:if="${entry.value.list.size() > 0}">
-      <div class="swiper area">
-        <div th:text="${entry.key}" class="tagTitle"></div>
-        <div class="swiper-wrapper">
-          <div th:each="lodgeWithTagCount:${entry.value.list}" class="lodge swiper-slide"
-               th:with="lodge=${lodgeWithTagCount.lodgeDTO}, tagCount=${lodgeWithTagCount.tagCount}">
-            <div class="swiper-slide-container">
-              <div class="bookmark" th:data-id="${lodge.lodgeId}"
-                   th:classappend="${bookmarks.contains(lodge.lodgeId) ? 'selected' : ''}">
-                <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" class="bi bi-heart-fill"
-                     viewBox="0 0 16 16">
-                  <path fill-rule="evenodd"
-                        d="M8 1.314C12.438-3.248 23.534 4.735 8 15-7.534 4.736 3.562-3.248 8 1.314"/>
-                </svg>
-              </div>
-              <a th:href="@{/lodge/detail/{id}(id=${lodge.lodgeId})}">
-                <div class="lodgePreview">
-                  <div class="lodgePreviewImg"
-                       th:style="'background-image: url(' + ${lodge.lodgeImages.get(0)} + ');'"></div>
-                  <div class="lodgePreviewTexts">
-                    <div class="lodgeInfo">
-                      <span class="lodgeType" th:text="${lodge.lodgeType}"></span>
-                      <span class="lodgeName" th:text="${lodge.lodgeName}"></span>
-                      <span class="lodgeAddr" th:text="${lodge.shortAddress}"></span>
-                      <div class="lodgeReviewStatusArea">
-                        <div class="averageReviewScore">
-                          ★ [[${lodge.averageReviewScore != null ? lodge.averageReviewScore : '-'}]]
-                        </div>
-                        <div class="reviewCount">
-                          <span>[[${lodge.reviewCount}]]명 중 [[${tagCount}]]명 추천</span>
-                        </div>
-                      </div>
-                    </div>
-                    <div class="lodgePrice" th:text="${lodge.cheapestPrice}"></div>
-                  </div>
-                </div>
-              </a>
             </div>
           </div>
         </div>
       </div>
-      <div class="swiper-button-prev custom-nav">
-        <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" fill="currentColor"
-             class="bi bi-caret-left-fill" viewBox="0 0 16 16">
-          <path
-              d="m3.86 8.753 5.482 4.796c.646.566 1.658.106 1.658-.753V3.204a1 1 0 0 0-1.659-.753l-5.48 4.796a1 1 0 0 0 0 1.506z"/>
-        </svg>
+      <!-- 이미지 슬라이드 -->
+      <div class="img-slide-wrapper">
+        <div id="imgSlideSection">
+          <div class="img-slide-list">
+            <div class="img-slide-resource" th:each="item:${mainSlide}"
+                 th:style="|background-image: url(${item.imageUrl});|"></div>
+            </div>
+        </div>
       </div>
-      <div class="swiper-button-next custom-nav">
-        <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" fill="currentColor"
-             class="bi bi-caret-right-fill" viewBox="0 0 16 16">
-          <path
-              d="m12.14 8.753-5.482 4.796c-.646.566-1.658.106-1.658-.753V3.204a1 1 0 0 1 1.659-.753l5.48 4.796a1 1 0 0 1 0 1.506z"/>
-        </svg>
+
+      <!-- 슬라이드 바 -->
+      <div class="slide-bar-wrapper">
+        <div class="slide-bar-div">
+
+          <div class="slide-bar-div-left">
+
+            <div class="progress-container">
+              <div class="progress-bar" id="progressBar"></div>
+            </div>
+            <div style="width: 50%;">
+              <span class="slide-change-number">01</span>
+              <span>/ [[${mainSlide.size() > 9 ? mainSlide.size() : '0' + mainSlide.size()}]]</span>
+            </div>
+
+          </div>
+
+          <div class="slide-bar-div-right">
+            <button id="slidePrevBtn">
+              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-arrow-left" viewBox="0 0 16 16">
+                <path fill-rule="evenodd" d="M15 8a.5.5 0 0 0-.5-.5H2.707l3.147-3.146a.5.5 0 1 0-.708-.708l-4 4a.5.5 0 0 0 0 .708l4 4a.5.5 0 0 0 .708-.708L2.707 8.5H14.5A.5.5 0 0 0 15 8"/>
+              </svg>
+            </button>
+            <button id="slideStopBtn">
+              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-pause" viewBox="0 0 16 16">
+                <path d="M6 3.5a.5.5 0 0 1 .5.5v8a.5.5 0 0 1-1 0V4a.5.5 0 0 1 .5-.5m4 0a.5.5 0 0 1 .5.5v8a.5.5 0 0 1-1 0V4a.5.5 0 0 1 .5-.5"/>
+              </svg>
+            </button>
+            <button id="slideNextBtn">
+              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-arrow-right" viewBox="0 0 16 16">
+                <path fill-rule="evenodd" d="M1 8a.5.5 0 0 1 .5-.5h11.793l-3.147-3.146a.5.5 0 0 1 .708-.708l4 4a.5.5 0 0 1 0 .708l-4 4a.5.5 0 0 1-.708-.708L13.293 8.5H1.5A.5.5 0 0 1 1 8"/>
+              </svg>
+            </button>
+          </div>
+
+        </div>
       </div>
+
     </div>
+
+    <script th:inline="javascript">
+      const mainSlideDTOList = /*[[${mainSlide}]]*/;
+      const backgroundColors = mainSlideDTOList.map(e => e.color);
+    </script>
+    <script th:src="@{/js/bannerSlide.js}"></script>
   </div>
 
-  <!-- 검색 -->
-  <!-- input 하나 받아서 투어 API (관광정보) 랑 네이버 검색 API 로 던져서 -->
-  <!-- div1, 투어 API 정보 -->
-  <!-- div2, 네이버 검색 API 정보 -->
-  <div id="outerSearchSection" class="section">
-    <span class="areaTitle">네이버 검색</span>
-    <div id="outerSearchArea" class="area">
-      <input type="text" id="outerSearchInput" name="outerSearchKeyword" aria-label="outerSearch">
-      <button type="button" id="outerSearchButton">검색</button>
-      <div id="outerSearchResultArea"></div>
-    </div>
+  <!-- 김민수 -->
+  <div id="best-lodges-section" class="section snap bright">
+    <div class="ms2__bg-soft"></div>
+
+    <!-- 최상단 -->
+    <h1 class="ms2__display-title">
+      <span class="brand">Berry.</span> 의 예약 TOP 5 숙소
+    </h1>
+    <!-- 최상단 -->
+
+    <!-- 슬라이드 컨테이너 -->
+    <div class="ms2__slide-container"> <!-- overflow hidden -->
+      <div class="ms2__slide-wrapper"> <!-- 카드 총 길이 -->
+        <div class="ms2__slide" th:each="lodge, stat : ${top5}"> <!-- 실제 표시 될 슬라이드 -->
+
+          <!-- 슬라이드 왼쪽 라인 -->
+          <div class="ms2__slide-left-box">
+            <!-- 카드 상단 타이틀 라인 -->
+            <div class="ms2__card-topline">
+              <span class="rank-pill" th:text="${stat.index + 1} + '위'">1위</span>
+              <span class="topline-sep">·</span>
+              <span class="topline-name" th:text="${lodge.lodgeName}">숙소 이름</span>
+            </div>
+
+            <!-- 왼쪽 이미지 -->
+            <div class="ms2__thumb"
+                 th:style="|background-image:url('${lodge.lodgeImgUrl}');|">
+            </div>
+          </div>
+
+          <!-- 슬라이드 오른쪽 정보 -->
+          <div class="ms2__body">
+            <!-- 주소 및 가격 -->
+<!--
+            <h4 class="ms2__meta"
+                th:text="${lodge.lodgeAddr + ' · ' + (lodge.minStayPrice != null and lodge.minStayPrice > 0 ? '₩' + #numbers.formatInteger(lodge.minStayPrice, 0, 'COMMA') + '/박' : '가격 정보 없음')}">
+            </h4>
+-->
+            <h4 class="ms2__meta" th:text="${lodge.lodgeAddr}"></h4>
+
+            <!-- 차트 (제목 명시) -->
+            <div class="ms2__chart-wrap">
+              <div class="ms2__subTitle">상위 태그 차트</div>
+              <div class="ms2__chart chart" th:attr="data-stats=${lodge.tagStatsJson}">
+                <canvas class="ms2__chart-canvas" width="280" height="220" aria-label="리뷰 태그 분포"></canvas>
+              </div>
+            </div>
+
+            <!-- AI 요약 (제목 명시) -->
+            <div class="ms2__summary-wrap" th:if="${not #strings.isEmpty(lodge.aiSummary)}">
+              <div class="ms2__subTitle">AI 리얼 리뷰 요약</div>
+              <div class="ms2__summary ai-summary"
+                   th:utext="${#strings.replace(lodge.aiSummary, '\n', '<br/>')}"></div>
+            </div>
+
+            <!-- CTA -->
+
+          </div>
+        </div>
+        <!-- 실제 표시 슬라이드 end -->
+
+      </div> <!-- slide-wrapper end -->
+      <!-- 슬라이드 버튼 -->
+      <div class="ms2__slide-btn-box">
+        <div class="ms2__slide-prev" id="lodgeReviewPrevBtn">
+          <button><</button>
+        </div>
+        <div class="ms2__slide_next" id="lodgeReviewNextBtn">
+          <button>></button>
+        </div>
+      </div>
+    </div> <!-- slide-container end -->
   </div>
 
-  <script type="module" th:src="@{/js/index.js}"></script>
+  <!-- 이유현 -->
+  <div id="search-section" class="section">
+    <!--/* 배경 이미지 슬라이드 */-->
+    <div id="search-section-background-slide" class="swiper">
+      <div class="swiper-wrapper">
+        <div class="swiper-slide slide1"></div>
+        <div class="swiper-slide slide2"></div>
+        <div class="swiper-slide slide3"></div>
+
+        <div class="swiper-slide slide1"></div>
+        <div class="swiper-slide slide2"></div>
+        <div class="swiper-slide slide3"></div>
+      </div>
+    </div>
+
+    <!--/* 문구 */-->
+    <div id="search-section-phrase">
+      <span>Berry.에서 숙소를 검색해보세요.</span>
+    </div>
+
+    <!--/* 검색창 */-->
+    <div th:insert="~{fragments/search :: search}" id="search-box-container"></div>
+  </div>
+
+  <script type="module" th:src="@{/js/indexScroll.js}"></script>
+  <script type="module" th:src="@{/js/main_section_two.js}"></script>
   <script type="module" th:inline="javascript" sec:authorize="${isAuthenticated()}">
     import(/*[[@{/js/lodge/bookmark.js}]]*/).then(module => {
       module.default(/*[[${userId}]]*/);
     });
   </script>
+  <script type="module" th:src="@{/js/main_section_two.js}"></script>
 </div>

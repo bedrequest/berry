@@ -4,11 +4,11 @@
       xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
       xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
       layout:decorate="~{layout/layout}">
-<section layout:fragment="customStyle">
+<th:block layout:fragment="customStyle">
   <link rel="stylesheet" th:href="@{/css/lodge/detail.css}" />
   <link rel="stylesheet" th:href="@{/css/lodge/bookmark.css}" />
   <link rel="stylesheet" th:href="@{/css/review/reviews.css}" />
-</section>
+</th:block>
 <div layout:fragment="content">
   <script th:inline="javascript">
     const jquerySwiperLink = document.createElement('link');
@@ -218,12 +218,26 @@
       </div>
     </div>
 
+    <div id="lodgeIntro" class="area" th:if="${lodgeDTO.intro != null}">
+      <span class="areaTitle">숙소 소개</span>
+      <div class="icon">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="#dddddd" xmlns="http://www.w3.org/2000/svg">
+          <path clip-rule="evenodd" d="M7.637 12.022C7 10.145 9.3 7.058 11 6.646V5c-4.934 2.058-7 5.953-7 9.61 0 1.22.37 2.256 1.107 3.11.739.853 1.618 1.28 2.64 1.28.91 0 1.672-.328 2.282-.985.611-.656.916-1.463.916-2.42 0-.9-.31-1.692-.93-2.377-.62-.685-1.412-1.083-2.378-1.196zm9 0C16 10.145 18.3 7.058 20 6.646V5c-4.934 2.058-7 5.953-7 9.61 0 1.22.37 2.256 1.107 3.11.739.853 1.618 1.28 2.64 1.28.91 0 1.672-.328 2.282-.985.611-.656.916-1.463.916-2.42 0-.9-.31-1.692-.93-2.377-.62-.685-1.412-1.083-2.378-1.196z"></path>
+        </svg>
+      </div>
+      <p class="introText" th:text="${lodgeDTO.intro}"></p>
+      <div class="icon right">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="#dddddd" xmlns="http://www.w3.org/2000/svg">
+          <path clip-rule="evenodd" d="M7.637 12.022C7 10.145 9.3 7.058 11 6.646V5c-4.934 2.058-7 5.953-7 9.61 0 1.22.37 2.256 1.107 3.11.739.853 1.618 1.28 2.64 1.28.91 0 1.672-.328 2.282-.985.611-.656.916-1.463.916-2.42 0-.9-.31-1.692-.93-2.377-.62-.685-1.412-1.083-2.378-1.196zm9 0C16 10.145 18.3 7.058 20 6.646V5c-4.934 2.058-7 5.953-7 9.61 0 1.22.37 2.256 1.107 3.11.739.853 1.618 1.28 2.64 1.28.91 0 1.672-.328 2.282-.985.611-.656.916-1.463.916-2.42 0-.9-.31-1.692-.93-2.377-.62-.685-1.412-1.083-2.378-1.196z"></path>
+        </svg>
+      </div>
+    </div>
+
     <div id="facility" class="area">
       <span class="areaTitle">서비스 및 부대시설</span>
       <div class="facilityTable">
         <div th:each="facility:${lodgeDTO.facilities}">
-          <img
-              th:src="'https://image.goodchoice.kr/images/icon_facilities/v2/icn_facil_' + ${facilityIconMap.get(facility)} + '.svg'">
+          <img th:src="'https://image.goodchoice.kr/images/icon_facilities/v2/icn_facil_' + ${facilityIconMap.get(facility)} + '.svg'">
           <span th:text="${facility}"></span>
         </div>
       </div>
@@ -246,7 +260,15 @@
       <div id="map"></div>
       <div id="addressArea">
         <div id="addressText" th:text="${lodgeDTO.lodgeAddr}"></div>
-        <a id="addressCopy">주소복사</a>
+        <a id="addressCopy">
+          주소복사
+          <div id="address-copy-notice">
+            클릭하면 복사할 수 있어요.
+          </div>
+          <div id="address-copy-success">
+            복사 완료!
+          </div>
+        </a>
       </div>
       <ul class="realList">
         <li th:each="way:${lodgeDTO.ways}" th:text="${way}" class="way"></li>

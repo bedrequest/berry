@@ -2,9 +2,11 @@ package com.berry.project.dto.lodge;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.ToString;
 
 @Getter
 @AllArgsConstructor
+@ToString
 public class LodgeSummaryDTO {
     private Long lodgeId;           // lodge.lodge_id
     private String lodgeName;       // lodge.lodge_name

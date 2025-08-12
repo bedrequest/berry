@@ -6,10 +6,13 @@ import com.berry.project.dto.lodge.LodgeDTO;
 import com.berry.project.dto.lodge.LodgeOptionDTO;
 import com.berry.project.dto.lodge.RoomDTO;
 import com.berry.project.entity.lodge.*;
+import com.berry.project.entity.review.ReviewSummary;
 import com.berry.project.handler.PagingHandler;
 import com.berry.project.repository.lodge.*;
 import com.berry.project.repository.payment.ReservationRepository;
 import com.berry.project.repository.review.ReviewRepository;
+import com.berry.project.repository.review.ReviewSummaryRepository;
+import com.berry.project.repository.review.ReviewTagRepository;
 import com.berry.project.util.FacilityMaskDecoder;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
@@ -36,6 +39,8 @@ public class LodgeServiceImpl implements LodgeService {
   private final RoomImgRepository roomImgRepository;
   private final LodgeDescriptionRepository lodgeDescriptionRepository;
   private final ReviewRepository reviewRepository;
+  private final ReviewTagRepository reviewTagRepository;
+  private final ReviewSummaryRepository reviewSummaryRepository;
 
   private final FacilityMaskDecoder facilityMaskDecoder;
 
@@ -85,21 +90,6 @@ public class LodgeServiceImpl implements LodgeService {
     return new PagingHandler<>(result, listOptionDTO);
   }
 
-  @Override
-  public List<LodgeDTO> getTop5Lodges() {
-    return lodgeRepository.getTop5ByReservation()
-        .stream().map(lodge -> {
-          LodgeDTO lodgeDTO = convertEntityToDto(lodge,
-              facilityMaskDecoder,
-              lodgeDescriptionRepository.findByLodgeId(lodge.getLodgeId()),
-              reviewRepository.countByLodgeId(lodge.getLodgeId()),
-              reviewRepository.findAverageRatingByLodgeId(lodge.getLodgeId()).orElse(0.0),
-              null);
-          fillImages(lodgeDTO);
-          return lodgeDTO;
-        }).toList();
-  }
-
   private LodgeDTO convertEntityToDtoWithoutReview(Lodge lodge) {
     return convertEntityToDto(
         lodge,
@@ -125,6 +115,16 @@ public class LodgeServiceImpl implements LodgeService {
                 .toList());
       lodgeDTO.getRooms().add(roomDTO);
     }
+  }
+
+  private void fillReviewStatus(LodgeDTO lodgeDTO) {
+    lodgeDTO.setAverageReviewScore(
+        reviewRepository.findAverageRatingByLodgeId(lodgeDTO.getLodgeId())
+            .orElse(0.0)
+    );
+    lodgeDTO.setReviewCount(
+        reviewRepository.countByLodgeId(lodgeDTO.getLodgeId())
+    );
   }
 
   // ===== Top N 예약 숙소 집계 =====
@@ -162,8 +162,8 @@ public class LodgeServiceImpl implements LodgeService {
         statsJson = objectMapper.writeValueAsString(stats);
       } catch (Exception ignored) {}
 
-      String aiSum = lodgeDescriptionRepository.findByLodgeId(lodgeId)
-              .stream().map(LodgeDescription::getContent)
+      String aiSum = reviewSummaryRepository.findByLodgeId(lodgeId)
+              .stream().map(ReviewSummary::getSummaryText)
               .findFirst().orElse("");
 
       return new LodgeSummaryDTO(

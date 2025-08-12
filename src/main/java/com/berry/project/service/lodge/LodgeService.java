@@ -5,16 +5,13 @@ import com.berry.project.dto.review.ReviewResponseDTO;
 import com.berry.project.entity.lodge.Lodge;
 import com.berry.project.entity.lodge.LodgeDescription;
 import com.berry.project.entity.lodge.Room;
-import com.berry.project.handler.CustomerIqPagingHandler;
 import com.berry.project.handler.PagingHandler;
 import com.berry.project.util.FacilityMaskDecoder;
 import org.json.simple.JSONArray;
 import org.json.simple.parser.JSONParser;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 public interface LodgeService {
   LodgeDTO detail(long lodgeId, LodgeOptionDTO lodgeOptionDTO);
@@ -89,5 +86,4 @@ public interface LodgeService {
    */
   List<LodgeSummaryDTO> getTopBookedLodges(int topN);
 
-  List<LodgeDTO> getTop5Lodges();
 }

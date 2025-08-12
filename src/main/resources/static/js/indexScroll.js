@@ -5,6 +5,7 @@ header = document.querySelector('header');
 let current = 0;
 let isScrolling = false;
 
+// 스크롤 후 헤더의 투명도 설정
 window.addEventListener('wheel', e => {
   if (isScrolling) return;
 

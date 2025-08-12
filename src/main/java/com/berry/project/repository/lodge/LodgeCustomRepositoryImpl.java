@@ -173,4 +173,17 @@ public class LodgeCustomRepositoryImpl implements LodgeCustomRepository {
         .limit(5)
         .fetch();
   }
+
+  @Override
+  public Lodge findBestByTagId(long tagId) {
+    return queryFactory
+        .select(lodge).from(lodge)
+        .leftJoin(review).on(lodge.lodgeId.eq(review.lodgeId))
+        .leftJoin(reviewTagMapping).on(reviewTagMapping.reviewId.eq(review.reviewId))
+        .where(reviewTagMapping.tagId.eq(tagId))
+        .groupBy(lodge.lodgeId)
+        .orderBy(reviewTagMapping.reviewId.count().desc())
+        .limit(1)
+        .fetchOne();
+  }
 }
