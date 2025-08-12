@@ -103,7 +103,12 @@ document.addEventListener('DOMContentLoaded', () => {
 
     title.setAttribute('readonly', true);
     content.setAttribute('readonly', true);
-    if (comment) comment.setAttribute('readonly', true);
+    if (comment) {
+      comment.setAttribute('readonly', true);
+      // 답변 완료된 댓글 칸은 높이 고정 (자동 높이 후 높이 고정)
+      autoResize(comment);
+      comment.style.height = comment.scrollHeight + 'px';
+    }
 
     if (uploadInput) {
       uploadInput.disabled = true;
@@ -154,6 +159,13 @@ document.addEventListener('DOMContentLoaded', () => {
       if (isAdmin) {
         comment.removeAttribute('readonly');
         if (commentArea) commentArea.style.display = 'block';
+
+        // 댓글칸 자동 높이 조절 + input 이벤트 추가
+        autoResize(comment);
+        comment.addEventListener('input', () => {
+          autoResize(comment);
+        });
+
       } else {
         if (commentArea) commentArea.style.display = 'none';
       }
@@ -194,13 +206,6 @@ document.addEventListener('DOMContentLoaded', () => {
     content.addEventListener('input', contentInputHandler);
     autoResize(content);
 
-    if (comment) {
-      autoResize(comment);
-      comment.addEventListener('input', () => {
-        autoResize(comment);
-      });
-    }
-
     // 삭제 버튼 보이기 + 삭제 기능 활성화
     document.querySelectorAll('.file-x').forEach(btn => {
       btn.style.visibility = 'visible';
@@ -211,16 +216,16 @@ document.addEventListener('DOMContentLoaded', () => {
           alert("파일삭제 성공");
           const fileItem = btn.closest('.file-item');
           if (fileItem) fileItem.remove();
-          // 절대 여기서 originalState 변경하지 말 것!
         } else {
           alert("파일삭제 실패");
         }
       };
     });
 
-    // **수정 모드 진입 시 1회만 저장 (삭제할 때 저장 금지!)**
+    // 수정 모드 진입 시 1회만 저장
     saveOriginalState();
   });
+
 
   // 삭제 버튼 클릭
   delBtn.addEventListener('click', () => {
@@ -319,7 +324,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
       if (categorySelect && categoryInput) {
         categoryInput.value = categorySelect.value.trim();
-
         categorySelect.removeAttribute('name');
         categoryInput.setAttribute('name', 'category');
 
@@ -336,10 +340,31 @@ document.addEventListener('DOMContentLoaded', () => {
 
       if (commentArea) commentArea.style.display = 'block';
 
+      if (comment) {
+        // 답변완료 시 댓글칸 높이 자동조절 후 고정
+        autoResize(comment);
+        comment.style.height = comment.scrollHeight + 'px';
+        comment.setAttribute('readonly', true);
+      }
+
       const form = document.querySelector('form');
       if (form) {
         form.submit();
       }
+    });
+  }
+
+  // 페이지 로드 시 저장된 댓글 높이 복원 (있으면)
+  const savedCommentHeight = sessionStorage.getItem(`commentHeight-${bnoValue}`);
+  if (savedCommentHeight && comment) {
+    comment.style.height = savedCommentHeight;
+  }
+
+  // 댓글 높이 변화 시 세션 저장 (수정 모드에서만)
+  if (comment && !comment.hasAttribute('readonly')) {
+    comment.addEventListener('input', () => {
+      autoResize(comment);
+      sessionStorage.setItem(`commentHeight-${bnoValue}`, comment.style.height);
     });
   }
 });
