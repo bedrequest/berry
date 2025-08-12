@@ -86,6 +86,7 @@ body {
   box-shadow: none;
 }
 
+
 /* 제목 input: 밑줄 제거, flex-grow */
 .input-box.title {
   flex: 1;
