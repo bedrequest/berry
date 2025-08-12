@@ -12,7 +12,7 @@
 /* Header Styles - Vertical center alignment */
 .site-header {
   width: 100%;
-  height: 80px; /* 전체 헤더 높이 */
+  height: 61px; /* 전체 헤더 높이 */
   background-color: #fff;
   box-shadow: 0 2px 4px rgba(0,0,0,0.1);
   position: sticky;
@@ -40,6 +40,7 @@
 .header-actions {
   display: flex;
   align-items: center;
+  position: relative;
 }
 
 /* 아이콘 버튼 */
@@ -79,6 +80,71 @@
   height: 58px;
   object-fit: contain;
 }
+
+
+/* 해찬 */
+/* 알림 */
+
+/* 알림버튼 커서 */
+#notificationBtn{
+  cursor: pointer;
+}
+
+/* 알림 div */
+.notification {
+  position: absolute;
+  height: 300px;
+  background-color: rgb(255, 255, 255);
+  width: 100%;
+  top: 55px;
+  border: 1px solid rgba(126, 126, 126, 0.2);
+  border-top: none;
+  border-radius: 0 0 8px 8px;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.notification li {
+  padding: 10px 10px;
+  text-align: left;
+  font-size: 14px;
+  font-weight: 400;
+}
+.notification-under-tit {
+  font-size: 12px;
+  color: #7a7a7a77;
+  margin-top: 4px;
+}
+
+/* 더보기 li */
+.notification-more {
+  text-align: center !important;
+  border: 1px solid rgba(126, 126, 126, 0.2);
+  border-bottom: none;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+  position: absolute;
+  bottom: 14px;
+  left: 50%;
+  padding: 10px 0 !important;
+  background-color: #E74B60;
+  transform: translateX(-50%);
+}
+
+.notification-more a {
+  color: white;
+  padding: 10px 10px;
+}
+
+.none-notification {
+  text-align: center !important;
+  margin: 50% 0;
+}
+
+/* 토글용 */
+.toggle-display {
+  display: none;
+}
+
 
 
 
@@ -181,4 +247,43 @@
   border-top: 1px solid #ccc;
 }
 
+/* 탑 / 고객센터 버튼 */
+.header-top-div{
+  position: fixed;
+  bottom: 70px;
+  right: 40px;
+  width: 55px;
+  height: 115px;
+  align-items: center;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  z-index: 1000;
+}
 
+.header-top-div div {
+  position: relative;
+  height: 50%;
+}
+
+.header-top-div div:first-child {
+  border-bottom: 1px solid rgba(150, 150, 150, 0.3);
+}
+
+.header-top-div a {
+  display: inline-block;
+  position: absolute;
+  top: 50%;
+  left: 41%;
+  transform: translate(-50%, -50%);
+  width: 20px;
+}
+
+.header-top-div a svg {
+  color: #E74B60;
+  width: 30px;
+  height: 30px;
+}
+
+.header-top-div a svg:hover {
+  cursor: pointer;
+  color: #fa4c63;
+}

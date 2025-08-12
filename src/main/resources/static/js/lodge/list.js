@@ -17,31 +17,8 @@ highestPriceIndex = priceTable.indexOf(listOption.highestPrice);
 
 let bookmarkServing = false;
 
-// 1. 메인 : 검색 조건 변경을 감지, 즐겨찾기 기능
+// 1. 메인 : 검색 조건 변경을 감지
 document.addEventListener('click', e => {
-  // 즐겨찾기 기능
-  const bookmark = e.target.closest('.bookmark');
-  if (bookmark) {
-    if (bookmarkServing) alert('북마크 처리중입니다.');
-    else {
-      bookmarkServing = true;
-      fetch('/user/toggleBookmark', {
-        method: 'post',
-        body: JSON.stringify({
-          email: user,
-          lodgeId: bookmark.dataset.id
-        })
-      }).then(resp => resp.text())
-      .then(result => {
-        if (result == 0) alert('오류가 발생했습니다.');
-        else e.classList.toggle('selected');
-
-        bookmarkServing = false;
-      });
-    }
-    return;
-  }
-
   // 검색 조건 변경 감지
   let isOptionChanged = false;
 

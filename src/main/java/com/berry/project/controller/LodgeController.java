@@ -1,10 +1,12 @@
 package com.berry.project.controller;
 
-import com.berry.project.api.NaverMapApi;
+import com.berry.project.api.NaverApi;
 import com.berry.project.data.LodgeData;
 import com.berry.project.dto.lodge.ListOptionDTO;
 import com.berry.project.dto.lodge.LodgeDTO;
 import com.berry.project.dto.lodge.LodgeOptionDTO;
+import com.berry.project.dto.user.BookmarkLodgeDTO;
+import com.berry.project.dto.user.UserDTO;
 import com.berry.project.service.lodge.LodgeService;
 import com.berry.project.service.review.ReviewService;
 import com.berry.project.service.user.UserService;
@@ -33,7 +35,7 @@ public class LodgeController {
   private final ReviewService reviewService;
 
   private final FacilityMaskDecoder facilityMaskDecoder;
-  private final NaverMapApi naverMapApi;
+  private final NaverApi naverMapApi;
   private final LodgeData lodgeData;
 
   @GetMapping("/list")
@@ -62,7 +64,16 @@ public class LodgeController {
     model.addAttribute("favorites", lodgeData.getFavorites());
     model.addAttribute("sortOptions", lodgeData.getLodgeSortOptions());
     model.addAttribute("priceTable", lodgeData.getPriceTable());
-    model.addAttribute("principal", principal);
+
+    if(principal != null) {
+      UserDTO userDTO = userService.getUserInfo(principal.getName());
+      model.addAttribute("userDTO", userDTO);
+
+      // 북마크 내역 가져오기
+      List<BookmarkLodgeDTO> bookmarkLodgeList = userService.getBookmarkLodgeList(userDTO.getUserId());
+      model.addAttribute("bookmarks", bookmarkLodgeList
+          .stream().map(BookmarkLodgeDTO::getLodgeId).toList());
+    }
 
     return "/lodge/list";
   }
@@ -78,11 +89,14 @@ public class LodgeController {
     LodgeDTO lodgeDTO = lodgeService.detail(lodgeId, lodgeOptionDTO);
     if (lodgeDTO == null) return "/";
     lodgeDTO.setBestReview(reviewService.getTopLikedReviewByLodge(lodgeId));
-    lodgeDTO.setReviewCount(reviewService.getTotalReviewCountByLodge(lodgeId));
 
     model.addAttribute("lodgeOption", lodgeOptionDTO);
     model.addAttribute("lodgeDTO", lodgeDTO);
-    if (principal != null) model.addAttribute("userDTO", userService.getUserInfo(principal.getName()));
+    if (principal != null) {
+      UserDTO userDTO = userService.getUserInfo(principal.getName());
+      log.info(">> user : {}", userDTO);
+      model.addAttribute("userDTO", userDTO);
+    }
     // 고정값들
     model.addAttribute("naverMapId", naverMapApi.getNaverMapApiKey());
     model.addAttribute("facilityIconMap", lodgeData.getFacilityIconMap());

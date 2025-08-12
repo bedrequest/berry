@@ -3,8 +3,7 @@ import Swiper from 'https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.mjs
 // 0. 화면의 요소 불러오기
 const [lodgeImageArea, roomArea, facility, locationArea, reviewArea] = ['lodgeImageArea', 'roomArea', 'facility', 'location', 'reviewArea'].map(e => document.getElementById(e));
 const [navTop, navRoom, navFacility, navLocation, navReview] = ['navTop', 'navRoom', 'navFacility', 'navLocation', 'navReview'].map(e => document.querySelector('.' + e));
-
-let bookmarkServing = false;
+let lodgeDTO; // init을 통해 외부에서 초기화
 
 // 1. 스크롤 대응
 // 1-1. 내비게이션 바
@@ -94,28 +93,6 @@ document.addEventListener('click', e => {
     // 모달 푸터 아이템 관리
     const footerItem = target.closest('.modalFooterItem');
     if (footerItem) select(Number(footerItem.dataset.idx));
-
-    // 북마크 관리
-    const bookmark = target.closest('.bookmark');
-    if (bookmark) {
-        if (bookmarkServing) alert('북마크 처리중입니다.');
-        else {
-            bookmarkServing = true;
-            fetch('/user/toggleBookmark', {
-                method: 'post',
-                body: JSON.stringify({
-                email: user,
-                lodgeId: window.lodgeDTO.lodgeId
-                })
-            }).then(resp => resp.text())
-            .then(result => {
-                if (result == 0) alert('오류가 발생했습니다.');
-                else e.classList.toggle('selected');
-
-                bookmarkServing = false;
-            });
-        }
-    }
 });
 
 // 전체/객실 선택
@@ -224,7 +201,6 @@ function updateScrollItems(roomIndex) {
 }
 
 function createScrollItems(roomIndex) {
-    const lodgeDTO = window.lodgeDTO;
     let items = [];
     let target = roomIndex == null ? lodgeDTO.lodgeImages : lodgeDTO.rooms[roomIndex].roomImageUrls;
     maxImageIndex = target.length - 1;
@@ -235,7 +211,6 @@ function createScrollItems(roomIndex) {
 }
 
 function updateFooterItems(roomIndex) {
-    const lodgeDTO = window.lodgeDTO;
     let target = roomIndex == null ? lodgeDTO.lodgeImages : lodgeDTO.rooms[roomIndex].roomImageUrls;
 
     imageSlide.innerHTML = '';
@@ -292,3 +267,7 @@ document.getElementById('addressCopy').addEventListener('click', () => {
 });
 
 // ----------------------------------------------
+
+export default function init(data) {
+    lodgeDTO = data;
+};

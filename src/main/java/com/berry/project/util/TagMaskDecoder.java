@@ -21,6 +21,13 @@ public class TagMaskDecoder {
     return answer;
   }
 
+  public String get(int idx) {
+    return strArray[idx];
+  }
+  public List<String> get(List<Integer> idxList) {
+    return idxList.stream().map(i -> strArray[i]).toList();
+  }
+
   public List<String> decode(int mask) {
     List<String> answer = new ArrayList<>();
 

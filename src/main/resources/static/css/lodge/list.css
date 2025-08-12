@@ -313,6 +313,7 @@ button:disabled {
   display: initial;
 }
 /* 3-2. 목록 */
+/* 3-2-0. 숙소 개별 전체 */
 .list>.listBody {
   width: 100%;
   height: calc(100% - 60px);
@@ -322,6 +323,7 @@ button:disabled {
 .listBody li {
   position: relative;
 }
+/* 3-2-1. 북마크 */
 .bookmark {
   position: absolute;
   top: 5px;
@@ -347,7 +349,7 @@ button:disabled {
   justify-content: center;
   align-items: center;
 }
-
+/* 3-2-2. 미리보기 이미지 */
 .lodgePreview {
   width: 97%;
   display: flex;
@@ -378,6 +380,8 @@ button:disabled {
 
   border-radius: 10px;
 }
+
+/* 3-2-3. 숙소 기본정보 */
 .lodgePreview>.lodgePreviewTexts {
   width: 50%;
   position: relative;
@@ -407,6 +411,31 @@ button:disabled {
   color: rgba(0, 0, 0, 0.4);
   font-weight: 700;
 }
+.lodgePreview>.lodgePreviewTexts>.lodgeInfo>.lodgeReviewStatusArea {
+  display: flex;
+}
+.lodgeReviewStatusArea>.averageReviewScore {
+  margin-right: 10px;
+  padding: 5px 10px;
+
+  font-size: 14px;
+  font-weight: 600;
+
+  background-color: #ffc550;
+  border-radius: 15px;
+}
+.lodgeReviewStatusArea>.averageReviewScore {
+  display: flex;
+  align-items: center;
+}
+.lodgeReviewStatusArea>.reviewCount {
+  display: flex;
+  align-items: center;
+
+  font-size: 16px;
+  font-weight: 500;
+}
+
 .lodgePreview>.lodgePreviewTexts>.lodgePrice {
   position: absolute;
   width: 100%;

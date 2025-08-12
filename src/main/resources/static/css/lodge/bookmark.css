@@ -1,0 +1,6 @@
+.bookmark>svg {
+    fill: #999999;
+}
+.bookmark.selected>svg{
+    fill: #e74b60;
+}

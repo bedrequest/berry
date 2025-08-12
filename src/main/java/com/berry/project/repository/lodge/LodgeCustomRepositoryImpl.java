@@ -6,14 +6,13 @@ import com.berry.project.entity.lodge.Lodge;
 import com.berry.project.util.TagMaskDecoder;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.Query;
+import jakarta.persistence.TypedQuery;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 
-import java.nio.charset.StandardCharsets;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -24,6 +23,7 @@ public class LodgeCustomRepositoryImpl implements LodgeCustomRepository {
   @Autowired
   private EntityManager entityManager;
 
+  @SuppressWarnings("unchecked")
   @Override
   public Page<Lodge> searchLodges(ListOptionDTO listOptionDTO, LodgeOptionDTO lodgeOptionDTO, Pageable pageable) {
     Map<String, String> parameters = new HashMap<>();
@@ -125,6 +125,24 @@ public class LodgeCustomRepositoryImpl implements LodgeCustomRepository {
     query.setMaxResults(pageable.getPageSize());
 
     return new PageImpl<Lodge>(query.getResultList(), pageable, (long) totalCount.getSingleResult());
+  }
+
+  @Override
+  public Page<Lodge> searchByTag(int tag, Pageable pageable) {
+    String source = " from Review r join ReviewTagMapping m on r.reviewId = m.reviewId where tagId = :tag";
+
+    TypedQuery<Lodge> query = entityManager.createQuery(
+        "select l from Lodge l left join Review r on l.lodgeId = r.lodgeId " +
+            "where l.lodgeId in (select r.lodgeId" +
+            source +
+            ") group by l order by avg(r.rating) desc", Lodge.class)
+        .setParameter("tag", tag)
+        .setFirstResult(pageable.getPageNumber()* pageable.getPageSize())
+        .setMaxResults(pageable.getPageSize());
+    TypedQuery<Long> count = entityManager.createQuery("select count(distinct r.lodgeId)" + source, Long.class)
+            .setParameter("tag", tag);
+
+    return new PageImpl<>(query.getResultList(), pageable, count.getSingleResult());
   }
 
 }
