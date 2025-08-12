@@ -50,7 +50,9 @@ public class SecurityConfig {
                 "/user/getCertifiedNumber/**",
                 "/lodge/**", "/search/**",
                 "/reviews/list/**", "/review-tags/**", "/.well-known/**", "/error/**",
-                "/reviews/view/**"
+                "/reviews/view/**",
+                "/outerSearch/**", "/indexTest/**",
+                "/error/**"
             )
             .permitAll()
             /** duorpeb, 비로그인 유저가 로그인 버튼 누르는 경우 로그인 페이지로 redirect 를 하기 위한 코드

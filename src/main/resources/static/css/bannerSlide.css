@@ -18,7 +18,7 @@
 .text-slide-wrapper {
     position: absolute;
     top: 20%;
-    left: 50%;
+    left: 44%;
     width: 370px;
     height: 250px;
     margin-left: -470px;
@@ -60,7 +60,7 @@
     justify-content: center;
     align-items: center;
     top: 50%;
-    left: 50%;
+    left: 17%;
     transform: translate(-50%, -50%);
 }
 
@@ -121,8 +121,8 @@
 .img-slide-wrapper {
     position: absolute;
     top: 10%;
-    right: 50%;
-    width: 850px;
+    right: 61%;
+    width: 1094px;
     height: 550px;
     transform: translateX(107%);
     overflow: hidden;
@@ -139,6 +139,7 @@
     margin-right: 50px;
     border-radius: 8px;
     box-shadow: 7px 7px 12px -7px #474747ab;
+    background-size: 100% 100%;
 }
 
 .text-slide-list {

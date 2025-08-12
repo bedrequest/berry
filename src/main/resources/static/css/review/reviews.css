@@ -118,6 +118,7 @@
   -webkit-line-clamp: 3;
   -webkit-box-orient: vertical;
   transition: max-height 0.3s ease;
+  margin-top: 0.7rem;
 }
 .review-content:not(.collapsed) {
   -webkit-line-clamp: unset;
@@ -484,3 +485,36 @@ nav[aria-label="페이지 네비게이션"] {
 }
 .review-images .swiper-button-prev { left: -1px; }
 .review-images .swiper-button-next { right: 10px; }
+
+
+.ai-summary-box {
+  background: linear-gradient(135deg, #E74B60 0%, #8484db 100%);
+  border: 1px solid rgba(97, 218, 251, 0.6);
+  border-radius: 10px;
+  padding: 18px 24px;
+  margin: 24px 0;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3),
+              inset 0 0 8px rgba(241, 170, 214, 0.3);
+  transition: transform 0.2s ease;
+}
+.ai-summary-box:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.4),
+              inset 0 0 10px rgba(253, 195, 234, 0.4);
+}
+
+.ai-summary-title {
+  margin-bottom: 14px;
+  font-size: 1.4rem;
+  font-weight: 700;
+  color: #fff;
+  letter-spacing: 0.5px;
+}
+
+.ai-summary-content {
+  margin: 0;
+  font-size: 1.05rem;
+  line-height: 1.8;
+  color: #fff;
+  white-space: pre-line;
+}

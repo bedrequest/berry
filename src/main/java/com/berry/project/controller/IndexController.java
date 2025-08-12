@@ -1,12 +1,13 @@
 package com.berry.project.controller;
 
+
+import com.berry.project.dto.MainSlideDTO;
+import com.berry.project.dto.lodge.LodgeSummaryDTO;
 import com.berry.project.dto.lodge.LodgeWithTagCountDTO;
 import com.berry.project.dto.user.BookmarkLodgeDTO;
 import com.berry.project.dto.user.UserDTO;
-import com.berry.project.handler.PagingHandler;
-import com.berry.project.service.IndexService;
+import com.berry.project.service.lodge.LodgeService;
 import com.berry.project.service.user.UserService;
-import com.berry.project.util.TagMaskDecoder;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Controller;
@@ -25,40 +26,41 @@ import java.util.NoSuchElementException;
 public class IndexController {
 
   private final UserService userService;
-  private final IndexService indexService;
-
-  private final TagMaskDecoder tagMaskDecoder;
+  private final LodgeService lodgeService;
 
   @GetMapping("/")
   public String index(Principal principal, Model model) {
-    // 1. 로그인한 유저의 선호 태그로 lodgeDTO 목록 가져오기
-    if (principal != null) {
-      UserDTO user = userService.getUserInfo(principal.getName());
-      Map<String, PagingHandler<LodgeWithTagCountDTO>> tagMap = new HashMap<>();
-      int count = 1;
-      for (int i = 1; i <= 9; i++) {
-        if ((count & user.getUserFavoriteTag()) != 0)
-          tagMap.put(tagMaskDecoder.get(i - 1), indexService.getLodgeListByTag(1, i));
+    model.addAttribute("mainSlide", List.of(
+        new MainSlideDTO("색다른 하루를 보내고 싶다면,",
+            "비 오는 날 가기 좋은 서울 실내 공간",
+            "https://cdn.visitkorea.or.kr/img/call?cmd=VIEW&id=5043511a-4051-472c-9985-b5e52173af4e&mode=raw",
+            "#d1fdff"),
+        new MainSlideDTO("넷플릭스 <대환장 기안장> 속 그곳",
+            "특별한 자연과 낭만이 있는 울릉도",
+            "https://cdn.visitkorea.or.kr/img/call?cmd=VIEW&id=288910a6-63a3-4fe6-b630-dc345d620ad3&mode=raw",
+            "#8cd9ff"),
+        new MainSlideDTO("지구마불 따라, 남도 여행\uD83D\uDC9A",
+            "푸릇한 매력을 머금은 담양",
+            "https://cdn.visitkorea.or.kr/img/call?cmd=VIEW&id=d4464378-353b-437c-9606-07d9be0bd3ca&mode=raw",
+            "#f3faaa"),
+        new MainSlideDTO("자연의 신비를 간직한",
+            "서산·제주로 떠나는<br>비밀의 목장 투어",
+            "https://cdn.visitkorea.or.kr/img/call?cmd=VIEW&id=edb7f8f6-94ec-4522-b968-88f2063be2b3&mode=raw",
+            "#e5f0bb"),
+        new MainSlideDTO("강원도 속 작은 쉼터",
+            "쉼이 필요할 때,<br>강원도 양양",
+            "https://cdn.visitkorea.or.kr/img/call?cmd=VIEW&id=11c5b0b4-9be5-4fda-baa1-dd440e5ab961&mode=raw",
+            "#ddf6fc"),
+        new MainSlideDTO("선비의 발걸음을 따라,",
+            "아이와 함께 떠나는<br>경북 영주",
+            "https://cdn.visitkorea.or.kr/img/call?cmd=VIEW&id=ac72a997-699d-4707-8126-93c14e3b1a0d&mode=raw",
+            "#fff4d6")
+    ));
 
-        count <<= 1;
-      }
-
-      for (String key : tagMap.keySet())
-        log.info(">> 태그 : {}, 숙소 : {}", key, tagMap.get(key));
-      model.addAttribute("tagMap", tagMap);
-
-      model.addAttribute("userId", user.getUserId());
-      // 북마크 내역 가져오기
-      List<BookmarkLodgeDTO> bookmarkLodgeList = userService.getBookmarkLodgeList(user.getUserId());
-      log.info("bookmarkLodgeList > {}", bookmarkLodgeList);
-      model.addAttribute("bookmarks", bookmarkLodgeList
-          .stream().map(BookmarkLodgeDTO::getLodgeId).toList());
-    }
-
-    // 2. 최신 리뷰 (10개)
-    try {
-      model.addAttribute("recentReviews", indexService.getRecentReviews());
-    } catch (NoSuchElementException ignored) {}
+    List<LodgeSummaryDTO> top5 = lodgeService.getTopBookedLodges(5);
+    log.info(">>>> top5");
+    for (LodgeSummaryDTO lodgeSummaryDTO : top5) log.info(">> {}", lodgeSummaryDTO);
+    model.addAttribute("top5", top5);
 
     return "index";
   }

@@ -21,11 +21,11 @@
                     <a href="/user/myPage#myPageDisplay2" class="icon-btn" sec:authorize="isAuthenticated()">
                         <img src="/image/icon-favorite.png" alt="즐겨찾기" class="header-icon" />
                     </a>
-                    <a href="/user/login"  class="btn-login" sec:authorize="isAnonymous()">로그인</a>
-                    <a href="/user/logout"  class="btn-login" sec:authorize="isAuthenticated()">로그아웃</a>
                     <a href="/user/myPage"  class="btn-myPage" sec:authorize="isAuthenticated()">
                         <img src="/image/icon-account.png" alt="마이페이지" class="header-icon" />
                     </a>
+                    <a href="/user/logout"  class="btn-logout" sec:authorize="isAuthenticated()">로그아웃</a>
+                    <a href="/user/login"  class="btn-login" sec:authorize="isAnonymous()">로그인</a>
                     <!-- 알림에 뜨는 빨간 점 -->
                     <div class="notification toggle-display" id="notification">
                         <ul id="notificationUl">

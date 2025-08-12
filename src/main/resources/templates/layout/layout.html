@@ -25,15 +25,17 @@
   <link rel="stylesheet" href="https://unpkg.com/swiper/swiper-bundle.min.css"/>
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   <script th:src="@{/js/review/reviews.js}"></script>
-  <section layout:fragment="customStyle"></section>
+  <th:block layout:fragment="customStyle"></th:block>
   <script src="https://unpkg.com/swiper/swiper-bundle.min.js"></script>
-  <title>Spring Boot JPA</title>
+  <title>Berry.</title>
 </head>
 <body>
 <div th:replace="~{fragments/header :: header}"></div>
+<!--/*
 <script th:inline="javascript" sec:authorize="isAuthenticated()">
   const notificationUserId = [[${userId}]];
 </script>
+*/-->
 <script th:src="@{/js/header/header.js}"></script>
 
 <div layout:fragment="content"></div>

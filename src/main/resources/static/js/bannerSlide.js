@@ -5,13 +5,6 @@ console.log("bannerSlide.js in");
 // 배경
 const bannerBackground = document.querySelector(".banner-background");
 
-const backgroundColors = [
-    "#B7B1F2",
-    "#FDB7EA",  
-    "#FFDCCC",
-    "#FBF3B9",
-];
-
 bannerBackground.style.backgroundColor = backgroundColors[0]; // 기본 색상 설정
 
 // 이미지 슬라이드
@@ -41,16 +34,20 @@ const imgTotalOriginalSlides = imgSlides.length;
 
 // 이미지 복제 슬라이드 생성
 const imgFirstClone = imgSlides[0].cloneNode(true);
+const imgSecondClone = imgSlides[1].cloneNode(true);
 const imgLastClone = imgSlides[imgSlides.length - 1].cloneNode(true);
 
 imgSlideContainer.appendChild(imgFirstClone);
+imgSlideContainer.appendChild(imgSecondClone);
 imgSlideContainer.insertBefore(imgLastClone, imgSlides[0]);
 
 // 텍스트 복제 슬라이드 생성
 const textFirstClone = textSlides[0].cloneNode(true);
+const textSecondClone = textSlides[1].cloneNode(true);
 const textLastClone = textSlides[textSlides.length - 1].cloneNode(true);
 
 textSlideContainer.appendChild(textFirstClone);
+textSlideContainer.appendChild(textSecondClone);
 textSlideContainer.insertBefore(textLastClone, textSlides[0]);
 
 // 이미지 슬라이드 길이 재설정
@@ -80,7 +77,7 @@ function moveToSlide(index) {
 
   const bgIndex = (index - 1 + backgroundColors.length) % backgroundColors.length;
   bannerBackground.style.backgroundColor = backgroundColors[bgIndex];
-  
+
   currentIndex = index;
   updateSlideNumber(index);
 
@@ -94,7 +91,9 @@ function moveToSlide(index) {
       textSlideContainer.style.transform = `translateX(-${textSlideWidth * currentIndex}px)`;
 
     }
-    if (currentIndex === imgAllSlides.length - 1 && currentIndex === textAllSlides.length - 1) {
+
+    if (currentIndex === imgAllSlides.length - 2 && currentIndex === textAllSlides.length - 2) {
+
       imgSlideContainer.style.transition = 'none';
       textSlideContainer.style.transition = 'none';
 
@@ -110,7 +109,8 @@ function moveToSlide(index) {
 function updateSlideNumber(index) {
   let displayNum = index;
   if (index === 0) displayNum = imgTotalOriginalSlides;
-  else if (index === imgAllSlides.length - 1 && index === textAllSlides.length - 1) displayNum = 1;
+  else if (index === imgAllSlides.length - 2 && index === textAllSlides.length - 2) displayNum = 1;
+
   slideNumberDisplay.textContent = `0${displayNum}`;
 }
 
