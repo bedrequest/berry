@@ -17,11 +17,11 @@ import java.time.LocalDateTime;
 import java.util.Optional;
 
 @Slf4j
-public class BoardCustomerIqRepositoryImpl implements BoardCustomerIqRepository {
+public class CustomerIqBoardCustomRepositoryImpl implements CustomerIqBoardCustomRepository {
 
   private final JPAQueryFactory queryFactory;
 
-  public BoardCustomerIqRepositoryImpl(EntityManager em) {
+  public CustomerIqBoardCustomRepositoryImpl(EntityManager em) {
     this.queryFactory = new JPAQueryFactory(em);
   }
 

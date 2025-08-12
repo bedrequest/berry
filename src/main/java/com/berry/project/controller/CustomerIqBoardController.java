@@ -95,21 +95,6 @@ public class CustomerIqBoardController {
         model.addAttribute("ph", paginghandler);
     }
 
-//    @GetMapping("/detail")
-//    public void detail(Model model, @RequestParam("bno") Long bno, Principal principal){
-//        CustomerIqBoardFileDTO customeriqboardfileDTO = boardservice.getDetail(bno);
-//        log.info(">>>> customeriqboardfileDTO > {} ", customeriqboardfileDTO);
-//        model.addAttribute("customeriqboardfileDTO", customeriqboardfileDTO);
-//
-//        UserDTO userDTO = userService.getUserInfo(principal.getName());
-//        boolean modifiable = false;
-//        if (userDTO != null)
-//            modifiable = userDTO.getUserEmail().equals(customeriqboardfileDTO.getBoardDTO().getUserEmail())
-//                    || userDTO.getAuthList()
-//                    .stream().map(AuthUserDTO::getAuthRole)
-//                    .anyMatch(str -> str.equals("ROLE_ADMIN"));
-//        model.addAttribute("modifiable", modifiable);
-//    }
 
     @GetMapping("/detail")
     public String detail(Model model, @RequestParam("bno") Long bno, Principal principal, RedirectAttributes redirectAttributes){

@@ -95,7 +95,7 @@ public class CustomerIqBoardServiceImpl implements CustomerIqBoardService {
 
     // 4. 반환 형태
     Map<String, Object> result = new HashMap<>();
-    result.put("noticeList", noticeDTOList);           // 공지글 따로
+    result.put("noticeList", noticeDTOList);   // 공지글 따로
     result.put("list", customeriqboardDTOList);
 
     return result;
