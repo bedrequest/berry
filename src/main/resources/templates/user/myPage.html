@@ -6,6 +6,8 @@
 <head>
   <meta charset="UTF-8">
   <link rel="stylesheet" th:href="@{/css/user/userMyPage.css}">
+  <link rel="stylesheet" th:href="@{/css/lodge/list.css}" />
+  <link rel="stylesheet" th:href="@{/css/lodge/bookmark.css}" />
 </head>
 <div layout:fragment="content">
   <div class="inner">
@@ -19,7 +21,26 @@
         <ul class="user-info-ul" id="userInfoUl">
           <li>
             <div class="user-info-left"><p>이메일</p></div>
-            <div class="user-info-right"><p>[[${userDTO.userEmail}]]_[[${userDTO.provider}]]</p></div>
+            <div class="user-info-right">
+              <div class="user-grade-badge silver" th:if="${userDTO.userGrade == 'SILVER'}">
+                <img src="/image/grade_logo/Berry_logo_silver.png" alt="실버">
+              </div>
+              <div class="user-grade-badge gold" th:if="${userDTO.userGrade == 'GOLD'}">
+                <img src="/image/grade_logo/Berry_logo_gold.png" alt="골드">
+              </div>
+              <div class="user-grade-badge diamond" th:if="${userDTO.userGrade == 'DIAMOND'}">
+                <img src="/image/grade_logo/Berry_logo_diamond.png" alt="다이아">
+              </div>
+              <th:block th:if="${userDTO.userGrade == 'silver'}">
+                <p class="silver-tit">[[${userDTO.userEmail}]]_[[${userDTO.provider}]]</p>
+              </th:block>
+              <th:block th:if="${userDTO.userGrade == 'gold'}">
+                <p class="gold-tit">[[${userDTO.userEmail}]]_[[${userDTO.provider}]]</p>
+              </th:block>
+              <th:block th:if="${userDTO.userGrade == 'diamond'}">
+                <p class="diamond-tit">[[${userDTO.userEmail}]]_[[${userDTO.provider}]]</p>
+              </th:block>
+            </div>
           </li>
           <li>
             <div class="user-info-left"><p>이름</p></div>
@@ -36,7 +57,7 @@
           <li class="tag-li">
             <div class="user-info-left"><p>선호 태그</p></div>
             <div class="user-info-right">
-              <p th:if="${userDTO.userFavoriteTag == 0}">선호태그를 선택하지 않았습니다. 정보수정에서 선택해주세요.</p>
+              <p class="gray-tit" th:if="${userDTO.userFavoriteTag == 0}">선호태그를 선택하지 않았습니다. 정보수정에서 선택해주세요.</p>
               <p id="tagList" th:if="${userDTO.userFavoriteTag != 0}">
                 <span id="tag1" class="user-favorite-tag">경치가 좋아요</span>
                 <span id="tag0" class="user-favorite-tag">깨끗해요</span>
@@ -55,7 +76,7 @@
             <div class="user-info-right">
               <!-- 쿠폰 미보유시-->
               <th:block th:if="${#lists.size(cuponList) == 0}">
-                <p>보유한 쿠폰이 없습니다.</p>
+                <p class="gray-tit">보유한 쿠폰이 없습니다.</p>
               </th:block>
               <!-- 쿠폰 보유시 -->
               <th:block th:if="${#lists.size(cuponList) > 0}">
@@ -145,54 +166,65 @@
 
       <p class="myPage-headTit">북마크</p>
       <!-- 북마크가 없을경우 -->
-      <div class="myPage-wrapper">
-        <p class="myPage-wrapper-tit">현재 북마크가 없습니다.</p>
-      </div>
+      <th:block th:if="${#lists.size(bookmarkLodgeList) == 0}">
+        <div class="myPage-wrapper">
+          <p class="myPage-wrapper-tit">현재 북마크가 없습니다.</p>
+        </div>
+      </th:block>
 
       <!-- 북마크가 있을경우 -->
-      <ul>
-        <li th:each="lodge : ${bookmarkLodgeList}">
-          <div class="bookmark" th:data-id="${lodge.lodgeId}">
-            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="#999999" class="bi bi-heart-fill" viewBox="0 0 16 16">
-              <path fill-rule="evenodd" d="M8 1.314C12.438-3.248 23.534 4.735 8 15-7.534 4.736 3.562-3.248 8 1.314"/>
-            </svg>
-          </div>
-          <a th:href="@{/lodge/detail/{id}(
+      <th:block  th:if="${#lists.size(bookmarkLodgeList) > 0}">
+        <ul class = "myPage-bookmarkList">
+          <li th:each="lodge : ${bookmarkLodgeList}">
+            <div class="bookmark selected" th:data-id="${lodge.lodgeId}">
+              <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" class="bi bi-heart-fill" viewBox="0 0 16 16">
+                <path fill-rule="evenodd" d="M8 1.314C12.438-3.248 23.534 4.735 8 15-7.534 4.736 3.562-3.248 8 1.314"/>
+              </svg>
+            </div>
+            <a th:href="@{/lodge/detail/{id}(
              id=${lodge.lodgeId},
              checkIn=${lodgeOption.checkIn},
              checkOut=${lodgeOption.checkOut},
              adult=${lodgeOption.adult},
              child=${lodgeOption.child})}">
-            <div class="lodgePreview">
-              <div class="lodgePreviewImg" th:style="'background-image: url(' + ${lodge.lodgeImages.get(0)} + ');'"></div>
-              <div class="lodgePreviewTexts">
-                <div class="lodgeInfo">
-                  <span class="lodgeType" th:text="${lodge.lodgeType}"></span>
-                  <span class="lodgeName" th:text="${lodge.lodgeName}"></span>
-                  <span class="lodgeAddr" th:text="${lodge.shortAddress}"></span>
-                  <div class="lodgeReviewStatusArea">별점 영역</div>
-                </div>
-                <div class="lodgePrice">
-                  <p class="rent time" th:if="${lodge.cheapestRent != null}">
-                    <span class="timeTitle">대실</span>
-                    <span class="timeValue">[[${lodge.cheapestRent.rentTime}]]</span>
-                  </p>
-                  <p class="rent price" th:if="${lodge.cheapestRent != null}">
-                    [[${lodge.cheapestRent.rentPrice}]]원~
-                  </p>
-                  <p class="stay time" th:if="${lodge.cheapestStay != null}">
-                    <span class="timeTitle">숙박</span>
-                    <span class="timeValue">[[${lodge.cheapestStay.stayTime}]]</span>
-                  </p>
-                  <p class="stay price" th:if="${lodge.cheapestStay != null}">
-                    [[${lodge.cheapestStay.stayPrice}]]원~
-                  </p>
+              <div class="lodgePreview">
+                <div class="lodgePreviewImg" th:style="'background-image: url(' + ${lodge.lodgeImages.get(0)} + ');'"></div>
+                <div class="lodgePreviewTexts">
+                  <div class="lodgeInfo">
+                    <span class="lodgeType" th:text="${lodge.lodgeType}"></span>
+                    <span class="lodgeName" th:text="${lodge.lodgeName}"></span>
+                    <span class="lodgeAddr" th:text="${lodge.shortAddress}"></span>
+                    <div class="lodgeReviewStatusArea">
+                      <div class="averageReviewScore">
+                        ★ [[${lodge.averageReviewScore != null ? lodge.averageReviewScore : '-'}]]
+                      </div>
+                      <div class="reviewCount">
+                        <span class="areaTitle">[[${lodge.reviewCount}]]명 평가</span>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="lodgePrice">
+                    <p class="rent time" th:if="${lodge.cheapestRent != null}">
+                      <span class="timeTitle">대실</span>
+                      <span class="timeValue">[[${lodge.cheapestRent.rentTime}]]</span>
+                    </p>
+                    <p class="rent price" th:if="${lodge.cheapestRent != null}">
+                      [[${lodge.cheapestRent.rentPrice}]]원~
+                    </p>
+                    <p class="stay time" th:if="${lodge.cheapestStay != null}">
+                      <span class="timeTitle">숙박</span>
+                      <span class="timeValue">[[${lodge.cheapestStay.stayTime}]]</span>
+                    </p>
+                    <p class="stay price" th:if="${lodge.cheapestStay != null}">
+                      [[${lodge.cheapestStay.stayPrice}]]원~
+                    </p>
+                  </div>
                 </div>
               </div>
-            </div>
-          </a>
-        </li>
-      </ul>
+            </a>
+          </li>
+        </ul>
+      </th:block>
 
     </div>
 
@@ -212,7 +244,14 @@
       <th:block th:each="presentReservationDTO, iterStart : ${reservationPresentList}">
         <div style="margin-bottom:50px; height:400px;">
           <div class="reservation-left-box">
-            <img th:src="${presentReservationDTO.lodgeImageUrls[0]}" width="600" height="400" alt="대표 이미지" />
+            <a th:href="@{/lodge/detail/{id}(
+             id=${presentReservationDTO.lodgeId},
+             checkIn=${lodgeOption.checkIn},
+             checkOut=${lodgeOption.checkOut},
+             adult=${lodgeOption.adult},
+             child=${lodgeOption.child})}">
+              <div class="reservation-img" th:style="'background-image: url(' + ${presentReservationDTO.lodgeImageUrls[0]} + ');'"></div>
+            </a>
           </div>
 
           <div class="reservation-right-box">
@@ -231,7 +270,15 @@
               </li>
               <li>
                 <p class="reservation-left-tit">예약 번호</p>
-                <p class="reservation-right-tit">[[${presentReservationDTO.customOrderId()}]]</p>
+                <p class="reservation-right-tit" th:data-rid="${iterStart.index}" >[[${presentReservationDTO.customOrderId()}]]
+                  <button class="print-number gray-tit" th:data-bid="${iterStart.index}">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-printer" viewBox="0 0 16 16">
+                      <path d="M2.5 8a.5.5 0 1 0 0-1 .5.5 0 0 0 0 1"/>
+                      <path d="M5 1a2 2 0 0 0-2 2v2H2a2 2 0 0 0-2 2v3a2 2 0 0 0 2 2h1v1a2 2 0 0 0 2 2h6a2 2 0 0 0 2-2v-1h1a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2h-1V3a2 2 0 0 0-2-2zM4 3a1 1 0 0 1 1-1h6a1 1 0 0 1 1 1v2H4zm1 5a2 2 0 0 0-2 2v1H2a1 1 0 0 1-1-1V7a1 1 0 0 1 1-1h12a1 1 0 0 1 1 1v3a1 1 0 0 1-1 1h-1v-1a2 2 0 0 0-2-2zm7 2v3a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1v-3a1 1 0 0 1 1-1h6a1 1 0 0 1 1 1"/>
+                    </svg>
+                    복사
+                  </button>
+                </p>
               </li>
               <li>
                 <p class="reservation-left-tit">결제 금액</p>
@@ -602,6 +649,11 @@
   </script>
   <script th:src="@{/js/user/userMyPage.js}"></script>
   <script th:src="@{/js/user/userMyPageSelected.js}"></script>
+  <script type="module" th:inline="javascript">
+    import(/*[[@{/js/lodge/bookmark.js}]]*/).then(module => {
+      module.default(/*[[${userDTO.userId}]]*/);
+    });
+  </script>
 
   <!-- duorpeb, 결제 환불 -->
   <script th:src="@{/js/payment/paymentCancel.js}"></script>

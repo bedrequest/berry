@@ -1,7 +1,9 @@
 package com.berry.project.controller;
 
+
 import com.berry.project.dto.MainSlideDTO;
 import com.berry.project.dto.lodge.LodgeSummaryDTO;
+import com.berry.project.dto.lodge.LodgeWithTagCountDTO;
 import com.berry.project.dto.user.BookmarkLodgeDTO;
 import com.berry.project.dto.user.UserDTO;
 import com.berry.project.service.lodge.LodgeService;
@@ -13,7 +15,10 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 
 import java.security.Principal;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.NoSuchElementException;
 
 @RequiredArgsConstructor
 @Slf4j
@@ -56,14 +61,6 @@ public class IndexController {
     log.info(">>>> top5");
     for (LodgeSummaryDTO lodgeSummaryDTO : top5) log.info(">> {}", lodgeSummaryDTO);
     model.addAttribute("top5", top5);
-
-    if (principal != null) {
-      UserDTO userDTO = userService.getUserInfo(principal.getName());
-      model.addAttribute("bookmarks",
-          userService.getBookmarkLodgeList(userDTO.getUserId())
-              .stream().map(BookmarkLodgeDTO::getLodgeId)
-              .toList());
-    }
 
     return "index";
   }

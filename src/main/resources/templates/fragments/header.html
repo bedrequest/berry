@@ -5,7 +5,8 @@
 
 <div th:fragment="header">
     <!-- 헤더 콘텐츠 -->
-    <header class="site-header">
+    <header class="site-header" id="headerTop">
+
         <div class="wrapper header-wrapper">
             <div class="inner header-inner">
                 <!-- Logo (왼쪽 정렬) -->
@@ -17,7 +18,7 @@
                     <a class="icon-btn" sec:authorize="isAuthenticated()" id="notificationBtn">
                         <img src="/image/icon-notification.png" alt="알림" class="header-icon" />
                     </a>
-                    <a href="/user/bookmark" class="icon-btn" sec:authorize="isAuthenticated()">
+                    <a href="/user/myPage#myPageDisplay2" class="icon-btn" sec:authorize="isAuthenticated()">
                         <img src="/image/icon-favorite.png" alt="즐겨찾기" class="header-icon" />
                     </a>
                     <a href="/user/myPage"  class="btn-myPage" sec:authorize="isAuthenticated()">
@@ -31,9 +32,21 @@
                             <!-- js 를 통해서 값 추가 -->
                         </ul>
                     </div>
-
                 </div>
             </div>
+        </div>
+    </header>
+    <div class="header-top-div">
+        <div><a id="topBtn">
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-caret-up-fill" viewBox="0 0 16 16">
+                <path d="m7.247 4.86-4.796 5.481c-.566.647-.106 1.659.753 1.659h9.592a1 1 0 0 0 .753-1.659l-4.796-5.48a1 1 0 0 0-1.506 0z"/>
+            </svg>
+        </a></div>
+
+        <div><a href="/qna/list">
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-headset" viewBox="0 0 16 16">
+                <path d="M8 1a5 5 0 0 0-5 5v1h1a1 1 0 0 1 1 1v3a1 1 0 0 1-1 1H3a1 1 0 0 1-1-1V6a6 6 0 1 1 12 0v6a2.5 2.5 0 0 1-2.5 2.5H9.366a1 1 0 0 1-.866.5h-1a1 1 0 1 1 0-2h1a1 1 0 0 1 .866.5H11.5A1.5 1.5 0 0 0 13 12h-1a1 1 0 0 1-1-1V8a1 1 0 0 1 1-1h1V6a5 5 0 0 0-5-5"/>
+            </svg>
+        </a></div>
     </div>
-  </header>
 </div>

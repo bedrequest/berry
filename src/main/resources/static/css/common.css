@@ -262,4 +262,43 @@
   border-top: 1px solid #ccc;
 }
 
+/* 탑 / 고객센터 버튼 */
+.header-top-div{
+  position: fixed;
+  bottom: 70px;
+  right: 40px;
+  width: 55px;
+  height: 115px;
+  align-items: center;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  z-index: 1000;
+}
 
+.header-top-div div {
+  position: relative;
+  height: 50%;
+}
+
+.header-top-div div:first-child {
+  border-bottom: 1px solid rgba(150, 150, 150, 0.3);
+}
+
+.header-top-div a {
+  display: inline-block;
+  position: absolute;
+  top: 50%;
+  left: 41%;
+  transform: translate(-50%, -50%);
+  width: 20px;
+}
+
+.header-top-div a svg {
+  color: #E74B60;
+  width: 30px;
+  height: 30px;
+}
+
+.header-top-div a svg:hover {
+  cursor: pointer;
+  color: #fa4c63;
+}

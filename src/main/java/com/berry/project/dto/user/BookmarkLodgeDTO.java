@@ -20,6 +20,8 @@ public class BookmarkLodgeDTO {
   private String lodgeType;
   private String lodgeAddr;
   private String lodgeName;
+  private Double averageReviewScore;
+  private long reviewCount;
   private List<String> lodgeImages;
   private List<RoomDTO> rooms;
 

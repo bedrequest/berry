@@ -91,7 +91,9 @@ function moveToSlide(index) {
       textSlideContainer.style.transform = `translateX(-${textSlideWidth * currentIndex}px)`;
 
     }
+
     if (currentIndex === imgAllSlides.length - 2 && currentIndex === textAllSlides.length - 2) {
+
       imgSlideContainer.style.transition = 'none';
       textSlideContainer.style.transition = 'none';
 
@@ -108,6 +110,7 @@ function updateSlideNumber(index) {
   let displayNum = index;
   if (index === 0) displayNum = imgTotalOriginalSlides;
   else if (index === imgAllSlides.length - 2 && index === textAllSlides.length - 2) displayNum = 1;
+
   slideNumberDisplay.textContent = `0${displayNum}`;
 }
 
