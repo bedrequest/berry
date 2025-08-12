@@ -166,7 +166,7 @@
                     <span class="lodgeAddr" th:text="${lodge.shortAddress}"></span>
                     <div class="lodgeReviewStatusArea">
                       <div class="averageReviewScore">
-                        ★ [[${lodge.averageReviewScore != null ? lodge.averageReviewScore : '-'}]]
+                        ★ [[${lodge.averageReviewScore != null ? #numbers.formatDecimal(lodge.averageReviewScore, 1, 1) : '-'}]]
                       </div>
                       <div class="reviewCount">
                         <span class="areaTitle">[[${lodge.reviewCount}]]명 평가</span>

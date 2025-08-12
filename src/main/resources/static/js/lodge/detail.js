@@ -141,7 +141,7 @@ function openModal(target) {
 }
 
 function closeModal() {
-    if (swiper) {
+    if (swiper && !swiper.destoyed) {
         swiper.removeAllSlides();
         swiper.destroy(true, true);
     }
