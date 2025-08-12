@@ -5,11 +5,11 @@
       xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
       layout:decorate="~{layout/layout}">
 <th:block layout:fragment="customStyle">
-  <link rel="stylesheet" th:href="@{/css/index.css}">
+  <link rel="stylesheet" th:href="@{/css/index/index.css}">
   <link rel="stylesheet" th:href="@{/css/lodge/bookmark.css}">
   <link rel="stylesheet" th:href="@{/css/review/reviews.css}">
-  <link rel="stylesheet" th:href="@{/css/main_section_two.css}">
-  <link rel="stylesheet" th:href="@{/css/bannerSlide.css}" />
+  <link rel="stylesheet" th:href="@{/css/index/main_section_two.css}">
+  <link rel="stylesheet" th:href="@{/css/index/bannerSlide.css}" />
 </th:block>
 <div layout:fragment="content">
 
@@ -86,7 +86,7 @@
       const mainSlideDTOList = /*[[${mainSlide}]]*/;
       const backgroundColors = mainSlideDTOList.map(e => e.color);
     </script>
-    <script th:src="@{/js/bannerSlide.js}"></script>
+    <script th:src="@{/js/index/bannerSlide.js}"></script>
   </div>
 
   <!-- 김민수 -->
@@ -187,11 +187,6 @@
     <div th:insert="~{fragments/search :: search}" id="search-box-container"></div>
   </div>
 
-  <script type="module" th:src="@{/js/indexScroll.js}"></script>
-  <script type="module" th:src="@{/js/main_section_two.js}"></script>
-  <script type="module" th:inline="javascript" sec:authorize="${isAuthenticated()}">
-    import(/*[[@{/js/lodge/bookmark.js}]]*/).then(module => {
-      module.default(/*[[${userId}]]*/);
-    });
-  </script>
+  <script type="module" th:src="@{/js/index/indexScroll.js}"></script>
+  <script type="module" th:src="@{/js/index/main_section_two.js}"></script>
 </div>

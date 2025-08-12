@@ -2,8 +2,6 @@ package com.berry.project.repository.search;
 
 import com.berry.project.entity.search.Search;
 import com.berry.project.util.RegionNameUtils;
-import com.querydsl.core.types.dsl.BooleanExpression;
-import com.querydsl.jpa.impl.JPAQueryFactory;
 import io.github.crizin.KoreanUtils;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.Query;
@@ -12,14 +10,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.*;
 
-import static com.berry.project.entity.search.QSearch.search;
-
 @Slf4j
 public class SearchCustomRepositoryImpl implements SearchCustomRepository {
 
   @Autowired
   private EntityManager entityManager;
-
+  
+  @SuppressWarnings("unchecked")
   @Override
   public List<Search> findThatContains(String keyword) {
     if (keyword == null || keyword.isEmpty()) return null;
@@ -51,7 +48,7 @@ public class SearchCustomRepositoryImpl implements SearchCustomRepository {
     Query query = entityManager.createNativeQuery(queryBuilder.toString(), Search.class);
     for (int key : parameters.keySet())
       query.setParameter(key, parameters.get(key));
-
+    
     return query.getResultList();
   }
 }

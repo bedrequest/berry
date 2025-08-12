@@ -70,7 +70,7 @@ public class LodgeController {
     model.addAttribute("sortOptions", lodgeData.getLodgeSortOptions());
     model.addAttribute("priceTable", lodgeData.getPriceTable());
 
-    if(principal != null) {
+    if (principal != null) {
       UserDTO userDTO = userService.getUserInfo(principal.getName());
       model.addAttribute("userDTO", userDTO);
 
@@ -101,7 +101,10 @@ public class LodgeController {
       UserDTO userDTO = userService.getUserInfo(principal.getName());
       log.info(">> user : {}", userDTO);
       model.addAttribute("userDTO", userDTO);
-    }
+      model.addAttribute("bookmark", userService.getBookmarkLodgeList(userDTO.getUserId())
+          .stream().anyMatch(bookmarkLodgeDTO -> bookmarkLodgeDTO.getLodgeId().equals(lodgeId)));
+    } else model.addAttribute("bookmark", false);
+
     // 고정값들
     model.addAttribute("naverMapId", naverMapApi.getNaverMapApiKey());
     model.addAttribute("facilityIconMap", lodgeData.getFacilityIconMap());

@@ -20,7 +20,7 @@ import java.nio.charset.StandardCharsets;
 @Component
 public class LoginFailureHandler implements AuthenticationFailureHandler {
 
-  private RedirectStrategy redirectStrategy = new DefaultRedirectStrategy();
+  private final RedirectStrategy redirectStrategy = new DefaultRedirectStrategy();
 
   @Override
   public void onAuthenticationFailure(HttpServletRequest request, HttpServletResponse response, AuthenticationException exception) throws IOException, ServletException {
@@ -28,11 +28,11 @@ public class LoginFailureHandler implements AuthenticationFailureHandler {
     String errorMessage;
     String loginFailEmail = request.getParameter("email");
 
-    if(exception instanceof BadCredentialsException){
+    if (exception instanceof BadCredentialsException) {
       errorMessage = "사용자 정보가 일치하지 않습니다.";
-    }else if(exception instanceof InternalAuthenticationServiceException){
+    } else if (exception instanceof InternalAuthenticationServiceException) {
       errorMessage = "관리자에게 문의해주세요.";
-    }else{
+    } else {
       errorMessage = "관리자에게 문의해주세요.";
     }
 
@@ -48,10 +48,10 @@ public class LoginFailureHandler implements AuthenticationFailureHandler {
     String redirectTo = request.getParameter("redirectTo");
 
     // redirectTo 가 있다면 인코딩해서 붙여주기
-    if(redirectTo != null){
+    if (redirectTo != null) {
       // 로그인 실패 시 돌려보낼 url 기본값 설정
       url = "/user/login?error";
-      
+
       String encode = URLEncoder.encode(redirectTo, StandardCharsets.UTF_8);
       url += "&redirectTo=" + encode;
     }

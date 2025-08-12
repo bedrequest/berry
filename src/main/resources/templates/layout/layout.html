@@ -31,11 +31,9 @@
 </head>
 <body>
 <div th:replace="~{fragments/header :: header}"></div>
-<!--/*
 <script th:inline="javascript" sec:authorize="isAuthenticated()">
   const notificationUserId = [[${userId}]];
 </script>
-*/-->
 <script th:src="@{/js/header/header.js}"></script>
 
 <div layout:fragment="content"></div>

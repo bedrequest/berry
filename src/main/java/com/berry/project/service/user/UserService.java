@@ -72,7 +72,7 @@ public interface UserService {
         .build();
   }
 
-  default UserBookmarkDTO convertUserBookmarkEntityToUserBookmarkDTO(UserBookmark userBookmark){
+  default UserBookmarkDTO convertUserBookmarkEntityToUserBookmarkDTO(UserBookmark userBookmark) {
     return UserBookmarkDTO.builder()
         .userBookmarkId(userBookmark.getUserBookmarkId())
         .userId(userBookmark.getUserId())
@@ -82,14 +82,14 @@ public interface UserService {
         .build();
   }
 
-  default UserBookmark convertUserBookmarkDTOToUserBookmarkEntity(UserBookmarkDTO userBookmarkDTO){
+  default UserBookmark convertUserBookmarkDTOToUserBookmarkEntity(UserBookmarkDTO userBookmarkDTO) {
     return UserBookmark.builder()
         .userId(userBookmarkDTO.getUserId())
         .lodgeId(userBookmarkDTO.getLodgeId())
         .build();
   }
 
-  default Alarm convertAlarmDTOToAlarmEntity(AlarmDTO alarmDTO){
+  default Alarm convertAlarmDTOToAlarmEntity(AlarmDTO alarmDTO) {
     return Alarm.builder()
         .userId(alarmDTO.getUserId())
         .targetId(alarmDTO.getTargetId())
@@ -97,7 +97,7 @@ public interface UserService {
         .build();
   }
 
-  default AlarmDTO convertAlarmEntityToAlarmDTO(Alarm alarm){
+  default AlarmDTO convertAlarmEntityToAlarmDTO(Alarm alarm) {
     return AlarmDTO.builder()
         .alarmId(alarm.getAlarmId())
         .userId(alarm.getUserId())

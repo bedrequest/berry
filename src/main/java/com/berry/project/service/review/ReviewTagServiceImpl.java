@@ -13,22 +13,22 @@ import java.util.List;
 @Service
 @RequiredArgsConstructor
 public class ReviewTagServiceImpl implements ReviewTagService {
-    private final ReviewTagRepository reviewTagRepository;
-    private final ReviewTagMappingRepository reviewTagMappingRepository;
+  private final ReviewTagRepository reviewTagRepository;
+  private final ReviewTagMappingRepository reviewTagMappingRepository;
 
 
-    @Override
-    public List<ReviewTag> getAllTags() {
-        return reviewTagRepository.findAll();
-    }
+  @Override
+  public List<ReviewTag> getAllTags() {
+    return reviewTagRepository.findAll();
+  }
 
-    @Override
-    public List<TagCountDTO> getTagCountsByLodge(Long lodgeId) {
-        // DB에서 모든 태그 카운트를 가져온 뒤, 내림차순 정렬해서 상위 3개만 리턴
-        return reviewTagMappingRepository.countTagsByLodge(lodgeId).stream()
-                .sorted(Comparator.comparingLong(TagCountDTO::count).reversed())
-                .limit(3)
-                .toList();
-    }
+  @Override
+  public List<TagCountDTO> getTagCountsByLodge(Long lodgeId) {
+    // DB에서 모든 태그 카운트를 가져온 뒤, 내림차순 정렬해서 상위 3개만 리턴
+    return reviewTagMappingRepository.countTagsByLodge(lodgeId).stream()
+        .sorted(Comparator.comparingLong(TagCountDTO::count).reversed())
+        .limit(3)
+        .toList();
+  }
 
 }

@@ -20,7 +20,7 @@ public class ControllerAdvice {
   private final UserService userService;
 
   @ModelAttribute
-  public void getUserId(Principal principal, Model model){
+  public void getUserId(Principal principal, Model model) {
 
     Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 

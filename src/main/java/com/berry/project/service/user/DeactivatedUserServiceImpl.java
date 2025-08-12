@@ -13,7 +13,7 @@ import org.springframework.transaction.annotation.Transactional;
 @Slf4j
 @Service
 @RequiredArgsConstructor
-public class DeactivatedUserServiceImpl implements DeactivatedUserService{
+public class DeactivatedUserServiceImpl implements DeactivatedUserService {
 
   private final UserRepository userRepository;
   private final DeactivatedUserRepository deactivatedUserRepository;

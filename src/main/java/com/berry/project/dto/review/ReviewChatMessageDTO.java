@@ -8,6 +8,6 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class ReviewChatMessageDTO {
-    private String role;
-    private String content;
+  private String role;
+  private String content;
 }

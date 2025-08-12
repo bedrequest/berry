@@ -11,14 +11,13 @@ import java.util.List;
 @Getter
 public class PagingHandler<T> {
   private final int startPage;
-  private int endPage;
   private final int totalPage;
   private final long totalCount;
   private final boolean hasPrev;
   private final boolean hasNext;
   private final int pageNo;
   List<T> list;
-
+  private int endPage;
   private ListOptionDTO listOptionDTO;
 
   public PagingHandler(Page<T> page) {

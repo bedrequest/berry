@@ -20,6 +20,6 @@ public class CustomerIqBoardDTO {
   private Boolean isSecret;
   private String comment;
   private LocalDateTime commentRegDate;
-  private LocalDateTime regDate,modDate;
+  private LocalDateTime regDate, modDate;
 
 }

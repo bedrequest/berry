@@ -19,11 +19,11 @@ public class CoolSMSHandler {
       String coolSmsApiKey,
       String coolSmsSecretKey,
       String fromNumber
-  ){
-    DefaultMessageService messageService = NurigoApp.INSTANCE.initialize(coolSmsApiKey, coolSmsSecretKey,  "https://api.solapi.com");
+  ) {
+    DefaultMessageService messageService = NurigoApp.INSTANCE.initialize(coolSmsApiKey, coolSmsSecretKey, "https://api.solapi.com");
     log.info("apiKey >>> {}", coolSmsApiKey);
     log.info("secretKey >>> {}", coolSmsSecretKey);
-    log.info("messageHead >>> {}",messageService);
+    log.info("messageHead >>> {}", messageService);
 
     Message message = new Message();
     message.setFrom(fromNumber);
@@ -49,7 +49,6 @@ public class CoolSMSHandler {
     int number = secureRandom.nextInt(upperLimit);
     return String.format("%0" + length + "d", number);
   }
-
 
 
 }

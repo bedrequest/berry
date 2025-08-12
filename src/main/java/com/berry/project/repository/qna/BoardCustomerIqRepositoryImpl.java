@@ -10,10 +10,9 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 
+import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
-
-import java.time.LocalDateTime;
 
 @Slf4j
 public class BoardCustomerIqRepositoryImpl implements BoardCustomerIqRepository {
@@ -37,8 +36,8 @@ public class BoardCustomerIqRepositoryImpl implements BoardCustomerIqRepository 
 
   @Override
   public Page<CustomerIqBoard> searchcoustomeriqboard(String type, String keyword,
-                                               String startDate, String endDate,
-                                               Pageable pageable) {
+                                                      String startDate, String endDate,
+                                                      Pageable pageable) {
     // String → LocalDateTime 변환
     DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
     LocalDateTime start = (startDate != null && !startDate.isEmpty())

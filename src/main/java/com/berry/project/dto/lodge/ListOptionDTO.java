@@ -39,6 +39,7 @@ public class ListOptionDTO {
     setKeyword(keyword);
     setFreeForm(freeForm);
   }
+
   public ListOptionDTO(String keyword, Boolean freeForm, String lodgeType, Integer lowestPrice, Integer highestPrice, Integer facilityMask, String sort) {
     this(keyword, freeForm);
 
@@ -52,6 +53,7 @@ public class ListOptionDTO {
   public void setFreeForm(Boolean freeForm) {
     if (freeForm != null) this.freeForm = freeForm;
   }
+
   public void setLowestPrice(Integer lowestPrice) {
     int[] priceTable = new LodgeData().getPriceTable();
 
@@ -90,6 +92,7 @@ public class ListOptionDTO {
   public void setFacilityMask(Integer facilityMask) {
     if (facilityMask != null) this.facilityMask = facilityMask;
   }
+
   public void setSort(String sort) {
     if (sort != null) this.sort = sort;
   }

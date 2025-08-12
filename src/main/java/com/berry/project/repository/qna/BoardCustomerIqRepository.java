@@ -9,6 +9,7 @@ import java.util.List;
 public interface BoardCustomerIqRepository {
 
   List<CustomerIqBoard> findNoticeBoards(); // 공지글 (고정)
+
   Page<CustomerIqBoard> searchcoustomeriqboard(String type, String keyword,
-                                        String startDate, String endDate, Pageable pageable);
+                                               String startDate, String endDate, Pageable pageable);
 }

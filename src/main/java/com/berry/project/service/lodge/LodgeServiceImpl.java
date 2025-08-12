@@ -1,10 +1,6 @@
 package com.berry.project.service.lodge;
 
 import com.berry.project.dto.lodge.*;
-import com.berry.project.dto.lodge.ListOptionDTO;
-import com.berry.project.dto.lodge.LodgeDTO;
-import com.berry.project.dto.lodge.LodgeOptionDTO;
-import com.berry.project.dto.lodge.RoomDTO;
 import com.berry.project.entity.lodge.*;
 import com.berry.project.entity.review.ReviewSummary;
 import com.berry.project.handler.PagingHandler;
@@ -39,7 +35,6 @@ public class LodgeServiceImpl implements LodgeService {
   private final RoomImgRepository roomImgRepository;
   private final LodgeDescriptionRepository lodgeDescriptionRepository;
   private final ReviewRepository reviewRepository;
-  private final ReviewTagRepository reviewTagRepository;
   private final ReviewSummaryRepository reviewSummaryRepository;
 
   private final FacilityMaskDecoder facilityMaskDecoder;
@@ -57,7 +52,7 @@ public class LodgeServiceImpl implements LodgeService {
         facilityMaskDecoder,
         lodgeDescriptionRepository.findByLodgeId(optionalLodge.get().getLodgeId()),
         reviewRepository.countByLodgeId(lodgeId),
-        reviewRepository.findAverageRatingByLodgeId(lodgeId).orElse(0.0)*2,
+        reviewRepository.findAverageRatingByLodgeId(lodgeId).orElse(0.0) * 2,
         null);
     fillImages(lodgeDTO);
     fillRooms(lodgeDTO, true);
@@ -83,7 +78,7 @@ public class LodgeServiceImpl implements LodgeService {
 
       lodgeDTO.setAverageReviewScore(
           reviewRepository.findAverageRatingByLodgeId(lodgeDTO.getLodgeId())
-              .orElse(0.0)*2);
+              .orElse(0.0) * 2);
       lodgeDTO.setReviewCount(reviewRepository.countByLodgeId(lodgeDTO.getLodgeId()));
     }
 
@@ -136,45 +131,46 @@ public class LodgeServiceImpl implements LodgeService {
     // 2) 룸Id → 숙소Id 매핑 후 DTO 생성
     return topRooms.stream().map(rc -> {
       Long roomId = rc.getRoomId();
-      Long count  = rc.getCnt();
+      Long count = rc.getCnt();
 
       // a) room → lodgeId
       var room = roomRepository.findById(roomId)
-              .orElseThrow(() -> new IllegalArgumentException("룸이 없습니다: " + roomId));
+          .orElseThrow(() -> new IllegalArgumentException("룸이 없습니다: " + roomId));
       Long lodgeId = room.getLodgeId();
 
       // b) 이하 기존 로직(숙소 조회, 이미지, 가격, 태그, AI요약)
       var lodge = lodgeRepository.findById(lodgeId)
-              .orElseThrow(() -> new IllegalArgumentException("숙소가 없습니다: " + lodgeId));
+          .orElseThrow(() -> new IllegalArgumentException("숙소가 없습니다: " + lodgeId));
       String imgUrl = lodgeImgRepository
-              .findFirstByLodgeIdOrderByLodgeImgIdAsc(lodgeId)  // 수정된 메서드
-              .map(LodgeImg::getLodgeImgUrl)                    // 엔티티에서 URL 추출
-              .orElse("/images/default_lodge.jpg");
+          .findFirstByLodgeIdOrderByLodgeImgIdAsc(lodgeId)  // 수정된 메서드
+          .map(LodgeImg::getLodgeImgUrl)                    // 엔티티에서 URL 추출
+          .orElse("/images/default_lodge.jpg");
       Integer minPrice = roomRepository.findMinStayPriceByLodgeId(lodgeId);
 
-      Map<String,Integer> stats = reviewRepository.findTagCountsByLodgeId(lodgeId)
-              .stream().collect(Collectors.toMap(
-                      ReviewRepository.TagCount::getTagName,
-                      tc -> tc.getCnt().intValue()
-              ));
+      Map<String, Integer> stats = reviewRepository.findTagCountsByLodgeId(lodgeId)
+          .stream().collect(Collectors.toMap(
+              ReviewRepository.TagCount::getTagName,
+              tc -> tc.getCnt().intValue()
+          ));
       String statsJson = "{}";
       try {
         statsJson = objectMapper.writeValueAsString(stats);
-      } catch (Exception ignored) {}
+      } catch (Exception ignored) {
+      }
 
       String aiSum = reviewSummaryRepository.findByLodgeId(lodgeId)
-              .stream().map(ReviewSummary::getSummaryText)
-              .findFirst().orElse("");
+          .stream().map(ReviewSummary::getSummaryText)
+          .findFirst().orElse("");
 
       return new LodgeSummaryDTO(
-              lodgeId,
-              lodge.getLodgeName(),
-              lodge.getLodgeAddr(),
-              minPrice,
-              imgUrl,
-              count,
-              statsJson,
-              aiSum
+          lodgeId,
+          lodge.getLodgeName(),
+          lodge.getLodgeAddr(),
+          minPrice,
+          imgUrl,
+          count,
+          statsJson,
+          aiSum
       );
     }).collect(Collectors.toList());
   }

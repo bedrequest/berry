@@ -1,6 +1,7 @@
 package com.berry.project.dto.lodge;
 
-import lombok.*;
+import lombok.Getter;
+import lombok.ToString;
 
 import java.time.LocalDate;
 

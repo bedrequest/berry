@@ -4,27 +4,30 @@
       xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
       xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
       layout:decorate="~{layout/layout}">
-<th:block layout:fragment="customStyle">
+<section layout:fragment="customStyle">
   <link rel="stylesheet" th:href="@{/css/lodge/detail.css}" />
-  <link rel="stylesheet" th:href="@{/css/lodge/bookmark.css}" />
   <link rel="stylesheet" th:href="@{/css/review/reviews.css}" />
-</th:block>
+  <link rel="stylesheet" th:href="@{/css/lodge/bookmark.css}" />
+</section>
 <div layout:fragment="content">
+
   <script th:inline="javascript">
+    window.lodgeDTO = /*[[${lodgeDTO}]]*/;
     const jquerySwiperLink = document.createElement('link');
     jquerySwiperLink.rel = "stylesheet";
     jquerySwiperLink.href = "https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css";
     document.querySelector('head').appendChild(jquerySwiperLink);
-    
+
     let user = null;
   </script>
-  <script th:inline="javascript" sec:authorize="isAuthenticated()">
-    user = [[${userDTO.userId}]];
-    userData = [[${userDTO}]];
-  </script>
+  <div th:insert="~{fragments/search :: search}" class="sticky"></div>
 
-  <div th:insert="~{fragments/search :: search}" class="sticky"
-       th:with="lodgeOption=${lodgeOption}, lodgeDTO=${lodgeDTO}"></div>
+  <div sec:authorize="isAuthenticated()">
+    <script th:inline="javascript">
+      user = [[${userDTO.userId}]];
+      userData = [[${userDTO}]];
+    </script>
+  </div>
 
   <div class="navBar">
     <div class="container">
@@ -61,8 +64,8 @@
         <span>[[${lodgeDTO.cheapestPrice}]]</span>
       </div>
 
-      <div class="bookmark" th:data-id="${lodgeDTO.lodgeId}">
-        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="#999999" class="bi bi-heart-fill" viewBox="0 0 16 16">
+      <div class="bookmark" th:classappend="${bookmark ? 'selected' : ''}">
+        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" class="bi bi-heart-fill" viewBox="0 0 16 16">
           <path fill-rule="evenodd" d="M8 1.314C12.438-3.248 23.534 4.735 8 15-7.534 4.736 3.562-3.248 8 1.314"/>
         </svg>
       </div>
@@ -218,26 +221,12 @@
       </div>
     </div>
 
-    <div id="lodgeIntro" class="area" th:if="${lodgeDTO.intro != null}">
-      <span class="areaTitle">숙소 소개</span>
-      <div class="icon">
-        <svg width="24" height="24" viewBox="0 0 24 24" fill="#dddddd" xmlns="http://www.w3.org/2000/svg">
-          <path clip-rule="evenodd" d="M7.637 12.022C7 10.145 9.3 7.058 11 6.646V5c-4.934 2.058-7 5.953-7 9.61 0 1.22.37 2.256 1.107 3.11.739.853 1.618 1.28 2.64 1.28.91 0 1.672-.328 2.282-.985.611-.656.916-1.463.916-2.42 0-.9-.31-1.692-.93-2.377-.62-.685-1.412-1.083-2.378-1.196zm9 0C16 10.145 18.3 7.058 20 6.646V5c-4.934 2.058-7 5.953-7 9.61 0 1.22.37 2.256 1.107 3.11.739.853 1.618 1.28 2.64 1.28.91 0 1.672-.328 2.282-.985.611-.656.916-1.463.916-2.42 0-.9-.31-1.692-.93-2.377-.62-.685-1.412-1.083-2.378-1.196z"></path>
-        </svg>
-      </div>
-      <p class="introText" th:text="${lodgeDTO.intro}"></p>
-      <div class="icon right">
-        <svg width="24" height="24" viewBox="0 0 24 24" fill="#dddddd" xmlns="http://www.w3.org/2000/svg">
-          <path clip-rule="evenodd" d="M7.637 12.022C7 10.145 9.3 7.058 11 6.646V5c-4.934 2.058-7 5.953-7 9.61 0 1.22.37 2.256 1.107 3.11.739.853 1.618 1.28 2.64 1.28.91 0 1.672-.328 2.282-.985.611-.656.916-1.463.916-2.42 0-.9-.31-1.692-.93-2.377-.62-.685-1.412-1.083-2.378-1.196zm9 0C16 10.145 18.3 7.058 20 6.646V5c-4.934 2.058-7 5.953-7 9.61 0 1.22.37 2.256 1.107 3.11.739.853 1.618 1.28 2.64 1.28.91 0 1.672-.328 2.282-.985.611-.656.916-1.463.916-2.42 0-.9-.31-1.692-.93-2.377-.62-.685-1.412-1.083-2.378-1.196z"></path>
-        </svg>
-      </div>
-    </div>
-
     <div id="facility" class="area">
       <span class="areaTitle">서비스 및 부대시설</span>
       <div class="facilityTable">
         <div th:each="facility:${lodgeDTO.facilities}">
-          <img th:src="'https://image.goodchoice.kr/images/icon_facilities/v2/icn_facil_' + ${facilityIconMap.get(facility)} + '.svg'">
+          <img
+              th:src="'https://image.goodchoice.kr/images/icon_facilities/v2/icn_facil_' + ${facilityIconMap.get(facility)} + '.svg'">
           <span th:text="${facility}"></span>
         </div>
       </div>
@@ -260,15 +249,7 @@
       <div id="map"></div>
       <div id="addressArea">
         <div id="addressText" th:text="${lodgeDTO.lodgeAddr}"></div>
-        <a id="addressCopy">
-          주소복사
-          <div id="address-copy-notice">
-            클릭하면 복사할 수 있어요.
-          </div>
-          <div id="address-copy-success">
-            복사 완료!
-          </div>
-        </a>
+        <a id="addressCopy">주소복사</a>
       </div>
       <ul class="realList">
         <li th:each="way:${lodgeDTO.ways}" th:text="${way}" class="way"></li>
@@ -333,7 +314,7 @@
         </div>
       </div>
     </div>
-      
+
     <!-- duorpeb, PRG 패턴을 사용하기 위한 div -->
     <div class="prg"></div>
 
@@ -342,9 +323,9 @@
 
       <!-- 이유현 : 네이버 지도 -->
     <script type="text/javascript" th:src="'https://oapi.map.naver.com/openapi/v3/maps.js?ncpKeyId=' + ${naverMapId}"></script>
-    <script th:inline="javascript">
+    <script>
       /* 네이버 지도 API */
-      let myLatLng = new naver.maps.LatLng(/*[[${lodgeDTO.latitude}]]*/, /*[[${lodgeDTO.longitude}]]*/);
+      let myLatLng = new naver.maps.LatLng(window.lodgeDTO.latitude, window.lodgeDTO.longitude);
       let mapOptions = {
           center: myLatLng,
           zoom: 16,
@@ -362,15 +343,6 @@
       });
     </script>
 
-    <script type="module" th:inline="javascript">
-      import(/*[[@{/js/lodge/detail.js}]]*/).then(module => {
-        module.default(/*[[${lodgeDTO}]]*/);
-      });
-    </script>
-    <script type="module" th:inline="javascript" sec:authorize="isAuthenticated()">
-      import(/*[[@{/js/lodge/bookmark.js}]]*/).then(module => {
-        module.default(/*[[${userDTO.userId}]]*/);
-      });
-    </script>
+    <script type="module" th:src="@{/js/lodge/detail.js}"></script>
   </div>
 </div>
