@@ -113,6 +113,13 @@
   margin-bottom: 100px;
 }
 
+.user-notice-box {
+  overflow: scroll;
+  overflow-x: hidden;
+  max-height: 400px;
+
+}
+
 #userInfoUpdateBtn:hover {
   background-color: var(--primary-hover);
 }
@@ -156,7 +163,7 @@
   left: -30px;
 }
 
-.silver-tit, .gold-tit, .diamond-tit {
+.email-tit {
   padding: 3px 0;
 }
 
@@ -204,7 +211,6 @@
 }
 /* 2. 알림 */
 .user-notice-box ul {
-  padding-left: 1rem;
 }
 .user-notice-ul li {
   display: flex;
@@ -239,6 +245,12 @@
 }
 
 /* 3. 북마크*/
+.myPage-bookmarkList {
+  overflow: scroll;
+  max-height: 1000px;
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+}
 .myPage-bookmarkList li {
   position: relative;
 }

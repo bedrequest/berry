@@ -89,12 +89,22 @@ inputs.forEach(input => {
     const isValidName = isValidUserName(inputs);
     const isValidPhoneNumber = isValidUserPhoneNumber(inputs);
     document.getElementById("certifiedPhoneBtn").disabled = !isValidPhoneNumber;
+    document.getElementById("certifiedEmailBtn").disabled = !isValidEmail;
 
     
     const finalValid = isValidEmail && isValidPassword && isValidName && isValidPhoneNumber;
     
     // 비밀번호 확인
     document.getElementById("user_confirmPassword").disabled = !(isValidPassword);
+
+    if(inputUserPassword.value === inputUserConfirmPassword.value && inputUserPassword.value !== ""){
+      document.getElementById("pwdSubInfo").style.color = "green";
+      document.getElementById("pwdSubInfo").innerText = "비밀번호가 일치합니다.";
+    }else if(inputUserConfirmPassword.value.trim().length > 8) {
+      document.getElementById("pwdSubInfo").style.color = "red";
+      document.getElementById("pwdSubInfo").innerText = "비밀번호를 확인해주세요.";
+    }
+
     if(finalValid && (inputUserPassword.value === inputUserConfirmPassword.value)){
       confirm = true;
     }
@@ -172,6 +182,7 @@ if(certifiedPhoneBtn){
     document.getElementById("certifiedPhoneBtn").addEventListener("click", () => {
         openModal();
         document.getElementById("certifiedUserPhone").style.display = "block";
+        document.getElementById("certifiedPhoneBtn").style.display = "none";
         document.getElementById("pwdTit").innerText = inputUserPhoneNumber.value;
     })
 }
@@ -179,6 +190,7 @@ if(certifiedPhoneBtn){
 document.getElementById("certifiedUserPhoneModalClose").addEventListener("click", () => {
     closeModal();
     document.getElementById("certifiedUserPhone").style.display = "none";
+    document.getElementById("certifiedPhoneBtn").style.display = "block";
 })
 
 // 인증번호 받기 버튼 클릭
@@ -187,14 +199,15 @@ document.getElementById("getCertifiedPhoneBtn").addEventListener("click", () => 
 
     document.getElementById("getCertifiedPhoneBtn").style.display = "none";
 
+    document.getElementById("verifyBox").style.display = "block";
+    document.getElementById("certifiedUserPhoneSubBtn").style.display = "inline-block";
+
     getSignInCertifiedNumber(inputUserPhoneNumber.value).then(result => {
         console.log(result);
         if(result == "fail"){
             alert("인증번호 받기가 실패했습니다.");
         }else{
             certifiedNumber = result;
-            document.getElementById("verifyBox").style.display = "block";
-            document.getElementById("certifiedUserPhoneSubBtn").style.display = "inline-block";
         }
     })
 
@@ -250,18 +263,21 @@ if(certifiedEmailBtn){
     document.getElementById("certifiedEmailBtn").addEventListener("click", () => {
         openModal();
         document.getElementById("certifiedUserEmail").style.display = "block"
+        document.getElementById("certifiedEmailBtn").style.display = "none"
         document.getElementById("emailTit").innerText = inputUserEmail.value;
     })
 }
 // 이메일 인증 닫기 버튼 클릭
 document.getElementById("certifiedUserEmailModalClose").addEventListener("click", () => {
     closeModal();
-    document.getElementById("certifiedUserEmail").style.display = "none"
+    document.getElementById("certifiedUserEmail").style.display = "none";
+    document.getElementById("certifiedEmailBtn").style.display = "block";
 })
 // 인증코드 받기 버튼 클릭
 document.getElementById("getCertifiedEmailBtn").addEventListener("click", () => {
 
-    document.getElementById("getCertifiedEmailBtn").style.display = "none"
+    document.getElementById("getCertifiedEmailBtn").style.display = "none";
+    document.getElementById("verifyEmailBox").style.display = "block";
 
     getSignInCertifiedCode(inputUserEmail.value).then(result => {
         console.log(result);
@@ -269,7 +285,6 @@ document.getElementById("getCertifiedEmailBtn").addEventListener("click", () => 
             alert("인증코드 받기가 실패했습니다.")
         }else{
             certifiedCode = result;
-            document.getElementById("verifyEmailBox").style.display = "block";
         }
     })
 

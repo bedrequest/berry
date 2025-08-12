@@ -14,15 +14,19 @@ getAlarmList(notificationUserId).then(result => {
         for(let alarmObj of result){
             i++;
 
-            const date = new Date(...alarmObj.regDate);
-            const formatted = date.toISOString().substring(0, 19).replace("T", " ");
+            const [year, month, day, hour, minute, second] = alarmObj.regDate;
+            const date = new Date(year, month - 1, day, hour, minute, second);
 
-
-            if(i > 4){
-
-                return;
-            }
-
+            const formatted = date.toLocaleString("ko-KR", {
+                year: "numeric",
+                month: "2-digit",
+                day: "2-digit",
+                hour: "2-digit",
+                minute: "2-digit",
+                second: "2-digit",
+                hour12: false
+            });
+            
             switch(alarmObj.code){
                 case "s_reservation" :
     
@@ -80,13 +84,15 @@ getAlarmList(notificationUserId).then(result => {
                     break;
                     
             }
-        }
-        if(i > 4){
-            str += `
-            <li class="notification-more">
-            <a href="/user/myPage">더보기</a>
-            </li>
-            `;
+
+            if(i > 4){
+                str += `
+                <li class="notification-more">
+                <a href="/user/myPage">더보기</a>
+                </li>`
+
+                break;
+            }
         }
 
     }else{

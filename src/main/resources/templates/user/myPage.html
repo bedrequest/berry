@@ -31,15 +31,7 @@
               <div class="user-grade-badge diamond" th:if="${userDTO.userGrade == 'DIAMOND'}">
                 <img src="/image/grade_logo/Berry_logo_diamond.png" alt="다이아">
               </div>
-              <th:block th:if="${userDTO.userGrade == 'silver'}">
-                <p class="silver-tit">[[${userDTO.userEmail}]]_[[${userDTO.provider}]]</p>
-              </th:block>
-              <th:block th:if="${userDTO.userGrade == 'gold'}">
-                <p class="gold-tit">[[${userDTO.userEmail}]]_[[${userDTO.provider}]]</p>
-              </th:block>
-              <th:block th:if="${userDTO.userGrade == 'diamond'}">
-                <p class="diamond-tit">[[${userDTO.userEmail}]]_[[${userDTO.provider}]]</p>
-              </th:block>
+              <p class="email-tit">[[${userDTO.userEmail}]]_[[${userDTO.provider}]]</p>
             </div>
           </li>
           <li>
@@ -48,7 +40,10 @@
           </li>
           <li>
             <div class="user-info-left"><p>전화번호</p></div>
-            <div class="user-info-right"><p>[[${userDTO.userPhone}]]</p></div>
+            <div class="user-info-right">
+              <p class="gray-tit" th:if="${userDTO.userPhone == 'GOOGLE_NUMBERS'}">현재 등록된 전화번호가 없습니다.</p>
+              <p th:if="${userDTO.userPhone != 'GOOGLE_NUMBERS'}">[[${userDTO.userPhone}]]</p>
+            </div>
           </li>
           <li>
             <div class="user-info-left"><p>가입일</p></div>

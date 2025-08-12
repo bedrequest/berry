@@ -288,6 +288,8 @@ document.getElementById("certifiedUserPhoneModalClose").addEventListener("click"
 document.getElementById("getCertifiedPhoneBtn").addEventListener("click", () => {
 
     document.getElementById("getCertifiedPhoneBtn").style.display = "none"
+    document.getElementById("verifyBox").style.display = "block";
+    document.getElementById("certifiedUserPhoneSubBtn").style.display = "inline-block";
 
     getCertifiedNumber(myPageUserId).then(result => {
         console.log(result);
@@ -295,8 +297,6 @@ document.getElementById("getCertifiedPhoneBtn").addEventListener("click", () => 
             alert("인증번호 받기가 실패했습니다.");
         }else{
             certifiedNumber = result;
-            document.getElementById("verifyBox").style.display = "block";
-            document.getElementById("certifiedUserPhoneSubBtn").style.display = "inline-block";
         }
     })
 
@@ -336,6 +336,7 @@ document.getElementById("certifiedUserEmailModalClose").addEventListener("click"
 document.getElementById("getCertifiedEmailBtn").addEventListener("click", () => {
 
     document.getElementById("getCertifiedEmailBtn").style.display = "none"
+    document.getElementById("verifyEmailBox").style.display = "block";
 
     getCertifiedCode(myPageUserId).then(result => {
         console.log(result);
@@ -343,7 +344,6 @@ document.getElementById("getCertifiedEmailBtn").addEventListener("click", () => 
             alert("인증코드 받기가 실패했습니다.")
         }else{
             certifiedCode = result;
-            document.getElementById("verifyEmailBox").style.display = "block";
         }
     })
 
