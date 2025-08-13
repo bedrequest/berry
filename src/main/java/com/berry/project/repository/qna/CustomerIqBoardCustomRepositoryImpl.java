@@ -10,16 +10,18 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 
-import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 
+import java.time.LocalDateTime;
+import java.util.Optional;
+
 @Slf4j
-public class BoardCustomerIqRepositoryImpl implements BoardCustomerIqRepository {
+public class CustomerIqBoardCustomRepositoryImpl implements CustomerIqBoardCustomRepository {
 
   private final JPAQueryFactory queryFactory;
 
-  public BoardCustomerIqRepositoryImpl(EntityManager em) {
+  public CustomerIqBoardCustomRepositoryImpl(EntityManager em) {
     this.queryFactory = new JPAQueryFactory(em);
   }
 
@@ -36,8 +38,8 @@ public class BoardCustomerIqRepositoryImpl implements BoardCustomerIqRepository 
 
   @Override
   public Page<CustomerIqBoard> searchcoustomeriqboard(String type, String keyword,
-                                                      String startDate, String endDate,
-                                                      Pageable pageable) {
+                                               String startDate, String endDate,
+                                               Pageable pageable) {
     // String → LocalDateTime 변환
     DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
     LocalDateTime start = (startDate != null && !startDate.isEmpty())
@@ -50,7 +52,7 @@ public class BoardCustomerIqRepositoryImpl implements BoardCustomerIqRepository 
 
     // 날짜 조건 (필수)
     BooleanExpression condition = QCustomerIqBoard.customerIqBoard.regDate.between(start, end);
-//    condition = condition.and(QCustomerIqBoard.customerIqBoard.category.ne("공지"));
+////    condition = condition.and(QCustomerIqBoard.customerIqBoard.category.ne("공지"));
 
     if (type != null && !type.isEmpty()) {
       condition = condition.and(QCustomerIqBoard.customerIqBoard.category.eq(type));
@@ -73,11 +75,12 @@ public class BoardCustomerIqRepositoryImpl implements BoardCustomerIqRepository 
         .limit(pageable.getPageSize())
         .fetch();
 
-    long total = queryFactory
+    long total = Optional.ofNullable(queryFactory
         .select(QCustomerIqBoard.customerIqBoard.count())
         .from(QCustomerIqBoard.customerIqBoard)
         .where(condition)
-        .fetchOne();
+        .fetchOne())
+        .orElse(0L);
 
     return new PageImpl<>(result, pageable, total);
 

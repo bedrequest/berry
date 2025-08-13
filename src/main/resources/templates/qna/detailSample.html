@@ -27,7 +27,6 @@
 
                     <!-- 수정 모드에서 보여줄 select (초기엔 숨김) -->
                     <select id="categorySelect" name="category" class="input-box short" style="display: none;">
-                        <option th:value="공지" sec:authorize="hasRole('ROLE_ADMIN')">공지</option>
                         <option value="결제">결제</option>
                         <option value="환불">환불</option>
                         <option value="시설">시설</option>
@@ -119,7 +118,7 @@
                 <button type="button" id="completeBtn" class="btn btn-success" style="display: none;" sec:authorize="hasRole('ROLE_ADMIN')">답변완료</button>
 
                 <!-- Submit 버튼 (처음엔 숨김) -->
-                <button type="submit" id="submitBtn" class="btn btn-warning" style="display: none;">수정완료</button>
+                <button type="submit" id="submitBtn" class="btn btn-warning" style="display: none;">Submit</button>
 
 
                 <!-- Cancle 버튼 (처음엔 숨김) -->
@@ -179,3 +178,5 @@
 </div>
 
 </html>
+
+<!-- 이미지 작업전 html-->

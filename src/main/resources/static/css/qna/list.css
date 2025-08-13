@@ -1,3 +1,11 @@
+:root {
+  --primary-color: #e74b60;
+  --gray-light: #f5f5f5;
+  --gray-dark: #666;
+  --font-dark: #333;
+  --disabled: #b85766c7;
+}
+
 /* 전체 컨테이너 정리 */
 .container {
   width: 1200px;
@@ -37,6 +45,23 @@ p {
   box-shadow: 0 0 8px rgba(0, 0, 0, 0.03);
 }
 
+.date-range {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 10px;
+}
+
+.date-picker {
+  width: 150px;
+  height: 36px;
+  font-size: 15px;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  padding: 6px 10px;
+}
+
 /* 검색 폼 전체 wrapper */
 .search-box-wrapper {
   display: flex;
@@ -45,7 +70,7 @@ p {
   width: 100%;
 }
 
-/* 날짜줄 & 검색줄 공통 스타일 */
+/* 검색줄 스타일 */
 .search-line {
   display: flex;
   justify-content: center;
@@ -54,7 +79,7 @@ p {
   margin-bottom: 10px;
 }
 
-/* 날짜 선택, 셀렉트박스, 검색창, 버튼 스타일 고정 */
+/* 셀렉트박스, 검색창, 버튼 스타일 고정 */
 .search-line input[type="date"] {
   width: 150px;
   height: 32px;
@@ -73,6 +98,7 @@ p {
   border: 1px solid #ccc !important;
   border-radius: 8px;
   padding: 6px 10px;
+  cursor: pointer;
   box-shadow: none !important;
   transition: background-color 0.2s, border-color 0.2s;
 }
@@ -106,8 +132,8 @@ p {
 .btn.btn-primary,
 .btn.btn-primary:hover,
 .btn.btn-primary:active {
-  background-color: #0b5ed7;
-  border: 1px solid #aaa !important;
+  background-color: var(--primary-color);
+  border: 1px solid #ccc !important;
   color: white;
 }
 
@@ -121,6 +147,7 @@ p {
 
 .btn.btn-primary:hover {
   cursor: pointer;
+  opacity: 0.9
 }
 
 /* 작성 버튼 컨테이너 */
@@ -168,12 +195,17 @@ p {
 
 .table a {
   text-decoration: none;
-  color: #0d6efd;
+  color: var(--font-dark);
 }
 
 .table a:hover {
   text-decoration: underline;
 }
+
+.table tbody tr:nth-child(-n+5) {
+  background-color: #e6e6e6;
+}
+
 
 /* 배지 스타일 */
 .badge {
@@ -189,15 +221,15 @@ p {
 }
 
 .page-link {
-  color: #0d6efd;
+  color: var(--primary-color);
   border-radius: 8px !important;
   font-size: 14px;
   padding: 8px 14px;
 }
 
 .page-item.active .page-link {
-  background-color: #0d6efd;
-  border-color: #0d6efd;
+  background-color: var(--primary-color);
+  border-color: var(--gray-light);
   color: white;
 }
 
@@ -205,27 +237,36 @@ p {
   color: #ccc;
 }
 
-/* 반응형 제거 → 고정 레이아웃 유지 (요청에 따라 삭제) */
-/* @media (max-width: 768px) {
-  .search-line {
-    flex-direction: column;
-    align-items: center;
-    width: 100%;
-  }
+.date-picker-wrapper {
+  position: relative;
+  display: inline-block;
 
-  .search-line input[type="date"],
-  .search-line select,
-  .search-line input[type="search"],
-  .search-line .btn {
-    width: 100%;
-    max-width: 300px;
-    margin-bottom: 10px;
-  }
+   align-items: center;
+}
 
-  .d-grid.gap-2.d-md-flex.justify-content-md-end {
-    justify-content: center;
-  }
-} */
+.date-picker-wrapper svg {
+  pointer-events: none; /* 클릭을 input으로 전달 */
+}
+
+.date-picker {
+  cursor: pointer;
+  padding-right: 36px; /* 오른쪽 아이콘 공간 확보 */
+  height: 36px;
+  font-size: 15px;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+}
+
+.calendar-icon {
+  position: absolute;
+  right: 12px;       /* 오른쪽 12px 위치 */
+  top: 50%;
+  transform: translateY(-50%);
+  color: var(--primary-color);
+  cursor: pointer;   /* 커서 포인터로 변경 */
+  user-select: none; /* 드래그 방지 */
+}
+
 
 .table thead th:nth-child(1) { width: 7%; }
 .table thead th:nth-child(2) { width: 13%; }
