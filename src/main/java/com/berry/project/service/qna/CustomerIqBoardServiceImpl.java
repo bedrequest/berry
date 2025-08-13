@@ -3,10 +3,13 @@ package com.berry.project.service.qna;
 import com.berry.project.dto.qna.CustomerIqBoardDTO;
 import com.berry.project.dto.qna.CustomerIqBoardFileDTO;
 import com.berry.project.dto.qna.CustomerIqFileDTO;
+import com.berry.project.entity.alarm.Alarm;
 import com.berry.project.entity.qna.CustomerIqBoard;
 import com.berry.project.entity.qna.CustomerIqFile;
 import com.berry.project.repository.qna.CustomerIqBoardRepository;
 import com.berry.project.repository.qna.CustomerIqFileRepository;
+import com.berry.project.repository.user.AlarmRepository;
+import com.berry.project.repository.user.UserRepository;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
@@ -30,6 +33,8 @@ public class CustomerIqBoardServiceImpl implements CustomerIqBoardService {
 
   private final CustomerIqBoardRepository customeriqboardrepository;
   private final CustomerIqFileRepository customeriqfilerepository;
+  private final UserRepository userRepository;
+  private final AlarmRepository alarmRepository;
 
   @Transactional
   @Override
@@ -165,6 +170,15 @@ public class CustomerIqBoardServiceImpl implements CustomerIqBoardService {
       CustomerIqBoard customeriqboard = optional.get();
       customeriqboard.setComment(customeriqboardDTO.getComment());
       customeriqboard.setCommentRegDate(LocalDateTime.now());
+
+      long userId = userRepository.findByUserEmail(customeriqboard.getUserEmail())
+          .get(0).getUserId();
+      Alarm alarm = Alarm.builder()
+          .userId(userId)
+          .targetId(customeriqboard.getBno())
+          .code("qna")
+          .build();
+      alarmRepository.save(alarm);
 
       return customeriqboardrepository.save(customeriqboard).getBno();
     }
