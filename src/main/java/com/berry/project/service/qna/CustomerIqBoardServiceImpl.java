@@ -178,10 +178,12 @@ public class CustomerIqBoardServiceImpl implements CustomerIqBoardService {
           .targetId(customeriqboard.getBno())
           .code("qna")
           .build();
+
       alarmRepository.save(alarm);
 
       return customeriqboardrepository.save(customeriqboard).getBno();
     }
+
     return 0L;
   }
 }
