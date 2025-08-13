@@ -9,6 +9,9 @@ let isScrolling = false;
 // 스크롤
 window.addEventListener('wheel', e => {
   if (isScrolling) return;
+  
+  const searchSuggestions = document.getElementById('searchSuggestions');
+  if (searchSuggestions && !searchSuggestions.classList.contains('invisible')) return;
 
   updateCurrent();
   if (e.deltaY > 0 && current < sections.length - 1)
