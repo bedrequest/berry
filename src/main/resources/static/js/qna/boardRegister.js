@@ -75,12 +75,9 @@ document.getElementById('input-file').addEventListener('change', function () {
     let isOk = 1;
     let fileNames = [];
 
-    // 기존 이미지 미리보기 삭제
-    const preview = document.querySelector('.preview-image');
-    if (preview) {
-        const oldDisplays = preview.querySelectorAll('.upload-display');
-        oldDisplays.forEach(el => el.remove());
-    }
+    // 이미지 미리보기 영역
+    const previewArea = document.getElementById('imagePreviewArea');
+    previewArea.innerHTML = ''; // 기존 미리보기 삭제
 
     for (let file of fileObject) {
         let valid = fileValid(file.name, file.size);
@@ -94,17 +91,17 @@ document.getElementById('input-file').addEventListener('change', function () {
         ul += `<span class="badge rounded-pill text-bg-${valid ? 'success' : 'danger'}">${file.size}Bytes</span>`;
         ul += `</div></li>`;
 
-        // 이미지 미리보기
+        // 이미지 미리보기 - textarea와 파일명 입력 사이
         if (file.type.startsWith('image/')) {
             const reader = new FileReader();
             reader.onload = function (e) {
                 const imgHTML = `
-                    <div class="upload-display">
+                    <div class="upload-display" style="display:inline-block; margin-right:10px;">
                         <div class="upload-thumb-wrap">
-                            <img src="${e.target.result}" class="upload-thumb">
+                            <img src="${e.target.result}" class="upload-thumb" style="max-width:100px; max-height:100px;">
                         </div>
                     </div>`;
-                preview.insertAdjacentHTML('beforeend', imgHTML);
+                previewArea.insertAdjacentHTML('beforeend', imgHTML);
             };
             reader.readAsDataURL(file);
         }
@@ -120,5 +117,3 @@ document.getElementById('input-file').addEventListener('change', function () {
     // 파일 이름 표시 (쉼표 구분)
     document.querySelector('.upload-name').value = fileNames.join(', ');
 });
-
-
