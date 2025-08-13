@@ -42,7 +42,7 @@ document.getElementById('listBtn').addEventListener('click', () => {
 document.getElementById('regBtn').addEventListener('click', function (e) {
     const category = document.getElementById('category').value;
 
-    if (category === "--선택--") {
+    if (category === "선택") {
         alert("카테고리를 선택해주세요.");
         e.preventDefault(); // submit 막기
         return;
