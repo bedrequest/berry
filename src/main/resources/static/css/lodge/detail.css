@@ -532,15 +532,16 @@ p {
 #addressCopy {
   position: relative;
 
-  color: #e74b60;
+  color: #a0a0a0;
   text-decoration: none;
 
   cursor: pointer;
 }
 #addressCopy:hover {
   text-decoration: underline;
+  color: #e74b60;
 }
-#address-copy-notice, #address-copy-success {
+#address-copy-success {
   position: absolute;
   left: 30px;
   transform: translate(-50%);
@@ -557,14 +558,8 @@ p {
   opacity: 0;
   transition: opacity 0.3s ease;
 }
-#address-copy-notice {
-  top: -51px;
-}
 #address-copy-success {
-  top: -91px;
-}
-#addressCopy:hover>#address-copy-notice {
-  opacity: 1;
+  top: -51px;
 }
 #address-copy-success {
   z-index: 1;

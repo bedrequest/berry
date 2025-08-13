@@ -267,7 +267,7 @@ document.getElementById('addressCopy').addEventListener('click', () => {
 
         setTimeout(() => {
             addressCopySuccess.style.opacity = 0;
-        }, 3000);
+        }, 1500);
     });
 });
 
