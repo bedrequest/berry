@@ -41,12 +41,28 @@ document.getElementById('listBtn').addEventListener('click', () => {
 // 등록 버튼 유효성 검사
 document.getElementById('regBtn').addEventListener('click', function (e) {
     const category = document.getElementById('category').value;
+    const title = document.getElementById('title').value.trim();
+    const content = document.getElementById('content').value.trim();
 
     if (category === "선택") {
         alert("카테고리를 선택해주세요.");
         e.preventDefault(); // submit 막기
         return;
     }
+
+       // 제목 검사
+        if (title === '') {
+            alert('제목을 입력해주세요.');
+            e.preventDefault();
+            return;
+        }
+
+        // 본문 검사
+        if (content === '') {
+            alert('내용을 입력해주세요.');
+            e.preventDefault();
+            return;
+        }
 
     console.log("등록 처리 실행");
 });
