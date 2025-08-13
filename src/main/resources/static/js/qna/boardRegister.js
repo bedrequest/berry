@@ -69,14 +69,23 @@ document.getElementById('input-file').addEventListener('change', function () {
     document.getElementById('regBtn').disabled = false;
 
     const div = document.getElementById('fileZone');
-    if (div) div.innerHTML = ""; // 파일존이 있으면 초기화
+    if (div) div.innerHTML = "";
 
     let ul = `<ul class="list-group list-group-flush">`;
     let isOk = 1;
+    let fileNames = [];
+
+    // 기존 이미지 미리보기 삭제
+    const preview = document.querySelector('.preview-image');
+    if (preview) {
+        const oldDisplays = preview.querySelectorAll('.upload-display');
+        oldDisplays.forEach(el => el.remove());
+    }
 
     for (let file of fileObject) {
         let valid = fileValid(file.name, file.size);
         isOk *= valid;
+        fileNames.push(file.name);
 
         ul += `<li class="list-group-item">`;
         ul += `<div class="mb-3">`;
@@ -84,6 +93,21 @@ document.getElementById('input-file').addEventListener('change', function () {
         ul += `${file.name}`;
         ul += `<span class="badge rounded-pill text-bg-${valid ? 'success' : 'danger'}">${file.size}Bytes</span>`;
         ul += `</div></li>`;
+
+        // 이미지 미리보기
+        if (file.type.startsWith('image/')) {
+            const reader = new FileReader();
+            reader.onload = function (e) {
+                const imgHTML = `
+                    <div class="upload-display">
+                        <div class="upload-thumb-wrap">
+                            <img src="${e.target.result}" class="upload-thumb">
+                        </div>
+                    </div>`;
+                preview.insertAdjacentHTML('beforeend', imgHTML);
+            };
+            reader.readAsDataURL(file);
+        }
     }
 
     ul += `</ul>`;
@@ -93,31 +117,8 @@ document.getElementById('input-file').addEventListener('change', function () {
         document.getElementById('regBtn').disabled = true;
     }
 
-    // 파일 이름 표시
-    const filename = fileObject[0]?.name || '파일선택';
-    document.querySelector('.upload-name').value = filename;
-
-    // 이미지 미리보기
-    if (fileObject[0]?.type.startsWith('image/')) {
-        const reader = new FileReader();
-        reader.onload = function (e) {
-            const preview = document.querySelector('.preview-image');
-            if (!preview) return;
-
-            // 기존 미리보기 삭제
-            const oldDisplay = preview.querySelector('.upload-display');
-            if (oldDisplay) oldDisplay.remove();
-
-            const imgHTML = `
-                <div class="upload-display">
-                    <div class="upload-thumb-wrap">
-                        <img src="${e.target.result}" class="upload-thumb">
-                    </div>
-                </div>`;
-            preview.insertAdjacentHTML('afterbegin', imgHTML);
-        };
-        reader.readAsDataURL(fileObject[0]);
-    }
-    document.getElementById('file').value=fileObject[0].name;
+    // 파일 이름 표시 (쉼표 구분)
+    document.querySelector('.upload-name').value = fileNames.join(', ');
 });
+
 
