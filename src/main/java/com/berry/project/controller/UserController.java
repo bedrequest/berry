@@ -178,7 +178,14 @@ public class UserController {
 
   // 3. 회원가입 =============================================
   @PostMapping("/signup")
-  public String signup(UserDTO userDTO){
+  public String signup(
+      UserDTO userDTO,
+      @RequestParam boolean isEmailCertified,
+      @RequestParam boolean isMobileCertified
+  ){
+    userDTO.setEmailCertified(isEmailCertified);
+    userDTO.setMobileCertified(isMobileCertified);
+
     log.info("signup userDTO {}", userDTO);
 
     String uuid = UUID.randomUUID().toString();
@@ -205,8 +212,6 @@ public class UserController {
     }else{
       userDTO.setAdult(false);
     }
-    userDTO.setEmailCertified(false);
-
 
     /** userService.registerUser(userDTO)
      *
@@ -214,7 +219,7 @@ public class UserController {
      * */
     Long userId = userService.registerUser(userDTO);
 
-    return (userId > 0) ? "redirect:/" : "/user/join";
+    return (userId > 0) ? "redirect:/user/login" : "/user/signup";
   }
 
 
