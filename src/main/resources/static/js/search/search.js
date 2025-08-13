@@ -269,4 +269,5 @@ export default function init(lodgeOption, listOption, lodgeDTO) {
     calendars[1].setDate(tomorrow);
   }
   updateHeadCount(adult, child);
+  getKeywords();
 }
