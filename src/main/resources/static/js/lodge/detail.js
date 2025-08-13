@@ -111,7 +111,13 @@ document.querySelectorAll('.roomNavBarItem').forEach(e => {
     });
 });
 
-// 모달 닫기 버튼
+// 모달 버튼
+modalPrevBtn.addEventListener('click', () => {
+    select(currentImageIndex - 1);
+});
+modalNextBtn.addEventListener('click', () => {
+    select(currentImageIndex + 1);
+});
 modalCloseBtn.addEventListener('click', closeModal);
 
 // 모달 컨트롤러
@@ -131,13 +137,6 @@ function openModal(target) {
     const room = target.closest('.room');
     if (room) loadRoomImages(Number(room.dataset.roomindex));
     else loadLodgeImages(Number(target.dataset.idx));
-
-    modalPrevBtn.addEventListener('click', () => {
-        select(currentImageIndex - 1);
-    });
-    modalNextBtn.addEventListener('click', () => {
-        select(currentImageIndex + 1);
-    })
 }
 
 function closeModal() {
@@ -260,15 +259,15 @@ function scroll(target, container) {
 // 주소 복사
 document.getElementById('addressCopy').addEventListener('click', () => {
     navigator.clipboard
-    .writeText(document.getElementById('addressText').innerText)
-    .then(() => {
-        const addressCopySuccess = document.getElementById('address-copy-success');
-        addressCopySuccess.style.opacity = 1;
+        .writeText(document.getElementById('addressText').innerText)
+        .then(() => {
+            const addressCopySuccess = document.getElementById('address-copy-success');
+            addressCopySuccess.style.opacity = 1;
 
-        setTimeout(() => {
-            addressCopySuccess.style.opacity = 0;
-        }, 1500);
-    });
+            setTimeout(() => {
+                addressCopySuccess.style.opacity = 0;
+            }, 1500);
+        });
 });
 
 // ----------------------------------------------
