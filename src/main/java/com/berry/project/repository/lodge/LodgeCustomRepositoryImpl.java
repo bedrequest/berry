@@ -4,6 +4,7 @@ import com.berry.project.dto.lodge.ListOptionDTO;
 import com.berry.project.dto.lodge.LodgeOptionDTO;
 import com.berry.project.entity.lodge.Lodge;
 import com.berry.project.util.TagMaskDecoder;
+import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.Query;
@@ -138,27 +139,44 @@ public class LodgeCustomRepositoryImpl implements LodgeCustomRepository {
     return new PageImpl<Lodge>(query.getResultList(), pageable, (long) totalCount.getSingleResult());
   }
 
+  /** duorpeb, pageLodge() - 관리자 페이지에서 숙소 별 정보 클릭 시 사용하는 메서드 */
   @Override
-  public Page<Lodge> searchByTag(long tag, Pageable pageable) {
-    List<Lodge> list = queryFactory
-        .select(lodge).from(lodge)
-        .leftJoin(review).on(lodge.lodgeId.eq(review.lodgeId))
-        .leftJoin(reviewTagMapping).on(review.reviewId.eq(reviewTagMapping.reviewId))
-        .where(reviewTagMapping.tagId.eq(tag))
-        .groupBy(lodge.lodgeId)
-        .orderBy(reviewTagMapping.mappingId.count().desc())
+  public Page<Lodge> pageLodge(Pageable pageable, String keyword) {
+    // 검색
+    BooleanExpression predicate = anyOfNotNull(
+        lodge.lodgeName.containsIgnoreCase(keyword),
+        lodge.lodgeAddr.containsIgnoreCase(keyword),
+        lodge.businessCall.containsIgnoreCase(keyword)
+    );
+
+    // 쿼리 및 페이징 적용
+    List<Lodge> result = queryFactory
+        .selectFrom(lodge)
+        .where(predicate)
+        .orderBy(lodge.lodgeId.desc())
         .offset(pageable.getOffset())
         .limit(pageable.getPageSize())
         .fetch();
-    long count = Optional.ofNullable(queryFactory
-        .select(review.lodgeId.countDistinct())
-        .from(review)
-        .leftJoin(reviewTagMapping).on(review.reviewId.eq(reviewTagMapping.reviewId))
-        .where(reviewTagMapping.mappingId.eq(tag))
-        .fetchOne()
-    ).orElse(0L);
 
-    return new PageImpl<>(list, pageable, count);
+    // 필터링된 전체 데이터 개수 조회
+    Long total = queryFactory
+        .select(lodge.count())
+        .from(lodge)
+        .where(predicate)
+        .fetchOne();
+
+    return new PageImpl<>(result, pageable, (total == null) ? 0 : total);
   }
 
+
+  /* duorpeb, anyOfNotNull() - 여러 BooleanExpression 을 OR 로 묶되 Null 이 있다면 건너뜀 */
+  private BooleanExpression anyOfNotNull(BooleanExpression ...vargs){
+    BooleanExpression cond = null;
+
+    for(BooleanExpression b : vargs){
+      if(b != null){ cond = (cond == null) ? b : cond.or(b); }
+    }
+
+    return cond;
+  }
 }

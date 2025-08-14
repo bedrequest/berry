@@ -4,7 +4,7 @@ import com.berry.project.entity.TimeBase;
 import jakarta.persistence.*;
 import lombok.*;
 
-//@Entity
+@Entity
 @Getter
 @Setter
 @ToString

@@ -25,11 +25,8 @@ public interface CuponRepository extends JpaRepository<Cupon, Long>, CuponCustom
     /** findValidCuponsByUserId(Long userId, LocalDateTime currentDate) - 유효한 쿠폰만 조회
      *
      */
-    @Query("SELECT c FROM Cupon c WHERE c.userId = :userId AND c.isValid = true AND c.cuponEndDate > :currentDate")
-    List<Cupon> findValidCuponsByUserId(
-        @Param("userId") Long userId,
-        @Param("currentDate") OffsetDateTime currentDate
-    );
+    @Query("SELECT c FROM Cupon c WHERE c.userId = :userId AND c.isValid = true")
+    List<Cupon> findValidCuponsByUserId(@Param("userId") Long userId);
 
 
     /** List"<"Cupon> findByCuponTypeOrderByCuponRegDateDesc(Integer cuponType) - 쿠폰 타입별 조회

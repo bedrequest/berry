@@ -98,14 +98,17 @@ public class UserServiceimpl implements UserService {
 
       // duorpeb, 쿠폰 발급
       Cupon registerCupon = cuponHandler.callCuponGenerate(1, userId);
-      Long cuponId = cuponRepository.save(registerCupon).getCuponId();
 
-      alarm = Alarm.builder()
-          .userId(userId)
-          .targetId(cuponId)
-          .code("newSign_coupon")
-          .build();
-      alarmRepository.save(alarm);
+      if(registerCupon != null) {
+        Long cuponId = cuponRepository.save(registerCupon).getCuponId();
+
+        alarm = Alarm.builder()
+            .userId(userId)
+            .targetId(cuponId)
+            .code("newSign_coupon")
+            .build();
+        alarmRepository.save(alarm);
+      }
     }
 
   }
@@ -193,6 +196,7 @@ public class UserServiceimpl implements UserService {
 
       // duorpeb, 쿠폰 발급 - 변경 후
       Cupon registerCupon = cuponHandler.callCuponGenerate(1, userId);
+
       // 회원가입 알림 저장
       Alarm alarm = Alarm.builder()
           .userId(userId)
@@ -201,15 +205,19 @@ public class UserServiceimpl implements UserService {
           .build();
 
       alarmRepository.save(alarm);
+      
+      // registerCupon 이 null 이 아닌 경우에만 쿠폰 발급
+      if(registerCupon != null){
+        Long cuponId = cuponRepository.save(registerCupon).getCuponId();
 
-      Long cuponId = cuponRepository.save(registerCupon).getCuponId();
+        alarm = Alarm.builder()
+            .userId(userId)
+            .targetId(cuponId)
+            .code("newSign_coupon")
+            .build();
 
-      alarm = Alarm.builder()
-          .userId(userId)
-          .targetId(cuponId)
-          .code("newSign_coupon")
-          .build();
-      alarmRepository.save(alarm);
+        alarmRepository.save(alarm);
+      }
     }
 
     return userId;

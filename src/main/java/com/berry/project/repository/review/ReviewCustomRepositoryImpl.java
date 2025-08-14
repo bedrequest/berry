@@ -40,7 +40,7 @@ public class ReviewCustomRepositoryImpl implements ReviewCustomRepository{
 
     List<Review> result = queryFactory
         .selectFrom(review)
-        .where(predicate)
+        .where(predicate, review.reportedCount.gt(1))
         .orderBy(pageableOfSortInPageReview(pageable.getSort(), review))
         .offset(pageable.getOffset())
         .limit(pageable.getPageSize())

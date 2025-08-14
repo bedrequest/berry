@@ -61,4 +61,9 @@ public interface ReviewRepository extends JpaRepository<Review, Long>, ReviewCus
 
     Long getCnt();
   }
+
+
+  /** duorpeb, 신고 카운트 1 이상만 조회 */
+  @Query("SELECT r FROM Review r WHERE reportedCount >= 1")
+  Page<Review> reportedReview(Pageable pageable);
 }

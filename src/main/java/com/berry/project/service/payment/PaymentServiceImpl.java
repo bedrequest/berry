@@ -274,9 +274,23 @@ public class PaymentServiceImpl implements PaymentService {
   public List<CuponDTO> getCuponList(long userId) {
     OffsetDateTime currentTime = OffsetDateTime.now();
 
-    List<Cupon> cuponList = cuponRepository.findValidCuponsByUserId(userId, currentTime);
+    List<Cupon> cuponList = cuponRepository.findValidCuponsByUserId(userId);
+
+    log.info("cuponList > {}", cuponList);
+
+    if(cuponList.size() > 0){
+      for(int i = 0; i < cuponList.size(); i++){
+        if(cuponList.get(i).getCuponEndDate() != null){
+          if(currentTime.isAfter(cuponList.get(i).getCuponEndDate())) { cuponList.remove(i); }
+        } else {
+            break;
+        }
+      }
+    }
+
 
     List<CuponDTO> cdtoList = cuponList.stream().map(this::convertCuponEntityToCuponDto).toList();
+    log.info("cdtoList > {}", cdtoList);
 
     return cdtoList;
   }

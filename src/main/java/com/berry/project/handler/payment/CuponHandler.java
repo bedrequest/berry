@@ -13,6 +13,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.OffsetDateTime;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 /** CuponHandler
@@ -39,36 +40,36 @@ public class CuponHandler {
    *
    * */
   public Cupon callCuponGenerate(int cuponType, Long userId){
-    try{
-      // 초기화
-      // 쿠폰 생성
-      Cupon cupon = new Cupon();
+    // 초기화
+    // 쿠폰 생성
+    Cupon cupon = new Cupon();
 
-      // cuponType 으로 CuponTemplate TABLE 에서 찾고 없으면 예외 던지기
-      CuponTemplate ct = cuponTemplateRepository.findByCuponType(cuponType).orElseThrow(() ->
-          new EntityNotFoundException("Can't found this entity..!"));
+    // cuponType 으로 CuponTemplate TABLE 에서 찾고 없으면 예외 던지기
+    Optional<CuponTemplate> ct = cuponTemplateRepository.findByCuponType(cuponType);
 
+    // 레코드가 있는 경우
+    if(ct.isPresent()){
       // cupon 초기화
       // userId
       cupon.setUserId(userId);
       // 쿠폰 타입
       cupon.setCuponType(cuponType);
-      // 쿠폰 유효기간
-      if(ct.getCuponEndDate() == null){
+      // 쿠폰 유효기간 null 이면 현재 날짜로부터 +180
+      if(ct.get().getCuponEndDate() == null){
         cupon.setCuponEndDate(OffsetDateTime.now().plusDays(180));
 
-      } else {
-        cupon.setCuponEndDate(ct.getCuponEndDate());
+      }
+        // 쿠폰 유효기간이 있으면 해당 유효기간으로 설정
+        else {
+          cupon.setCuponEndDate(ct.get().getCuponEndDate());
       }
       // 쿠폰의 유효성
       cupon.setValid(true);
 
       return cupon;
     }
-      catch(EntityNotFoundException e){
 
-      return null;
-    }
+    return null;
   }
 
 

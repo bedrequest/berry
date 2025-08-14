@@ -13,6 +13,7 @@ import com.berry.project.dto.qna.CustomerIqBoardDTO;
 import com.berry.project.dto.user.AuthUserDTO;
 import com.berry.project.dto.user.MyPageReservationDTO;
 import com.berry.project.dto.user.UserDTO;
+import com.berry.project.entity.alarm.Alarm;
 import com.berry.project.entity.cupon.CuponTemplate;
 import com.berry.project.entity.payment.QReservation;
 import com.berry.project.entity.payment.Reservation;
@@ -765,7 +766,7 @@ public class AdminServiceImpl implements AdminService {
       Pageable pageable = PageRequest.of(pageNo - 1, qty, sortKey);
 
       // 페이지네이션
-      Page<ReviewDTO> pgList = reviewRepository.findAll(pageable).map(this::convertReviewEntityToReviewDto);
+      Page<ReviewDTO> pgList = reviewRepository.reportedReview(pageable).map(this::convertReviewEntityToReviewDto);
 
       return new AdminPagingHandler<>(pgList, pageNo, sortType, keyword, qty, frag);
     }

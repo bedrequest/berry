@@ -43,8 +43,6 @@ public class QUser extends EntityPathBase<User> {
     //inherited
     public final DateTimePath<java.time.LocalDateTime> regDate = _super.regDate;
 
-    public final BooleanPath userBan = createBoolean("userBan");
-
     public final StringPath userEmail = createString("userEmail");
 
     public final NumberPath<Integer> userFavoriteTag = createNumber("userFavoriteTag", Integer.class);
