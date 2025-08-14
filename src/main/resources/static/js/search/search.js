@@ -195,7 +195,7 @@ let noKeywordWarningTimeout = null;
 searchBtn.addEventListener('click', () => {
   if (searchKeywordInput.value.length == 0) {
     noKeywordWarning.classList.remove('invisible');
-    noKeywordWarning.style.opacity = "0.7";
+    noKeywordWarning.style.opacity = "0.8";
 
     if (noKeywordWarningTimeout) clearTimeout(noKeywordWarningTimeout);
 
