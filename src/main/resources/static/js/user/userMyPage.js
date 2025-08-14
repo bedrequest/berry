@@ -306,12 +306,15 @@ document.getElementById("certifiedUserPhoneSubBtn").addEventListener("click", ()
     if(certifiedNumber === document.getElementById("certifiedNumber").value){
         certifiedPhoneOk(myPageUserId).then(result => {
             if(result == "ok"){
+                alert("인증되었습니다.");
                 location.reload(true);
             }else{
                 alert("인증에 실패했습니다.");
                 document.getElementById("certifiedNumber").focus();
             }
         })
+    }else {
+        alert("인증번호가 일치하지 않습니다.");
     }
 })
 
@@ -334,10 +337,10 @@ document.getElementById("certifiedUserEmailModalClose").addEventListener("click"
 })
 // 인증코드 받기 버튼 클릭
 document.getElementById("getCertifiedEmailBtn").addEventListener("click", () => {
-
+    
     document.getElementById("getCertifiedEmailBtn").style.display = "none"
     document.getElementById("verifyEmailBox").style.display = "block";
-
+    
     getCertifiedCode(myPageUserId).then(result => {
         console.log(result);
         if(result == "fail"){
@@ -346,19 +349,22 @@ document.getElementById("getCertifiedEmailBtn").addEventListener("click", () => 
             certifiedCode = result;
         }
     })
-
+    
 })
 // 인증버튼 클릭
 document.getElementById("certifiedUserEmailSubBtn").addEventListener("click", () => {
     if(certifiedCode === document.getElementById("certifiedCode").value){
         certifiedEmailOk(myPageUserId).then(result => {
             if(result == "ok"){
+                alert("인증되었습니다.");
                 location.reload(true);
             }else{
                 alert("인증에 실패했습니다.");
                 document.getElementById("certifiedCode").focus();
             }
         })
+    }else {
+        alert("인증코드가 일치하지 않습니다.");
     }
 })
 

@@ -25,6 +25,8 @@ function isValidUserPassword(inputs) {
 inputs.forEach(input => {
     input.addEventListener("input", () => {
         const valid = isValidUserEmail(inputs) && isValidUserPassword(inputs);
+
+        document.getElementById("errorMessage").innerText = "";
         
         if(valid){
             
@@ -158,8 +160,7 @@ document.getElementById("resetPasswordCertifiedUserEmailSubBtn").addEventListene
     console.log(resetPasswordUserId);
 
     if(resetCertifiedCodeInput.value == certifyCode){
-        console.log("일치");
-
+        document.getElementById("resetPasswordCertifiedUserEmailSubBtn").style.display = "none";
         resetPassword(resetPasswordUserId).then(result => {
             if(result == "ok"){
                 alert("이메일로 발송된 비밀번호를 확인해주세요.");
@@ -170,7 +171,7 @@ document.getElementById("resetPasswordCertifiedUserEmailSubBtn").addEventListene
         })
 
     }else{
-        console.log("불일치");
+        alert("인증코드가 일치하지 않습니다.");
     }
 })
 
@@ -220,4 +221,10 @@ async function resetPassword(userId) {
         
     }
     
+}
+
+// 회원탈퇴시
+console.log(membershipWithdrawal);
+if(membershipWithdrawal == "ok"){
+    alert("성공적으로 탈퇴되었습니다.");
 }

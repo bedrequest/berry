@@ -88,9 +88,9 @@ public class UserServiceimpl implements UserService {
 
       // 회원가입 알림 저장
       Alarm alarm = Alarm.builder()
-          .userId(userId)
-          .targetId(userId)
-          .code("s_signup")
+          .userId(userId) // 로그인한 유저 id
+          .targetId(userId) // 타겟 테이블 id
+          .code("s_signup") // 알림 코드 (자기가 직접 작성하거나 만들어놓은 예시 참고)
           .build();
 
       alarmRepository.save(alarm);
@@ -257,9 +257,10 @@ public class UserServiceimpl implements UserService {
   // 회원정보수정
   @Transactional
   @Override
-  public void userInfoUpadate(UserDTO userDTO) {
+  public String userInfoUpdate(UserDTO userDTO) {
     Optional<User> optional = userRepository.findById(userDTO.getUserId());
     if (optional.isPresent()) {
+      String userEmail= optional.get().getUserEmail();
       // 수정값은 이메일, 이름, 휴대폰번호, 선호태그
       User user = optional.get();
       user.setUserName(userDTO.getUserName());
@@ -267,27 +268,32 @@ public class UserServiceimpl implements UserService {
       if (!user.getUserPhone().equals(userDTO.getUserPhone())) {
         // 휴대폰 번호가 변경이 되었을 경우
         user.setUserPhone(userDTO.getUserPhone());
+        log.info("휴대폰 번호 변경");
 
         // 휴대폰 번호가 변경이 되면 휴대폰 인증 여부를 false 로 변경
         user.setMobileCertified(false);
-
-      } else if (!user.getUserName().equals(userDTO.getUserName())) {
+      }
+      if (!user.getUserName().equals(userDTO.getUserName())) {
         // 이름이 변경이 되었을 경우
         user.setUserName(userDTO.getUserName());
-      } else if (!user.getUserEmail().equals(userDTO.getUserEmail())) {
+      }
+      if (!user.getUserEmail().equals(userDTO.getUserEmail())) {
         // 이메일이 변경 되었을 경우
         user.setUserEmail(userDTO.getUserEmail());
+        log.info("이메일 변경");
 
         // 이메일 변경이 되면 이메일 인증 여부를 false 로 변경
         user.setEmailCertified(false);
 
-      } else if (user.getUserFavoriteTag() != userDTO.getUserFavoriteTag()) {
+      }
+      if (user.getUserFavoriteTag() != userDTO.getUserFavoriteTag()) {
+        log.info("선호태그 변경");
         // 선호태그가 변경이 되었을 경우
         user.setUserFavoriteTag(userDTO.getUserFavoriteTag());
       }
+      return userEmail;
     }
-
-
+    return null;
   }
 
   @Transactional
