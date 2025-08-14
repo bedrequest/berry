@@ -103,11 +103,14 @@ public class LodgeServiceImpl implements LodgeService {
   private void fillRooms(LodgeDTO lodgeDTO, boolean withImage) {
     for (Room room : roomRepository.findByLodgeId(lodgeDTO.getLodgeId())) {
       RoomDTO roomDTO = convertEntityToDto(room);
-      if (withImage)
+      if (withImage) {
         roomDTO.setRoomImageUrls(
             roomImgRepository.findByRoomId(roomDTO.getRoomId())
                 .stream().map(RoomImg::getRoomImgUrl)
                 .toList());
+        if (roomDTO.getRoomImageUrls() == null || roomDTO.getRoomImageUrls().isEmpty())
+          roomDTO.setRoomImageUrls(List.of("http://image.goodchoice.kr/adimg_new/49461/673938/9e048d5653205e43f216a07978dc8321.jpg"));
+      }
       lodgeDTO.getRooms().add(roomDTO);
     }
   }

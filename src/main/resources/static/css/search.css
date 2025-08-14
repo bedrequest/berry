@@ -159,6 +159,7 @@
   opacity: 0.8;
 
   transition: opacity 0.3s ease;
+  z-index: 1001;
 }
 #noKeywordWarning>span {
   display: block;

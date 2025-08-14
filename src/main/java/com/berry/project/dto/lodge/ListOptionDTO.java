@@ -63,7 +63,7 @@ public class ListOptionDTO {
     }
 
     int tableIndex = 0;
-    for (int i = 0; i < priceTable.length - 2; i++)
+    for (int i = 0; i < priceTable.length - 1; i++)
       if (priceTable[i] == lowestPrice) {
         tableIndex = i;
         break;
@@ -103,6 +103,7 @@ public class ListOptionDTO {
     if (lodgeType != null) return false;
     if (getLowestPrice() != priceTable[0]) return false;
     if (getHighestPrice() != priceTable[priceTable.length - 1]) return false;
-    return facilityMask == 0;
+    if (facilityMask != 0) return false;
+    return favoriteMask == 0;
   }
 }

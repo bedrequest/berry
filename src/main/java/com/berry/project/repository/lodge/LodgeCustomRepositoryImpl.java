@@ -54,6 +54,7 @@ public class LodgeCustomRepositoryImpl implements LodgeCustomRepository {
       }
     }
 
+    // 0. 쿼리 구조 : 서브쿼리 + 소스 + condition + 정렬
     String subquery = "with subquery as ",
         source = " from lodge l left join subquery s on (s.lodge_id = l.lodge_id)",
         sortOption = " order by s.sort_option is null, ";
@@ -79,13 +80,14 @@ public class LodgeCustomRepositoryImpl implements LodgeCustomRepository {
     Integer min = listOptionDTO.getLowestPrice(), max = listOptionDTO.getHighestPrice();
     String subQuery = " and l.lodge_id in " +
         "(select distinct lodge_id from room r where " +
-        "greatest(coalesce(rent_price, 0), coalesce(stay_price, 0)) >= :lowestPrice" +
-        " and least(coalesce(rent_price, 9999999), coalesce(stay_price, 9999999)) <= :highestPrice)";
+        "r.stay_price > 0 and " +
+        "greatest(coalesce(rent_price, 0), coalesce(stay_price, 0)) >= :lowestPrice " +
+        "and least(coalesce(rent_price, 9999999), coalesce(stay_price, 9999999)) <= :highestPrice)";
     parameters.put("lowestPrice", String.valueOf(min));
     parameters.put("highestPrice", String.valueOf(max));
     condition.append(subQuery);
 
-    // 5. 태그 대응(리뷰 완성 이후)
+    // 5. 태그 대응
     if (listOptionDTO.getFavoriteMask() != 0) {
       condition.append(" and (l.lodge_id in (select lodge_id from review r left join review_tag_mapping m on r.review_id = m.review_id where tag_id in (");
       List<Integer> tagIdList = new TagMaskDecoder().decodeAsNumber(listOptionDTO.getFavoriteMask());
@@ -96,7 +98,7 @@ public class LodgeCustomRepositoryImpl implements LodgeCustomRepository {
       condition.append(")))");
     }
 
-    // 6. 정렬 옵션
+    // 6. 정렬 옵션 : 서브쿼리 사용
     switch (listOptionDTO.getSort()) {
       case "평점높은순" -> {
         subquery += "(select lodge_id, avg(rating) sort_option from review group by lodge_id) ";
