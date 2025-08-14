@@ -1,13 +1,12 @@
 <!DOCTYPE html>
 <html lang="en"
       xmlns:th="http://www.thymeleaf.org"
-      xmlns:layout="http://www.ultraq.next.nz/thymeleaf/layout"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
       xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
       layout:decorate="~{layout/layout}">
 <section layout:fragment="customStyle">
   <link rel="stylesheet" th:href="@{/css/indexTest.css}">
   <link rel="stylesheet" th:href="@{/css/lodge/bookmark.css}">
-  <link rel="stylesheet" th:href="@{/css/review/review.css}">
   <link rel="stylesheet" th:href="@{/css/main_section_two.css}">
 </section>
 <div layout:fragment="content">
@@ -16,47 +15,78 @@
     image slide section
   </div>
 
-  <div id="best-lodges-section" class="section">
-    <h2 class="ms2__title sr-only">가장 많이 예약된 숙소 Top 5</h2>
+  <div id="best-lodges-section" class="section snap bright">
+    <div class="ms2__bg-soft"></div>
 
-    <div class="ms2__slider swiper-container full-screen-slider">
-      <div class="swiper-wrapper">
-        <div class="ms2__slide swiper-slide"
-             th:each="lodge : ${top5}"
-             th:style="|background-image: url(${lodge.lodgeImgUrl});|">
+      <!-- 최상단 -->
+      <h1 class="ms2__display-title">
+        <span class="brand">Berry.</span> 의 예약 TOP 5 숙소
+      </h1>
+      <!-- 최상단 -->
 
-          <div class="ms2__overlay slide-overlay">
-            <!-- A) 정보 패널 -->
-            <div class="ms2__info-panel info-panel">
-              <h3 class="ms2__name"
-                  th:text="${lodge.lodgeName}">숙소 이름</h3>
-              <p class="ms2__location location"
-                 th:text="${lodge.lodgeAddr} + ' · ₩' + ${lodge.minStayPrice} + '/박'">
-                위치 · ₩123,000/박
-              </p>
-            </div>
+      <!-- 슬라이드 컨테이너 -->
+      <div class="ms2__slide-container"> <!-- overflow hidden -->
+        <div class="ms2__slide-wrapper"> <!-- 카드 총 길이 -->
+          <div class="ms2__slide" th:each="lodge, stat : ${top5}"> <!-- 실제 표시 될 슬라이드 -->
 
-            <!-- B) 차트 & 요약 -->
-            <div class="ms2__data-panel data-panel">
-              <div class="ms2__chart chart"
-                   th:attr="data-stats=${lodge.tagStatsJson}">
-                <canvas class="ms2__chart-canvas"></canvas>
+            <!-- 슬라이드 왼쪽 라인 -->
+            <div class="ms2__slide-left-box">
+              <!-- 카드 상단 타이틀 라인 -->
+              <div class="ms2__card-topline">
+                <span class="rank-pill" th:text="${stat.index + 1} + '위'">1위</span>
+                <span class="topline-sep">·</span>
+                <span class="topline-name" th:text="${lodge.lodgeName}">숙소 이름</span>
               </div>
-              <div class="ms2__summary ai-summary"
-                   th:text="${lodge.aiSummary}">
-                AI 요약 텍스트…
+
+              <!-- 왼쪽 이미지 -->
+              <div class="ms2__thumb"
+                   th:style="|background-image:url('${lodge.lodgeImgUrl}');|">
               </div>
             </div>
+
+              <!-- 슬라이드 오른쪽 정보 -->
+              <div class="ms2__body">
+                <!-- 주소 및 가격 -->
+                <h4 class="ms2__meta"
+                   th:text="${lodge.lodgeAddr + ' · ' + (lodge.minStayPrice != null and lodge.minStayPrice > 0 ? '₩' + #numbers.formatInteger(lodge.minStayPrice, 0, 'COMMA') + '/박' : '가격 정보 없음')}">
+                </h4>
+
+                <!-- 차트 (제목 명시) -->
+                <div class="ms2__chart-wrap">
+                  <div class="ms2__subTitle">상위 태그 차트</div>
+                  <div class="ms2__chart chart" th:attr="data-stats=${lodge.tagStatsJson}">
+                    <canvas class="ms2__chart-canvas" width="280" height="220" aria-label="리뷰 태그 분포"></canvas>
+                  </div>
+                </div>
+
+                <!-- AI 요약 (제목 명시) -->
+                <div class="ms2__summary-wrap" th:if="${not #strings.isEmpty(lodge.aiSummary)}">
+                  <div class="ms2__subTitle">AI 리얼 리뷰 요약</div>
+                  <div class="ms2__summary ai-summary"
+                       th:utext="${#strings.replace(lodge.aiSummary, '\n', '<br/>')}"></div>
+                </div>
+
+                <!-- CTA -->
+
+              </div>
           </div>
+          <!-- 실제 표시 슬라이드 end -->
 
+        </div> <!-- slide-wrapper end -->
+      <!-- 슬라이드 버튼 -->
+      <div class="ms2__slide-btn-box">
+        <div class="ms2__slide-prev" id="lodgeReviewPrevBtn">
+          <button><</button>
+        </div>
+        <div class="ms2__slide_next" id="lodgeReviewNextBtn">
+          <button>></button>
         </div>
       </div>
-
-      <div class="ms2__nav-prev swiper-button-prev" aria-label="이전 숙소"></div>
-      <div class="ms2__nav-next swiper-button-next" aria-label="다음 숙소"></div>
-      <div class="ms2__pagination swiper-pagination"></div>
-    </div>
+      </div> <!-- slide-container end -->
   </div>
+
+
+
 
   <div id="search-section" class="section">
     <!--/* 배경 이미지 슬라이드 */-->
@@ -81,12 +111,11 @@
     <div th:insert="~{fragments/search :: search}"></div>
   </div>
 
+  <script type="module" th:src="@{/js/main_section_two.js}"></script>
   <script type="module" th:src="@{/js/indexScroll.js}"></script>
-  <script type="module" th:src="@{/js/indexSearch.js}"></script>
   <script type="module" th:inline="javascript" sec:authorize="${isAuthenticated()}">
     import(/*[[@{/js/lodge/bookmark.js}]]*/).then(module => {
       module.default(/*[[${userId}]]*/);
     });
   </script>
-  <script type="module" th:src="@{/js/main_section_two.js}"></script>
 </div>

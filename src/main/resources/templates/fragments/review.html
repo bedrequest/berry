@@ -40,18 +40,22 @@
           method="post" class="d-inline">
       <input type="hidden" sec:csrfInput=""/>
       <button type="submit" class="btn-text">
-        요약 생성 (수동)
+        요약 생성
       </button>
     </form>
   </section>
   <section class="review-summary mb-5">
     <!-- 2-2) 브리핑 -->
     <div th:if="${aiSummary}" class="ai-summary-box">
-      <h2 class="ai-summary-title">AI 브리핑</h2>
+      <h2 class="ai-summary-title">
+        <img src="/image/platform.openai.com.png" alt="API Key Icon" class="ai-icon">
+        AI 리뷰 요약
+      </h2>
       <p class="ai-summary-content"
          th:utext="${#strings.replace(aiSummary, '\n', '<br/>')}"></p>
     </div>
   </section>
+
 
   <!-- 3) 리뷰 작성 + 정렬 컨트롤 -->
   <section class="review-control-section mb-4">

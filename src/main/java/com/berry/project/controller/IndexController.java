@@ -84,17 +84,22 @@ public class IndexController {
   }
 
   @GetMapping("/indexTest")
-  public void indexTest(Model model, Principal principal) {
-    model.addAttribute("bestLodges", lodgeService.getTop5Lodges());
+  public String indexTest(Model model, Principal principal) {
+    var list = lodgeService.getTopBookedLodges(5);
+    log.info("top5 size = {}", list.size());
+    model.addAttribute("top5", list);
 
     if (principal != null) {
-      UserDTO userDTO = userService.getUserInfo(principal.getName());
+      UserDTO user = userService.getUserInfo(principal.getName());
+      model.addAttribute("userId", user.getUserId());
       model.addAttribute("bookmarks",
-          userService.getBookmarkLodgeList(userDTO.getUserId())
-              .stream().map(BookmarkLodgeDTO::getLodgeId)
-              .toList());
+              userService.getBookmarkLodgeList(user.getUserId())
+                      .stream().map(BookmarkLodgeDTO::getLodgeId)
+                      .toList());
     }
+    return "indexTest";
   }
+
 
   // 네이버 검색
   @GetMapping("/outerSearch/{keyword}")
@@ -162,4 +167,4 @@ public class IndexController {
       throw new RuntimeException("API 응답을 읽는 데 실패했습니다.", e);
     }
   }
-}
+  }

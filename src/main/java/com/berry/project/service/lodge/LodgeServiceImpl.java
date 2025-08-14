@@ -6,10 +6,12 @@ import com.berry.project.dto.lodge.LodgeDTO;
 import com.berry.project.dto.lodge.LodgeOptionDTO;
 import com.berry.project.dto.lodge.RoomDTO;
 import com.berry.project.entity.lodge.*;
+import com.berry.project.entity.review.ReviewSummary;
 import com.berry.project.handler.PagingHandler;
 import com.berry.project.repository.lodge.*;
 import com.berry.project.repository.payment.ReservationRepository;
 import com.berry.project.repository.review.ReviewRepository;
+import com.berry.project.repository.review.ReviewSummaryRepository;
 import com.berry.project.util.FacilityMaskDecoder;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
@@ -41,6 +43,7 @@ public class LodgeServiceImpl implements LodgeService {
 
   private final ReservationRepository reservationRepository;
   private final ObjectMapper objectMapper;
+  private final ReviewSummaryRepository reviewSummaryRepository;
 
   @Override
   public LodgeDTO detail(long lodgeId, LodgeOptionDTO lodgeOptionDTO) {
@@ -151,6 +154,9 @@ public class LodgeServiceImpl implements LodgeService {
               .map(LodgeImg::getLodgeImgUrl)                    // 엔티티에서 URL 추출
               .orElse("/images/default_lodge.jpg");
       Integer minPrice = roomRepository.findMinStayPriceByLodgeId(lodgeId);
+      if (minPrice == null || minPrice <= 0) {
+        minPrice = roomRepository.findMinRentPriceByLodgeId(lodgeId);
+      }
 
       Map<String,Integer> stats = reviewRepository.findTagCountsByLodgeId(lodgeId)
               .stream().collect(Collectors.toMap(
@@ -162,9 +168,13 @@ public class LodgeServiceImpl implements LodgeService {
         statsJson = objectMapper.writeValueAsString(stats);
       } catch (Exception ignored) {}
 
-      String aiSum = lodgeDescriptionRepository.findByLodgeId(lodgeId)
-              .stream().map(LodgeDescription::getContent)
-              .findFirst().orElse("");
+      String aiSum = reviewSummaryRepository.findByLodgeId(lodgeId)
+              .map(ReviewSummary::getSummaryText)
+              .orElseGet(() ->
+                      lodgeDescriptionRepository.findByLodgeId(lodgeId)
+                              .stream().map(LodgeDescription::getContent)
+                              .findFirst().orElse("")
+              );
 
       return new LodgeSummaryDTO(
               lodgeId,

@@ -25,7 +25,6 @@ public class ReviewImage {
 
     @Column(name = "review_file_size")
     private Long reviewFileSize;
-
     @Column(name = "reg_date")
     @Builder.Default
     private LocalDateTime regDate = LocalDateTime.now();
