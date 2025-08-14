@@ -19,7 +19,6 @@ public class CustomerIqFileHandler {
   private final String UP_DIR = "D:\\berry_file\\";
 
   public List<CustomerIqFileDTO> uploadFiles(MultipartFile[] files) {
-
     List<CustomerIqFileDTO> fileList = new ArrayList<>();
 
     // 날짜 폴더 경로 생성

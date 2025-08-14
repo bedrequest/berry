@@ -18,8 +18,6 @@ import java.util.Map;
 import java.util.Optional;
 
 import static com.berry.project.entity.lodge.QLodge.lodge;
-import static com.berry.project.entity.lodge.QRoom.room;
-import static com.berry.project.entity.payment.QReservation.reservation;
 import static com.berry.project.entity.review.QReview.review;
 import static com.berry.project.entity.review.QReviewTagMapping.reviewTagMapping;
 
@@ -132,7 +130,7 @@ public class LodgeCustomRepositoryImpl implements LodgeCustomRepository {
     }
 
     // 메인 쿼리에 페이징 적용(JPQL에는 limit이 없음)
-    query.setFirstResult(pageable.getPageNumber()*pageable.getPageSize());
+    query.setFirstResult(pageable.getPageNumber() * pageable.getPageSize());
     query.setMaxResults(pageable.getPageSize());
 
     return new PageImpl<Lodge>(query.getResultList(), pageable, (long) totalCount.getSingleResult());
@@ -161,16 +159,4 @@ public class LodgeCustomRepositoryImpl implements LodgeCustomRepository {
     return new PageImpl<>(list, pageable, count);
   }
 
-  @Override
-  public List<Lodge> getTop5ByReservation() {
-    return queryFactory
-        .select(lodge).from(lodge)
-        .leftJoin(room).on(lodge.lodgeId.eq(room.lodgeId))
-        .leftJoin(reservation).on(room.roomId.eq(reservation.reservationId))
-        .where(reservation.bookingStatus.eq("DONE"))
-        .groupBy(lodge.lodgeId)
-        .orderBy(reservation.reservationId.count().desc())
-        .limit(5)
-        .fetch();
-  }
 }

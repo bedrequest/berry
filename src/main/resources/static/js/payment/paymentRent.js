@@ -32,7 +32,10 @@ const requiredAgrees = document.querySelectorAll('.terms-req');
 
 /** DOMContentLoaded 이벤트 리스너  
  * 
- *  > 대실 운영 시간은 일괄적으로 11:00 ~ 22:00 까지 설정
+ *  > 대실 운영 시간은 일괄적으로 10:00 ~ 22:00 까지 설정
+ * 
+ *  > 최소 결제 금액을 만족하는 쿠폰만 출력 
+ *    (document.getElementById('cupon-select2').innerHTML 에 <option> 으로 삽입)
  * 
  * */
 document.addEventListener('DOMContentLoaded', async () => {
@@ -137,6 +140,40 @@ document.addEventListener('DOMContentLoaded', async () => {
       }
     }
   } 
+
+
+  /** 최소 결제 금액을 만족하는 쿠폰만 출력 
+   *  
+   *  > document.getElementById('cupon-select2').innerHTML 에 <option> 으로 삽입)
+   * 
+   *  */ 
+  cuponList.forEach(v => {
+    // CuponTemplate TABLE 에서 CuponType 으로 쿠폰 정보 조회 
+    fetch(`/payment/cupon-info?cupon-type=${v.cuponType}`)
+    
+    /** 최소 결제 금액을 만족하는 경우 셀렉트에 출력 
+     * 
+     *  > `<option value=${result.cuponPrice} data-cupon-id="v.cuponId">result.cuponTitle</option>`
+     * */ 
+    .then(resp => { return resp.json(); })
+
+    .then(result => {
+      // 숫자로 변환
+      if(result && Number(strikePrice) >= Number(result.theMinimumAmount)){
+        // 동적으로 <option> 생성
+        const option = document.createElement('option');
+         // dataset 으로 cupon-id 초기화 
+        option.dataset.cuponId = v.cuponId;
+         // value 초기화
+        option.value = result.cuponPrice;
+         // 쿠폰 이름 넣기
+        option.innerText = result.cuponTitle;
+
+        document.getElementById('cupon-select2').appendChild(option);
+      }
+    })
+  })
+
 })
 
 
@@ -180,7 +217,7 @@ document.addEventListener('click', (e) => {
     console.log(idx);
 
     // 기존 선택 요소들 모두 비활성화 
-    timeSlotArr.forEach(e => e.classList.remove('time-slot-selected'))
+    timeSlotArr.forEach(e => e.classList.remove('time-slot-selected'));
 
     // 끝 인덱스 계산
     const endIdx = Math.min(idx + rentUseTime, timeSlotArr.length);

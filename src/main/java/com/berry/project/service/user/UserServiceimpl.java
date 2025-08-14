@@ -8,6 +8,8 @@ import com.berry.project.dto.user.UserBookmarkDTO;
 import com.berry.project.dto.user.UserDTO;
 import com.berry.project.entity.alarm.Alarm;
 import com.berry.project.entity.cupon.Cupon;
+import com.berry.project.handler.payment.CuponHandler;
+import com.berry.project.repository.payment.CuponRepository;
 import com.berry.project.entity.lodge.Lodge;
 import com.berry.project.entity.lodge.LodgeImg;
 import com.berry.project.entity.lodge.Room;
@@ -18,8 +20,8 @@ import com.berry.project.entity.user.UserBookmark;
 import com.berry.project.repository.lodge.LodgeImgRepository;
 import com.berry.project.repository.lodge.LodgeRepository;
 import com.berry.project.repository.lodge.RoomRepository;
-import com.berry.project.repository.payment.CuponRepository;
 import com.berry.project.repository.payment.ReservationRepository;
+import com.berry.project.repository.review.ReviewRepository;
 import com.berry.project.repository.user.AlarmRepository;
 import com.berry.project.repository.user.AuthUserRepository;
 import com.berry.project.repository.user.UserBookmarkRepository;
@@ -30,7 +32,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
-import java.time.OffsetDateTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -43,12 +44,14 @@ public class UserServiceimpl implements UserService {
   private final AuthUserRepository authUserRepository;
   private final UserBookmarkRepository userBookmarkRepository;
   private final AlarmRepository alarmRepository;
+  private final ReviewRepository reviewRepository;
   // YSL, 쿠폰 발급을 위한 초기화
   private final CuponRepository cuponRepository;
   private final ReservationRepository reservationRepository;
   private final RoomRepository roomRepository;
   private final LodgeImgRepository lodgeImgRepository;
   private final LodgeRepository lodgeRepository;
+  private final CuponHandler cuponHandler;
 
   // 소셜로그인 중복검사
   @Transactional
@@ -56,7 +59,7 @@ public class UserServiceimpl implements UserService {
   public UserDTO isSocialDuplicateUser(String userUid) {
 
     Optional<User> optional = userRepository.findByUserUid(userUid);
-    if(optional.isEmpty()){
+    if (optional.isEmpty()) {
       return null;
     }
 
@@ -64,44 +67,37 @@ public class UserServiceimpl implements UserService {
     List<AuthUser> authUserList = authUserRepository.findByUserId(user.getUserId());
 
 
-      UserDTO userDTO = convertEntityToUserDTO(user, authUserList.stream()
-          .map(this :: convertEntityToAuthDTO)
-          .toList());
+    UserDTO userDTO = convertEntityToUserDTO(user, authUserList.stream()
+        .map(this::convertEntityToAuthDTO)
+        .toList());
 
-      return userDTO;
+    return userDTO;
   }
-  
+
   // 소셜로그인 저장
   @Transactional
   @Override
   public void insertOauthUser(UserDTO userDTO) {
 
     Long userId = userRepository.save(oauthConvertUserDTOToUserEntity(userDTO)).getUserId();
-    log.info("impl userId >> {}",userId);
+    log.info("impl userId >> {}", userId);
     log.info("userDTO userID >> {}", userDTO);
     userDTO.setUserId(userId);
 
-    if(userId > 0){
+    if (userId > 0) {
       authUserRepository.save(convertUserDTOToAuthEntity(userDTO));
-      
+
       // 회원가입 알림 저장
       Alarm alarm = Alarm.builder()
-          .userId(userId)
-          .targetId(userId)
-          .code("s_signup")
+          .userId(userId) // 로그인한 유저 id
+          .targetId(userId) // 타겟 테이블 id
+          .code("s_signup") // 알림 코드 (자기가 직접 작성하거나 만들어놓은 예시 참고)
           .build();
 
       alarmRepository.save(alarm);
 
       // duorpeb, 쿠폰 발급
-      Cupon registerCupon
-          = Cupon.builder()
-          .userId(userId)
-          .cuponType(1)
-          .cuponEndDate(OffsetDateTime.now().plusDays(180))
-          .isValid(true)
-          .build();
-
+      Cupon registerCupon = cuponHandler.callCuponGenerate(1, userId);
       Long cuponId = cuponRepository.save(registerCupon).getCuponId();
 
       alarm = Alarm.builder()
@@ -121,8 +117,8 @@ public class UserServiceimpl implements UserService {
 
     List<User> userList = userRepository.findByUserEmail(username);
     UserDTO userDTO = new UserDTO();
-    for(User user : userList){
-      if(user.getProvider().equals("web")){
+    for (User user : userList) {
+      if (user.getProvider().equals("web")) {
         List<AuthUser> authUserList = authUserRepository.findByUserId(user.getUserId());
         userDTO = convertEntityToUserDTO(user, authUserList.stream().map(this::convertEntityToAuthDTO).toList());
         return userDTO;
@@ -137,8 +133,8 @@ public class UserServiceimpl implements UserService {
   public boolean updateLastLogin(String username) {
 
     List<User> userList = userRepository.findByUserEmail(username);
-    for(User user : userList){
-      if(user.getProvider().equals("web")){
+    for (User user : userList) {
+      if (user.getProvider().equals("web")) {
         user.setLastLogin(LocalDateTime.now());
         log.info("updateLastLogin >>> user {}", user);
         return true;
@@ -166,8 +162,8 @@ public class UserServiceimpl implements UserService {
     List<User> userList = userRepository.findByUserEmail(userEmail);
     log.info("isDuplicateUser userEmail >> {}", userEmail);
 
-    for(User user : userList){
-      if(user.getProvider().equals("web")){
+    for (User user : userList) {
+      if (user.getProvider().equals("web")) {
         return user.getUserId(); // DB 찾아서 존재하면 id return
       }
     }
@@ -183,9 +179,20 @@ public class UserServiceimpl implements UserService {
     Long userId = userRepository.save(oauthConvertUserDTOToUserEntity(userDTO)).getUserId();
 
     userDTO.setUserId(userId);
-    if(userId > 0){
+    if (userId > 0) {
       authUserRepository.save(convertUserDTOToAuthEntity(userDTO));
 
+      // duorpeb, 쿠폰 발급 - 변경 전
+//      Cupon registerCupon
+//          = Cupon.builder()
+//                 .userId(userId)
+//                 .cuponType(1)
+//                 .cuponEndDate(OffsetDateTime.now().plusDays(180))
+//                 .isValid(true)
+//                 .build();
+
+      // duorpeb, 쿠폰 발급 - 변경 후
+      Cupon registerCupon = cuponHandler.callCuponGenerate(1, userId);
       // 회원가입 알림 저장
       Alarm alarm = Alarm.builder()
           .userId(userId)
@@ -194,15 +201,6 @@ public class UserServiceimpl implements UserService {
           .build();
 
       alarmRepository.save(alarm);
-
-      // duorpeb, 쿠폰 발급
-      Cupon registerCupon
-          = Cupon.builder()
-                 .userId(userId)
-                 .cuponType(1)
-                 .cuponEndDate(OffsetDateTime.now().plusDays(180))
-                 .isValid(true)
-                 .build();
 
       Long cuponId = cuponRepository.save(registerCupon).getCuponId();
 
@@ -220,19 +218,19 @@ public class UserServiceimpl implements UserService {
   // uid 로 유저 조회
   @Override
   public UserDTO getUserInfo(String userUid) {
-    
+
     // web 인 경우
     UserDTO webUserDTO = getWebUserDTO(userUid);
     log.info("getUserInfo userDTO >>> {}", webUserDTO);
     Optional<User> optional = userRepository.findByUserUid(userUid);
 
-    if(webUserDTO != null){
+    if (webUserDTO != null) {
       return webUserDTO;
-    }else if(optional.isPresent()){
-    // oauth 인 경우
-    List<AuthUser> authUserList = authUserRepository.findByUserId(optional.get().getUserId());
-    UserDTO oauthUserDTO = convertEntityToUserDTO(optional.get(),
-        authUserList.stream().map(this :: convertEntityToAuthDTO).toList());
+    } else if (optional.isPresent()) {
+      // oauth 인 경우
+      List<AuthUser> authUserList = authUserRepository.findByUserId(optional.get().getUserId());
+      UserDTO oauthUserDTO = convertEntityToUserDTO(optional.get(),
+          authUserList.stream().map(this::convertEntityToAuthDTO).toList());
 
       return oauthUserDTO;
     }
@@ -245,7 +243,7 @@ public class UserServiceimpl implements UserService {
   public UserDTO getUserFindById(Long userId) {
 
     Optional<User> optional = userRepository.findById(userId);
-    if(optional.isPresent()){
+    if (optional.isPresent()) {
       List<AuthUser> authUserList = authUserRepository.findByUserId(userId);
       UserDTO userDTO = convertEntityToUserDTO(optional.get(),
           authUserList.stream().map(this::convertEntityToAuthDTO).toList());
@@ -258,37 +256,43 @@ public class UserServiceimpl implements UserService {
   // 회원정보수정
   @Transactional
   @Override
-  public void userInfoUpadate(UserDTO userDTO) {
+  public String userInfoUpdate(UserDTO userDTO) {
     Optional<User> optional = userRepository.findById(userDTO.getUserId());
-    if(optional.isPresent()){
+    if (optional.isPresent()) {
+      String userEmail= optional.get().getUserEmail();
       // 수정값은 이메일, 이름, 휴대폰번호, 선호태그
       User user = optional.get();
       user.setUserName(userDTO.getUserName());
 
-      if(!user.getUserPhone().equals(userDTO.getUserPhone())){
+      if (!user.getUserPhone().equals(userDTO.getUserPhone())) {
         // 휴대폰 번호가 변경이 되었을 경우
         user.setUserPhone(userDTO.getUserPhone());
-        
+        log.info("휴대폰 번호 변경");
+
         // 휴대폰 번호가 변경이 되면 휴대폰 인증 여부를 false 로 변경
         user.setMobileCertified(false);
-
-      } else if (!user.getUserName().equals(userDTO.getUserName())){
+      }
+      if (!user.getUserName().equals(userDTO.getUserName())) {
         // 이름이 변경이 되었을 경우
         user.setUserName(userDTO.getUserName());
-      } else if (!user.getUserEmail().equals(userDTO.getUserEmail())) {
+      }
+      if (!user.getUserEmail().equals(userDTO.getUserEmail())) {
         // 이메일이 변경 되었을 경우
         user.setUserEmail(userDTO.getUserEmail());
+        log.info("이메일 변경");
 
         // 이메일 변경이 되면 이메일 인증 여부를 false 로 변경
         user.setEmailCertified(false);
 
-      } else if (user.getUserFavoriteTag() != userDTO.getUserFavoriteTag()){
+      }
+      if (user.getUserFavoriteTag() != userDTO.getUserFavoriteTag()) {
+        log.info("선호태그 변경");
         // 선호태그가 변경이 되었을 경우
         user.setUserFavoriteTag(userDTO.getUserFavoriteTag());
       }
+      return userEmail;
     }
-
-
+    return null;
   }
 
   @Transactional
@@ -296,7 +300,7 @@ public class UserServiceimpl implements UserService {
   public Long updateMobileCertified(Long userId) {
 
     Optional<User> optional = userRepository.findById(userId);
-    if(optional.isPresent()){
+    if (optional.isPresent()) {
       User user = optional.get();
       user.setMobileCertified(true);
       return userId;
@@ -309,7 +313,7 @@ public class UserServiceimpl implements UserService {
   @Override
   public Long updateEmailCertified(Long userId) {
     Optional<User> optional = userRepository.findById(userId);
-    if(optional.isPresent()){
+    if (optional.isPresent()) {
       User user = optional.get();
       user.setEmailCertified(true);
       return userId;
@@ -322,7 +326,7 @@ public class UserServiceimpl implements UserService {
   @Override
   public void updatePassword(String changePassword, Long userId) {
     Optional<User> optional = userRepository.findById(userId);
-    if(optional.isPresent()){
+    if (optional.isPresent()){
       User user = optional.get();
       user.setPassword(changePassword);
     }
@@ -354,7 +358,7 @@ public class UserServiceimpl implements UserService {
     // Lodge 조회
     List<Lodge> lodgeList = lodgeRepository.findByLodgeIdIn(lodgeIds);
 
-    if(reservationList != null){
+    if (reservationList != null) {
       List<MyPageReservationDTO> reservationDTOList = reservationList.stream().map(reservation -> {
 
         Room room = roomList.stream()
@@ -400,7 +404,7 @@ public class UserServiceimpl implements UserService {
             // lodgeImg
             .lodgeImageUrls(lodgeImageUrls)
             .build();
-          }).toList();
+      }).toList();
 
       return reservationDTOList;
     }
@@ -414,20 +418,25 @@ public class UserServiceimpl implements UserService {
 
     // 1. userId 를 통해 bookmarkId 조회
     List<UserBookmark> userBookmarkList = userBookmarkRepository.findByUserIdOrderByRegDateDesc(userId);
-    
+    log.info("impl userBookmarkList >> {}", userBookmarkList);
+
     // 2. 조회한 bookmarkId 를 통해 lodgeId 조회
     List<Long> lodgeIds = userBookmarkList.stream().map(UserBookmark::getLodgeId).toList();
-    
+    log.info("impl lodgeIds >> {}", lodgeIds);
+
     // 3. lodgeId 를 통해 lodge 조회
     List<Lodge> lodgeList = lodgeRepository.findByLodgeIdIn(lodgeIds);
-    
+    log.info("impl lodgeList >> {}", lodgeList);
+
     // 4. lodgeImg 조회
     List<LodgeImg> lodgeImgList = lodgeImgRepository.findByLodgeIdIn(lodgeIds);
+    log.info("impl lodgeImgList >> {}", lodgeImgList);
 
     // 5. room 조회
     List<Room> roomList = roomRepository.findByLodgeIdIn(lodgeIds);
+    log.info("impl roomList >> {}", roomList);
 
-    if(userBookmarkList != null) {
+    if (userBookmarkList != null) {
       List<BookmarkLodgeDTO> bookmarkLodgeDTOList = userBookmarkList.stream().map(userBookmark -> {
         Room room = roomList.stream()
             .filter(r -> r.getLodgeId() == userBookmark.getLodgeId())
@@ -447,7 +456,11 @@ public class UserServiceimpl implements UserService {
             .toList();
 
         // roomDTO
-        List<RoomDTO> rooms = roomList.stream().map(this :: convertEntityToDto).toList();
+        List<RoomDTO> rooms = roomList.stream()
+            .filter(room1 -> room1.getLodgeId() == lodge.getLodgeId())
+            .map(this::convertEntityToDto).toList();
+        log.info("impl rooms >> {}", rooms);
+
 
         // bookmarkLodgeDTO builder
         return BookmarkLodgeDTO.builder()
@@ -459,6 +472,8 @@ public class UserServiceimpl implements UserService {
             .lodgeName(lodge != null ? lodge.getLodgeName() : null)
             .lodgeImages(lodgeImageUrls)
             .rooms(rooms)
+            .averageReviewScore(reviewRepository.findAverageRatingByLodgeId(lodge.getLodgeId()).orElse(0.0))
+            .reviewCount(reviewRepository.countByLodgeId(lodge.getLodgeId()))
             .build();
       }).toList();
 
@@ -476,12 +491,12 @@ public class UserServiceimpl implements UserService {
     Optional<UserBookmark> optional = userBookmarkRepository.findByUserIdAndLodgeId(userBookmarkDTO.getUserId(), userBookmarkDTO.getLodgeId());
     log.info(">> search result > {}", optional);
 
-    if(optional.isPresent()){
+    if (optional.isPresent()) {
       // 있다면 지우고 0 return
       userBookmarkRepository.delete(optional.get());
 
       return 0L;
-    }else{
+    } else {
       // 없으면 DB 에 저장 후 Id return
       Long isOk = userBookmarkRepository.save(convertUserBookmarkDTOToUserBookmarkEntity(userBookmarkDTO)).getUserId();
 
@@ -505,24 +520,25 @@ public class UserServiceimpl implements UserService {
 
     UserDTO userDTO = getWebUserDTO(userEmail);
 
-    if(userDTO == null) {
+    if (userDTO == null) {
       return 0L;
     }
 
     return userDTO.getUserId();
   }
 
-  private UserDTO getWebUserDTO(String userEmail){
+  private UserDTO getWebUserDTO(String userEmail) {
     UserDTO userDTO = new UserDTO();
     List<User> userList = userRepository.findByUserEmail((userEmail));
-    for(User user : userList){
-      if(user.getProvider().equals("web")){
+    for (User user : userList) {
+      if (user.getProvider().equals("web")) {
         List<AuthUser> authUserList = authUserRepository.findByUserId(user.getUserId());
         userDTO = convertEntityToUserDTO(user, authUserList.stream().map(this::convertEntityToAuthDTO).toList());
-      return userDTO;
+        return userDTO;
       }
     }
     return null;
   }
+
 
 }

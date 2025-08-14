@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+  <body>
+    <!-- frag 1) 쿠폰 생성 -->
+    <div th:fragment="cupon-generate" class="cupon-wrapper">
+      <!-- 쿠폰 생성 폼 -->
+      <form th:action="@{/admin/cupon-generate}" method="post" class="create-form" enctype="multipart/form-data">
+        <fieldset>
+          <legend>🎟️ 쿠폰 생성</legend>
+
+          <label style="margin-top: 0px;">
+            쿠폰 타입
+            <input type="number" name="cuponType" id="cuponType" min="1" step="1" required />
+          </label>
+          <label>
+            쿠폰 이름
+            <input type="text" name="cuponTitle" id="cuponTitle" required />
+          </label>
+          <label>
+            쿠폰의 할인 금액
+            <input type="number" name="cuponPrice" id="cuponPrice" min="100" required />
+          </label>
+          <label>
+            최소 결제 금액
+            <input type="number" name="theMinimumAmount" id="theMinimumAmount" min="100" />
+          </label>
+
+          <!-- LocalDateTime 으로 전송해서 Controller 에서 OffsetDateTime 으로 변환 -->
+          <label>
+            유효 기간
+            <input type="datetime-local" name="cuponEndDate" id="cuponEndDate" class="custom-datetime"
+              placeholder="유효기간이 없는 쿠폰이라면 입력하지 않아도 됩니다."/>
+          </label>
+          <label>
+            수량
+            <input type="number" name="qty" id="qty" min="1" step="10"
+                   placeholder="무제한이라면 입력하지 않아도 됩니다."/>
+          </label>
+          <label style="gap: 30px;">
+            쿠폰 이미지 파일 <span>
+              <button type="button" name="cupon-file-btn" id="cupon-file-btn">파일 선택</button>
+            </span>
+
+            <input type="file" name="cuponImg" id="cupon-img-input" required />
+          </label>
+
+          <!-- 마이페이지의 출력 형식과 동일하게 -->
+          <div class="cupon-img-preview">
+          </div>
+
+          <div class="cupon-generate-btn-container">
+           <button type="button" id="cupon-generate-btn">쿠폰 생성</button>
+          </div>
+        </fieldset>
+      </form>
+    </div>
+
+  </body>
+</html>

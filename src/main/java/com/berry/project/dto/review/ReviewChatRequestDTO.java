@@ -10,7 +10,7 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 public class ReviewChatRequestDTO {
-    private String model;
-    private List<ReviewChatMessageDTO> messages;
-    private Double temperature;
+  private String model;
+  private List<ReviewChatMessageDTO> messages;
+  private Double temperature;
 }

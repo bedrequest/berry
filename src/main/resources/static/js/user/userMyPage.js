@@ -283,19 +283,20 @@ document.getElementById("certifiedUserPhoneModalClose").addEventListener("click"
     closeModal();
     document.getElementById("certifiedUserPhone").style.display = "none"
 })
+
 // 인증번호 받기 버튼 클릭
 document.getElementById("getCertifiedPhoneBtn").addEventListener("click", () => {
 
     document.getElementById("getCertifiedPhoneBtn").style.display = "none"
+    document.getElementById("verifyBox").style.display = "block";
+    document.getElementById("certifiedUserPhoneSubBtn").style.display = "inline-block";
 
     getCertifiedNumber(myPageUserId).then(result => {
         console.log(result);
         if(result == "fail"){
-            alert("인증번호 받기가 실패했습니다.")
+            alert("인증번호 받기가 실패했습니다.");
         }else{
             certifiedNumber = result;
-            document.getElementById("verifyBox").style.display = "block";
-            document.getElementById("certifiedUserPhoneSubBtn").style.display = "block";
         }
     })
 
@@ -305,12 +306,15 @@ document.getElementById("certifiedUserPhoneSubBtn").addEventListener("click", ()
     if(certifiedNumber === document.getElementById("certifiedNumber").value){
         certifiedPhoneOk(myPageUserId).then(result => {
             if(result == "ok"){
+                alert("인증되었습니다.");
                 location.reload(true);
             }else{
                 alert("인증에 실패했습니다.");
                 document.getElementById("certifiedNumber").focus();
             }
         })
+    }else {
+        alert("인증번호가 일치하지 않습니다.");
     }
 })
 
@@ -333,9 +337,10 @@ document.getElementById("certifiedUserEmailModalClose").addEventListener("click"
 })
 // 인증코드 받기 버튼 클릭
 document.getElementById("getCertifiedEmailBtn").addEventListener("click", () => {
-
+    
     document.getElementById("getCertifiedEmailBtn").style.display = "none"
-
+    document.getElementById("verifyEmailBox").style.display = "block";
+    
     getCertifiedCode(myPageUserId).then(result => {
         console.log(result);
         if(result == "fail"){
@@ -344,19 +349,22 @@ document.getElementById("getCertifiedEmailBtn").addEventListener("click", () => 
             certifiedCode = result;
         }
     })
-
+    
 })
 // 인증버튼 클릭
 document.getElementById("certifiedUserEmailSubBtn").addEventListener("click", () => {
     if(certifiedCode === document.getElementById("certifiedCode").value){
         certifiedEmailOk(myPageUserId).then(result => {
             if(result == "ok"){
+                alert("인증되었습니다.");
                 location.reload(true);
             }else{
                 alert("인증에 실패했습니다.");
                 document.getElementById("certifiedCode").focus();
             }
         })
+    }else {
+        alert("인증코드가 일치하지 않습니다.");
     }
 })
 
@@ -650,9 +658,30 @@ document.getElementById("rcCloseModal").addEventListener("click", () => {
 
 })
 
+// 복사 버튼
+document.querySelectorAll(".print-number").forEach(btn => {
+    btn.addEventListener("click", () => {
+        const reservationNumber = document.querySelectorAll(".reservation-right-tit");
 
+        reservationNumber.forEach(data => {
+            if(Number(data.dataset.rid) ==  Number(btn.dataset.bid)){
+                let text = data.textContent.replace("복사", "").trim();
+                copyToClipboard(text);
+            }
+        })
+    })
+})
 
-
+// Clipboard API
+async function copyToClipboard(text) {
+    try {
+      await navigator.clipboard.writeText(text);
+      console.log('텍스트가 클립보드에 복사되었습니다.');
+    } catch (err) {
+      console.error('클립보드 복사 실패: ', err);
+    }
+  }
+  
 
 
 // 비동기

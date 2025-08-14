@@ -6,8 +6,6 @@ let userId;
 document.addEventListener('click', e => {
   const bookmark = e.target.closest('.bookmark');
   if (bookmark) {
-    console.log(userId);
-
     if (bookmarkServing) alert('북마크 처리중입니다.');
     else {
       bookmarkServing = true;

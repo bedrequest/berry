@@ -10,13 +10,13 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 public class ReviewChatResponseDTO {
-    private List<ChoiceDTO> choices;
+  private List<ChoiceDTO> choices;
 
-    @Data
-    @NoArgsConstructor
-    @AllArgsConstructor
-    public static class ChoiceDTO {
-        private int index;
-        private ReviewChatMessageDTO message;
-    }
+  @Data
+  @NoArgsConstructor
+  @AllArgsConstructor
+  public static class ChoiceDTO {
+    private int index;
+    private ReviewChatMessageDTO message;
+  }
 }

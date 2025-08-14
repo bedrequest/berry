@@ -6,14 +6,10 @@ import com.berry.project.entity.lodge.Lodge;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
-import java.util.List;
-
 public interface LodgeCustomRepository {
 
   Page<Lodge> searchLodges(ListOptionDTO listOptionDTO, LodgeOptionDTO lodgeOptionDTO, Pageable pageable);
 
-  Page<Lodge> searchByTag(long tag, Pageable pageable);
-
-  List<Lodge> getTop5ByReservation();
-
+  /* duorpeb, pageLodge() - 관리자 페이지에서 숙소 별 정보 클릭 시 사용하기 위한 메서드*/
+  Page<Lodge> pageLodge(Pageable pageable, String keyword);
 }

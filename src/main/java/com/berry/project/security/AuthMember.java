@@ -18,7 +18,7 @@ public class AuthMember extends User {
     super(username, password, authorities);
   }
 
-  public AuthMember(UserDTO userDTO){
+  public AuthMember(UserDTO userDTO) {
     // 소셜이랑 별개의 작업이니까
     super(userDTO.getUserEmail(), userDTO.getPassword(),
         userDTO.getAuthList().stream()

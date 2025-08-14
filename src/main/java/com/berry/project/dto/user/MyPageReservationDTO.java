@@ -36,25 +36,25 @@ public class MyPageReservationDTO {
   // lodgeImg
   private List<String> lodgeImageUrls;
 
-  public String customOrderId(){
+  public String customOrderId() {
     String customOrderId = orderId.replace("order_", "");
 
     return customOrderId.substring(0, customOrderId.lastIndexOf("_"));
   }
+
   // <td>yyyy.mm.dd - yyyy.mm.dd</td> 체크인 체크아웃
-  public String customCheckDate(){
+  public String customCheckDate() {
     LocalDateTime startDateUTF = this.startDate.plusHours(9);
     LocalDateTime endDateUTF = this.endDate.plusHours(9);
     String sDate = startDateUTF.format(DateTimeFormatter.ofPattern("yyyy.MM.dd HH:mm"));
     String eDate = endDateUTF.format(DateTimeFormatter.ofPattern("yyyy.MM.dd HH:mm"));
-    String customCheckDate = sDate + " - " + eDate;
 
-    return customCheckDate;
+    return sDate + " - " + eDate;
   }
+
   // <td>yyyy.mm.dd hh:mm</td> 예약일시
-  public String customReservationRegDate(){
-    String regDate = reservationRegDate.format(DateTimeFormatter.ofPattern("yyyy.MM.dd. HH:mm:ss"));
-    return regDate;
+  public String customReservationRegDate() {
+    return reservationRegDate.format(DateTimeFormatter.ofPattern("yyyy.MM.dd. HH:mm:ss"));
   }
 
 

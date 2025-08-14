@@ -530,13 +530,39 @@ p {
   color: #707070;
 }
 #addressCopy {
-  color: #e74b60;
+  position: relative;
+
+  color: #a0a0a0;
   text-decoration: none;
 
   cursor: pointer;
 }
 #addressCopy:hover {
   text-decoration: underline;
+  color: #e74b60;
+}
+#address-copy-success {
+  position: absolute;
+  left: 30px;
+  transform: translate(-50%);
+  width: max-content;
+  padding: 10px;
+
+  color: #707070;
+  font-weight: 500;
+
+  background-color: white;
+  border-radius: 10px;
+  border: 1px solid #bbbbbb;
+
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+#address-copy-success {
+  top: -51px;
+}
+#address-copy-success {
+  z-index: 1;
 }
 
 /* 12. 리뷰 */

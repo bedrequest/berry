@@ -141,7 +141,7 @@ function openModal(target) {
 }
 
 function closeModal() {
-    if (swiper) {
+    if (swiper && !swiper.destoyed) {
         swiper.removeAllSlides();
         swiper.destroy(true, true);
     }
@@ -259,11 +259,16 @@ function scroll(target, container) {
 
 // 주소 복사
 document.getElementById('addressCopy').addEventListener('click', () => {
-    navigator.clipboard.writeText(
-        document.getElementById('addressText').innerText)
-        .then(() => {
-            console.log('주소 복사 완료');
-        });
+    navigator.clipboard
+    .writeText(document.getElementById('addressText').innerText)
+    .then(() => {
+        const addressCopySuccess = document.getElementById('address-copy-success');
+        addressCopySuccess.style.opacity = 1;
+
+        setTimeout(() => {
+            addressCopySuccess.style.opacity = 0;
+        }, 1500);
+    });
 });
 
 // ----------------------------------------------

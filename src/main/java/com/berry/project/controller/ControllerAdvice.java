@@ -17,21 +17,21 @@ import java.security.Principal;
 @RequiredArgsConstructor
 public class ControllerAdvice {
 
-    private final UserService userService;
+  private final UserService userService;
 
-    @ModelAttribute
-    public void getUserId(Principal principal, Model model){
+  @ModelAttribute
+  public void getUserId(Principal principal, Model model) {
 
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+    Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 
-        if (authentication != null && authentication.isAuthenticated() &&
-                !(authentication instanceof AnonymousAuthenticationToken)) {
+    if (authentication != null && authentication.isAuthenticated() &&
+        !(authentication instanceof AnonymousAuthenticationToken)) {
 
-            String username = authentication.getName(); // web: email, oauth2: uid
-            UserDTO userDTO = userService.getUserInfo(username);
-            log.info("Controller Advice userId > {}", userDTO.getUserId());
-            model.addAttribute("userId", userDTO.getUserId());
-        }
+      String username = authentication.getName(); // web: email, oauth2: uid
+      UserDTO userDTO = userService.getUserInfo(username);
+      log.info("Controller Advice userId > {}", userDTO.getUserId());
+      model.addAttribute("userId", userDTO.getUserId());
     }
+  }
 
 }

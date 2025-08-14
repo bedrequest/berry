@@ -130,28 +130,32 @@
                 <!-- unchecked -->
                 <option value="" disabled selected hidden>사용할 쿠폰을 선택하세요.</option>
 
-                <th:block th:each="cupon : ${pInfoDto.cuponList}">
+                <!-- CuponHandler 생성 전 -->
+               <!-- <th:block th:each="cupon : ${pInfoDto.cuponList}">
                   <th:block th:switch="${cupon.cuponType}">
-                    <!-- 첫 회원가입 쿠폰 -->
+                    &lt;!&ndash; 첫 회원가입 쿠폰 &ndash;&gt;
                     <option th:case="1" class="appliedCupon" value="3000" th:data-cupon-id="${cupon.cuponId}">
                       신규 가입 할인 쿠폰
                     </option>
 
-                    <!-- 등급업 쿠폰 - 실버 -->
+                    &lt;!&ndash; 등급업 쿠폰 - 골드 &ndash;&gt;
                     <option th:case="2" class="appliedCupon" value="5000" th:data-cupon-id="${cupon.cuponId}">
-                      Silver 등급업 쿠폰
-                    </option>
-
-                    <!-- 등급업 쿠폰 - 골드 -->
-                    <option th:case="3" class="appliedCupon" value="5000" th:data-cupon-id="${cupon.cuponId}">
                       Gold 등급업 쿠폰
                     </option>
 
-                    <!-- 등급업 쿠폰 - 플레티넘 -->
-                    <option th:case="4" class="appliedCupon" value="5000" th:data-cupon-id="${cupon.cuponId}">
+                    &lt;!&ndash; 등급업 쿠폰 - 플래티넘 &ndash;&gt;
+                    <option th:case="3" class="appliedCupon" value="5000" th:data-cupon-id="${cupon.cuponId}">
                       Platinum 등급업 쿠폰
                     </option>
                   </th:block>
+                </th:block>-->
+
+                <!-- CuponHandler 생성 후 -->
+                <th:block th:with="cuponList=${pInfoDto.cuponList}">
+                  <script th:inline="javascript">
+                    const cuponList = [[${cuponList}]];
+                    console.log(cuponList);
+                  </script>
                 </th:block>
               </select>
           </div>

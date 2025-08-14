@@ -1,6 +1,6 @@
 package com.berry.project.controller;
 
-import com.berry.project.api.NaverApi;
+import com.berry.project.api.NaverMapApi;
 import com.berry.project.data.LodgeData;
 import com.berry.project.dto.lodge.ListOptionDTO;
 import com.berry.project.dto.lodge.LodgeDTO;
@@ -14,12 +14,14 @@ import com.berry.project.util.FacilityMaskDecoder;
 import com.berry.project.util.TagMaskDecoder;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.security.Principal;
 import java.util.List;
@@ -35,7 +37,7 @@ public class LodgeController {
   private final ReviewService reviewService;
 
   private final FacilityMaskDecoder facilityMaskDecoder;
-  private final NaverApi naverMapApi;
+  private final NaverMapApi naverMapApi;
   private final LodgeData lodgeData;
 
   @GetMapping("/list")
@@ -45,6 +47,9 @@ public class LodgeController {
                      @RequestParam(name = "pageNo", required = false, defaultValue = "1") int pageNo,
                      Principal principal) {
     getDateLog(lodgeOptionDTO);
+
+    if (listOptionDTO.getKeyword().isBlank())
+      throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
 
     int userFavorites = principal == null ? 0 : userService.getUserInfo(principal.getName()).getUserFavoriteTag();
     if (listOptionDTO.getFacilityMask() == null) listOptionDTO.setFacilityMask(userFavorites);
@@ -65,7 +70,7 @@ public class LodgeController {
     model.addAttribute("sortOptions", lodgeData.getLodgeSortOptions());
     model.addAttribute("priceTable", lodgeData.getPriceTable());
 
-    if(principal != null) {
+    if (principal != null) {
       UserDTO userDTO = userService.getUserInfo(principal.getName());
       model.addAttribute("userDTO", userDTO);
 
@@ -96,7 +101,10 @@ public class LodgeController {
       UserDTO userDTO = userService.getUserInfo(principal.getName());
       log.info(">> user : {}", userDTO);
       model.addAttribute("userDTO", userDTO);
-    }
+      model.addAttribute("bookmark", userService.getBookmarkLodgeList(userDTO.getUserId())
+          .stream().anyMatch(bookmarkLodgeDTO -> bookmarkLodgeDTO.getLodgeId().equals(lodgeId)));
+    } else model.addAttribute("bookmark", false);
+
     // 고정값들
     model.addAttribute("naverMapId", naverMapApi.getNaverMapApiKey());
     model.addAttribute("facilityIconMap", lodgeData.getFacilityIconMap());

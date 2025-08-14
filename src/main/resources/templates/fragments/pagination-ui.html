@@ -1,0 +1,19 @@
+<div xmlns:th="http://www.thymeleaf.org"
+  class="pagination-container" th:fragment="pagination" th:if="${ph.ttc > 0}">
+  <ul class="pagination">
+      <!-- 이전 페이지 -->
+      <li class="page-item is-prev" th:if="${ph.hasPrev}">
+          <a class="page-link" th:data-page="${ph.startIdx - 1}">이전</a>
+      </li>
+
+      <!-- 페이지 번호 -->
+      <li class="page-item" th:each="page : ${#numbers.sequence(ph.startIdx, ph.endIdx)}" th:classappend="${page == ph.pageNo} ? 'active'">
+          <a class="page-link" th:data-page="${page}" th:text="${page}"></a>
+      </li>
+
+      <!-- 다음 페이지 -->
+      <li class="page-item is-next" th:if="${ph.hasNext}">
+          <a class="page-link" th:data-page="${ph.endIdx + 1}">다음</a>
+      </li>
+  </ul>
+</div>

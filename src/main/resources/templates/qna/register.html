@@ -2,7 +2,8 @@
 <html lang="en"
       xmlns:th="http://www.thymeleaf.org"
       xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
-      layout:decorate="~{layout/layout}">
+      layout:decorate="~{layout/layout}"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 
 <section layout:fragment="customStyle">
   <link rel="stylesheet" th:href="@{/css/qna/register.css}" />
@@ -17,7 +18,8 @@
     <div class="form-inline-group">
       <label for="category" class="form-label-inline">카테고리</label>
       <select id="category" name="category" class="form-select-inline">
-        <option >--선택--</option>
+        <option >선택</option>
+        <option th:value="공지" sec:authorize="hasRole('ROLE_ADMIN')">공지</option>
         <option th:value="결제">결제</option>
         <option th:value="환불">환불</option>
         <option th:value="시설">시설</option>
@@ -46,21 +48,25 @@
     <!-- 글자 수 표시 -->
     <div id="charCount" class="char-count">0 / 1000</div>
 
+
+
     <br><br>
 
+    <div id="imagePreviewArea"></div>
 
-    <!--/* file 추가 라인 */-->
-    <!-- 파일 업로드 부분 수정 -->
+
+
+    <!-- 파일 업로드 -->
     <div class="file-upload preview-image">
       <input type="text" id="file" class="upload-name" placeholder="선택된 파일 없음" disabled="disabled">
       <label for="input-file">업로드</label>
-      <input type="file" name="files" id="input-file" class="upload-hidden" onchange="updateFileName(this)">
+      <input type="file" name="files" id="input-file" class="upload-hidden" multiple>
     </div>
 
 
     <br><br>
 
-    <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+    <div class="d-grid gap-2 d-md-flex justi7fy-content-md-end">
       <button type="button" id="listBtn" class="btn btn-primary me-md-2">List</button>
       <button type="submit" id="regBtn" class="btn btn-primary">등록</button>
     </div>

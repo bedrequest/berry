@@ -1,0 +1,171 @@
+/* 공통 요소 설정 --------------------------------------------------------------------------------------- */
+:root {
+  --theme-color: #E74B60;
+  --theme-color-light: #fde2e8;
+  --theme-color-transparent: #E74B6080;
+  --sidebar-color: #666a73;
+}
+
+.invisible{ display: none; }
+
+.visible{ display: block; }
+
+
+/* 화면 속성 설정 ------------------------------------------------------------------------------------------ */
+.admin-body{
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.admin-container{
+  width:1200px;
+  
+  display: flex;
+  justify-content: space-around;
+  gap: 60px;
+}
+
+.side-bar-container{
+  margin : 30px 0 50px 100px;
+  width: 20%;
+}
+
+.list-container{
+  margin-right: 30px;
+  width: 65%;
+}
+
+.search-sort-container{
+  margin: 30px 0 0 0;
+  display: flex;
+  justify-content: space-between; 
+}
+/* 화면 속성 설정 fin --------------------------------------------------------------------------------------- */
+
+
+
+/* side-bar (카테고리) ------------------------------------------------------------------------------------------------- */
+.admin-title{
+  background-color: #E74B6080;
+  color: white;
+}
+
+.category-topic-title{
+  display: flex;
+  justify-content: space-between;
+}
+
+.category-subtopic {
+  margin: 0;
+  padding: 0 1rem;
+  list-style: none;
+  transition: color 0.4s ease; /* 요소의 글자 색상(color) 이 바뀔 때, 부드럽게 전환되도록 설정 */
+}
+
+/* */
+.side-bar-container h2{
+  padding: 13px 0 13px 13px;
+
+  cursor: pointer;
+  color: var(--sidebar-color);
+}
+
+/* 선택된 ul - 회색 배경 */
+.selected-ul {
+  background-color: #f0f0f0;
+  border-radius: 5px;
+}
+
+/* 선택된 li - 빨간 배경 */
+.selected-li {
+  color: #e74b60;
+}
+
+#basic-img{
+  max-width: 100%;
+  width: auto;
+  height: auto;
+}
+/* side-bar (카테고리) fin  ------------------------------------------------------------------------------------------------- */
+
+
+
+/* list-up-container (리스트 출력 div) - 전체 유저 보기 ------------------------------------------------------------- */
+.content-container-user{
+  display: grid;
+
+  /** grid-template-columns 
+    
+    > grid-template-columns 는 트랙 정의를 반복하고 동일한 규칙의 그리드 열
+      이 반복되는 경우 더 간결한 형태로 정의할 때 사용 
+      
+    > grid-template-columns: repeat(3, 1fr) 는 1줄에 3개씩 나열한다는 의미 
+  */
+  grid-template-columns: repeat(4, 1fr); 
+}
+
+/* ── 1. 사용자 카드 그리드 ───────────────────────────────── */
+.content-container {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 24px;
+  padding: 16px;
+}
+
+/* ── 2. 유저 정보 테이블 ───────────────────────────────── */
+.user-table {
+  width: 100%;
+  border-collapse: collapse;
+  background-color: #ffffff;
+  border: 2px solid #E74B60;
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+}
+
+/* 헤더 셀(레이블) */
+.user-table th {
+  background-color: #E74B60;
+  color: #fff;
+  text-align: left;
+  padding: 8px 12px;
+  font-weight: 600;
+  width: 40%;
+}
+
+/* 값 셀 */
+.user-table td {
+  padding: 8px 12px;
+  border-top: 1px solid #E74B60;
+}
+
+/* 행 호버 효과 */
+.user-table tr:hover {
+  background-color: #fde2e8; /* #E74B60의 연한 투명 버전 */
+}
+/* list-up-container (리스트 출력 div) - 전체 유저 보기 fin ------------------------------------------------------------- */
+
+
+
+/* sort-detail (셀렉트 박스) ---------------------------------------------------------------------------------*/
+.sort-detail {
+  padding: 6px 10px;
+  border: 1px solid var(--theme-color);
+  border-radius: 4px;
+  background-color: #fff;
+  color: var(--theme-color);
+  font-weight: bold;
+  transition: border 0.2s ease;
+}
+
+.sort-detail:focus {
+  outline: none;
+  border-color: #c0392b;
+}
+
+/* 옵션 항목 스타일 */
+.sort-option {
+  color: #333;
+}
+/* sort-detail (셀렉트 박스) ---------------------------------------------------------------------------------*/

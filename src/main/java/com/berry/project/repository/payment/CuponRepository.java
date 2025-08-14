@@ -1,6 +1,8 @@
 package com.berry.project.repository.payment;
 
 import com.berry.project.entity.cupon.Cupon;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
@@ -12,7 +14,7 @@ import java.util.List;
 import java.util.Optional;
 
 
-public interface CuponRepository extends JpaRepository<Cupon, Long> {
+public interface CuponRepository extends JpaRepository<Cupon, Long>, CuponCustomRepository{
     
     /**  List"<"Cupon> findByUserIdOrderByCuponRegDateDesc(Long userId) - 사용자 ID로 쿠폰 목록 조회
      *
@@ -33,7 +35,7 @@ public interface CuponRepository extends JpaRepository<Cupon, Long> {
     /** List"<"Cupon> findByCuponTypeOrderByCuponRegDateDesc(Integer cuponType) - 쿠폰 타입별 조회
      *
      */
-    List<Cupon> findByCuponTypeOrderByCuponRegDateDesc(Integer cuponType);
+    Page<Cupon> findByCuponType(Integer cuponType, Pageable pageable);
 
 
     /** List"<"Cupon> findExpiredCupons(LocalDateTime currentDate) - 만료된 쿠폰 조회
@@ -85,5 +87,8 @@ public interface CuponRepository extends JpaRepository<Cupon, Long> {
     @Query("DELETE FROM Cupon c WHERE c.cuponEndDate < :currentDate")
     void deleteByCuponEndDateBefore(@Param("currentDate") OffsetDateTime currentDate);
 
+
+    /** deleteByCuponType() */
+    void deleteByCuponType(int cuponType);
 
 }

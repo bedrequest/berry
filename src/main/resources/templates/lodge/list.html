@@ -4,10 +4,10 @@
       xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
       xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
       layout:decorate="~{layout/layout}">
-<section layout:fragment="customStyle">
+<th:block layout:fragment="customStyle">
   <link rel="stylesheet" th:href="@{/css/lodge/list.css}" />
   <link rel="stylesheet" th:href="@{/css/lodge/bookmark.css}" />
-</section>
+</th:block>
 <div layout:fragment="content">
   <div th:insert="~{fragments/search :: search}"
        th:with="listOption=${pagingHandler.listOptionDTO},
@@ -166,7 +166,7 @@
                     <span class="lodgeAddr" th:text="${lodge.shortAddress}"></span>
                     <div class="lodgeReviewStatusArea">
                       <div class="averageReviewScore">
-                        ★ [[${lodge.averageReviewScore != null ? lodge.averageReviewScore : '-'}]]
+                        ★ [[${lodge.averageReviewScore != null ? #numbers.formatDecimal(lodge.averageReviewScore, 1, 1) : '-'}]]
                       </div>
                       <div class="reviewCount">
                         <span class="areaTitle">[[${lodge.reviewCount}]]명 평가</span>

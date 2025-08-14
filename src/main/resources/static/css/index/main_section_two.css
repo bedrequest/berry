@@ -1,0 +1,211 @@
+/* inner */
+.container-1200 {
+  width: 1200px;
+}
+
+/* 최상단 제목 */
+.ms2__display-title {
+  font-size: 40px;
+  margin-bottom: 30px;
+  text-align: center;
+  margin-top: 80px;
+  line-height: 1.4;
+}
+
+/* 순위 및 숙소명 */
+.ms2__card-topline {
+  margin-bottom: 15px;
+}
+
+.topline-name {
+  font-size: 20px;
+  font-weight: bold;
+}
+
+/* 좌측 이미지 */
+.ms2__thumb {
+  width: 500px;
+  height: 450px;
+  margin-right: 40px;
+  background-size: cover;
+}
+
+/* 순위 */
+.rank-pill {
+  font-size: 22px;
+  font-weight: bold;
+}
+
+/* 숙소명 */
+.topline-name {
+  margin-left: 10px;
+  color: gray;
+}
+
+.ms2__slide-container {
+  overflow: hidden;
+  width: 1200px;
+  margin: auto;
+  position: relative;
+}
+
+.ms2__slide-wrapper {
+  display: flex;
+}
+
+/* 표기 될 슬라이드 */
+.ms2__slide {
+  display: flex;
+  padding: 30px;
+}
+
+/* 왼쪽 정보 */
+.ms2__slide-left-box {
+}
+
+/* 오른쪽 정보 */
+.ms2__body {
+  width: 600px;
+  /* position: relative; */
+}
+
+/* chart tit / ai tit */
+.ms2__subTitle {
+  font-size: 20px;
+  margin: 20px 0;
+  font-weight: 500;
+}
+
+
+
+/* 가격 및 위치 정보 */
+.ms2__meta {
+  font-size: 20px;
+  color: #494949;
+}
+
+/* 차트 */
+.ms2__chart-wrap {
+}
+
+/* 상세보기 버튼 */
+.ms2__cta {
+  position: absolute;
+  display: inline-block;
+  right: 0px;
+  bottom: 0px;
+  padding: 5px 10px;
+  background-color: aquamarine;
+  border-radius: 15px;
+
+}
+
+/* 슬라이드 버튼 */
+.ms2__slide-btn-box {
+  position: absolute;
+  display: flex;
+  justify-content: space-between;
+  width: 100%;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+
+
+/* ================================
+   Best Lodges 밝고 세련된 스킨 (추가용)
+   기존 코드/변수/JS/HTML 수정 없음
+   ================================ */
+   #best-lodges-section.section.bright{
+    --primary:#E74B60;
+    --ink:#0F141A;
+    --muted:#6B7785;
+    --card-bg:#FFFFFF;
+    --card-br:#E6ECF2;
+    background:
+      radial-gradient(900px 520px at 85% 10%, rgba(231,75,96,.14), transparent 60%),
+      linear-gradient(180deg, #F7F8FA, #EEF2F6);
+    color:var(--ink);
+  }
+
+  /* 소프트 라이트 */
+  #best-lodges-section .ms2__bg-soft{
+    position:absolute; inset:-20% -10% -10% -10%;
+    pointer-events:none;
+    background:
+      radial-gradient(600px 420px at 15% 20%, rgba(255,255,255,.65), transparent 60%),
+      radial-gradient(720px 520px at 90% 10%, rgba(231,75,96,.18), transparent 65%);
+    filter:blur(10px);
+  }
+
+  /* 타이틀 */
+  #best-lodges-section .ms2__display-title{
+    background:linear-gradient(90deg, #E74B60, #ff7c96 40%, #E74B60 85%);
+    -webkit-background-clip:text; background-clip:text; color:transparent;
+    filter:drop-shadow(0 1px 0 rgba(255,255,255,.45));
+    margin-top: 80px; /* 기존값 - 아래에서 패딩 방식으로 덮어씀 */
+  }
+
+  /* 카드 비주얼 */
+  #best-lodges-section .ms2__slide{
+    background:var(--card-bg);
+  }
+
+  /* 톤 보정 */
+  #best-lodges-section .ms2__card-topline{ color:#6B7785; }
+  #best-lodges-section .rank-pill{
+    background:var(--primary); color:#fff; border-radius:999px; padding:4px 12px;
+    font-weight:800; box-shadow:0 6px 14px rgba(231,75,96,.28);
+  }
+  #best-lodges-section .topline-name{ color:#3B4450; }
+
+  /* 이미지 입체감 */
+  #best-lodges-section .ms2__thumb{
+    border-radius:16px;
+    box-shadow:inset 0 10px 24px rgba(16,24,40,.08), 0 1px 0 rgba(255,255,255,.6);
+  }
+
+  /* 텍스트 컬러 */
+  #best-lodges-section .ms2__meta{ color:#4F5B67; }
+
+  /* 소제목 */
+  #best-lodges-section .ms2__subTitle{
+    font-size:14px; font-weight:800; letter-spacing:.12em; text-transform:uppercase;
+    color:#8A96A5; margin:12px 0 8px;
+  }
+
+  /* 요약 스크롤바 */
+  #best-lodges-section .ms2__summary{
+    color:#2B3440; line-height:1.65; max-height:15em; overflow:auto; scrollbar-width:thin;
+  }
+  #best-lodges-section .ms2__summary::-webkit-scrollbar{ width:6px; }
+  #best-lodges-section .ms2__summary::-webkit-scrollbar-thumb{ background:#CFD8E3; border-radius:8px; }
+
+  /* CTA 버튼 색상만 */
+  #best-lodges-section .ms2__cta{
+    background:var(--primary) !important; color:#fff !important;
+    border:none; box-shadow:0 10px 20px rgba(231,75,96,.2);
+  }
+  #best-lodges-section .ms2__cta:hover{ filter:brightness(1.05); }
+
+  /* 좌우 네비 버튼 */
+  #best-lodges-section .ms2__slide-btn-box button{
+    width:42px; height:42px; border:none; border-radius:999px; cursor:pointer;
+    display:grid; place-items:center; font-size:18px; line-height:1;
+    background:#fff; color:var(--primary);
+    border:1px solid #E6ECF2;
+    box-shadow:0 10px 24px rgba(16,24,40,.18);
+    transition:transform .18s ease, box-shadow .18s ease, background .18s ease;
+  }
+  #best-lodges-section .ms2__slide-btn-box button:hover{
+    transform:translateY(-1px);
+    box-shadow:0 14px 30px rgba(16,24,40,.22);
+    background:#FFF3F5;
+  }
+  #best-lodges-section .ms2__slide-btn-box button:focus-visible{
+    outline:2px solid #FFC6D1; outline-offset:2px;
+  }
+
+  /* === 요청하신 적용: 섹션 패딩으로 여백 주고 타이틀 마진 제거 === */
+  #best-lodges-section{ padding-top: 75px; }
+  #best-lodges-section .ms2__display-title{ margin-top: 0 !important; }

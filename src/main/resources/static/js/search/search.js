@@ -252,7 +252,6 @@ export default function init(lodgeOption, listOption, lodgeDTO) {
       if (lodgeDTO) {
         searchKeywordInput.value = lodgeDTO.lodgeName;
         lodgeId = lodgeDTO.lodgeId;
-        console.log(freeForm);
       }
       calendars[0].setDate(lodgeOption.checkIn);
       calendars[1].setDate(lodgeOption.checkOut);
@@ -270,4 +269,5 @@ export default function init(lodgeOption, listOption, lodgeDTO) {
     calendars[1].setDate(tomorrow);
   }
   updateHeadCount(adult, child);
+  getKeywords();
 }

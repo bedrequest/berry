@@ -6,25 +6,28 @@
       layout:decorate="~{layout/layout}">
 <section layout:fragment="customStyle">
   <link rel="stylesheet" th:href="@{/css/lodge/detail.css}" />
-  <link rel="stylesheet" th:href="@{/css/lodge/bookmark.css}" />
   <link rel="stylesheet" th:href="@{/css/review/reviews.css}" />
+  <link rel="stylesheet" th:href="@{/css/lodge/bookmark.css}" />
 </section>
 <div layout:fragment="content">
+
   <script th:inline="javascript">
+    window.lodgeDTO = /*[[${lodgeDTO}]]*/;
     const jquerySwiperLink = document.createElement('link');
     jquerySwiperLink.rel = "stylesheet";
     jquerySwiperLink.href = "https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css";
     document.querySelector('head').appendChild(jquerySwiperLink);
-    
+
     let user = null;
   </script>
-  <script th:inline="javascript" sec:authorize="isAuthenticated()">
-    user = [[${userDTO.userId}]];
-    userData = [[${userDTO}]];
-  </script>
+  <div th:insert="~{fragments/search :: search}" class="sticky"></div>
 
-  <div th:insert="~{fragments/search :: search}" class="sticky"
-       th:with="lodgeOption=${lodgeOption}, lodgeDTO=${lodgeDTO}"></div>
+  <div sec:authorize="isAuthenticated()">
+    <script th:inline="javascript">
+      user = [[${userDTO.userId}]];
+      userData = [[${userDTO}]];
+    </script>
+  </div>
 
   <div class="navBar">
     <div class="container">
@@ -61,8 +64,8 @@
         <span>[[${lodgeDTO.cheapestPrice}]]</span>
       </div>
 
-      <div class="bookmark" th:data-id="${lodgeDTO.lodgeId}">
-        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="#999999" class="bi bi-heart-fill" viewBox="0 0 16 16">
+      <div class="bookmark" th:classappend="${bookmark ? 'selected' : ''}" th:data-id="${lodgeDTO.lodgeId}">
+        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" class="bi bi-heart-fill" viewBox="0 0 16 16">
           <path fill-rule="evenodd" d="M8 1.314C12.438-3.248 23.534 4.735 8 15-7.534 4.736 3.562-3.248 8 1.314"/>
         </svg>
       </div>
@@ -72,7 +75,7 @@
       <div class="reviewPickUpArea">
         <div class="reviewStats">
           <div class="averageReviewScore">
-            ★ [[${lodgeDTO.averageReviewScore != null ? lodgeDTO.averageReviewScore : '-'}]]
+            ★ [[${lodgeDTO.averageReviewScore != null ? #numbers.formatDecimal(lodgeDTO.averageReviewScore, 1, 1) : '-'}]]
           </div>
           <div class="reviewCount">
             <span class="areaTitle">[[${lodgeDTO.reviewCount}]]명 평가</span>
@@ -246,7 +249,12 @@
       <div id="map"></div>
       <div id="addressArea">
         <div id="addressText" th:text="${lodgeDTO.lodgeAddr}"></div>
-        <a id="addressCopy">주소복사</a>
+        <a id="addressCopy">
+          주소복사
+          <div id="address-copy-success">
+            복사 완료!
+          </div>
+        </a>
       </div>
       <ul class="realList">
         <li th:each="way:${lodgeDTO.ways}" th:text="${way}" class="way"></li>
@@ -311,7 +319,7 @@
         </div>
       </div>
     </div>
-      
+
     <!-- duorpeb, PRG 패턴을 사용하기 위한 div -->
     <div class="prg"></div>
 
@@ -320,9 +328,9 @@
 
       <!-- 이유현 : 네이버 지도 -->
     <script type="text/javascript" th:src="'https://oapi.map.naver.com/openapi/v3/maps.js?ncpKeyId=' + ${naverMapId}"></script>
-    <script th:inline="javascript">
+    <script>
       /* 네이버 지도 API */
-      let myLatLng = new naver.maps.LatLng(/*[[${lodgeDTO.latitude}]]*/, /*[[${lodgeDTO.longitude}]]*/);
+      let myLatLng = new naver.maps.LatLng(window.lodgeDTO.latitude, window.lodgeDTO.longitude);
       let mapOptions = {
           center: myLatLng,
           zoom: 16,
@@ -340,14 +348,14 @@
       });
     </script>
 
-    <script type="module" th:inline="javascript">
+    <script th:inline="javascript" type="module">
       import(/*[[@{/js/lodge/detail.js}]]*/).then(module => {
         module.default(/*[[${lodgeDTO}]]*/);
       });
     </script>
-    <script type="module" th:inline="javascript" sec:authorize="isAuthenticated()">
+    <script th:inline="javascript" type="module" sec:authorize="isAuthenticated()">
       import(/*[[@{/js/lodge/bookmark.js}]]*/).then(module => {
-        module.default(/*[[${userDTO.userId}]]*/);
+        module.default(/*[[${userId}]]*/);
       });
     </script>
   </div>

@@ -11,6 +11,7 @@ import com.berry.project.service.payment.PaymentService;
 import com.berry.project.service.user.DeactivatedUserService;
 import com.berry.project.service.user.UserService;
 import jakarta.servlet.ServletException;
+import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
@@ -148,7 +149,9 @@ public class UserController {
   @PostMapping("/deactivatedTransferUser")
   public String deactivatedTransferUser(
       DeactivatedUserDTO deactivatedUserDTO,
-      HttpServletRequest request
+      HttpServletRequest request,
+      HttpServletResponse response,
+      RedirectAttributes redirectAttributes
   ) throws ServletException {
 
     UserDTO userDTO = userService.getUserFindById(deactivatedUserDTO.getUserId());
@@ -156,29 +159,67 @@ public class UserController {
     if(userDTO == null){
       return "redirect:/";
     }
+
     deactivatedUserDTO.setDUserEmail(userDTO.getUserEmail());
     deactivatedUserDTO.setDUserPhone(userDTO.getUserPhone());
     deactivatedUserDTO.setDUserName(userDTO.getUserName());
     log.info("DeactivatedUserDTO >>>> {}", deactivatedUserDTO);
 
     deactivatedUserService.registerDeactivatedUser(deactivatedUserDTO);
+    request.logout();
 
-    return "redirect:/user/logout";
+    Cookie cookie = new Cookie("JSESSIONID", null);
+    cookie.setMaxAge(0); // 쿠키 만료
+    cookie.setPath("/"); // 쿠키 경로 설정
+    response.addCookie(cookie); // 쿠키 추가 (삭제)
+    redirectAttributes.addFlashAttribute("membershipWithdrawal", "ok");
+    log.info("회원탈퇴 성공");
+
+    return "redirect:/user/login";
   }
   // 2. 회원정보 수정 =============================================
   @PostMapping("/userInfoUpdate")
-  public String userInfoUpdate(UserDTO userDTO){
+  public String userInfoUpdate(
+      UserDTO userDTO,
+      HttpServletRequest request,
+      HttpServletResponse response
+      ) throws ServletException {
     log.info("userUpdateInfo userDTO > {}", userDTO);
-    userService.userInfoUpadate(userDTO);
+    // 변경 후 이메일
+    String updateEmail = userDTO.getUserEmail();
+    log.info("updateEmail > {}", updateEmail);
 
-    return "redirect:/user/myPage";
+    // 변경 전 이메일
+    String beforeEmail = userService.userInfoUpdate(userDTO);
+    log.info("beforeEmail > {}", beforeEmail);
+
+    boolean isChangeEmail = false;
+    if(!updateEmail.equals(beforeEmail)){
+      // 이메일이 변경 되었다면 logout 시키기
+      request.logout();
+
+      Cookie cookie = new Cookie("JSESSIONID", null);
+      cookie.setMaxAge(0); // 쿠키 만료
+      cookie.setPath("/"); // 쿠키 경로 설정
+      response.addCookie(cookie); // 쿠키 추가 (삭제)
+      isChangeEmail = true;
+    }
+
+    return isChangeEmail ?  "redirect:/user/login" : "redirect:/user/myPage";
   }
 
 
 
   // 3. 회원가입 =============================================
   @PostMapping("/signup")
-  public String signup(UserDTO userDTO){
+  public String signup(
+      UserDTO userDTO,
+      @RequestParam boolean isEmailCertified,
+      @RequestParam boolean isMobileCertified
+  ){
+    userDTO.setEmailCertified(isEmailCertified);
+    userDTO.setMobileCertified(isMobileCertified);
+
     log.info("signup userDTO {}", userDTO);
 
     String uuid = UUID.randomUUID().toString();
@@ -205,8 +246,6 @@ public class UserController {
     }else{
       userDTO.setAdult(false);
     }
-    userDTO.setEmailCertified(false);
-
 
     /** userService.registerUser(userDTO)
      *
@@ -214,7 +253,7 @@ public class UserController {
      * */
     Long userId = userService.registerUser(userDTO);
 
-    return (userId > 0) ? "redirect:/" : "/user/join";
+    return (userId > 0) ? "redirect:/user/login" : "/user/signup";
   }
 
 
@@ -431,6 +470,32 @@ public class UserController {
 
     return alarmList != null ? alarmList : Collections.emptyList();
   }
+  
+  // 회원가입 이메일 인증
+  @ResponseBody
+  @GetMapping("/getSignInCertifiedCode/{email}")
+  public String getSignInCertifiedCode(@PathVariable("email") String email){
 
+
+    String secureCode = starterMailHandler.generateRandomMixStr(10);
+    starterMailHandler.sendCertifiedCodeHtml(email, secureCode);
+
+    return secureCode != null ? secureCode : "fail";
+  }
+  
+  // 회원가입 모바일 인증
+  @GetMapping("/getSignInCertifiedNumber/{phoneNumber}")
+  @ResponseBody
+  public String getSignInCertifiedNumber(@PathVariable("phoneNumber") String phoneNumber){
+
+    CoolSMSHandler coolSMSHandler = new CoolSMSHandler();
+
+    // Math.random 보다 보안이 더 좋은 SecureRandom을 사용해보자.
+    String secureNumber = coolSMSHandler.createSecureNumber(6);
+
+    coolSMSHandler.sendCertifiedNumber(phoneNumber, secureNumber, coolSmsApiKey, coolSmsSecretKey, fromNumber);
+
+    return secureNumber != null ? secureNumber : "fail";
+  }
 
 }

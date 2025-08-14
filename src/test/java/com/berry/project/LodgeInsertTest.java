@@ -2,7 +2,6 @@ package com.berry.project;
 
 import com.berry.project.entity.lodge.*;
 import com.berry.project.repository.search.SearchRepository;
-import com.berry.project.repository.search.SearchRepository;
 import com.berry.project.util.FacilityMaskDecoder;
 import com.berry.project.repository.lodge.*;
 import com.berry.project.util.RegionNameUtils;

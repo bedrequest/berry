@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.next.nz/thymeleaf/layout"
+      layout:decorate="~{layout/layout}">
+<section layout:fragment="customStyle">
+  <link rel="stylesheet" th:href="@{/css/bannerSlide.css}" />
+</section>
+<div layout:fragment="content">
+  <!-- 포지션 relative 가 될 div -->
+  <div class="banner-top-section">
+    <!-- 뒷 배경 색 -->
+    <div class="banner-background"></div>
+
+    <!-- 글자 슬라이드 -->
+    <div class="text-slide-wrapper">
+      <div id="textSlideSection">
+        <div class="text-slide-list">
+          <div class="text-slide-resource">
+            <div class="text-side-tit-wrapper">
+              <div class="text-slide-top-tit">문구1</div>
+              <div class="text-slide-bottom-tit">문구1</div>
+            </div>
+          </div>
+          <div class="text-slide-resource">
+            <div class="text-side-tit-wrapper">
+              <div class="text-slide-top-tit">문구2</div>
+              <div class="text-slide-bottom-tit">문구2</div>
+            </div>
+          </div>
+          <div class="text-slide-resource">
+            <div class="text-side-tit-wrapper">
+              <div class="text-slide-top-tit">문구3</div>
+              <div class="text-slide-bottom-tit">문구3</div>
+            </div>
+          </div>
+          <div class="text-slide-resource">
+            <div class="text-side-tit-wrapper">
+              <div class="text-slide-top-tit">문구4</div>
+              <div class="text-slide-bottom-tit">문구4</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 이미지 슬라이드 -->
+    <div class="img-slide-wrapper">
+        <div id="imgSlideSection">
+          <div class="img-slide-list">
+            <div class="img-slide-resource">
+              <!-- 여기에 이미지 -->1
+            </div>
+            <div class="img-slide-resource">
+              <!-- 여기에 이미지 -->2
+            </div>
+            <div class="img-slide-resource">
+              <!-- 여기에 이미지 -->3
+            </div>
+            <div class="img-slide-resource">
+              <!-- 여기에 이미지 -->4
+            </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 슬라이드 바 -->
+    <div class="slide-bar-wrapper">
+      <div class="slide-bar-div">
+
+        <div class="slide-bar-div-left">
+
+          <div class="progress-container">
+            <div class="progress-bar" id="progressBar"></div>
+          </div>
+          <div style="width: 50%;">
+            <span class="slide-change-number">01</span>
+            <span>/ 04</span>
+          </div>
+
+        </div>
+
+        <div class="slide-bar-div-right">
+          <button id="slidePrevBtn">
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-arrow-left" viewBox="0 0 16 16">
+              <path fill-rule="evenodd" d="M15 8a.5.5 0 0 0-.5-.5H2.707l3.147-3.146a.5.5 0 1 0-.708-.708l-4 4a.5.5 0 0 0 0 .708l4 4a.5.5 0 0 0 .708-.708L2.707 8.5H14.5A.5.5 0 0 0 15 8"/>
+            </svg>
+          </button>
+          <button id="slideStopBtn">
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-pause" viewBox="0 0 16 16">
+              <path d="M6 3.5a.5.5 0 0 1 .5.5v8a.5.5 0 0 1-1 0V4a.5.5 0 0 1 .5-.5m4 0a.5.5 0 0 1 .5.5v8a.5.5 0 0 1-1 0V4a.5.5 0 0 1 .5-.5"/>
+            </svg>
+          </button>
+          <button id="slideNextBtn">
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-arrow-right" viewBox="0 0 16 16">
+              <path fill-rule="evenodd" d="M1 8a.5.5 0 0 1 .5-.5h11.793l-3.147-3.146a.5.5 0 0 1 .708-.708l4 4a.5.5 0 0 1 0 .708l-4 4a.5.5 0 0 1-.708-.708L13.293 8.5H1.5A.5.5 0 0 1 1 8"/>
+            </svg>
+          </button>
+        </div>
+
+      </div>
+    </div>
+
+  </div>
+
+  <script th:src="@{/js/bannerSlide.js}"></script>
+
+
+</div>

@@ -9,7 +9,7 @@ import org.springframework.context.annotation.Configuration;
 public class JacksonConfig {
 
   @Bean
-  public ObjectMapper objectMapper(){
+  public ObjectMapper objectMapper() {
     ObjectMapper om = new ObjectMapper();
     // Jackson 에 LocalDateTime 등의 JavaTimeModule 을 등록
     om.registerModule(new JavaTimeModule());

@@ -3,7 +3,6 @@ package com.berry.project.dto.payment;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.*;
 
-import java.time.LocalDateTime;
 import java.time.OffsetDateTime;
 
 @Getter

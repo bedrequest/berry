@@ -10,17 +10,17 @@ import lombok.*;
 @AllArgsConstructor
 @Builder
 @Table(name = "review_likes",
-        uniqueConstraints = @UniqueConstraint(columnNames = {"user_id","review_id"}))
+    uniqueConstraints = @UniqueConstraint(columnNames = {"user_id", "review_id"}))
 public class ReviewLike {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "likes_no")
-    private Long likesNo;
+  @Id
+  @GeneratedValue(strategy = GenerationType.IDENTITY)
+  @Column(name = "likes_no")
+  private Long likesNo;
 
-    @Column(name = "user_id", nullable = false)
-    private Long userId;
+  @Column(name = "user_id", nullable = false)
+  private Long userId;
 
-    @Column(name = "review_id", nullable = false)
-    private Long reviewId;
+  @Column(name = "review_id", nullable = false)
+  private Long reviewId;
 }

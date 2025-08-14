@@ -16,6 +16,7 @@ header {
   transition: 0.5s ease;
 }
 .section:first-of-type {
+  height: 700px;
   margin-top: 61px;
 }
 
@@ -82,14 +83,16 @@ header {
   z-index: 3;
 }
 
-#searchBox {
+#search-box-container {
   position: absolute;
-  top: 40%; left: 50%;
+  top: 35%; left: 50%;
   transform: translate(-50%);
   
   padding: 10px 30px;
 
   border-radius: 10px;
+
+  background-color: white;
 
   z-index: 3;
 }

@@ -18,7 +18,7 @@ public class StarterMailHandler {
 
   private final JavaMailSender javaMailSender;
 
-  public void sendCertifiedCode(String userEmail, String certifiedCode){
+  public void sendCertifiedCode(String userEmail, String certifiedCode) {
     SimpleMailMessage message = new SimpleMailMessage();
     message.setTo(userEmail);
     message.setSubject("[Berry] 이메일 인증 코드");
@@ -61,7 +61,7 @@ public class StarterMailHandler {
           "<h1>[Berry] 변경된 비밀번호</h1>" +
           "<h3>비밀번호</h3>" +
           "<strong style='font-size: 18px;'>" + certifiedCode + "</strong>" +
-          "<p>비밀번호 변경은 마이페이지에서 할 수 있습니다.</p>"+
+          "<p>비밀번호 변경은 마이페이지에서 할 수 있습니다.</p>" +
           "</body></html>";
 
       helper.setText(htmlContent, true);

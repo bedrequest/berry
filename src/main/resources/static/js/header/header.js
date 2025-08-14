@@ -1,10 +1,6 @@
-console.log("header");
-console.log(notificationUserId);
-// 알림 버튼이 있는 경우에만 (로그인이 되었을 경우)
-
-console.log(document.getElementById("notificationBtn"));
-
 getAlarmList(notificationUserId).then(result => {
+    if (result == null) return;
+
     const ul = document.getElementById("notificationUl");
     let str = "";
     let i = 0;
@@ -14,15 +10,19 @@ getAlarmList(notificationUserId).then(result => {
         for(let alarmObj of result){
             i++;
 
-            const date = new Date(...alarmObj.regDate);
-            const formatted = date.toISOString().substring(0, 19).replace("T", " ");
+            const [year, month, day, hour, minute, second] = alarmObj.regDate;
+            const date = new Date(year, month - 1, day, hour, minute, second);
 
-
-            if(i > 4){
-
-                return;
-            }
-
+            const formatted = date.toLocaleString("ko-KR", {
+                year: "numeric",
+                month: "2-digit",
+                day: "2-digit",
+                hour: "2-digit",
+                minute: "2-digit",
+                second: "2-digit",
+                hour12: false
+            });
+            
             switch(alarmObj.code){
                 case "s_reservation" :
     
@@ -80,13 +80,15 @@ getAlarmList(notificationUserId).then(result => {
                     break;
                     
             }
-        }
-        if(i > 4){
-            str += `
-            <li class="notification-more">
-            <a href="/user/myPage">더보기</a>
-            </li>
-            `;
+
+            if(i > 4){
+                str += `
+                <li class="notification-more">
+                <a href="/user/myPage">더보기</a>
+                </li>`
+
+                break;
+            }
         }
 
     }else{
@@ -126,6 +128,7 @@ document.addEventListener("click", (e) => {
 })
 
 async function getAlarmList(userId) {    
+    if (userId == null) return null;
 
     try {
         
@@ -138,8 +141,33 @@ async function getAlarmList(userId) {
     } catch (error) {
         console.log(error);
     }
-
-
 }
 
+// top btn
+let scrollingToTop = false;
+document.addEventListener('click', e => {
+    const topBtn = e.target.closest('#topBtn');
+    if (!topBtn) return;
 
+    if (scrollingToTop) return;
+    window.scrollTo({
+        top: 0,
+        behavior: "smooth"
+    });
+});
+/*
+document.getElementById("topBtn").addEventListener("click", (e) => {
+    e.preventDefault();
+
+    const scrollSpeed = 40;
+    const interval = setInterval(() => {
+    const currentPos = window.scrollY;
+
+    if (currentPos <= 0) {
+      clearInterval(interval);
+    } else {
+      window.scrollTo(0, currentPos - scrollSpeed);
+    }
+  }, 3);
+  });
+*/

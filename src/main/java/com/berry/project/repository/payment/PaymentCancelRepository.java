@@ -10,7 +10,7 @@ import java.util.List;
 import java.util.Optional;
 
 
-public interface PaymentCancelRepository extends JpaRepository<PaymentCancel, Long> {
+public interface PaymentCancelRepository extends JpaRepository<PaymentCancel, Long>, PaymentCancelCustomRepository{
     
     /** List"<"PaymentCancel> findByPaymentKeyOrderByCanceledAtDesc(String paymentKey) - paymentKey 로
      *  취소 내역 조회
