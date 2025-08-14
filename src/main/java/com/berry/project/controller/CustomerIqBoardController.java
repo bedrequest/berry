@@ -132,9 +132,9 @@ public class CustomerIqBoardController {
 
     @PostMapping("/update")
     public String modify(CustomerIqBoardDTO customeriqboardDTO,
-                       RedirectAttributes redirectAttributes,
-                       @RequestParam(name = "files", required = false)
-                       MultipartFile[] files) {
+                         RedirectAttributes redirectAttributes,
+                         @RequestParam(name = "files", required = false)
+                         MultipartFile[] files) {
         log.info(">>>> customeriqboardDTO >> {}", customeriqboardDTO);
         List<CustomerIqFileDTO> fileList = null;
         if(files !=null && files[0].getSize() > 0){

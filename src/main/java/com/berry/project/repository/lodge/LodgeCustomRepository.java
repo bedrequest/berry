@@ -10,6 +10,6 @@ public interface LodgeCustomRepository {
 
   Page<Lodge> searchLodges(ListOptionDTO listOptionDTO, LodgeOptionDTO lodgeOptionDTO, Pageable pageable);
 
-  Page<Lodge> searchByTag(long tag, Pageable pageable);
-
+  /* duorpeb, pageLodge() - 관리자 페이지에서 숙소 별 정보 클릭 시 사용하기 위한 메서드*/
+  Page<Lodge> pageLodge(Pageable pageable, String keyword);
 }

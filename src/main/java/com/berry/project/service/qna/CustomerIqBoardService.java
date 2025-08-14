@@ -27,7 +27,7 @@ public interface CustomerIqBoardService  {
         .isSecret(customeriqboardDTO.getSecret())
         .comment(customeriqboardDTO.getComment())
         .commentRegDate(customeriqboardDTO.getCommentRegDate())
-      .build();
+        .build();
   }
 
   default CustomerIqBoardDTO convertEntityToDto(CustomerIqBoard customeriqboard) {
@@ -44,7 +44,7 @@ public interface CustomerIqBoardService  {
         .secret(isSecret)
         .comment(customeriqboard.getComment())
         .commentRegDate(customeriqboard.getCommentRegDate())
-      .build();
+        .build();
   }
 
   default CustomerIqFile convertDtoToEntity(CustomerIqFileDTO customeriqfileDTO){

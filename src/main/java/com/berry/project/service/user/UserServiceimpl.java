@@ -8,6 +8,8 @@ import com.berry.project.dto.user.UserBookmarkDTO;
 import com.berry.project.dto.user.UserDTO;
 import com.berry.project.entity.alarm.Alarm;
 import com.berry.project.entity.cupon.Cupon;
+import com.berry.project.handler.payment.CuponHandler;
+import com.berry.project.repository.payment.CuponRepository;
 import com.berry.project.entity.lodge.Lodge;
 import com.berry.project.entity.lodge.LodgeImg;
 import com.berry.project.entity.lodge.Room;
@@ -18,7 +20,6 @@ import com.berry.project.entity.user.UserBookmark;
 import com.berry.project.repository.lodge.LodgeImgRepository;
 import com.berry.project.repository.lodge.LodgeRepository;
 import com.berry.project.repository.lodge.RoomRepository;
-import com.berry.project.repository.payment.CuponRepository;
 import com.berry.project.repository.payment.ReservationRepository;
 import com.berry.project.repository.review.ReviewRepository;
 import com.berry.project.repository.user.AlarmRepository;
@@ -31,7 +32,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
-import java.time.OffsetDateTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -51,6 +51,7 @@ public class UserServiceimpl implements UserService {
   private final RoomRepository roomRepository;
   private final LodgeImgRepository lodgeImgRepository;
   private final LodgeRepository lodgeRepository;
+  private final CuponHandler cuponHandler;
 
   // 소셜로그인 중복검사
   @Transactional
@@ -96,14 +97,7 @@ public class UserServiceimpl implements UserService {
       alarmRepository.save(alarm);
 
       // duorpeb, 쿠폰 발급
-      Cupon registerCupon
-          = Cupon.builder()
-          .userId(userId)
-          .cuponType(1)
-          .cuponEndDate(OffsetDateTime.now().plusDays(180))
-          .isValid(true)
-          .build();
-
+      Cupon registerCupon = cuponHandler.callCuponGenerate(1, userId);
       Long cuponId = cuponRepository.save(registerCupon).getCuponId();
 
       alarm = Alarm.builder()
@@ -155,7 +149,10 @@ public class UserServiceimpl implements UserService {
   @Override
   public void updateSocialLastLogin(UserDTO userDTO) {
     Optional<User> optional = userRepository.findByUserUid(userDTO.getUserUid());
-    optional.ifPresent(user -> user.setLastLogin(LocalDateTime.now()));
+    if(optional.isPresent()){
+      User user = optional.get();
+      user.setLastLogin(LocalDateTime.now());
+    }
   }
 
   // 이메일 중복검사
@@ -185,6 +182,17 @@ public class UserServiceimpl implements UserService {
     if (userId > 0) {
       authUserRepository.save(convertUserDTOToAuthEntity(userDTO));
 
+      // duorpeb, 쿠폰 발급 - 변경 전
+//      Cupon registerCupon
+//          = Cupon.builder()
+//                 .userId(userId)
+//                 .cuponType(1)
+//                 .cuponEndDate(OffsetDateTime.now().plusDays(180))
+//                 .isValid(true)
+//                 .build();
+
+      // duorpeb, 쿠폰 발급 - 변경 후
+      Cupon registerCupon = cuponHandler.callCuponGenerate(1, userId);
       // 회원가입 알림 저장
       Alarm alarm = Alarm.builder()
           .userId(userId)
@@ -193,15 +201,6 @@ public class UserServiceimpl implements UserService {
           .build();
 
       alarmRepository.save(alarm);
-
-      // duorpeb, 쿠폰 발급
-      Cupon registerCupon
-          = Cupon.builder()
-          .userId(userId)
-          .cuponType(1)
-          .cuponEndDate(OffsetDateTime.now().plusDays(180))
-          .isValid(true)
-          .build();
 
       Long cuponId = cuponRepository.save(registerCupon).getCuponId();
 
@@ -327,7 +326,10 @@ public class UserServiceimpl implements UserService {
   @Override
   public void updatePassword(String changePassword, Long userId) {
     Optional<User> optional = userRepository.findById(userId);
-    optional.ifPresent(user -> user.setPassword(changePassword));
+    if (optional.isPresent()){
+      User user = optional.get();
+      user.setPassword(changePassword);
+    }
   }
 
   // myPage 에서 출력 할 예약내역

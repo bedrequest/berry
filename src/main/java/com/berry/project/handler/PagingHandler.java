@@ -1,7 +1,14 @@
 package com.berry.project.handler;
 
+import com.berry.project.dto.cupon.CuponDTO;
 import com.berry.project.dto.lodge.ListOptionDTO;
+import com.berry.project.dto.payment.PaymentReceiptDTO;
+import com.berry.project.dto.payment.ReservationDTO;
+import com.berry.project.dto.qna.CustomerIqBoardDTO;
+import com.berry.project.dto.review.ReviewResponseDTO;
+import com.berry.project.dto.user.UserDTO;
 import lombok.Getter;
+import lombok.RequiredArgsConstructor;
 import lombok.ToString;
 import org.springframework.data.domain.Page;
 
@@ -9,6 +16,7 @@ import java.util.List;
 
 @ToString
 @Getter
+@RequiredArgsConstructor
 public class PagingHandler<T> {
   private final int startPage;
   private final int totalPage;
@@ -45,4 +53,6 @@ public class PagingHandler<T> {
 
     this.listOptionDTO = listOptionDTO;
   }
+
+
 }

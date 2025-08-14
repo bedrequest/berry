@@ -36,9 +36,6 @@ public class SecurityConfig {
     return PasswordEncoderFactories.createDelegatingPasswordEncoder();
   }
 
-  /**
-   *
-   */
   @Bean
   SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
 
