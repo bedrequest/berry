@@ -9,6 +9,7 @@ import com.berry.project.repository.payment.ReservationRepository;
 import com.berry.project.repository.review.ReviewRepository;
 import com.berry.project.repository.review.ReviewSummaryRepository;
 import com.berry.project.repository.review.ReviewTagRepository;
+import com.berry.project.repository.review.ReviewSummaryRepository;
 import com.berry.project.util.FacilityMaskDecoder;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
@@ -146,6 +147,9 @@ public class LodgeServiceImpl implements LodgeService {
           .map(LodgeImg::getLodgeImgUrl)                    // 엔티티에서 URL 추출
           .orElse("/images/default_lodge.jpg");
       Integer minPrice = roomRepository.findMinStayPriceByLodgeId(lodgeId);
+      if (minPrice == null || minPrice <= 0) {
+        minPrice = roomRepository.findMinRentPriceByLodgeId(lodgeId);
+      }
 
       Map<String, Integer> stats = reviewRepository.findTagCountsByLodgeId(lodgeId)
           .stream().collect(Collectors.toMap(
@@ -159,8 +163,12 @@ public class LodgeServiceImpl implements LodgeService {
       }
 
       String aiSum = reviewSummaryRepository.findByLodgeId(lodgeId)
-          .stream().map(ReviewSummary::getSummaryText)
-          .findFirst().orElse("");
+              .map(ReviewSummary::getSummaryText)
+              .orElseGet(() ->
+                      lodgeDescriptionRepository.findByLodgeId(lodgeId)
+                              .stream().map(LodgeDescription::getContent)
+                              .findFirst().orElse("")
+              );
 
       return new LodgeSummaryDTO(
           lodgeId,
