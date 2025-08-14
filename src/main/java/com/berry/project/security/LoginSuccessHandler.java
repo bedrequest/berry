@@ -23,9 +23,9 @@ import java.io.IOException;
 @Component
 public class LoginSuccessHandler implements AuthenticationSuccessHandler {
 
-  private RedirectStrategy redirectStrategy = new DefaultRedirectStrategy();
+  private final RedirectStrategy redirectStrategy = new DefaultRedirectStrategy();
 
-  private RequestCache requestCache = new HttpSessionRequestCache();
+  private final RequestCache requestCache = new HttpSessionRequestCache();
 
   @Autowired
   private UserService userService;
@@ -38,9 +38,9 @@ public class LoginSuccessHandler implements AuthenticationSuccessHandler {
 
     // duropeb, 세션이 없으면 새로 생성
     HttpSession httpSession = request.getSession();
-    if(!isOk || httpSession == null){
+    if (!isOk || httpSession == null) {
       return;
-    }else{
+    } else {
       // 이전 로그인 실패기록 지우기
       httpSession.removeAttribute(WebAttributes.AUTHENTICATION_EXCEPTION);
     }
@@ -50,10 +50,10 @@ public class LoginSuccessHandler implements AuthenticationSuccessHandler {
      *
      * > /user/login?redirectTo={ref}
      * */
-     // Step 1
+    // Step 1
     String queryParam = request.getParameter("redirectTo");
-     // Step 2
-    if(queryParam != null){
+    // Step 2
+    if (queryParam != null) {
       redirectStrategy.sendRedirect(request, response, queryParam);
       return;
     }

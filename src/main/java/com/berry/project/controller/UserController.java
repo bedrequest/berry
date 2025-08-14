@@ -1,9 +1,9 @@
 package com.berry.project.controller;
 
-import com.berry.project.dto.user.ChangePwDTO;
-import com.berry.project.dto.user.DeactivatedUserDTO;
-import com.berry.project.dto.user.MyPageReservationDTO;
-import com.berry.project.dto.user.UserDTO;
+import com.berry.project.dto.alarm.AlarmDTO;
+import com.berry.project.dto.cupon.CuponDTO;
+import com.berry.project.dto.lodge.LodgeOptionDTO;
+import com.berry.project.dto.user.*;
 import com.berry.project.handler.user.CoolSMSHandler;
 import com.berry.project.handler.user.StarterMailHandler;
 import com.berry.project.service.lodge.LodgeService;
@@ -11,6 +11,7 @@ import com.berry.project.service.payment.PaymentService;
 import com.berry.project.service.user.DeactivatedUserService;
 import com.berry.project.service.user.UserService;
 import jakarta.servlet.ServletException;
+import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
@@ -33,6 +34,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.UUID;
 
@@ -68,7 +70,22 @@ public class UserController {
 
   // -- 동기 --
   @GetMapping("/login")
-  public void login(@RequestParam(name="redirectTo", required = false) String redirectTo){}
+  public void login(
+      @RequestParam(name="redirectTo", required = false) String redirectTo,
+      HttpServletRequest request,
+      Model model
+  ){
+
+    String errorMessage = (String) request.getSession().getAttribute("errorMessage");
+    log.info("Login fail errorMessage >> {}", errorMessage);
+
+    model.addAttribute("errorMessage", errorMessage);
+
+    if(errorMessage != null && errorMessage != ""){
+      request.getSession().removeAttribute("errorMessage");
+    }
+
+  }
 
   @GetMapping("/signup")
   public String signup(Model model, @RequestParam(required = false) Boolean marketing){
@@ -80,7 +97,11 @@ public class UserController {
   }
 
   @GetMapping("/myPage")
-  public void myPage(Principal principal, Model model){
+  public void myPage(
+      Principal principal,
+      Model model,
+      LodgeOptionDTO lodgeOptionDTO
+  ){
     // web 은 email, oauth2 는 uid
     String username = principal.getName();
     log.info("myPage Principal username >>> {}", username);
@@ -101,10 +122,25 @@ public class UserController {
       }
     }
     log.info("이용 전 숙박내역 >>>>> {}", reservationPresentList);
+    
+    // 알림 내역 가져오기
+    List<AlarmDTO> alarmList = userService.getAlarmList(userDTO.getUserId());
+    log.info("alarmList >>> {}", alarmList);
+    
+    // 보유 쿠폰 내역 가져오기
+    List<CuponDTO> cuponList = paymentService.getCuponList(userDTO.getUserId());
+    
+    // 북마크 내역 가져오기
+    List<BookmarkLodgeDTO> bookmarkLodgeList = userService.getBookmarkLodgeList(userDTO.getUserId());
+    log.info("bookmarkLodgeList > {}", bookmarkLodgeList);
 
     model.addAttribute("reservationPresentList", reservationPresentList);
     model.addAttribute("userDTO", userDTO);
     model.addAttribute("reservationList", reservationList);
+    model.addAttribute("alarmList", alarmList);
+    model.addAttribute("cuponList", cuponList);
+    model.addAttribute("lodgeOption", lodgeOptionDTO);
+    model.addAttribute("bookmarkLodgeList", bookmarkLodgeList);
   }
 
   
@@ -113,7 +149,9 @@ public class UserController {
   @PostMapping("/deactivatedTransferUser")
   public String deactivatedTransferUser(
       DeactivatedUserDTO deactivatedUserDTO,
-      HttpServletRequest request
+      HttpServletRequest request,
+      HttpServletResponse response,
+      RedirectAttributes redirectAttributes
   ) throws ServletException {
 
     UserDTO userDTO = userService.getUserFindById(deactivatedUserDTO.getUserId());
@@ -121,29 +159,67 @@ public class UserController {
     if(userDTO == null){
       return "redirect:/";
     }
+
     deactivatedUserDTO.setDUserEmail(userDTO.getUserEmail());
     deactivatedUserDTO.setDUserPhone(userDTO.getUserPhone());
     deactivatedUserDTO.setDUserName(userDTO.getUserName());
     log.info("DeactivatedUserDTO >>>> {}", deactivatedUserDTO);
 
     deactivatedUserService.registerDeactivatedUser(deactivatedUserDTO);
+    request.logout();
 
-    return "redirect:/user/logout";
+    Cookie cookie = new Cookie("JSESSIONID", null);
+    cookie.setMaxAge(0); // 쿠키 만료
+    cookie.setPath("/"); // 쿠키 경로 설정
+    response.addCookie(cookie); // 쿠키 추가 (삭제)
+    redirectAttributes.addFlashAttribute("membershipWithdrawal", "ok");
+    log.info("회원탈퇴 성공");
+
+    return "redirect:/user/login";
   }
   // 2. 회원정보 수정 =============================================
   @PostMapping("/userInfoUpdate")
-  public String userInfoUpdate(UserDTO userDTO){
+  public String userInfoUpdate(
+      UserDTO userDTO,
+      HttpServletRequest request,
+      HttpServletResponse response
+      ) throws ServletException {
     log.info("userUpdateInfo userDTO > {}", userDTO);
-    userService.userInfoUpadate(userDTO);
+    // 변경 후 이메일
+    String updateEmail = userDTO.getUserEmail();
+    log.info("updateEmail > {}", updateEmail);
 
-    return "redirect:/user/myPage";
+    // 변경 전 이메일
+    String beforeEmail = userService.userInfoUpdate(userDTO);
+    log.info("beforeEmail > {}", beforeEmail);
+
+    boolean isChangeEmail = false;
+    if(!updateEmail.equals(beforeEmail)){
+      // 이메일이 변경 되었다면 logout 시키기
+      request.logout();
+
+      Cookie cookie = new Cookie("JSESSIONID", null);
+      cookie.setMaxAge(0); // 쿠키 만료
+      cookie.setPath("/"); // 쿠키 경로 설정
+      response.addCookie(cookie); // 쿠키 추가 (삭제)
+      isChangeEmail = true;
+    }
+
+    return isChangeEmail ?  "redirect:/user/login" : "redirect:/user/myPage";
   }
 
 
 
   // 3. 회원가입 =============================================
   @PostMapping("/signup")
-  public String signup(UserDTO userDTO){
+  public String signup(
+      UserDTO userDTO,
+      @RequestParam boolean isEmailCertified,
+      @RequestParam boolean isMobileCertified
+  ){
+    userDTO.setEmailCertified(isEmailCertified);
+    userDTO.setMobileCertified(isMobileCertified);
+
     log.info("signup userDTO {}", userDTO);
 
     String uuid = UUID.randomUUID().toString();
@@ -170,8 +246,6 @@ public class UserController {
     }else{
       userDTO.setAdult(false);
     }
-    userDTO.setEmailCertified(false);
-
 
     /** userService.registerUser(userDTO)
      *
@@ -179,7 +253,7 @@ public class UserController {
      * */
     Long userId = userService.registerUser(userDTO);
 
-    return (userId > 0) ? "redirect:/" : "/user/join";
+    return (userId > 0) ? "redirect:/user/login" : "/user/signup";
   }
 
 
@@ -279,6 +353,39 @@ public class UserController {
 
 
   // --비동기--
+  
+  // 비밀번호 재설정 이메일 확인
+  @GetMapping("/findWebUserEmail/{email}")
+  @ResponseBody
+  public String findWebUserEmail(@PathVariable("email") String userEmail){
+
+    log.info("inputEmail > {}", userEmail);
+    Long userId = userService.findWebUserEmail(userEmail);
+
+    return userId > 0 ? userId.toString() : "fail";
+  }
+  
+  // 비밀번호 재설정
+  @GetMapping("/resetPassword/{userId}")
+  @ResponseBody
+  public String resetPassword(@PathVariable("userId") Long userId){
+
+    UserDTO userDTO = userService.getUserFindById(userId);
+    String password = starterMailHandler.generateRandomMixStr(15);
+    String encodePassword = passwordEncoder.encode(password);
+
+    if(userDTO.getUserId() > 0 && password != null){
+      starterMailHandler.sendPasswordHtml(userDTO.getUserEmail(), password);
+      userService.updatePassword(encodePassword, userDTO.getUserId());
+
+      return "ok";
+    }else{
+
+      return "fail";
+    }
+  }
+
+
   // 휴대폰 인증
   @GetMapping("/getCertifiedNumber/{myPageUserId}")
   @ResponseBody
@@ -314,7 +421,7 @@ public class UserController {
 
     String secureCode = starterMailHandler.generateRandomMixStr(10);
     log.info("secureCode >>> {}", secureCode);
-    starterMailHandler.sendCertifiedCode(userDTO.getUserEmail(), secureCode);
+    starterMailHandler.sendCertifiedCodeHtml(userDTO.getUserEmail(), secureCode);
 
     return secureCode != null ? secureCode : "fail";
   }
@@ -341,6 +448,54 @@ public class UserController {
 
     return isOk == 0 ? "ok" : "fail";
 
+  }
+
+  // 북마크 등록
+  @ResponseBody
+  @PostMapping("/toggleBookmark")
+  public String toggleBookmark(@RequestBody UserBookmarkDTO userBookmarkDTO){
+    log.info("userBookmarkDTO >> {}",userBookmarkDTO);
+    Long isOk = userService.toggleBookmark(userBookmarkDTO);
+
+    return isOk > 0 ? "1" : "0";
+
+  }
+
+  // 알림 리스트
+  @ResponseBody
+  @GetMapping("/getAlarmList/{userId}")
+  public List<AlarmDTO> getAlarmList(@PathVariable Long userId){
+
+    List<AlarmDTO> alarmList = userService.getAlarmList(userId);
+
+    return alarmList != null ? alarmList : Collections.emptyList();
+  }
+  
+  // 회원가입 이메일 인증
+  @ResponseBody
+  @GetMapping("/getSignInCertifiedCode/{email}")
+  public String getSignInCertifiedCode(@PathVariable("email") String email){
+
+
+    String secureCode = starterMailHandler.generateRandomMixStr(10);
+    starterMailHandler.sendCertifiedCodeHtml(email, secureCode);
+
+    return secureCode != null ? secureCode : "fail";
+  }
+  
+  // 회원가입 모바일 인증
+  @GetMapping("/getSignInCertifiedNumber/{phoneNumber}")
+  @ResponseBody
+  public String getSignInCertifiedNumber(@PathVariable("phoneNumber") String phoneNumber){
+
+    CoolSMSHandler coolSMSHandler = new CoolSMSHandler();
+
+    // Math.random 보다 보안이 더 좋은 SecureRandom을 사용해보자.
+    String secureNumber = coolSMSHandler.createSecureNumber(6);
+
+    coolSMSHandler.sendCertifiedNumber(phoneNumber, secureNumber, coolSmsApiKey, coolSmsSecretKey, fromNumber);
+
+    return secureNumber != null ? secureNumber : "fail";
   }
 
 }

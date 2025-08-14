@@ -27,20 +27,22 @@ public class TossPaymentsAPIHandler {
   private final ObjectMapper objectMapper;
 
 
-  /** callConfirmAPI() - 결제 승인 API (/vi/payments/confirm)호출  */
+  /**
+   * callConfirmAPI() - 결제 승인 API (/vi/payments/confirm)호출
+   */
   public PaymentReceiptDTO callConfirmAPI(String orderId, String paymentKey, long amount)
       throws IOException, InterruptedException {
     // 확인
     log.info("in callConfirmAPI");
 
     // 초기화
-     // import java.net.http.HttpClient;
+    // import java.net.http.HttpClient;
     HttpClient httpClient = HttpClient.newHttpClient();
-     // Secret Key
+    // Secret Key
     String secretKey = tossApi.getTossSecretApiKey();
-      // 확인,
+    // 확인,
     log.info("Secret Key : {}", secretKey);
-     // URL
+    // URL
     final String CONFIRM_URL = "https://api.tosspayments.com/v1/payments/confirm";
 
     // 헤더 생성
@@ -50,18 +52,18 @@ public class TossPaymentsAPIHandler {
     String jsonBody = objectMapper.writeValueAsString(Map.of(
         // 만료된 키 테스트, "paymentKey", "test_payment_key_expired",
         "paymentKey", paymentKey,
-       "orderId", orderId,
-       "amount", amount
+        "orderId", orderId,
+        "amount", amount
     ));
 
     // 요청 생성 - import java.net.http.HttpRequest;
     HttpRequest req
         = HttpRequest.newBuilder()
-                     .uri(URI.create(CONFIRM_URL))
-                     .header("Authorization","Basic "+ authHeader)
-                     .header("Content-Type","application/json")
-                     .POST(HttpRequest.BodyPublishers.ofString(jsonBody))
-                     .build();
+        .uri(URI.create(CONFIRM_URL))
+        .header("Authorization", "Basic " + authHeader)
+        .header("Content-Type", "application/json")
+        .POST(HttpRequest.BodyPublishers.ofString(jsonBody))
+        .build();
 
 
     /** 동기 호출 및 응답 파싱 - Tosspayments 가 반환한 payment 객체를 직렬화 (JSON 문자열로 return)
@@ -89,7 +91,9 @@ public class TossPaymentsAPIHandler {
     HttpResponse<String> resp = httpClient.send(req, HttpResponse.BodyHandlers.ofString());
 
     /** Exception 처리 */
-    if(resp.statusCode() != 200){ throw new IllegalStateException("결제 확인 실패 :" + resp.body()); }
+    if (resp.statusCode() != 200) {
+      throw new IllegalStateException("결제 확인 실패 :" + resp.body());
+    }
 
     String rawData = resp.body();
 
@@ -105,7 +109,9 @@ public class TossPaymentsAPIHandler {
   }
 
 
-  /** callCancelAPI(String paymentKey, String cancelReason) - 결제 취소 API */
+  /**
+   * callCancelAPI(String paymentKey, String cancelReason) - 결제 취소 API
+   */
   public ReturnCancelsDTO callCancelAPI(String paymentKey, PaymentCancelDTOFromJS pcdtoFromJs, long cancelAmount) throws IOException, InterruptedException {
     // 확인
     log.info("in callCancelAPI");
@@ -114,9 +120,10 @@ public class TossPaymentsAPIHandler {
 
     // 초기화
     HttpClient httpClient = HttpClient.newHttpClient();
-     // Secret Key
-    String secretKey = tossApi.getTossSecretApiKey(); log.info("callCancelAPI 의 secretkey : {}", secretKey);
-     // URL
+    // Secret Key
+    String secretKey = tossApi.getTossSecretApiKey();
+    log.info("callCancelAPI 의 secretkey : {}", secretKey);
+    // URL
     String CANCEL_URL = "https://api.tosspayments.com/v1/payments/" + paymentKey + "/cancel";
 
     // 헤더 생성
@@ -131,19 +138,21 @@ public class TossPaymentsAPIHandler {
     // 요청 생성
     HttpRequest req
         = HttpRequest.newBuilder()
-                     .uri(URI.create(CANCEL_URL))
-                     .header("Authorization", "Basic " + authHeader)
-                     .header("Content-Type", "application/json")
-                      // 멱등성 추가 - 같은 요청이 2번 일어나도 첫 번째 요청 응답과 같은 응답을 보내줌
-                     .header("Idempotency-Key", pcdtoFromJs.getOrderId())
-                     .POST(HttpRequest.BodyPublishers.ofString(jsonBody))
-                     .build();
+        .uri(URI.create(CANCEL_URL))
+        .header("Authorization", "Basic " + authHeader)
+        .header("Content-Type", "application/json")
+        // 멱등성 추가 - 같은 요청이 2번 일어나도 첫 번째 요청 응답과 같은 응답을 보내줌
+        .header("Idempotency-Key", pcdtoFromJs.getOrderId())
+        .POST(HttpRequest.BodyPublishers.ofString(jsonBody))
+        .build();
 
     /** 동기 호출 및 응답 파싱 - 위의 설명 참고 */
     HttpResponse<String> resp = httpClient.send(req, HttpResponse.BodyHandlers.ofString());
 
     /** Exception 처리 */
-    if(resp.statusCode() != 200) { throw new IllegalStateException("200 을 반환하지 않는 오류 발생" + resp.body()); }
+    if (resp.statusCode() != 200) {
+      throw new IllegalStateException("200 을 반환하지 않는 오류 발생" + resp.body());
+    }
 
     // Parsing
     ReturnCancelsDTO rcdto = objectMapper.readValue(resp.body(), ReturnCancelsDTO.class);

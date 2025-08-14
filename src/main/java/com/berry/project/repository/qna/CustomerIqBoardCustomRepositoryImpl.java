@@ -1,13 +1,12 @@
 package com.berry.project.repository.qna;
 
-import com.berry.project.dto.qna.CustomerIqBoardDTO;
 import com.berry.project.entity.qna.CustomerIqBoard;
 import com.berry.project.entity.qna.QCustomerIqBoard;
+import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.core.types.dsl.*;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import jakarta.persistence.EntityManager;
 import lombok.extern.slf4j.Slf4j;
-import org.hibernate.annotations.processing.HQL;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
@@ -16,6 +15,7 @@ import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 import java.time.LocalDateTime;
+import java.util.Optional;
 import java.util.Locale;
 
 import static com.berry.project.entity.qna.QCustomerIqBoard.customerIqBoard;
@@ -79,11 +79,12 @@ public class CustomerIqBoardCustomRepositoryImpl implements CustomerIqBoardCusto
         .limit(pageable.getPageSize())
         .fetch();
 
-    long total = queryFactory
+    long total = Optional.ofNullable(queryFactory
         .select(QCustomerIqBoard.customerIqBoard.count())
         .from(QCustomerIqBoard.customerIqBoard)
         .where(condition)
-        .fetchOne();
+        .fetchOne())
+        .orElse(0L);
 
     return new PageImpl<>(result, pageable, total);
 

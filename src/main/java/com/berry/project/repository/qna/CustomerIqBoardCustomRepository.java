@@ -1,6 +1,5 @@
 package com.berry.project.repository.qna;
 
-import com.berry.project.dto.qna.CustomerIqBoardDTO;
 import com.berry.project.entity.qna.CustomerIqBoard;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;

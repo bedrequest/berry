@@ -32,12 +32,17 @@
 
       <form th:action="@{/user/signup}" method="post">
         <input type="hidden" name="userTermOption" th:value="${userTermOption}">
+        <input type="hidden" name="isEmailCertified" id="isEmailCertified">
+        <input type="hidden" name="isMobileCertified" id="isMobileCertified">
+
         <div class="form-group">
           <div class="signup-info-group">
             <label for="user_email">이메일</label>
             <p class="signup-subInfo-tit" id="updateSubInfo"></p>
           </div>
           <input class="user-input" type="email" id="user_email" name="userEmail" placeholder="example@domain.com" required>
+          <div class="certified-ok" id="emailCertifiedOk">인증완료</div>
+          <button type="button" class="email-certified-btn" id="certifiedEmailBtn" disabled>인증하기</button>
           <p id="okText"></p>
         </div>
 
@@ -52,8 +57,12 @@
         </div>
 
         <div class="form-group">
-          <label for="user_confirmPassword">비밀번호 확인</label>
+          <div class="signup-info-group">
+            <label for="user_confirmPassword">비밀번호 확인</label>
+            <p class="signup-subInfo-tit" id="pwdSubInfo"></p>
+          </div>
           <input class="user-input" type="password" id="user_confirmPassword" placeholder="비밀번호 재입력" required disabled>
+          <div class="certified-ok" id="pwdCertifiedOk">비밀번호가 일치합니다.</div>
         </div>
         <div class="form-group">
           <label for="user_birthday">생년월일</label>
@@ -63,6 +72,8 @@
         <div class="form-group">
           <label for="user_phone">전호번호</label>
           <input class="user-input" type="text" id="user_phone" name="userPhone" placeholder="01012345678(-를 제외하고 입력">
+          <div class="certified-ok" id="phoneCertifiedOk">인증완료</div>
+          <button type="button" class="mobile-certified-btn" id="certifiedPhoneBtn" disabled>인증하기</button>
         </div>
 
         <button type="submit" class="signup-btn" id="signupButton" disabled>가입하기</button>
@@ -70,6 +81,68 @@
 
       <div class="login-link">
         <p>이미 계정이 있으신가요? <a th:href="@{/user/login}">로그인</a></p>
+      </div>
+    </div>
+  </div>
+
+  <!-- 휴대폰 인증 modal -->
+  <div class="modal" id="certifiedUserPhone">
+    <div class="modal-body">
+      <div class="logo-position-div">
+        <img class="modal-logo" src="/image/Berry_logo.png" alt="로고">
+      </div>
+      <h2 class="modal-main-tit">휴대폰 인증</h2>
+
+      <div class="modal-content">
+
+        <div class="modal-input-group">
+          <p class="tit-title" id="pwdTit"></p>
+        </div>
+        <button type="button" class="get-certified-btn" id="getCertifiedPhoneBtn">인증번호 받기</button>
+
+        <div class="modal-input-group" id="verifyBox">
+          <input type="text" id="certifiedNumber" placeholder="인증번호를 입력해주세요">
+        </div>
+
+        <div class="modal-actions">
+          <div class="modal-action-left">
+          </div>
+          <div class="modal-action-right">
+            <button type="button" class="modal-sub-btn" id="certifiedUserPhoneSubBtn">인증</button>
+            <button type="button" class="modal-close-btn" id="certifiedUserPhoneModalClose">닫기</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 이메일 인증 modal -->
+  <div class="modal" id="certifiedUserEmail">
+    <div class="modal-body">
+      <div class="logo-position-div">
+        <img class="modal-logo" src="/image/Berry_logo.png" alt="로고">
+      </div>
+      <h2 class="modal-main-tit">이메일 인증</h2>
+
+      <div class="modal-content">
+
+        <div class="modal-input-group">
+          <p class="tit-title" id="emailTit"></p>
+        </div>
+        <button type="button" class="get-certified-btn" id="getCertifiedEmailBtn">인증코드 받기</button>
+
+        <div class="modal-input-group" id="verifyEmailBox">
+          <input type="text" id="certifiedCode" placeholder="인증코드를 입력해주세요">
+        </div>
+
+        <div class="modal-actions">
+          <div class="modal-action-left">
+          </div>
+          <div class="modal-action-right">
+            <button type="button" class="modal-sub-btn" id="certifiedUserEmailSubBtn">인증</button>
+            <button type="button" class="modal-close-btn" id="certifiedUserEmailModalClose">닫기</button>
+          </div>
+        </div>
       </div>
     </div>
   </div>

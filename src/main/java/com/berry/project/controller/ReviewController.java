@@ -1,19 +1,16 @@
 package com.berry.project.controller;
 
-import com.berry.project.dto.review.ReviewImageDTO;
-import com.berry.project.dto.review.ReviewRequestDTO;
-import com.berry.project.dto.review.ReviewResponseDTO;
-import com.berry.project.dto.review.TagCountDTO;
+import com.berry.project.dto.review.*;
 import com.berry.project.dto.user.UserDTO;
 import com.berry.project.repository.review.ReviewImageRepository;
 import com.berry.project.service.review.ReviewService;
+import com.berry.project.service.review.ReviewSummaryService;
 import com.berry.project.service.review.ReviewTagService;
 import com.berry.project.service.review.ReviewStatsService;
 import com.berry.project.service.user.UserService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Sort;
 import org.springframework.http.MediaType;
 import org.springframework.security.authentication.AnonymousAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -23,6 +20,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.security.Principal;
 import java.util.Comparator;
 import java.util.List;
 
@@ -36,7 +34,7 @@ public class ReviewController {
     private final UserService userService;
     private final ReviewImageRepository reviewImageRepository;
     private final ObjectMapper objectMapper;
-
+    private final ReviewSummaryService reviewSummaryService;
 
     //  리뷰 fragment 렌더링
     @GetMapping("/view")
@@ -113,6 +111,12 @@ public class ReviewController {
         model.addAttribute("avgRating",    String.format("%.1f", avgRating));
         model.addAttribute("totalReviews", totalReviews);
 
+        ReviewSummaryDTO brief = reviewSummaryService.findByLodgeIdOrGenerate(lodgeId);
+        if (brief != null) {
+            model.addAttribute("aiSummary", brief.getSummaryText());
+        }
+
+
         return "fragments/review :: review";
     }
 
@@ -122,6 +126,7 @@ public class ReviewController {
     public String post(
             @ModelAttribute("reviewRequest") ReviewRequestDTO dto,
             @RequestParam(name = "files", required = false) MultipartFile[] files,
+            @RequestParam("pageParam") int pageParam,
             Authentication authentication
     ) {
         if (authentication == null || !authentication.isAuthenticated()) {
@@ -147,14 +152,15 @@ public class ReviewController {
         ReviewResponseDTO result = reviewService.createReview(dto, files);
         return "redirect:/lodge/detail/"
                 + dto.getLodgeId()
-                + "?page=1#review-"
-                + result.getReviewId();
+                + "?page=" + pageParam
+                + "#reviewArea";
     }
 
     //  리뷰 수정 폼
     @GetMapping("/modify")
     public String showModifyForm(
             @RequestParam Long reviewId,
+            @RequestParam(name="page", defaultValue="1") int pageParam,
             Model model
     ) {
         ReviewResponseDTO existing = reviewService.getReview(reviewId);
@@ -174,6 +180,7 @@ public class ReviewController {
         model.addAttribute("reviewRequest", formDto);
         model.addAttribute("tags", reviewTagService.getAllTags());
         model.addAttribute("existingImages", existingImages);
+        model.addAttribute("pageParam", pageParam);
         return "review/review_modify";
     }
 
@@ -182,7 +189,8 @@ public class ReviewController {
     public String modifySubmit(
             @ModelAttribute("reviewRequest") ReviewRequestDTO dto,
             @RequestParam(name = "files", required = false) MultipartFile[] files,
-            @RequestParam(name = "deleteImageUuids", required = false) List<String> deleteImageUuids
+            @RequestParam(name = "deleteImageUuids", required = false) List<String> deleteImageUuids,
+            @RequestParam("pageParam") int pageParam
     ) {
         ReviewResponseDTO updated = reviewService.updateReview(
                 dto.getReviewId(),
@@ -192,8 +200,8 @@ public class ReviewController {
         );
         return "redirect:/lodge/detail/"
                 + dto.getLodgeId()
-                + "?page=1#review-"
-                + updated.getReviewId();
+                + "?page=" + pageParam
+                + "#review-" + updated.getReviewId();
     }
 
     //  리뷰 삭제
@@ -214,7 +222,7 @@ public class ReviewController {
             Authentication authentication
     ) {
         String identifier = authentication.getName();
-        reviewService.toggleLike(reviewId, identifier);
+        reviewService.toggleLike(reviewId, identifier); 
         Long lodgeId = reviewService.getReview(reviewId).getLodgeId();
         return "redirect:/lodge/detail/" + lodgeId
                 + "?page=" + pageParam
@@ -235,4 +243,14 @@ public class ReviewController {
                 + "?page=" + pageParam
                 + "#review-" + reviewId;
     }
+    @PostMapping("/{lodgeId}/generate-summary")
+    public String generateSummaryManually(@PathVariable Long lodgeId) {
+        // 1) 강제 생성 (업서트)
+        reviewSummaryService.generateSummary(lodgeId);
+        // 2) 다시 리뷰 프래그먼트 페이지로
+        return "redirect:/lodge/detail/" + lodgeId + "?page=1";
+    }
+
+
+
 }

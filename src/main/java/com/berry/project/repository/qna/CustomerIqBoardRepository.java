@@ -1,6 +1,5 @@
 package com.berry.project.repository.qna;
 
-import com.berry.project.dto.qna.CustomerIqBoardDTO;
 import com.berry.project.entity.qna.CustomerIqBoard;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -8,7 +7,6 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
-import java.util.List;
 
 
 public interface CustomerIqBoardRepository extends JpaRepository<CustomerIqBoard, Long>, CustomerIqBoardCustomRepository{

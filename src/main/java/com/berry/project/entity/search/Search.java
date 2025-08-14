@@ -14,7 +14,7 @@ public class Search {
 
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
-  @Column(name="search_id")
+  @Column(name = "search_id")
   private Long searchId;
 
   @Column(nullable = false)
@@ -23,13 +23,13 @@ public class Search {
   @Column(nullable = false)
   private String detail;
 
-  @Column(name="jaso_keyword", nullable = false)
+  @Column(name = "jaso_keyword", nullable = false)
   private String jasoKeyword;
 
-  @Column(name="jaso_detail", nullable = false)
+  @Column(name = "jaso_detail", nullable = false)
   private String jasoDetail;
 
-  @Column(name="lodge_id")
+  @Column(name = "lodge_id")
   private Long lodgeId;
 
 }

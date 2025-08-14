@@ -15,8 +15,11 @@ const [lowestPriceArea,
 let lowestPriceIndex = priceTable.indexOf(listOption.lowestPrice),
 highestPriceIndex = priceTable.indexOf(listOption.highestPrice);
 
+let bookmarkServing = false;
+
 // 1. 메인 : 검색 조건 변경을 감지
 document.addEventListener('click', e => {
+  // 검색 조건 변경 감지
   let isOptionChanged = false;
 
   // 1) 숙소 유형
@@ -32,7 +35,19 @@ document.addEventListener('click', e => {
 
   // 2) 가격 : 별도로 분리
 
-  // 3) 태그 : TODO
+  // 3) 태그
+  const favoriteBtn = e.target.closest('.favorite');
+  if (favoriteBtn) {
+    const idx = Number(favoriteBtn.dataset.index);
+    const mask = 1 << idx;
+
+    if (listOption.favoriteMask == null) listOption.favoriteMask = mask;
+    else if ((listOption.favoriteMask & mask) == 0) listOption.favoriteMask += mask;
+    else listOption.favoriteMask -= mask;
+
+    pagingHandler.pageNo = 1;
+    isOptionChanged = true;
+  }
 
   // 4) 시설
   const facilityBtn = e.target.closest('.facilityBtn');
@@ -103,8 +118,8 @@ function reload() {
 
   if (listOption.lodgeType != null)
     address += '&lodgeType=' + listOption.lodgeType;
-  if (listOption.facilityMask != 0)
-    address += '&facilityMask=' + listOption.facilityMask;
+  address += '&facilityMask=' + listOption.facilityMask;
+  address += '&favoriteMask=' + listOption.favoriteMask;
   address += '&lowestPrice=' + priceTable[lowestPriceIndex];
   address += '&highestPrice=' + priceTable[highestPriceIndex];
   address += '&sort=' + listOption.sort;

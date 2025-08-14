@@ -15,4 +15,5 @@ public class CustomerIqBoardFileDTO {
   private CustomerIqBoardDTO boardDTO;
   private List<CustomerIqFileDTO> fileList;
 
+
 }

@@ -19,20 +19,16 @@ import java.util.List;
 @RequiredArgsConstructor
 public class PagingHandler<T> {
   private final int startPage;
-  private int endPage;
   private final int totalPage;
   private final long totalCount;
   private final boolean hasPrev;
   private final boolean hasNext;
   private final int pageNo;
   List<T> list;
+  private int endPage;
+  private ListOptionDTO listOptionDTO;
 
-  private final ListOptionDTO listOptionDTO;
-
-  /**
-   * Creates a paging handler with custom group size.
-   */
-  public PagingHandler(Page<T> page, ListOptionDTO listOptionDTO) {
+  public PagingHandler(Page<T> page) {
     int groupSize = 5;
 
     this.pageNo = page.getNumber() + 1;
@@ -47,6 +43,13 @@ public class PagingHandler<T> {
     hasNext = endPage < totalPage;
 
     list = page.toList();
+  }
+
+  /**
+   * Creates a paging handler with custom group size.
+   */
+  public PagingHandler(Page<T> page, ListOptionDTO listOptionDTO) {
+    this(page);
 
     this.listOptionDTO = listOptionDTO;
   }

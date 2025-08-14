@@ -12,6 +12,7 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.factory.PasswordEncoderFactories;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -39,14 +40,18 @@ public class SecurityConfig {
   SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
 
     return http
-        .csrf(csrf -> csrf.disable())
+        .csrf(AbstractHttpConfigurer::disable)
         .authorizeHttpRequests(authorize -> authorize
             .requestMatchers(
-                "/","/css/**","/js/**","/image/**","/upload/**","/user/signup/**","/user/login/**"
-                ,"/user/duplicateCheckedEmail/**",
+                "/", "/css/**", "/js/**", "/image/**", "/upload/**", "/user/signup/**", "/user/login/**"
+                , "/user/duplicateCheckedEmail/**", "/user/findWebUserEmail/**", "/user/getCertifiedCode/**",
+                "/user/resetPassword/**", "/user/getSignInCertifiedCode/**", "/user/getSignInCertifiedNumber/**",
+                "/user/getCertifiedNumber/**",
                 "/lodge/**", "/search/**",
                 "/reviews/list/**", "/review-tags/**", "/.well-known/**", "/error/**",
-                "/reviews/view/**"
+                "/reviews/view/**",
+                "/outerSearch/**", "/indexTest/**",
+                "/error/**"
             )
             .permitAll()
             /** duorpeb, 비로그인 유저가 로그인 버튼 누르는 경우 로그인 페이지로 redirect 를 하기 위한 코드
@@ -67,16 +72,16 @@ public class SecurityConfig {
             .permitAll()
         )
         .oauth2Login(oauth2 -> oauth2
-            .loginPage("/user/test") // 테스트 완료 후 실제 로그인 페이지로 변경
+            .loginPage("/user/login") // 테스트 완료 후 실제 로그인 페이지로 변경
             .defaultSuccessUrl("/") // 테스트 완료 후 success handler 로 변경
             .userInfoEndpoint(userInfo -> userInfo
-            .userService(customOAuth2UserService)
-        ))
+                .userService(customOAuth2UserService)
+            ))
         .logout(logout -> logout
             .invalidateHttpSession(true)
             .deleteCookies("JSESSIONID")
             .logoutSuccessUrl("/")) // 로그 아웃시 루트로 이동
-        
+
         .build();
   }
 
