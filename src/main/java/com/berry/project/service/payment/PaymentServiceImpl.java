@@ -5,6 +5,7 @@ import com.berry.project.dto.payment.MergePayloadDTO;
 import com.berry.project.dto.payment.PBPDTO;
 import com.berry.project.dto.payment.PaymentReceiptDTO;
 import com.berry.project.dto.payment.ReturnCancelsDTO;
+import com.berry.project.entity.alarm.Alarm;
 import com.berry.project.entity.cupon.Cupon;
 import com.berry.project.entity.lodge.Room;
 import com.berry.project.entity.payment.PaymentBeforePayment;
@@ -13,6 +14,7 @@ import com.berry.project.entity.payment.Reservation;
 import com.berry.project.entity.user.User;
 import com.berry.project.repository.lodge.RoomRepository;
 import com.berry.project.repository.payment.*;
+import com.berry.project.repository.user.AlarmRepository;
 import com.berry.project.repository.user.UserRepository;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
@@ -21,10 +23,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.*;
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 @Service
 @Slf4j
@@ -45,6 +44,10 @@ public class PaymentServiceImpl implements PaymentService {
   private final RoomRepository roomRepository;
   // User TABLE
   private final UserRepository userRepository;
+  
+  // 해찬
+  // Alarm TABLE
+  private final AlarmRepository alarmRepository;
 
 
   /**
@@ -182,15 +185,32 @@ public class PaymentServiceImpl implements PaymentService {
 
       // 해당 orderId 와 일치하는 Reservation TABLE 의 bookingStatus 를 DONE 으로 변경
       res.setBookingStatus("DONE");
+      
+      // 해찬
+      // 결제 완료 알림
+
+
+
+      Alarm alarm = Alarm.builder()
+          .userId(user.getUserId()) // 로그인한 유저 id
+          .targetId(Long.parseLong(res.getOrderId().substring(6,19)))
+          .code("s_reservation") // 알림 코드 (자기가 직접 작성하거나 만들어놓은 예시 참고)
+          .build();
+
+      alarmRepository.save(alarm);
+      
     }
     // 남는 객실이 없는 경우
     else {
       // 방법 1) 예외 던지기
       throw new IllegalStateException();
 
+
       // 방법 2) 롤백 표시
       // TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
     }
+    
+    
 
   }
 
@@ -214,7 +234,7 @@ public class PaymentServiceImpl implements PaymentService {
     rcdto.getCancels().get(0).setPaymentKey(paymentKey);
 
     // payment_cancel TABLE 에 Record 저장
-    paymentCancelRepository.save(convertPaymentCancelDtoToPaymentCancelEntity(rcdto.getCancels().get(0)));
+    Long paymentCancelId = paymentCancelRepository.save(convertPaymentCancelDtoToPaymentCancelEntity(rcdto.getCancels().get(0))).getPaymentCancelId();
 
     // 예약 정보 조회
     Reservation reservation = reservationRepository.findByOrderId(orderId).orElseThrow(
@@ -230,6 +250,16 @@ public class PaymentServiceImpl implements PaymentService {
           new EntityNotFoundException(("Can't found this Entity..!")));
       // 변경
       cupon.setValid(true);
+
+      // 해찬
+      // 결제 취소 알림 저장
+      Alarm alarm = Alarm.builder()
+          .userId(reservation.getUserId()) // 로그인한 유저 id
+          .targetId(paymentCancelId) // 타겟 테이블 id
+          .code("c_reservation") // 알림 코드 (자기가 직접 작성하거나 만들어놓은 예시 참고)
+          .build();
+
+      alarmRepository.save(alarm);
     }
 
     /** 포인트 반환 */

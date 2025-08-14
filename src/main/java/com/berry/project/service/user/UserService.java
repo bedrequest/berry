@@ -145,7 +145,7 @@ public interface UserService {
 
   UserDTO getUserFindById(Long userId);
 
-  void userInfoUpadate(UserDTO userDTO);
+  String userInfoUpdate(UserDTO userDTO);
 
   Long updateMobileCertified(Long userId);
 

@@ -5,9 +5,11 @@ import com.berry.project.dto.review.ReviewImageDTO;
 import com.berry.project.dto.review.ReviewRequestDTO;
 import com.berry.project.dto.review.ReviewResponseDTO;
 import com.berry.project.dto.user.UserDTO;
+import com.berry.project.entity.alarm.Alarm;
 import com.berry.project.entity.review.*;
 import com.berry.project.handler.ReviewFileHandler;
 import com.berry.project.repository.review.*;
+import com.berry.project.repository.user.AlarmRepository;
 import com.berry.project.repository.user.UserRepository;
 import com.berry.project.service.user.UserService;
 import lombok.RequiredArgsConstructor;
@@ -41,6 +43,9 @@ public class ReviewServiceImpl implements ReviewService {
   private final ReviewReportRepository reviewReportRepository;
   private final UserService userService;
   private final ReviewInteractionService reviewInteractionService;
+
+  // 해찬
+  private final AlarmRepository alarmRepository;
 
   @Override
   @Transactional
@@ -283,6 +288,17 @@ public class ReviewServiceImpl implements ReviewService {
           .reviewId(reviewId)
           .userId(userId)
           .build());
+      
+      // 해찬
+      // 좋아요 알림
+      Alarm alarm = Alarm.builder()
+          .userId(userId) // 로그인한 유저 id
+          .targetId(userId) // 타겟 테이블 id
+          .code("l_review") // 알림 코드 (자기가 직접 작성하거나 만들어놓은 예시 참고)
+          .build();
+
+      alarmRepository.save(alarm);
+      
     }
     long count = reviewLikeRepository.countByReviewId(reviewId);
     return Map.of("likeCount", count, "likedByMe", !already);
