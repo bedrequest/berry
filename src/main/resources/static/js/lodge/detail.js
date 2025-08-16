@@ -3,6 +3,7 @@ import Swiper from 'https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.mjs
 // 0. 화면의 요소 불러오기
 const [lodgeImageArea, roomArea, facility, locationArea, reviewArea] = ['lodgeImageArea', 'roomArea', 'facility', 'location', 'reviewArea'].map(e => document.getElementById(e));
 const [navTop, navRoom, navFacility, navLocation, navReview] = ['navTop', 'navRoom', 'navFacility', 'navLocation', 'navReview'].map(e => document.querySelector('.' + e));
+let lodgeDTO; // init을 통해 외부에서 초기화
 
 // 1. 스크롤 대응
 // 1-1. 내비게이션 바
@@ -110,7 +111,13 @@ document.querySelectorAll('.roomNavBarItem').forEach(e => {
     });
 });
 
-// 모달 닫기 버튼
+// 모달 버튼
+modalPrevBtn.addEventListener('click', () => {
+    select(currentImageIndex - 1);
+});
+modalNextBtn.addEventListener('click', () => {
+    select(currentImageIndex + 1);
+});
 modalCloseBtn.addEventListener('click', closeModal);
 
 // 모달 컨트롤러
@@ -130,17 +137,10 @@ function openModal(target) {
     const room = target.closest('.room');
     if (room) loadRoomImages(Number(room.dataset.roomindex));
     else loadLodgeImages(Number(target.dataset.idx));
-
-    modalPrevBtn.addEventListener('click', () => {
-        select(currentImageIndex - 1);
-    });
-    modalNextBtn.addEventListener('click', () => {
-        select(currentImageIndex + 1);
-    })
 }
 
 function closeModal() {
-    if (swiper) {
+    if (swiper && !swiper.destoyed) {
         swiper.removeAllSlides();
         swiper.destroy(true, true);
     }
@@ -200,7 +200,6 @@ function updateScrollItems(roomIndex) {
 }
 
 function createScrollItems(roomIndex) {
-    const lodgeDTO = window.lodgeDTO;
     let items = [];
     let target = roomIndex == null ? lodgeDTO.lodgeImages : lodgeDTO.rooms[roomIndex].roomImageUrls;
     maxImageIndex = target.length - 1;
@@ -211,7 +210,6 @@ function createScrollItems(roomIndex) {
 }
 
 function updateFooterItems(roomIndex) {
-    const lodgeDTO = window.lodgeDTO;
     let target = roomIndex == null ? lodgeDTO.lodgeImages : lodgeDTO.rooms[roomIndex].roomImageUrls;
 
     imageSlide.innerHTML = '';
@@ -260,11 +258,20 @@ function scroll(target, container) {
 
 // 주소 복사
 document.getElementById('addressCopy').addEventListener('click', () => {
-    navigator.clipboard.writeText(
-        document.getElementById('addressText').innerText)
+    navigator.clipboard
+        .writeText(document.getElementById('addressText').innerText)
         .then(() => {
-            console.log('주소 복사 완료');
+            const addressCopySuccess = document.getElementById('address-copy-success');
+            addressCopySuccess.style.opacity = 1;
+
+            setTimeout(() => {
+                addressCopySuccess.style.opacity = 0;
+            }, 1500);
         });
 });
 
 // ----------------------------------------------
+
+export default function init(data) {
+    lodgeDTO = data;
+};

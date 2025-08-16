@@ -6,6 +6,19 @@
 
 <section layout:fragment="customStyle">
   <link rel="stylesheet" th:href="@{/css/qna/list.css}" />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+  <link rel="stylesheet" th:href="@{/css/flatpickrCustom.css}" />
+  <link rel="stylesheet" href="https://npmcdn.com/flatpickr/dist/themes/material_red.css" />
+
+<!-- 추가(25-08-11) -->
+  <style>
+    .lock-icon {
+      color: red;
+      margin-left: 5px;
+      font-size: 0.9em;
+    }
+  </style>
+
 </section>
 
 <body>
@@ -26,31 +39,35 @@
     자세한 정보는 공지를 참고해 주시기 바랍니다.
   </div>
 
-
-
-
   <div class="search-box-wrapper">
     <form action="/qna/list" method="get" role="search">
 
       <!-- 날짜 줄 -->
-      <div class="search-line">
-        <input
-                type="date"
-                id="start"
-                name="tripStart"
-                />
+      <div class="date-range">
+        <div class="date-picker-wrapper">
+          <input type="text" class="date-picker" id="start" name="tripStart" />
+          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="calendar-icon" viewBox="0 0 16 16">
+            <path d="M10.854 7.146a.5.5 0 0 1 0 .708l-3 3a.5.5 0 0 1-.708 0l-1.5-1.5a.5.5 0 1 1 .708-.708L7.5 9.793l2.646-2.647a.5.5 0 0 1 .708 0"/>
+            <path d="M3.5 0a.5.5 0 0 1 .5.5V1h8V.5a.5.5 0 0 1 1 0V1h1a2 2 0 0 1 2 2v11a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2V3a2 2 0 0 1 2-2h1V.5a.5.5 0 0 1 .5-.5M1 4v10a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1V4z"/>
+          </svg>
+        </div>
+
         <span style="align-self: center;">~</span>
-        <input
-                type="date"
-                id="end"
-                name="tripEnd"
-                 />
+
+        <div class="date-picker-wrapper">
+          <input type="text" class="date-picker" id="end" name="tripEnd" />
+          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="calendar-icon" viewBox="0 0 16 16">
+            <path d="M10.854 7.146a.5.5 0 0 1 0 .708l-3 3a.5.5 0 0 1-.708 0l-1.5-1.5a.5.5 0 1 1 .708-.708L7.5 9.793l2.646-2.647a.5.5 0 0 1 .708 0"/>
+            <path d="M3.5 0a.5.5 0 0 1 .5.5V1h8V.5a.5.5 0 0 1 1 0V1h1a2 2 0 0 1 2 2v11a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2V3a2 2 0 0 1 2-2h1V.5a.5.5 0 0 1 .5-.5M1 4v10a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1V4z"/>
+          </svg>
+        </div>
       </div>
 
       <!-- 검색줄 -->
       <div class="search-line">
         <select class="form-select" name="type" aria-label="Select Category">
           <option th:selected="${ph.type == null ? true : false}">--선택--</option>
+          <option th:selected="${ph.type == '공지' ? true : false}">공지</option>
           <option th:selected="${ph.type == '결제' ? true : false}">결제</option>
           <option th:selected="${ph.type == '환불' ? true : false}">환불</option>
           <option th:selected="${ph.type == '시설' ? true : false}">시설</option>
@@ -82,24 +99,34 @@
     <tr th:each="notice : ${noticeList}">
       <th scope="row">[[${notice.bno}]]</th>
       <td>[[${notice.category}]]</td>
-      <td><a th:href="@{/qna/detail(bno=${notice.bno})}">
-        [[${notice.title}]]</a>
+      <td>
+        <a th:href="@{/qna/detail(bno=${notice.bno})}">
+        [[${notice.title}]]
+        <!-- 추가(25-08-11) -->
+          <span th:if="${notice.secret}" class="lock-icon" title="비밀글입니다">🔒</span>
+        </a>
 
       </td>
       <td>[[${notice.userEmail}]]</td>
       <td>[[${#temporals.format(notice.regDate, 'yyyy-MM-dd HH:mm:ss')}]]</td>
       <td>[[${notice.comment}]]</td>
     </tr>
+
+    <!-- 일반글 -->
     <tr th:each="bvo:${ph.list}">
       <th scope="row">[[${bvo.bno}]]</th>
       <td>[[${bvo.category}]]</td>
-      <td><a th:href="@{/qna/detail(bno=${bvo.bno})}">
-        [[${bvo.title}]]</a>
+      <td>
+        <a th:href="@{/qna/detail(bno=${bvo.bno})}">
+        [[${bvo.title}]]
+          <!-- 추가(25-08-11) -->
+          <span th:if="${bvo.secret}" class="lock-icon" title="비밀글입니다">🔒</span>
+      </a>
 
       </td>
       <td>[[${bvo.userEmail}]]</td>
       <td>[[${#temporals.format(bvo.regDate, 'yyyy-MM-dd HH:mm:ss')}]]</td>
-      <td>[[${bvo.comment}]]</td>
+      <td>[[${bvo.comment == null ? '처리중' : '완료'}]]</td>
     </tr>
     </tbody>
 
@@ -113,44 +140,92 @@
   <!-- 페이지네이션 PagingHandler -->
   <nav aria-label="Page navigation example">
     <ul class="pagination justify-content-center">
-      <li class="page-item" th:classappend="${ph.hasPrev eq false ? 'disabled' : ''}">
-        <a class="page-link" th:href="@{/qna/list(pageNo=${ph.startPage-1}, type=${ph.type}, keyword=${ph.keyword}, tripStart=${ph.tripStart}, tripEnd=${ph.tripEnd})}" aria-label="Previous">
+
+      <!-- 이전 페이지 버튼: 1페이지 이상일 때만 보이기 -->
+      <li class="page-item" th:if="${ph.hasPrev}">
+        <a class="page-link"
+           th:href="@{/qna/list(pageNo=${ph.startPage - 1}, type=${ph.type}, keyword=${ph.keyword}, tripStart=${ph.tripStart}, tripEnd=${ph.tripEnd})}"
+           aria-label="Previous">
           <span aria-hidden="true">&laquo;</span>
         </a>
       </li>
-      <!--/* begin end 옵션이 없음. ${#numbers.sequence(from, to)} */-->
-      <th:block th:each="i:${#numbers.sequence(ph.startPage, ph.endPage)}">
-        <li class="page-item" th:classappend="${ph.pageNo eq i ? 'active' : ''}">
-          <a class="page-link" th:href="@{/qna/list(pageNo=${i}, type=${ph.type}, keyword=${ph.keyword}, tripStart=${ph.tripStart}, tripEnd=${ph.tripEnd})}">[[${i}]]</a>
+
+      <!-- 페이지 번호 버튼 -->
+      <th:block th:each="i : ${#numbers.sequence(ph.startPage, ph.endPage)}">
+        <li class="page-item" th:classappend="${ph.pageNo == i} ? 'active'">
+          <a class="page-link"
+             th:href="@{/qna/list(pageNo=${i}, type=${ph.type}, keyword=${ph.keyword}, tripStart=${ph.tripStart}, tripEnd=${ph.tripEnd})}">
+            [[${i}]]
+          </a>
         </li>
       </th:block>
 
-      <li class="page-item" th:classappend="${ph.hasNext eq false ? 'disabled' : ''}">
-        <a class="page-link" th:href="@{/qna/list(pageNo=${ph.endPage+1}, type=${ph.type}, keyword=${ph.keyword}, tripStart=${ph.tripStart}, tripEnd=${ph.tripEnd})}" aria-label="Next">
+      <!-- 다음 페이지 버튼: 마지막 페이지가 아닐 때만 보이기 -->
+      <li class="page-item" th:if="${ph.hasNext}">
+        <a class="page-link"
+           th:href="@{/qna/list(pageNo=${ph.endPage + 1}, type=${ph.type}, keyword=${ph.keyword}, tripStart=${ph.tripStart}, tripEnd=${ph.tripEnd})}"
+           aria-label="Next">
           <span aria-hidden="true">&raquo;</span>
         </a>
       </li>
+
     </ul>
   </nav>
-<script>
-  document.addEventListener('DOMContentLoaded', function () {
+
+  <!--    추가(25-08-11)      -->
+  <div th:if="${error}">
+    <script>
+      alert([[${error}]]);
+    </script>
+  </div>
+
+  <!-- flatpickr JS 로딩 -->
+  <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+
+  <!-- flatpickr 초기화 -->
+  <script>
+    document.addEventListener('DOMContentLoaded', function () {
+
     const today = new Date();
     const todayFormatted = today.toISOString().split('T')[0];
 
-    const lastMonth = new Date(today);
-    lastMonth.setMonth(today.getMonth() - 1);
-    const lastMonthFormatted = lastMonth.toISOString().split('T')[0];
+    const oneMonthAgo = new Date(today);
+    oneMonthAgo.setMonth(today.getMonth() - 1);
+    const oneMonthAgoFormatted = oneMonthAgo.toISOString().split('T')[0];
 
-    const startInput = document.getElementById('start');
-    const endInput = document.getElementById('end');
+    // flatpickr 초기화 - 시작일
+    flatpickr("#start", {
+      defaultDate: oneMonthAgoFormatted,
+      maxDate: todayFormatted,
+      dateFormat: "Y-m-d",
+      locale: "ko"
+    });
 
-    startInput.value = lastMonthFormatted;
-    endInput.value = todayFormatted;
+    // flatpickr 초기화 - 종료일
+    flatpickr("#end", {
+      defaultDate: todayFormatted,
+      maxDate: todayFormatted,
+      dateFormat: "Y-m-d",
+      locale: "ko"
+    });
 
-    startInput.max = todayFormatted;
-    endInput.max = todayFormatted;
+    // 달력칸 전체 클릭 시 input 포커스
+    document.querySelectorAll('.date-picker-wrapper').forEach(wrapper => {
+      const input = wrapper.querySelector('input');
+
+      // 달력칸 전체를 포인터로 변경
+      wrapper.style.cursor = 'pointer';
+
+      // 클릭 시 flatpickr 열기
+      wrapper.addEventListener('click', () => {
+        input.focus(); // 포커스
+        input.click(); // 클릭 트리거 (flatpickr 뜨게 함)
+      });
+    });
   });
-</script>
-</div>
+  </script>
 
+  <script th:src="@{/js/qna/boardList.js}"></script>
+
+</div>
 </body>

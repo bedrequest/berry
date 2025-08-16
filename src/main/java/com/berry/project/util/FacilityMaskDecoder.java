@@ -8,7 +8,7 @@ import java.util.List;
 /**
  * facility 테이블에서 값을 불러올 때 int를 List<String>으로 변환해주는 핸들러<br>
  * RequiredArgsConstructor나 Autowired로 불러올 것
- * */
+ */
 @Component
 public class FacilityMaskDecoder {
   // 마스크 표
@@ -21,7 +21,7 @@ public class FacilityMaskDecoder {
   /**
    * 옵션들을 받아서 int로 변환<br>
    * 크롤링/테스트 용도
-   * */
+   */
   public int encode(List<String> options) {
     int answer = 0;
     for (int i = 0; i < strArray.length; i++)
@@ -34,7 +34,7 @@ public class FacilityMaskDecoder {
   /**
    * int를 옵션 List로 변환<br>
    * entity -> DTO 변환 과정에서 사용
-   * */
+   */
   public List<String> decode(int mask) {
     List<String> answer = new ArrayList<>();
 

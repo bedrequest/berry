@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="en"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout/layout}">
+
+<!-- CSS 연결 (부모 템플릿 <head> 안에 삽입됨) -->
+<section layout:fragment="customStyle">
+    <link rel="stylesheet" th:href="@{/css/qna/detail.css}" />
+</section>
+
+<!-- 실제 콘텐츠 시작 -->
+<div layout:fragment="content">
+    <div class="container" th:data-answered="${customeriqboardfileDTO.boardDTO.comment != null}">
+        <h2 class="page-title">문의내용</h2>
+
+        <form action="/qna/update" method="post" id="modForm" enctype="multipart/form-data">
+
+            <!-- 카테고리 + 제목 -->
+            <div class="form-group">
+                <div class="category-title-wrapper">
+                    <!-- 기본엔 input 보여주고 readonly -->
+                    <input type="text" id="c" class="input-box short"
+                           th:value="${customeriqboardfileDTO.boardDTO.category}"
+                           readonly placeholder="카테고리">
+
+                    <!-- 수정 모드에서 보여줄 select (초기엔 숨김) -->
+                    <select id="categorySelect" name="category" class="input-box short" style="display: none;">
+                        <option value="결제">결제</option>
+                        <option value="환불">환불</option>
+                        <option value="시설">시설</option>
+                        <option value="서비스">서비스</option>
+                        <option value="기타">기타</option>
+                    </select>
+
+                    <input type="text" class="input-box title" name="title"
+                           th:value="${customeriqboardfileDTO.boardDTO.title}"
+                           id="t" readonly placeholder="제목" maxlength="50">
+                </div>
+                <div class="category-title-underline"></div>
+            </div>
+
+            <!-- 작성자 + 작성일 -->
+            <div class="form-group-inline">
+                <div class="inline-group">
+                    <input type="text" id="w" name="userEmail"
+                           th:value="${customeriqboardfileDTO.boardDTO.userEmail}"
+                           class="input-box email" readonly />
+                </div>
+                <div class="inline-group">
+                    <input id="date"
+                           th:value="${#temporals.format(customeriqboardfileDTO.boardDTO.regDate, 'yyyy-MM-dd HH:mm:ss')}"
+                           class="input-box date" readonly />
+                </div>
+            </div>
+
+            <!-- 본문 -->
+            <div class="form-group">
+  <textarea class="form-control" name="content" id="con" cols="30" rows="10" readonly
+            maxlength="1000">[[${customeriqboardfileDTO.boardDTO.content}]]</textarea>
+            </div>
+
+            <div class="char-count-container">
+                <div id="charCount" class="char-count" style="display: none;">0 / 1000</div>
+            </div>
+
+            <!-- 댓글 -->
+            <div class="comment-area">
+                <textarea class="form-control comment-input" name="comment" id="comment" rows="1" maxlength="500" placeholder="댓글을 입력하세요" readonly>[[${customeriqboardfileDTO.boardDTO.comment}]]</textarea>
+            </div>
+
+            <!-- 첨부파일 미리보기 -->
+            <div class="attached-files" th:if="${customeriqboardfileDTO.fileList != null}">
+                <div class="file-list" th:each="file : ${customeriqboardfileDTO.fileList}">
+                    <div class="file-item">
+
+                        <th:block th:if="${file.fileType == 1}">
+                            <!-- 이미지일 경우 미리보기 -->
+                            <img th:src="@{|/upload/qna/${file.saveDir}/${file.uuid}_${file.fileName}|}"
+                                 class="preview-image fileX"  />
+                            <button type="button" th:data-uuid="${file.uuid}" class="file-x" style="visibility:hidden;">X</button>
+                        </th:block>
+
+                        <!-- 이미지가 아닐 경우 파일명 링크 -->
+                        <th:block th:if="${file.fileType != 1}">
+                            <a class="fileX" th:href="@{|/upload/qna/${file.saveDir}/${file.uuid}_${file.fileName}|}"
+                               th:text="${file.fileName}" target="_blank" download></a>
+                            <button type="button" th:data-uuid="${file.uuid}" class="file-x" style="visibility:hidden;">X</button>
+                        </th:block>
+
+                    </div>
+                </div>
+            </div>
+
+            <!-- 이미지 미리보기 영역 -->
+            <div id="imagePreviewContainer" class="image-preview-container"></div>
+
+            <!-- 파일 업로드 -->
+            <div class="file-upload">
+                <input type="text" class="upload-name" placeholder="선택된 파일 없음" disabled="disabled">
+                <label for="ex_filename" class="disabled">업로드</label>
+                <input type="file" name="files" id="ex_filename" class="upload-hidden" multiple disabled>
+            </div>
+
+            <!-- 버튼 -->
+            <div class="button-row">
+                <input type="hidden" name="bno" th:value="${customeriqboardfileDTO.boardDTO.bno}">
+
+                <!-- Modify & Delete 영역 -->
+                <div id="action-buttons" style="display: flex; gap: 12px;"
+                     th:if="${modifiable}">
+                    <button type="button" id="modBtn" class="btn btn-warning">수정</button>
+                    <button type="button" id="delBtn" class="btn btn-danger">삭제</button>
+                </div>
+
+                <!-- 답변완료 버튼 (처음엔 숨김) -->
+                <button type="button" id="completeBtn" class="btn btn-success" style="display: none;" sec:authorize="hasRole('ROLE_ADMIN')">답변완료</button>
+
+                <!-- Submit 버튼 (처음엔 숨김) -->
+                <button type="submit" id="submitBtn" class="btn btn-warning" style="display: none;">Submit</button>
+
+
+                <!-- Cancle 버튼 (처음엔 숨김) -->
+                <button type="button" id="CancelBtn" class="btn btn-warning2" style="display: none;">취소</button>
+
+                <!-- List 버튼은 항상 보임 -->
+                <button type="button" id="listBtn" class="btn btn-primary">List</button>
+            </div>
+
+        </form>
+
+        <script th:inline="javascript">
+            let bnoValue = [[${customeriqboardfileDTO.boardDTO.bno}]];
+        </script>
+        <th:block sec:authorize="isAuthenticated()">
+
+            <script th:inline="javascript">
+                const userEmail = [[${authEmail}]];
+                console.log(userEmail);
+            </script>
+        </th:block>
+
+        <script th:src="@{/js/qna/boardDetail.js}"></script>
+        <script th:src="@{/js/qna/boardComment.js}"></script>
+        <script th:src="@{/js/qna/boardRegister.js}"></script>
+
+        </body>
+
+        <script>
+            window.addEventListener('DOMContentLoaded', () => {
+              const input = document.querySelector('.input-box.email');
+
+              if (input) {
+                const span = document.createElement('span');
+                span.style.visibility = 'hidden';
+                span.style.position = 'absolute';
+                span.style.whiteSpace = 'pre';
+                span.style.font = window.getComputedStyle(input).font;
+                span.textContent = input.value;
+
+                document.body.appendChild(span);
+
+                const newWidth = span.offsetWidth + 16; // + padding 여유
+                input.style.width = ${newWidth}px;
+
+                document.body.removeChild(span);
+              }
+            });
+        </script>
+
+        <script th:inline="javascript">
+            const isAdmin = /*[[${#authorization.expression('hasRole(''ROLE_ADMIN'')')}]]*/ false;
+        </script>
+
+    </div>
+
+</div>
+
+</html>
+
+<!-- 이미지 작업전 html-->

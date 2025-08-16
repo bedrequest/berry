@@ -1,26 +1,27 @@
 package com.berry.project.service.payment;
 
 import com.berry.project.dto.cupon.CuponDTO;
+import com.berry.project.dto.cupon.CuponTemplateDTO;
 import com.berry.project.dto.payment.MergePayloadDTO;
 import com.berry.project.dto.payment.PBPDTO;
 import com.berry.project.dto.payment.PaymentReceiptDTO;
 import com.berry.project.dto.payment.ReturnCancelsDTO;
 import com.berry.project.entity.cupon.Cupon;
+import com.berry.project.entity.cupon.CuponTemplate;
 import com.berry.project.entity.lodge.Room;
 import com.berry.project.entity.payment.PaymentBeforePayment;
 import com.berry.project.entity.payment.PaymentReceipt;
 import com.berry.project.entity.payment.Reservation;
 import com.berry.project.entity.user.User;
+import com.berry.project.handler.payment.CuponHandler;
 import com.berry.project.repository.lodge.RoomRepository;
 import com.berry.project.repository.payment.*;
 import com.berry.project.repository.user.UserRepository;
-
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.transaction.interceptor.TransactionAspectSupport;
 
 import java.time.*;
 import java.util.ArrayList;
@@ -47,7 +48,10 @@ public class PaymentServiceImpl implements PaymentService {
   private final RoomRepository roomRepository;
    // User TABLE
   private final UserRepository userRepository;
-
+   // Cupon 생성
+  private final CuponHandler cuponHandler;
+   // CuponTemplate TABLE
+  private final CuponTemplateRepository cuponTemplateRepository;
   
   /** insertMergePayload(MergePayloadDTO mpdto) 
    * 
@@ -160,9 +164,22 @@ public class PaymentServiceImpl implements PaymentService {
         user.setUserGradePoint(user.getUserGradePoint() + gp);
 
         // 등급 관련 로직
-        if(user.getUserGradePoint() >= 3000 && user.getUserGradePoint() < 5000) { user.setUserGrade("GOLD"); }
+        if(user.getUserGradePoint() >= 3000 && user.getUserGradePoint() < 5000) {
+          // GOLD 등급 업 쿠폰
+          Cupon cupon = cuponHandler.callCuponGenerate(2, user.getUserId());
 
-        else if(user.getUserGradePoint() >= 5000) { user.setUserGrade("PLATINUM"); }
+          cuponRepository.save(cupon);
+
+          user.setUserGrade("GOLD");
+        }
+
+        else if(user.getUserGradePoint() >= 5000) {
+          Cupon cupon = cuponHandler.callCuponGenerate(3, user.getUserId());
+
+          cuponRepository.save(cupon);
+
+          user.setUserGrade("PLATINUM");
+        }
 
         /** room 의 stockCount - 1 */
         Room room2 = roomRepository.findById(res.getRoomId()).orElseThrow(() ->
@@ -257,9 +274,23 @@ public class PaymentServiceImpl implements PaymentService {
   public List<CuponDTO> getCuponList(long userId) {
     OffsetDateTime currentTime = OffsetDateTime.now();
 
-    List<Cupon> cuponList = cuponRepository.findValidCuponsByUserId(userId, currentTime);
+    List<Cupon> cuponList = cuponRepository.findValidCuponsByUserId(userId);
+
+    log.info("cuponList > {}", cuponList);
+
+    if(cuponList.size() > 0){
+      for(int i = 0; i < cuponList.size(); i++){
+        if(cuponList.get(i).getCuponEndDate() != null){
+          if(currentTime.isAfter(cuponList.get(i).getCuponEndDate())) { cuponList.remove(i); }
+        } else {
+            break;
+        }
+      }
+    }
+
 
     List<CuponDTO> cdtoList = cuponList.stream().map(this::convertCuponEntityToCuponDto).toList();
+    log.info("cdtoList > {}", cdtoList);
 
     return cdtoList;
   }
@@ -446,16 +477,29 @@ public class PaymentServiceImpl implements PaymentService {
      * */
     if(diffTime.toMinutes() <= 60) {
       cancelAmount = res.getTotalAmount();
+      return cancelAmount;
     }
 
-    if (diffDays.toDays() <= 3){ cancelAmount = -1; }
+    if (diffDays.toDays() <= 3){ return cancelAmount = -1; }
 
     if(diffDays.toDays() > 3 && diffDays.toDays() <= 7){
-      cancelAmount = res.getTotalAmount() / 2;
+      return cancelAmount = res.getTotalAmount() / 2;
     }
 
-    if(diffDays.toDays() >= 14){ cancelAmount = res.getTotalAmount(); }
+    if(diffDays.toDays() >= 14){ return cancelAmount = res.getTotalAmount(); }
 
     return cancelAmount;
+  }
+
+
+  /* getCuponTemplate() - 쿠폰 타입으로 쿠폰 정보 조회 */
+  @Override
+  public CuponTemplateDTO getCuponTemplate(String cuponType) {
+    int ctInfo = Integer.parseInt(cuponType);
+
+    CuponTemplate cuponTemplate = cuponTemplateRepository.findByCuponType(ctInfo).orElseThrow(()
+        -> new EntityNotFoundException("Can't found this Entity..!"));
+
+    return convertCuponTemplatetoCuponTemplateDTO(cuponTemplate);
   }
 }

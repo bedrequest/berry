@@ -23,6 +23,7 @@ public class MyPageReservationDTO {
   private String reservationType;
   private LocalDateTime reservationRegDate;
   // lodge
+  private Long lodgeId;
   private String lodgeName; // 숙박업소명
   private String lodgeAddr; // 숙박업소 주소
   private String lodgeType; // 호텔, 모텔, 리조트 등등..
@@ -32,26 +33,28 @@ public class MyPageReservationDTO {
   private String roomName; // 객실명
   private String rentTime; // 대실 이용시간
   private String stayTime; // 숙박 이용시간
-  // roomImg
-  private List<String> roomImageUrls;
+  // lodgeImg
+  private List<String> lodgeImageUrls;
 
-  public String customOrderId(){
+  public String customOrderId() {
     String customOrderId = orderId.replace("order_", "");
 
     return customOrderId.substring(0, customOrderId.lastIndexOf("_"));
   }
-  // <td>yyyy.mm.dd - yyyy.mm.dd</td> 체크인 체크아웃
-  public String customCheckDate(){
-    String sDate = startDate.format(DateTimeFormatter.ofPattern("yyyy.MM.dd HH:mm"));
-    String eDate = endDate.format(DateTimeFormatter.ofPattern("yyyy.MM.dd HH:mm"));
-    String customCheckDate = sDate + " - " + eDate;
 
-    return customCheckDate;
+  // <td>yyyy.mm.dd - yyyy.mm.dd</td> 체크인 체크아웃
+  public String customCheckDate() {
+    LocalDateTime startDateUTF = this.startDate.plusHours(9);
+    LocalDateTime endDateUTF = this.endDate.plusHours(9);
+    String sDate = startDateUTF.format(DateTimeFormatter.ofPattern("yyyy.MM.dd HH:mm"));
+    String eDate = endDateUTF.format(DateTimeFormatter.ofPattern("yyyy.MM.dd HH:mm"));
+
+    return sDate + " - " + eDate;
   }
+
   // <td>yyyy.mm.dd hh:mm</td> 예약일시
-  public String customReservationRegDate(){
-    String regDate = reservationRegDate.format(DateTimeFormatter.ofPattern("yyyy.MM.dd. HH:mm:ss"));
-    return regDate;
+  public String customReservationRegDate() {
+    return reservationRegDate.format(DateTimeFormatter.ofPattern("yyyy.MM.dd. HH:mm:ss"));
   }
 
 

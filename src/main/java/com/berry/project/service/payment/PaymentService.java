@@ -1,9 +1,11 @@
 package com.berry.project.service.payment;
 
 import com.berry.project.dto.cupon.CuponDTO;
+import com.berry.project.dto.cupon.CuponTemplateDTO;
 import com.berry.project.dto.payment.*;
 import com.berry.project.dto.user.MyPageReservationDTO;
 import com.berry.project.entity.cupon.Cupon;
+import com.berry.project.entity.cupon.CuponTemplate;
 import com.berry.project.entity.lodge.Room;
 import com.berry.project.entity.payment.PaymentBeforePayment;
 import com.berry.project.entity.payment.PaymentCancel;
@@ -241,25 +243,22 @@ public interface PaymentService {
             .build();
   }
 
-  // 해찬
-  /** Reservation -> ReservationDTO */
-  default MyPageReservationDTO printConvertReservationEntityToReservationDto(Reservation reservation){
-    if(reservation == null) { return null; }
+  /** CuponTemplate -> CuponTemplateDTO */
+  default CuponTemplateDTO convertCuponTemplatetoCuponTemplateDTO(CuponTemplate cuponTemplate){
+    if(cuponTemplate == null){ return null; }
 
-    return
-        MyPageReservationDTO.builder()
-            .reservationId(reservation.getReservationId())
-            .roomId(reservation.getRoomId())
-            .userId(reservation.getUserId())
-            .orderId(reservation.getOrderId())
-            .startDate(reservation.getStartDate().toLocalDateTime())
-            .bookingStatus(reservation.getBookingStatus())
-            .endDate(reservation.getEndDate().toLocalDateTime())
-            .totalAmount(reservation.getTotalAmount())
-            .guestsAmount(reservation.getGuestsAmount())
-            .reservationType(reservation.getReservationType())
-            .reservationRegDate(reservation.getReservationRegDate().toLocalDateTime())
-            .build();
+    return CuponTemplateDTO
+        .builder()
+        .ctId(cuponTemplate.getCtId())
+        .cuponType(cuponTemplate.getCuponType())
+        .cuponTitle(cuponTemplate.getCuponTitle())
+        .cuponPrice(cuponTemplate.getCuponPrice())
+        .theMinimumAmount(cuponTemplate.getTheMinimumAmount())
+        .cuponImgName(cuponTemplate.getCuponImgName())
+        .cuponEndDate(cuponTemplate.getCuponEndDate())
+        .qty(cuponTemplate.getQty())
+        .build();
+
   }
 
   // 결제하기 버튼 클릭 시 JS 에서 보낸 결제, 예약 정보를 저장하는 메서드
@@ -300,4 +299,7 @@ public interface PaymentService {
 
   // 환불 정책에 따른 금액 반환
   long getCancelAmount(String orderId);
+
+  // 쿠폰 타입으로 쿠폰 조회
+  CuponTemplateDTO getCuponTemplate(String cuponType);
 }

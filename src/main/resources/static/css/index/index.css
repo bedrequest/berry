@@ -1,0 +1,98 @@
+/* 1. 전역 설정 */
+body {
+  margin: 0;
+  padding: 0;
+  overflow: hidden;
+  scroll-behavior: smooth;
+}
+
+header {
+  position: fixed !important;
+}
+
+.section {
+  width: 100%;
+  height: calc(100vh - 61px);
+  transition: 0.5s ease;
+}
+.section:first-of-type {
+  height: 700px;
+  margin-top: 61px;
+}
+
+
+/* 4. 검색 섹션 */
+#search-section {
+  position: relative;
+  width: 100%;
+}
+#search-section::after {
+  content: "";
+  position: absolute;
+  top: 0; left: 0;
+  width: 100%;
+  height: 100%;
+
+  background-color: rgba(0, 0, 0, 0.25);
+  z-index: 2;
+}
+/* 4-1. 배경 슬라이드 */
+#search-section .swiper-wrapper {
+  position: relative;
+
+  transition-timing-function: linear;
+}
+#search-section-background-slide {
+  height: 100%;
+}
+#search-section .swiper-wrapper {
+  display: flex;
+  width: calc(1338px*6);
+  animation: scroll 100s linear infinite;
+}
+@keyframes scroll {
+  0% {transform: translateX(0);}
+  100% {transform: translateX(calc(-1338px*3));}
+}
+#search-section .swiper-slide {
+  width: 1338px;
+  height: 100%;
+  background-size: contain;
+  flex-shrink: 0;
+}
+#search-section .slide1 {
+  background-image: url("https://cdn.visitkorea.or.kr/img/call?cmd=VIEW&id=37be5b2a-a007-4e39-9f8b-396773f618ce");
+}
+#search-section .slide2 {
+  background-image: url("https://cdn.traveltimes.co.kr/news/photo/202406/408779_33277_2939.jpg");
+}
+#search-section .slide3 {
+  background-image: url("https://cdn.visitkorea.or.kr/img/call?cmd=VIEW&id=782450d1-fe5e-471c-87ff-004db9379544");
+}
+
+/* 4-2. 문구 */
+#search-section-phrase {
+  position: absolute;
+  top: 20%; left: 50%;
+  transform: translate(-50%);
+
+  color: white;
+  font-size: 40px;
+  font-weight: 700;
+
+  z-index: 3;
+}
+
+#search-box-container {
+  position: absolute;
+  top: 35%; left: 50%;
+  transform: translate(-50%);
+  
+  padding: 10px 30px;
+
+  border-radius: 10px;
+
+  background-color: white;
+
+  z-index: 3;
+}

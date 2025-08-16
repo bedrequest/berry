@@ -1,0 +1,673 @@
+<!DOCTYPE html>
+<html lang="en"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
+  <body>
+    <!-- frag 1) 쿠폰 삭제 -->
+    <div th:fragment="cupon-delete" >
+      <!-- 쿠폰 목록 -->
+      <th:block th:if="${ph != null and !#lists.isEmpty(ph.pgList)}">
+        <!-- Search fragment -->
+        <div th:replace="~{fragments/admin-search :: search-sort}"></div>
+
+        <!-- content fragment -->
+        <div class="list-up-container" id="print-content">
+          <table class="cupon-template-table">
+            <thead>
+            <tr>
+              <th>타입</th><th>제목</th><th>할인<br>금액</th><th>최소<br>결제금액</th><th>이미지</th><th>유효기간</th><th>수량</th><th>삭제</th><th>일괄<br>발급</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="tmpl : ${ph.pgList}">
+              <td th:text="${tmpl.cuponType}"></td>
+              <td th:text="${tmpl.cuponTitle}"></td>
+              <td th:text="${tmpl.getCuponPriceFormatted}"></td>
+              <td th:text="${tmpl.theMinimumAmount}"></td>
+              <td>
+                <img th:src="@{/upload/_cuponImg/{fileName}(fileName=${tmpl.cuponImgName})}" class="cupon-img" />
+              </td>
+              <td th:text="${tmpl.cuponEndDate != null ? #temporals.format(tmpl.cuponEndDate, 'yyyy-MM-dd HH:mm') : '무제한'}"></td>
+              <td th:text="${tmpl.qty != null ? tmpl.qty : '∞'}"></td>
+              <td>
+                <button type="button" class="delete-btn cupon-delete-btn" id="cupon-delete-btn" th:data-ct-id="${tmpl.ctId}">삭제</button>
+              </td>
+              <td>
+                <button type="button"
+                        class="btn btn-primary issue-btn all-issuance"
+                        id="open-issue-modal"
+                        th:data-ct-id="${tmpl.ctId}">발급</button>
+              </td>
+            </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <!-- pagination fragment -->
+        <div th:replace="~{fragments/pagination-ui :: pagination}"></div>
+      </th:block>
+
+      <th:block th:if="${ph == null or ph.pgList.size() <= 0}">
+        <div class="no-coupons">등록된 쿠폰이 없습니다.</div>
+      </th:block>
+    </div>
+
+
+    <!-- frag 2) 쿠폰 별 조회 -->
+    <div th:fragment="cupon-manage">
+      <th:block th:if="${ph != null and !#lists.isEmpty(ph.pgList)}">
+        <!-- Search fragment -->
+        <div th:replace="~{fragments/admin-search :: search-sort}"></div>
+
+        <!-- content -->
+        <section class="cupon-usage-wrap">
+          <!-- 헤더/메타 -->
+          <div class="cupon-usage-header">
+            <h3 class="cupon-usage-title">쿠폰 사용 내역</h3>
+            <span class="badge" th:text="|총 ${ph.ttc}건|">총 0건</span>
+          </div>
+
+          <!-- 목록 -->
+          <div class="cupon-usage-table-scroll" th:if="${ph.pgList.size() > 0}">
+            <table class="cupon-usage-table" role="table" aria-label="쿠폰 사용 내역">
+              <thead>
+              <tr>
+                <th>쿠폰 ID</th>
+                <th>유저 ID</th>
+                <th>타입</th>
+                <th>발급일</th>
+                <th>만료일</th>
+                <th>상태</th>
+              </tr>
+              </thead>
+
+              <tbody>
+              <!-- th:with 에서 ${} 는 변수 하나당 한 번만 사용 -->
+              <tr th:each="c : ${ph.pgList}"
+                  th:with="
+              now=${T(java.time.OffsetDateTime).now(T(java.time.ZoneOffset).ofHours(9))},
+              expired=${c.cuponEndDate != null and c.cuponEndDate.isBefore(now)},
+              state=${(c.valid == false) ? '사용됨' : (expired ? '만료' : '유효')}
+            "
+                  th:classappend="${state == '만료'} ? 'is-expired' : (${state == '비활성'} ? 'is-used' : '')">
+
+                <td th:text="${c.cuponId}">1</td>
+                <td th:text="${c.userId}">1001</td>
+                <td th:text="${c.cuponType}">1</td>
+
+                <td th:text="${#temporals.format(c.cuponRegDate, 'yyyy-MM-dd HH:mm')}">2025-08-10 12:00</td>
+                <td th:text="${c.cuponEndDate != null ? #temporals.format(c.cuponEndDate, 'yyyy-MM-dd HH:mm') : '무제한'}">무제한</td>
+
+                <td>
+            <span class="status-pill"
+                  th:classappend="${state == '유효'} ? ' ok' : (${state == '만료'} ? ' expired' : ' used')"
+                  th:text="${state}">유효</span>
+                </td>
+              </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <!-- pagination fragment -->
+          <div th:replace="~{fragments/pagination-ui :: pagination}"></div>
+        </section>
+      </th:block>
+
+      <th:block th:if="${ph == null or ph.pgList.size() <= 0}">
+        <div class="no-usage" th:if="${ph.pgList.size() == 0}">
+          조회된 쿠폰 사용 내역이 없습니다.
+        </div>
+      </th:block>
+    </div>
+
+
+    <!-- frag 3) 전체 유저 정보 보기 -->
+    <div th:fragment="all-user">
+      <th:block th:if="${ph != null and !#lists.isEmpty(ph.pgList)}">
+        <!-- frag) 전체 유저 정보 -->
+        <section class="user-list-wrap" >
+          <!-- Search fragment -->
+          <div th:replace="~{fragments/admin-search :: search-sort}"></div>
+
+          <!-- 헤더 -->
+          <div class="user-list-header">
+            <h3 class="user-list-title">전체 유저 정보</h3>
+            <span class="badge" th:text="|총 ${ph.ttc}명|">총 0명</span>
+          </div>
+
+          <!-- 테이블 -->
+          <div class="user-table-scroll">
+            <table class="user-table" role="table" aria-label="전체 유저 정보">
+              <thead>
+              <tr>
+                <th class="col-id">ID</th>
+                <th>이름</th>
+                <th>이메일</th>
+                <th>휴대폰</th>
+                <th>등급 / 포인트</th>
+                <th>이메일 인증</th>
+                <th>휴대폰 인증</th>
+                <th>성인 인증</th>
+                <th>가입일</th>
+                <th>마지막 로그인</th>
+                <th>권한</th>
+              </tr>
+              </thead>
+              <tbody>
+              <tr th:each="u : ${ph.pgList}"
+                  th:with="
+              emailOk=${u.emailCertified},
+              mobileOk=${u.mobileCertified},
+              isAdult=${u.adult}
+            ">
+                <td class="col-id" th:text="${u.userId}">1</td>
+                <td class="nowrap" th:text="${u.userName}">홍길동</td>
+
+                <!-- 이메일/휴대폰은 길 수 있어 말줄임 처리 -->
+                <td class="ellipsis" th:title="${u.userEmail}" th:text="${u.userEmail}">user@example.com</td>
+                <td class="ellipsis" th:title="${u.userPhone}" th:text="${u.userPhone}">010-1234-5678</td>
+
+                <td class="nowrap">
+            <span class="pill grade"
+                  th:text="${u.userGrade != null ? u.userGrade : '등급없음'}">SILVER</span>
+                  <!--th:classappend="${u.userGrade} == 'PLATINUM' ? ' platinum' :
+                                  (${u.userGrade} == 'GOLD' ? ' gold' :
+                                  (${u.userGrade} == 'SILVER' ? ' silver' :
+                                  (${u.userGrade} == 'BRONZE' ? ' bronze' : '')))}">
+                  -->
+                  <span class="muted" th:text="|(${u.userGradePoint} pt)|">(0 pt)</span>
+                </td>
+
+                <td class="nowrap">
+                  <span class="pill ok"  th:text="${u.isEmailCertified} ? 'O' : 'X'"></span>
+                </td>
+
+                <td class="nowrap">
+                  <span class="pill ok"  th:text="${u.isMobileCertified} ? 'O' : 'X'"></span>
+                </td>
+
+                <td class="nowrap">
+                  <span class="pill ok" th:text="${u.isAdult} ? 'O' : 'X'"></span>
+                </td>
+
+                <td class="nowrap" th:text="${u.regDate != null ? #temporals.format(u.regDate,'yyyy-MM-dd HH:mm') : '-'}">2025-01-01 10:00</td>
+                <td class="nowrap" th:text="${u.lastLogin != null ? #temporals.format(u.lastLogin,'yyyy-MM-dd HH:mm') : '-'}">2025-01-10 08:30</td>
+
+                <td class="roles">
+            <span class="role-chip"
+                  th:each="a : ${u.authList}"
+                  th:text="${a.authRole != null ? a.authRole : ''}"></span>
+                </td>
+              </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <!-- 페이지네이션 -->
+          <div th:replace="~{fragments/pagination-ui :: pagination}"></div>
+        </section>
+      </th:block>
+
+
+      <!-- 빈 상태 -->
+      <th:block th:if="${ph == null or ph.pgList.size() <= 0}">
+        <div class="no-users" style="margin-top:30px;">
+          조회된 유저가 없습니다.
+        </div>
+      </th:block>
+    </div>
+
+
+    <!-- frag 4) 고객 문의 -->
+    <div th:fragment="qna">
+      <section class="iq-list-wrap" th:if="${ph != null and !#lists.isEmpty(ph.pgList)}">
+        <!-- Search fragment -->
+        <div th:replace="~{fragments/admin-search :: search-sort}"></div>
+
+        <!-- 헤더 -->
+        <div class="iq-list-header">
+          <div class="iq-title-row">
+            <h3 class="iq-list-title">전체 고객문의</h3>
+
+            <!-- filterType -->
+            <button class="btn btn-primary incompleted-qna">미등록된 답변 보기</button>
+          </div>
+
+          <span class="iq-badge" th:text="|총 ${ph.ttc}건|">총 0건</span>
+        </div>
+
+        <!-- 테이블 -->
+        <div class="iq-table-scroll">
+          <table class="iq-table" role="table" aria-label="전체 고객문의">
+            <thead>
+            <tr>
+              <th>답변 상태</th>
+              <th>제목</th>
+              <th>이메일</th>
+              <th>공개</th>
+              <th>등록일</th>
+              <th class="col-actions">삭제</th>
+            </tr>
+            </thead>
+            <tbody>
+            <!-- and 의 피연산자는 반드시 boolean 이어야 함-->
+            <tr th:each="q : ${ph.pgList}"
+                th:with="answered=${q.comment != null and !#strings.isEmpty(q.comment)}, isSecret=${q.secret == true}">
+
+              <!-- 답변 상태 -->
+              <td class="nowrap">
+              <span class="pill">
+                <span th:text="${q.comment == null or #strings.isEmpty(q.comment)} ? '미답변' : '답변완료'">미답변</span>
+              </span>
+                <span class="muted"
+                      th:if="${!#strings.isEmpty(q?.comment) and q?.commentRegDate != null}"
+                      th:text="|(${#temporals.format(q.commentRegDate,'yyyy-MM-dd HH:mm')})|">
+                (2025-01-02 12:00)
+              </span>
+              </td>
+
+              <!-- 제목 -->
+              <td class="ellipsis title-cell" th:title="${q.title}">
+                <a th:href="@{/qna/detail?(bno=${q.bno})}"><span th:text="${q.title}">문의 제목입니다</span></a>
+              </td>
+
+              <!-- 이메일은 길 수 있어 말줄임, th:title 속성은 포인터를 갖다 댔을 때, 툴팁으로 추가 정보 제공 -->
+              <td class="ellipsis" th:text="${q.userEmail}">user@example.com</td>
+
+              <!-- 공개/비밀 -->
+              <td class="nowrap">
+              <span class="pill">
+                <span th:text="${isSecret} ? '비밀' : '공개'">공개</span>
+              </span>
+              </td>
+
+              <td class="nowrap" th:text="${q.regDate != null ? #temporals.format(q.regDate,'yyyy-MM-dd HH:mm') : '-'}">2025-01-01 10:00</td>
+
+
+              <!-- 액션 -->
+              <td class="col-actions">
+                <div class="iq-actions">
+                  <button class="btn delete-btn cupon-delete-btn"
+                          id="qna-delete-btn"
+                          th:data-bno="${q.bno}">삭제</button>
+                </div>
+              </td>
+            </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <!-- 페이지네이션 -->
+        <div th:replace="~{fragments/pagination-ui :: pagination}"></div>
+      </section>
+
+      <!-- 빈 상태 -->
+      <div class="no-users" th:if="${ph == null or ph.pgList.size() <= 0}" style ="margin-top: 30px;">
+        등록된 고객문의가 없습니다.
+      </div>
+    </div>
+
+
+    <!-- frag 5) 결제 완료 내역 -->
+    <div th:fragment="payment-completed">
+      <section class="iq-list-wrap" th:if="${ph != null and !#lists.isEmpty(ph.pgList)}">
+        <!-- Search fragment -->
+        <div th:replace="~{fragments/admin-search :: search-sort}"></div>
+
+        <!-- 헤더 -->
+        <div class="iq-list-header">
+          <div class="iq-title-row">
+            <h3 class="iq-list-title">결제 완료 내역</h3>
+
+          </div>
+
+          <span class="iq-badge" th:text="|총 ${ph.ttc}건|">총 0건</span>
+        </div>
+
+        <!-- 테이블 -->
+        <div class="iq-table-scroll">
+          <table class="iq-table" role="table" aria-label="결제 완료 내역">
+            <thead>
+            <tr>
+              <th>결제 타입</th> <!-- Entity: type, DB: order_type (e.g., NORMAL) -->
+              <th>결제 수단</th> <!-- method (e.g., 간편결제) -->
+              <th>결제 ID</th> <!-- paymentKey -->
+              <th>상품명</th> <!-- orderName (e.g., K클래식 일반실) -->
+              <th>결제 금액</th> <!-- totalAmount (e.g., 26000)-->
+              <th>환불 키</th>
+              <th>결제 요청 시각</th> <!-- Entity: requestAt, DB: order_requested -->
+              <th>결제 승인 시각</th> <!-- Entity: approvedAt, DB: order_approved -->
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="p : ${ph.pgList}">
+              <!-- 결제 타입 -->
+              <td class="nowrap">
+                <span class="pill" th:text="${p.type}"></span>
+              </td>
+
+              <!-- 결제 수단 -->
+              <td class="ellipsis" th:title="${p.method}">
+                <span th:text="${p.method}"></span>
+              </td>
+
+              <!-- 결제 ID -->
+              <td class="ellipsis title-cell" th:title="${p.orderId}">
+                <span th:text="${p.orderId}"></span>
+              </td>
+
+              <!-- 상품명 -->
+              <td class="ellipsis" th:title="${p.orderName}" th:text="${p.orderName}"></td>
+
+              <!-- 결제 금액 -->
+              <td class="nowrap">
+                <span class="pill">
+                  <span th:text="${p.totalAmount}">공개</span>
+                </span>
+              </td>
+
+              <!-- 환불 키 -->
+              <td class="nowrap">
+                <span th:text="${p.paymentKey}"></span>
+              </td>
+
+              <!-- 결제 요청 시각, 괄호 적어도 되고 안 적어도 됨 -->
+              <td class="nowrap"
+                  th:text="${p.getReqWithKSTFormatted}">2025-01-01 10:00</td>
+
+              <!-- 결제 승인 시각, 괄호 적어도 되고 안 적어도 됨 -->
+              <td class="nowrap"
+                  th:text="${p.getAppWithKSTFormatted}">2025-01-01 10:00</td>
+            </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <!-- 페이지네이션 -->
+        <div th:replace="~{fragments/pagination-ui :: pagination}"></div>
+      </section>
+
+      <!-- 빈 상태 -->
+      <div class="no-users" th:if="${ph == null or ph.pgList.size() <= 0}" style ="margin-top: 30px;">
+        결제 내역이 존재하지 않습니다.
+      </div>
+    </div>
+
+
+    <!-- frag 6) 환불 완료 내역 -->
+    <div th:fragment="payment-cancel">
+      <section class="iq-list-wrap" th:if="${ph != null and !#lists.isEmpty(ph.pgList)}">
+        <!-- Search fragment -->
+        <div th:replace="~{fragments/admin-search :: search-sort}"></div>
+
+        <!-- 헤더 -->
+        <div class="iq-list-header">
+          <div class="iq-title-row">
+            <h3 class="iq-list-title">환불 완료 내역</h3>
+
+          </div>
+
+          <span class="iq-badge" th:text="|총 ${ph.ttc}건|">총 0건</span>
+        </div>
+
+        <!-- 테이블 -->
+        <div class="iq-table-scroll">
+          <table class="iq-table" role="table" aria-label="결제 완료 내역">
+            <thead>
+            <tr>
+              <th>환불 키</th> <!-- paymentKey -->
+              <th>환불 사유</th> <!-- cancelReason -->
+              <th>환불 금액</th> <!-- cancelAmount -->
+              <th>환불 승인 시각</th> <!-- canceledAt -->
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="p : ${ph.pgList}">
+              <!-- 환불 키 -->
+              <td class="nowrap">
+                <span class="pill" th:text="${p.paymentKey}"></span>
+              </td>
+
+              <!-- 환불 사유 -->
+              <td class="ellipsis" th:title="${p.cancelReason}">
+                <span th:text="${p.cancelReason}"></span>
+              </td>
+
+              <!-- 환불 금액 -->
+              <td class="ellipsis title-cell" th:title="${p.cancelAmount}">
+                <span th:text="${p.cancelAmount}"></span>
+              </td>
+
+              <!-- 환불 승인 시각, 괄호 써도 되고 안써도 됨 -->
+              <td class="nowrap"
+                  th:text="${p.getCanceledAtKST}">2025-01-01 10:00</td>
+            </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <!-- 페이지네이션 -->
+        <div th:replace="~{fragments/pagination-ui :: pagination}"></div>
+      </section>
+
+      <!-- 빈 상태 -->
+      <div class="no-users" th:if="${ph == null or ph.pgList.size() <= 0}" style ="margin-top: 30px;">
+        환불 내역이 존재하지 않습니다.
+      </div>
+    </div>
+
+
+    <!-- frag 7) 신고 내역 -->
+    <div th:fragment="review-report">
+      <section class="iq-list-wrap" th:if="${ph != null and !#lists.isEmpty(ph.pgList)}">
+        <!-- Search fragment -->
+        <div th:replace="~{fragments/admin-search :: search-sort}"></div>
+
+        <!-- 헤더 -->
+        <div class="iq-list-header">
+          <div class="iq-title-row">
+            <h3 class="iq-list-title">신고 내역</h3>
+
+          </div>
+
+          <span class="iq-badge" th:text="|총 ${ph.ttc}건|">총 0건</span>
+        </div>
+
+        <!-- 테이블 -->
+        <div class="iq-table-scroll">
+          <table class="iq-table" role="table" aria-label="신고 내역">
+            <thead>
+            <tr>
+              <th>바로 가기</th> <!-- /lodge/detail/{lodgeId} -->
+              <th>신고 카운트</th> <!-- reportedCount -->
+              <th>작성자</th> <!-- userEmail -->
+              <th>내용</th> <!-- content -->
+              <th>리뷰 작성 시각</th> <!-- createdAt -->
+              <th>삭제</th> <!-- th:data-review-id 사용 -->
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="r : ${ph.pgList}">
+              <!-- 바로가기 -->
+              <td class="nowrap">
+                <!-- /lodge/detail/{lodgeId} 와 같은 url 은 아래와 같이 매핑 -->
+                <!-- 만약, /lodge/detail?lodgeId=${} 같은 url 이라면 @{lodge/detail/(lodgeId=${r.lodgeId})} 와 같이 작성  -->
+                <a th:href="@{/lodge/detail/{lodgeId}(lodgeId=${r.lodgeId})}">
+                  <span class="pill">이동</span>
+                </a>
+              </td>
+
+              <!-- 신고 카운트 -->
+              <td class="nowrap">
+                <span class="pill" th:text="${r.reportedCount}"></span>
+              </td>
+
+              <!-- 작성자 -->
+              <td class="ellipsis" th:title="${r.userEmail}">
+                <span th:text="${r.userEmail}"></span>
+              </td>
+
+              <!-- 내용 -->
+              <td class="ellipsis title-cell" th:title="${r.content}">
+                <span th:text="${r.content}"></span>
+              </td>
+
+              <!-- 리뷰 작성 시각 -->
+              <!-- |(${#temporals.format(q.commentRegDate,'yyyy-MM-dd HH:mm')})| -->
+              <td class="nowrap"
+                  th:text="|(${#temporals.format(r.createdAt, 'yyyy-MM-dd HH:mm')})|"></td>
+
+              <!-- 액션 -->
+              <td class="col-actions">
+                <div class="iq-actions">
+                  <button class="btn delete-btn cupon-delete-btn"
+                          id="review-delete-btn"
+                          th:data-review-id="${r.reviewId}">삭제</button>
+                </div>
+              </td>
+            </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <!-- 페이지네이션 -->
+        <div th:replace="~{fragments/pagination-ui :: pagination}"></div>
+      </section>
+
+      <!-- 빈 상태 -->
+      <div class="no-users" th:if="${ph == null or ph.pgList.size() <= 0}" style ="margin-top: 30px;">
+        신고 내역이 존재하지 않습니다.
+      </div>
+    </div>
+
+
+    <!-- frag 8) 예약 내역 -->
+    <div th:fragment="reservation-order">
+      <section class="iq-list-wrap" th:if="${ph != null and !#lists.isEmpty(ph.pgList)}">
+        <!-- Search fragment -->
+        <div th:replace="~{fragments/admin-search :: search-sort}"></div>
+
+        <!-- 헤더 -->
+        <div class="iq-list-header">
+          <div class="iq-title-row">
+            <h3 class="iq-list-title">예약 내역</h3>
+
+          </div>
+
+          <span class="iq-badge" th:text="|총 ${ph.ttc}건|">총 0건</span>
+        </div>
+
+        <!-- 테이블 -->
+        <div class="iq-table-scroll">
+          <table class="iq-table" role="table" aria-label="신고 내역">
+            <thead>
+            <tr>
+              <th>예약자명</th> <!-- userId 로 userName 조회 -->
+              <th>예약 인원</th> <!-- guestsAmount -->
+              <th>객실명</th> <!-- roomId 로 객실명 조회 -->
+              <th>예약 타입</th>
+              <th>금액</th> <!-- totalAmount -->
+              <th>이용 시작일</th> <!-- OffsetDateTime, startDate -->
+              <th>이용 종료일</th> <!-- OffsetDateTime, endDate -->
+              <th>예약 일시</th> <!-- createdAt -->
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="r : ${ph.pgList}">
+              <!-- 예약자명 -->
+              <td class="nowrap" th:text="${r.userName}"></td>
+
+              <!-- 예약인원 -->
+              <td class="nowrap" th:text="${r.guestsAmount}"></td>
+
+              <!-- 객실명 -->
+              <td class="ellipsis" th:title="${r.roomName}" th:text="${r.roomName}"></td>
+
+              <!-- 예약 타입 -->
+              <td class="nowrap" th:text="${r.reservationType}"></td>
+
+              <!-- 금액 -->
+              <td class="nowrap" th:text="${r.totalAmount}"></td>
+
+              <!-- 이용 시작일 -->
+              <td class="nowrap" th:text="${r.getStartDateTimeKST()}"></td>
+
+              <!-- 이용 종료일 -->
+              <td class="nowrap" th:text="${r.getEndDateTimeKST()}"></td>
+
+              <!-- 예약 일시 -->
+              <td class="nowrap" th:text="${r.getReservationRegDateTimeKST()}"></td>
+            </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <!-- 페이지네이션 -->
+        <div th:replace="~{fragments/pagination-ui :: pagination}"></div>
+      </section>
+
+      <!-- 빈 상태 -->
+      <div class="no-users" th:if="${ph == null or ph.pgList.size() <= 0}" style ="margin-top: 30px;">
+        예약 내역이 존재하지 않습니다.
+      </div>
+    </div>
+
+
+    <!-- frag 9) 숙소 별 정보 -->
+    <div th:fragment="reservation-lodge">
+      <section class="iq-list-wrap" th:if="${ph != null and !#lists.isEmpty(ph.pgList)}">
+        <!-- Search fragment -->
+        <div th:replace="~{fragments/admin-search :: search-sort}"></div>
+
+        <!-- 헤더 -->
+        <div class="iq-list-header">
+          <div class="iq-title-row">
+            <h3 class="iq-list-title">숙소 별 정보</h3>
+
+          </div>
+
+          <span class="iq-badge" th:text="|총 ${ph.ttc}건|">총 0건</span>
+        </div>
+
+        <!-- 테이블 -->
+        <div class="iq-table-scroll">
+          <table class="iq-table" role="table" aria-label="숙소 별 정보">
+            <thead>
+            <tr>
+              <th>숙소명</th> <!-- lodgeName -->
+              <th>위치</th> <!-- lodgeAddr -->
+              <th>전화번호</th> <!-- businessCall -->
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="l : ${ph.pgList}">
+              <!-- 숙소명 -->
+              <td class="nowrap">
+                <span class="pill" th:text="${l.lodgeName}"></span>
+              </td>
+
+              <!-- 위치 -->
+              <td class="ellipsis" th:title="${l.lodgeAddr}">
+                <span th:text="${l.lodgeAddr}"></span>
+              </td>
+
+              <!-- 전화번호 -->
+              <td class="ellipsis title-cell" th:title="${l.businessCall}">
+                <span th:text="${l.businessCall}"></span>
+              </td>
+            </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <!-- 페이지네이션 -->
+        <div th:replace="~{fragments/pagination-ui :: pagination}"></div>
+      </section>
+
+      <!-- 빈 상태 -->
+      <div class="no-users" th:if="${ph == null or ph.pgList.size() <= 0}" style ="margin-top: 30px;">
+        존재하는 숙소 정보가 없습니다.
+      </div>
+    </div>
+  </body>
+</html>

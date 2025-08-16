@@ -1,18 +1,18 @@
 /* Layout */
 .wrapper {
-  width: 1573px;
-  max-width: 100%;
+  width: 100%;
+  max-width: 1573px;
   margin: 0 auto;
 }
 .inner {
-  width: 1200px;
+  width: 100%;
+  max-width: 1200px;
   margin: 0 auto;
 }
-
 /* Header Styles - Vertical center alignment */
 .site-header {
   width: 100%;
-  height: 80px; /* 전체 헤더 높이 */
+  height: 61px; /* 전체 헤더 높이 */
   background-color: #fff;
   box-shadow: 0 2px 4px rgba(0,0,0,0.1);
   position: sticky;
@@ -40,8 +40,22 @@
 .header-actions {
   display: flex;
   align-items: center;
+  gap: 2px;
+  position: relative;
 }
 
+.header-actions > a {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0 12px;     /* 좌우 여백 */
+  text-decoration: none;
+  line-height: 1;
+}
+ /* 아이콘 버튼만 site-header 높이에 꽉 차도록 */
+.header-actions > a.icon-btn {
+  height: 100%;
+}
 /* 아이콘 버튼 */
 .icon-btn {
   display: flex;
@@ -49,28 +63,30 @@
   justify-content: center;
   height: 100%;
   padding: 0 12px;
+  background: none;
 }
 
+
 /* 로그인/회원가입 버튼 */
-.btn-login,
-.btn-signup {
+.header-actions > a.btn-login,
+.header-actions > a.btn-logout  {
   display: inline-flex;
   align-items: center;
   justify-content: center;
   height: auto;      /* 텍스트와 패딩 기준 높이 */
-  padding: 8px 16px;
-  border-radius: 8px;
+  padding: 10px 16px;
+  border-radius: 10px;
   text-decoration: none;
   line-height: 1;
+  font-weight: bold;
 }
 .btn-login {
-  background-color: #E74B60;
-  color: #fff;
-}
-.btn-signup {
   background-color: #FFE4EC;
   color: #E74B60;
-  margin-left: 16px;
+}
+.btn-logout {
+  background-color: #E74B60;
+  color: #fff;
 }
 
 /* 로고 이미지 크기 */
@@ -79,6 +95,71 @@
   height: 58px;
   object-fit: contain;
 }
+
+
+/* 해찬 */
+/* 알림 */
+
+/* 알림버튼 커서 */
+#notificationBtn{
+  cursor: pointer;
+}
+
+/* 알림 div */
+.notification {
+  position: absolute;
+  height: 300px;
+  background-color: rgb(255, 255, 255);
+  width: 100%;
+  top: 55px;
+  border: 1px solid rgba(126, 126, 126, 0.2);
+  border-top: none;
+  border-radius: 0 0 8px 8px;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.notification li {
+  padding: 10px 10px;
+  text-align: left;
+  font-size: 14px;
+  font-weight: 400;
+}
+.notification-under-tit {
+  font-size: 12px;
+  color: #7a7a7a77;
+  margin-top: 4px;
+}
+
+/* 더보기 li */
+.notification-more {
+  text-align: center !important;
+  border: 1px solid rgba(126, 126, 126, 0.2);
+  border-bottom: none;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+  position: absolute;
+  bottom: 14px;
+  left: 50%;
+  padding: 10px 0 !important;
+  background-color: #E74B60;
+  transform: translateX(-50%);
+}
+
+.notification-more a {
+  color: white;
+  padding: 10px 10px;
+}
+
+.none-notification {
+  text-align: center !important;
+  margin: 50% 0;
+}
+
+/* 토글용 */
+.toggle-display {
+  display: none;
+}
+
 
 
 
@@ -181,4 +262,45 @@
   border-top: 1px solid #ccc;
 }
 
+/* 탑 / 고객센터 버튼 */
+.header-top-div{
+  position: fixed;
+  bottom: 70px;
+  right: 40px;
+  width: 55px;
+  height: 115px;
+  align-items: center;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  background-color: white;
+  border: 1px solid #dddddd;
+  z-index: 1000;
+}
 
+.header-top-div div {
+  position: relative;
+  height: 50%;
+}
+
+.header-top-div div:first-child {
+  border-bottom: 1px solid rgba(150, 150, 150, 0.3);
+}
+
+.header-top-div a {
+  display: inline-block;
+  position: absolute;
+  top: 50%;
+  left: 41%;
+  transform: translate(-50%, -50%);
+  width: 20px;
+}
+
+.header-top-div a svg {
+  color: #E74B60;
+  width: 30px;
+  height: 30px;
+}
+
+.header-top-div a svg:hover {
+  cursor: pointer;
+  color: #fa4c63;
+}

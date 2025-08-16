@@ -16,9 +16,11 @@
   <!-- 완전 manual 바인딩: th:object 제거 -->
   <form th:action="@{/reviews/modify}"
         method="post" enctype="multipart/form-data"
-        id="editReviewForm" class="review-form">
+        id="editReviewForm" class="review-form"
+        onsubmit="const cnt = document.querySelectorAll('input[name=tagNames]:checked').length;
+            if (cnt > 3) {alert('태그는 최대 3개까지 선택 가능합니다.'); return false;}">
     <input type="hidden" sec:csrfInput=""/>
-
+    <input type="hidden" name="pageParam" th:value="${pageParam}" />
     <!-- 히든 필드: name/value 직접 -->
     <input type="hidden" name="reviewId"
            th:value="${reviewRequest.reviewId}"/>

@@ -1,17 +1,18 @@
 // 초기화
 const today = new Date();
- // 선택 시 시간 부분 무시
-today.setHours(0,0,0,0);
- // 최대 지정 날짜
+// 선택 시 시간 부분 무시
+today.setHours(0, 0, 0, 0);
+// 최대 지정 날짜
 const maxDate = new Date();
- // 현재 날짜로부터 180 일 뒤까지만 선택 가능
+// 현재 날짜로부터 90 일 뒤까지만 선택 가능
 maxDate.setDate(maxDate.getDate() + 90);
-maxDate.setHours(23,59,59,999);
+maxDate.setHours(23, 59, 59, 999);
 
- // 녇도, const nextYear = today.getFullYear() + (today.getMonth() >= 9 ? 1 : 0);
+// 년도, const nextYear = today.getFullYear() + (today.getMonth() >= 9 ? 1 : 0);
 
 // 달력 라이브러리
-flatpickr("#checkInInput, #checkOutInput", {
+
+flatpickr = flatpickr("#checkInInput, #checkOutInput", {
   // 월 셀렉터 사용 X
   monthSelectorType: "static",
 
@@ -39,7 +40,7 @@ flatpickr("#checkInInput, #checkOutInput", {
    *
    *  > locale
    */
-  locale:{
+  locale: {
     months: {
       longhand: [
         "01", "02", "03", "04", "05", "06",
@@ -51,12 +52,12 @@ flatpickr("#checkInInput, #checkOutInput", {
       ]
     },
     weekdays: {
-      shorthand: ["월","화","수","목","금","토","일"],
-      longhand: ["월요일","화요일","수요일","목요일","금요일","토요일","일요일"]
+      shorthand: ["월", "화", "수", "목", "금", "토", "일"],
+      longhand: ["월요일", "화요일", "수요일", "목요일", "금요일", "토요일", "일요일"]
     }
   },
 
-  onReady: function(selectDates, dateStr, instance){
+  onReady: function (selectDates, dateStr, instance) {
     console.log("dateFormat : ", instance.config.dateFormat);
   }
 });

@@ -18,10 +18,10 @@ public class CustomUserDetailService implements UserDetailsService {
   public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
 
     UserDTO userDTO = userService.selectUserEmail(username);
-    log.info("username >>>{}",username);
+    log.info("username >>>{}", username);
     log.info("UserDetail userDTO >>> {}", userDTO);
 
-    if(userDTO == null){
+    if (userDTO == null) {
       throw new UsernameNotFoundException(username);
     }
 

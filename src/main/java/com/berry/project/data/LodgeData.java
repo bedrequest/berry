@@ -33,7 +33,7 @@ public class LodgeData {
 
   //  2. /lodge/detail용
   private final Map<String, String> facilityIconMap
-      = Map.ofEntries(Map.entry("사우나","spa"),
+      = Map.ofEntries(Map.entry("사우나", "spa"),
       Map.entry("수영장", "swim"),
       Map.entry("바베큐", "barbecue"),
       Map.entry("레스토랑", "restaurant"),

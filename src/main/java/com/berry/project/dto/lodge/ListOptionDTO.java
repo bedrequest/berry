@@ -18,6 +18,9 @@ public class ListOptionDTO {
   private int lowestPrice, highestPrice;
   private Integer facilityMask;
 
+  @Setter
+  private int favoriteMask;
+
   private String sort;
 
   public ListOptionDTO() {
@@ -36,6 +39,7 @@ public class ListOptionDTO {
     setKeyword(keyword);
     setFreeForm(freeForm);
   }
+
   public ListOptionDTO(String keyword, Boolean freeForm, String lodgeType, Integer lowestPrice, Integer highestPrice, Integer facilityMask, String sort) {
     this(keyword, freeForm);
 
@@ -49,6 +53,7 @@ public class ListOptionDTO {
   public void setFreeForm(Boolean freeForm) {
     if (freeForm != null) this.freeForm = freeForm;
   }
+
   public void setLowestPrice(Integer lowestPrice) {
     int[] priceTable = new LodgeData().getPriceTable();
 
@@ -58,7 +63,7 @@ public class ListOptionDTO {
     }
 
     int tableIndex = 0;
-    for (int i = 0; i < priceTable.length - 2; i++)
+    for (int i = 0; i < priceTable.length - 1; i++)
       if (priceTable[i] == lowestPrice) {
         tableIndex = i;
         break;
@@ -87,6 +92,7 @@ public class ListOptionDTO {
   public void setFacilityMask(Integer facilityMask) {
     if (facilityMask != null) this.facilityMask = facilityMask;
   }
+
   public void setSort(String sort) {
     if (sort != null) this.sort = sort;
   }
@@ -97,6 +103,7 @@ public class ListOptionDTO {
     if (lodgeType != null) return false;
     if (getLowestPrice() != priceTable[0]) return false;
     if (getHighestPrice() != priceTable[priceTable.length - 1]) return false;
-    return facilityMask == 0;
+    if (facilityMask != 0) return false;
+    return favoriteMask == 0;
   }
 }

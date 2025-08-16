@@ -5,7 +5,7 @@ import com.berry.project.entity.user.DeactivatedUser;
 
 public interface DeactivatedUserService {
 
-  default DeactivatedUser convertDTOToEntity(DeactivatedUserDTO deactivatedUserDTO){
+  default DeactivatedUser convertDTOToEntity(DeactivatedUserDTO deactivatedUserDTO) {
     return DeactivatedUser.builder()
         .userId(deactivatedUserDTO.getUserId())
         .dReason(deactivatedUserDTO.getDReason())

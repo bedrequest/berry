@@ -118,6 +118,7 @@
   -webkit-line-clamp: 3;
   -webkit-box-orient: vertical;
   transition: max-height 0.3s ease;
+  margin-top: 0.7rem;
 }
 .review-content:not(.collapsed) {
   -webkit-line-clamp: unset;
@@ -359,17 +360,30 @@ nav[aria-label="페이지 네비게이션"] {
   gap: 5.5rem;
 }
 
-/* ── 카드 스타일 ── */
+/* 카드 그룹 전체 스타일 */
 .tag-card {
-  background-color: #E74B60;
+  background: linear-gradient(135deg, #E74B60, #fd596f); /* 메인색 + 파스텔핑크 */
   color: #fff;
   border-radius: 999px;
-  padding: 0.75rem 1.5rem;
+  padding: 0.6rem 1.2rem;
   font-size: 1rem;
   text-align: center;
-  align-self: center;
   width: 75%;
+  box-shadow: 0 2px 6px rgba(231, 75, 96, 0.2); /* 약한 그림자 */
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
 }
+
+/* hover 시 살짝만 튀어나옴 */
+.tag-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 10px rgba(231, 75, 96, 0.25);
+}
+
+/* 차트 박스도 약간 둥글리고 배경 연함 */
+.tag-chart {
+  padding: 12px;
+}
+
 
 /* ── 차트: 너비 100% ── */
 .tag-chart canvas {
@@ -484,3 +498,163 @@ nav[aria-label="페이지 네비게이션"] {
 }
 .review-images .swiper-button-prev { left: -1px; }
 .review-images .swiper-button-next { right: 10px; }
+
+
+/* ── 미래지향 글로우 & 웨이브 ── */
+.ai-summary-box {
+  position: relative;
+  overflow: hidden;                 /* 스윕 라인이 밖으로 새지 않도록 */
+  background: linear-gradient(135deg,
+    #00e0ff,
+    #7b5cff,
+    #d26eff,
+    #61dafb,
+    #141e30
+  );
+  background-size: 300% 300%;
+  animation: gradientWave 20s cubic-bezier(0.6, 0.05, 0.4, 0.95) infinite,
+             glowPulse 6s ease-in-out infinite;  /* 은은한 호흡형 글로우 */
+
+  border: 1px solid rgba(97, 218, 251, 0.6);
+  border-radius: 10px;
+  padding: 18px 24px;
+  margin: 24px 0;
+  box-shadow:
+    0 4px 14px rgba(0,0,0,0.28),
+    0 0 0 1px rgba(97,218,251,0.35) inset,
+    0 0 22px rgba(97, 218, 251, 0.15); /* 기본 네온 아우라 */
+  transition: transform 0.2s ease;
+  will-change: background-position, box-shadow;
+}
+
+.ai-summary-box:hover {
+  transform: translateY(-3px);
+}
+
+/* 파도치는 배경 */
+@keyframes gradientWave {
+  0%   { background-position: 0% 50%; }
+  50%  { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
+/* 호흡하듯 밝기 변화 */
+@keyframes glowPulse {
+  0%, 100% {
+    box-shadow:
+      0 4px 14px rgba(0,0,0,0.28),
+      0 0 0 1px rgba(97,218,251,0.35) inset,
+      0 0 18px rgba(97, 218, 251, 0.12);
+  }
+  50% {
+    box-shadow:
+      0 8px 20px rgba(0,0,0,0.32),
+      0 0 0 1px rgba(97,218,251,0.45) inset,
+      0 0 30px rgba(97, 218, 251, 0.22);
+  }
+}
+
+/* 대각선으로 지나가는 빛 스윕(Shine) */
+.ai-summary-box::before {
+  content: "";
+  position: absolute;
+  inset: -40% -60%;                 /* 넉넉히 깔아야 자연스러움 */
+  background: linear-gradient(
+    115deg,
+    rgba(255,255,255,0) 35%,
+    rgba(255,255,255,0.18) 50%,
+    rgba(255,255,255,0) 65%
+  );
+  transform: translateX(-60%) rotate(8deg);
+  animation: shineSweep 5.6s ease-in-out infinite;
+  pointer-events: none;
+  will-change: transform, opacity;
+  opacity: .7;
+}
+
+/* 스윕 모션 */
+@keyframes shineSweep {
+  0%   { transform: translateX(-65%) rotate(8deg); opacity: .0; }
+  10%  { opacity: .75; }
+  50%  { transform: translateX(65%) rotate(8deg);  opacity: .75; }
+  60%  { opacity: .0; }
+  100% { transform: translateX(65%) rotate(8deg);  opacity: .0; }
+}
+
+/* 가장자리 은은한 오라 */
+.ai-summary-box::after {
+  content: "";
+  position: absolute;
+  inset: -12px;
+  border-radius: 14px;
+  background: radial-gradient(60% 60% at 50% 50%,
+              rgba(97,218,251,0.14), rgba(210,110,255,0.10), rgba(0,0,0,0) 70%);
+  filter: blur(10px);
+  pointer-events: none;
+  animation: auraPulse 7.5s ease-in-out infinite;
+  will-change: opacity;
+}
+
+@keyframes auraPulse {
+  0%, 100% { opacity: .55; }
+  50%      { opacity: .85; }
+}
+
+
+
+.ai-summary-title {
+  margin-bottom: 14px;
+  font-size: 1.4rem;
+  font-weight: 700;
+  color: #fff;
+  letter-spacing: 0.5px;
+}
+
+.ai-summary-content {
+  margin: 0;
+  font-size: 1.05rem;
+  line-height: 1.8;
+  color: #fff;
+  white-space: pre-line;
+}
+
+.ai-icon {
+  width: 28px;
+  height: 28px;
+  margin-right: 8px;
+  animation: spin 12s linear infinite, iconPulse 3s ease-in-out infinite;
+  vertical-align: middle;
+  filter: drop-shadow(0 0 3px rgba(97, 218, 251, 0.6));
+}
+
+@keyframes spin {
+  from { transform: rotate(0deg); }
+  to   { transform: rotate(360deg); }
+}
+
+@keyframes iconPulse {
+  0%, 100% {
+    filter: drop-shadow(0 0 3px rgba(97, 218, 251, 0.6));
+  }
+  50% {
+    filter: drop-shadow(0 0 6px rgba(97, 218, 251, 0.9));
+  }
+}
+
+
+.ai-summary-title {
+  display: flex;
+  align-items: center;
+  font-size: 1.5rem;
+  font-weight: bold;
+  color: white;
+}
+
+#toggleReviewFormBtn {
+  font-size: 1.22rem;   
+}
+
+#toggleReviewFormBtn:hover {
+  font-weight: 600;    
+}
+

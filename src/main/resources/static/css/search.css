@@ -19,6 +19,9 @@
   
   justify-content: space-between;
   align-items: center;
+  
+  user-select: none;
+  -webkit-user-select: none;
 
   background-color: white;
   font-size: 20px;
@@ -80,7 +83,7 @@
   position: absolute;
   left: 0;
   top: 55px;
-  width: 300px;
+  width: 306px;
   height: 300px;
   padding: 10px;
   overflow-y: scroll;
@@ -88,6 +91,10 @@
   border: 1px solid #e9e9e9;
   border-radius: 10px;
   background-color: white;
+
+  scrollbar-width: none;
+  
+  z-index: 2;
 }
 #searchBox .keywordSuggestion {
   display: flex;
@@ -141,16 +148,25 @@
 /* 2-3. noKeywordWarning : 키워드를 입력하지 않고 검색 버튼을 눌렀을 때 */
 #noKeywordWarning {
   position: absolute;
-  left: 48px; top: 4px;
+  left: 48px; top: -57px;
   padding: 10px;
 
   color: white;
+  font-size: 18px;
 
-  border-radius: 10px;
   background-color: black;
-  opacity: 0.7;
+  border-radius: 10px;
+  opacity: 0.8;
 
   transition: opacity 0.3s ease;
+  z-index: 1001;
+}
+#noKeywordWarning>span {
+  display: block;
+}
+#noKeywordWarning>svg {
+  position: absolute;
+  top: 28px; left: 81px;
 }
 /* ---------------------------------- */
 

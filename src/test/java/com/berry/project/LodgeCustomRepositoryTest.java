@@ -74,6 +74,25 @@ public class LodgeCustomRepositoryTest {
         new LodgeOptionDTO(),
         pageable
     ));
+
+    log.info("7. 띄어쓰기 테스트");
+    printResult(lodgeRepository.searchLodges(
+        new ListOptionDTO("서울 강남", true, null, 0, 9999999, null, null),
+        new LodgeOptionDTO(),
+        pageable
+    ));
+
+    log.info("8. 태그 테스트");
+    ListOptionDTO listOptionDTO = new ListOptionDTO("서울", true, null, 0, 9999999, null, null);
+    listOptionDTO.setFavoriteMask(4);
+    printResult(lodgeRepository.searchLodges(
+        listOptionDTO,
+        new LodgeOptionDTO(),
+        pageable
+    ));
+
+    log.info("9. 태그 온리 테스트");
+    printResult(lodgeRepository.searchByTag(4, pageable));
   }
 
   private void printResult(Page<Lodge> result) {

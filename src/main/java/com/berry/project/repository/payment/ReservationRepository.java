@@ -1,6 +1,7 @@
 package com.berry.project.repository.payment;
 
 import com.berry.project.entity.payment.Reservation;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -11,7 +12,7 @@ import java.util.List;
 import java.util.Optional;
 
 
-public interface ReservationRepository extends JpaRepository<Reservation, Long> {
+public interface ReservationRepository extends JpaRepository<Reservation, Long>, ReservationCustomRepository {
     
     /** findByOrderId(String orderId) - orderId 로 예약 정보 조회
      *
@@ -80,4 +81,30 @@ public interface ReservationRepository extends JpaRepository<Reservation, Long> 
      *
      */
     void deleteByBookingStatusAndReservationRegDateBefore(String bookingStatus, java.time.OffsetDateTime currentDate);
+
+  // ===== Top N 예약 숙소 집계 =====
+  // ================================================================
+
+  /**
+   * Projection: roomId 별 예약 건수
+   */
+  interface RoomBookingCount {
+    Long getRoomId();
+    Long getCnt();
+  }
+
+  /**
+   * roomId 별 예약 건수를 집계하여 내림차순으로 반환.
+   * - 취소된 예약(CANCELLED) 제외
+   * - Pageable 로 Top N 개만 조회 가능
+   */
+  @Query("""
+        SELECT r.roomId    AS roomId,
+               COUNT(r)    AS cnt
+          FROM Reservation r
+         WHERE r.bookingStatus <> 'CANCELLED'
+         GROUP BY r.roomId
+         ORDER BY COUNT(r) DESC
+    """)
+  List<RoomBookingCount> findTopBookedRooms(Pageable pageable);
 }

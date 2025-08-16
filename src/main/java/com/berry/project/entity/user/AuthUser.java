@@ -26,5 +26,4 @@ public class AuthUser extends TimeBase {
   private String authRole;
 
 
-
 }

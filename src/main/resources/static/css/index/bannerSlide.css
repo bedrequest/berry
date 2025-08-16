@@ -1,0 +1,153 @@
+/* 배너 */
+
+/* top-section */
+.banner-top-section {
+    position: relative;
+    width: 100%;
+    height: 700px;
+    background-color: white;
+}
+
+/* 배경색 */
+.banner-background {
+    width: 100%;
+    height: 504px;
+}
+
+/* 글자 슬라이드 ==========*/
+.text-slide-wrapper {
+    position: absolute;
+    top: 20%;
+    left: 44%;
+    width: 370px;
+    height: 250px;
+    margin-left: -470px;
+    overflow: hidden;
+}
+
+.text-side-tit-wrapper {
+    margin-top: 60px;
+}
+
+.text-slide-top-tit {
+    display: inline-block;
+    background-color: black;
+    color: white;
+    border-radius: 15px 15px 15px 0;
+    padding: 5px 10px;
+}
+
+.text-slide-bottom-tit {
+    font-size: 42px;
+    font-weight: 500;
+    margin-top: 40px;
+    margin-bottom: 20px;
+}
+
+/* 슬라이드 바 ==========*/
+.slide-bar-wrapper {
+    position: absolute;
+    top: 72%;
+    left: 50%;
+    width: 370px;
+    height: 108px;
+    margin-left: -470px;
+}
+
+.slide-bar-div {
+    position: relative;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    top: 50%;
+    left: 17%;
+    transform: translate(-50%, -50%);
+}
+
+.progress-container {
+    width: 100%;
+    height: 2px;
+    background-color: #b2b2b2;
+    border-radius: 10px;
+    overflow: hidden;
+    position: relative;
+    margin-right: 10px;
+}
+.progress-bar {
+    width: 0%;
+    height: 100%;
+    background-color: #363636;
+    transition: width 0.1s linear;
+}
+
+.slide-change-number {
+    font-weight: 700;
+}
+
+/* 슬라이드바 왼쪽 영역 */
+.slide-bar-div-left {
+    display: flex;
+    width: 50%;
+    align-items: center;
+    margin-right: 50px;
+}
+
+/* 슬라이드바 오른쪽 영역 */
+.slide-bar-div-right {
+    display: flex;
+}
+
+.slide-bar-div-right button {
+    display: flex;
+    background-color: transparent;
+    border: none;
+}
+
+.slide-bar-div-right button svg {
+    width: 22px;
+    height: 22px !important;
+}
+
+.slide-bar-div-right button:hover {
+    cursor: pointer;
+}
+
+/* 슬라이드 버튼 */
+#slideStopBtn {
+    margin: 0 5px;
+}
+
+/* 이미지 슬라이드 ==========*/
+.img-slide-wrapper {
+    position: absolute;
+    top: 10%;
+    right: 61%;
+    width: 1094px;
+    height: 550px;
+    transform: translateX(107%);
+    overflow: hidden;
+}
+
+/* 슬라이드 요소 */
+.img-slide-list {
+    display: flex;
+}
+
+.img-slide-resource {
+    width: 800px;
+    height: 540px;
+    margin-right: 50px;
+    border-radius: 8px;
+    box-shadow: 7px 7px 12px -7px #474747ab;
+    background-size: 100% 100%;
+}
+
+.text-slide-list {
+    display: flex;
+}
+
+.text-slide-resource {
+    width: 370px;
+    height: 250px;
+    background-color: transparent;
+}

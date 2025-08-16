@@ -24,13 +24,14 @@ public interface CustomerIqBoardService  {
         .title(customeriqboardDTO.getTitle())
         .userEmail(customeriqboardDTO.getUserEmail())
         .content(customeriqboardDTO.getContent())
-        .isSecret(customeriqboardDTO.getIsSecret())
+        .isSecret(customeriqboardDTO.getSecret())
         .comment(customeriqboardDTO.getComment())
         .commentRegDate(customeriqboardDTO.getCommentRegDate())
-      .build();
+        .build();
   }
 
   default CustomerIqBoardDTO convertEntityToDto(CustomerIqBoard customeriqboard) {
+    boolean isSecret = customeriqboard.getIsSecret() == null ? false : customeriqboard.getIsSecret();
 
     return CustomerIqBoardDTO.builder()
         .bno(customeriqboard.getBno())
@@ -40,10 +41,10 @@ public interface CustomerIqBoardService  {
         .content(customeriqboard.getContent())
         .regDate(customeriqboard.getRegDate())
         .modDate(customeriqboard.getModDate())
-        .isSecret(customeriqboard.getIsSecret() == null)
+        .secret(isSecret)
         .comment(customeriqboard.getComment())
         .commentRegDate(customeriqboard.getCommentRegDate())
-      .build();
+        .build();
   }
 
   default CustomerIqFile convertDtoToEntity(CustomerIqFileDTO customeriqfileDTO){
@@ -83,4 +84,7 @@ public interface CustomerIqBoardService  {
   Page<CustomerIqBoardDTO> getPageList(int pageNo);
 
   long fileRemove(String uuid);
+
+  long post(CustomerIqBoardDTO customeriqboardDTO);
+
 }

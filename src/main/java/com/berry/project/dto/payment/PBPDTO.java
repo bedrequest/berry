@@ -4,7 +4,6 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 import jakarta.persistence.Column;
 import lombok.*;
 
-import java.time.LocalDateTime;
 import java.time.OffsetDateTime;
 
 @Getter
@@ -18,7 +17,7 @@ public class PBPDTO {
   private String customerKey;
   private String orderId;
 
-  @Column(name="cupon_id", nullable = false)
+  @Column(name = "cupon_id", nullable = false)
   private Long cuponId;
 
   private String method;

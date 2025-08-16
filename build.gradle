@@ -54,7 +54,10 @@ dependencies {
 	implementation 'net.nurigo:sdk:4.2.7'
 	// send-mail
 	implementation 'org.springframework.boot:spring-boot-starter-mail'
-
+	// ai kms Spring WebFlux
+	implementation("org.springframework.boot:spring-boot-starter-webflux")
+	// ai kms OpenAI Java SDK
+	implementation("com.theokanning.openai-gpt3-java:client:0.18.2")
 	// thymeleaf security
 	// https://mvnrepository.com/artifact/org.thymeleaf.extras/thymeleaf-extras-springsecurity6
 	implementation 'org.thymeleaf.extras:thymeleaf-extras-springsecurity6'
