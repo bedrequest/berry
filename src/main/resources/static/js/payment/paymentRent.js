@@ -42,6 +42,25 @@ document.addEventListener('DOMContentLoaded', async () => {
   // 예약 가능 시간을 출력할 div
   const timeGrid = document.querySelector('.time-grid');
 
+  const rsvdInfoPayload = {
+    roomId : roomIdInfo,
+    
+    /** 이용 시작일 (reservation TABLE - stayTime) 과 이용 종료일
+    * 
+    *  > 선택한 타임 슬롯이 2025-08-04 의 10:00 ~ 14:00 까지 인 경우 
+    *   new Date(`${startDateInfo}T${startTimeInfo}`).toISOString() 은 2025-08-04T01:00:00.000Z 로 
+    *   new Date(`${endDateInfo}T${endTimeInfo}`).toISOString() 은 2025-08-04T05:00:00.000Z 로 표시 
+    * 
+    * */
+     // 이용 시작일시 
+    startDate : new Date(`${startDateInfo}T00:00:00.000Z`).toISOString(),
+    
+    // 이용 종료일시
+    endDate : new Date(`${endDateInfo}T00:00:00.000Z`).toISOString()
+  }
+
+  // 확인
+  console.log(rsvdInfoPayload);
 
   // Case 1) - 현재 날짜가 이용일 이전인 경우의 대실 예약
   if(isBeforeInfo){
@@ -59,7 +78,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     // }
 
     // 버튼 13개 (10:00 ~ 22:00) 생성 
-    const btnFragment = await fragmentGenerator(0, roomIdInfo);
+    const btnFragment = await fragmentGenerator(0, rsvdInfoPayload);
 
     // fragment 를 이용해 한 번에 추가
     timeGrid.appendChild(btnFragment); 
@@ -75,7 +94,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     // 오전 10 시 이전 (운영 시작 시간 이전) 에 예약하는 경우 
     if(now < 10){
       // 버튼 13개 (10:00 ~ 22:00) 생성 
-      const btnFragment = await fragmentGenerator(0, roomIdInfo);
+      const btnFragment = await fragmentGenerator(0, rsvdInfoPayload);
 
       // fragment 를 이용해 한 번에 추가
       timeGrid.appendChild(btnFragment); 
@@ -85,51 +104,51 @@ document.addEventListener('DOMContentLoaded', async () => {
     else {
       switch(now){
         case '10':
-          const btnFragment = await fragmentGenerator(1, roomIdInfo);
+          const btnFragment = await fragmentGenerator(1, rsvdInfoPayload);
           timeGrid.appendChild(btnFragment); break;
 
         case '11':
-          const btnFragment1 = await fragmentGenerator(2, roomIdInfo);
+          const btnFragment1 = await fragmentGenerator(2, rsvdInfoPayload);
           timeGrid.appendChild(btnFragment1); break;
 
         case '12':
-          const btnFragment2 = await fragmentGenerator(3, roomIdInfo);
+          const btnFragment2 = await fragmentGenerator(3, rsvdInfoPayload);
           timeGrid.appendChild(btnFragment2); break;
 
         case '13':
-          const btnFragment3 = await fragmentGenerator(4, roomIdInfo);
+          const btnFragment3 = await fragmentGenerator(4, rsvdInfoPayload);
           timeGrid.appendChild(btnFragment3); break;
 
         case '14':
-          const btnFragment4 = await  fragmentGenerator(5, roomIdInfo);
+          const btnFragment4 = await  fragmentGenerator(5, rsvdInfoPayload);
           timeGrid.appendChild(btnFragment4); break;
 
         case '15':
-          const btnFragment5 = await fragmentGenerator(6, roomIdInfo);
+          const btnFragment5 = await fragmentGenerator(6, rsvdInfoPayload);
           timeGrid.appendChild(btnFragment5); break;
 
         case '16':
-          const btnFragment6 = await fragmentGenerator(7, roomIdInfo);
+          const btnFragment6 = await fragmentGenerator(7, rsvdInfoPayload);
           timeGrid.appendChild(btnFragment6); break;
 
         case '17':
-          const btnFragment7 = await fragmentGenerator(8, roomIdInfo);
+          const btnFragment7 = await fragmentGenerator(8, rsvdInfoPayload);
           timeGrid.appendChild(btnFragment7); break;
 
         case '18':
-          const btnFragment8 = await fragmentGenerator(9, roomIdInfo);
+          const btnFragment8 = await fragmentGenerator(9, rsvdInfoPayload);
           timeGrid.appendChild(btnFragment8); break;
 
         case '19':
-          const btnFragment9 = await fragmentGenerator(10, roomIdInfo);
+          const btnFragment9 = await fragmentGenerator(10, rsvdInfoPayload);
           timeGrid.appendChild(btnFragment9); break;
 
         case '20':
-          const btnFragment10 = await fragmentGenerator(11, roomIdInfo);
+          const btnFragment10 = await fragmentGenerator(11, rsvdInfoPayload);
           timeGrid.appendChild(btnFragment10); break;
 
         case '21':
-          const btnFragment11 = await fragmentGenerator(12, roomIdInfo);
+          const btnFragment11 = await fragmentGenerator(12, rsvdInfoPayload);
           timeGrid.appendChild(btnFragment11); break;
 
         default:
@@ -155,11 +174,25 @@ document.addEventListener('DOMContentLoaded', async () => {
      * 
      *  > `<option value=${result.cuponPrice} data-cupon-id="v.cuponId">result.cuponTitle</option>`
      * */ 
-    .then(resp => { return resp.json(); })
+    .then(resp => { 
+      if(resp.ok){
+        return resp.json(); 
+      } 
+
+      return;
+    })
 
     .then(result => {
+      // 확인 
+      console.log(`========================= fetch(/payment/cupon-info?cupon-type=${v.cuponType}) =========================`);
+      console.log(result);
+
+      if(result && (Number(strikePrice) < Number(result.theMinimumAmount))){
+        return; 
+      }
+
       // 숫자로 변환
-      if(result && Number(strikePrice) >= Number(result.theMinimumAmount)){
+      else if(result && (Number(strikePrice) >= Number(result.theMinimumAmount))){
         // 동적으로 <option> 생성
         const option = document.createElement('option');
          // dataset 으로 cupon-id 초기화 
@@ -170,7 +203,9 @@ document.addEventListener('DOMContentLoaded', async () => {
         option.innerText = result.cuponTitle;
 
         document.getElementById('cupon-select2').appendChild(option);
+
       }
+     
     })
   })
 
@@ -489,8 +524,9 @@ async function getUserCustomerKey(userId) {
  *  >  
  * 
 */ 
-async function fragmentGenerator(startIdx, roomIdInfo){ 
+async function fragmentGenerator(startIdx, rsvdInfoPayload){ 
   try {
+  
     /** await fetch(`/payment/reserve-info?${roomIdInfo}`) - roomId 로 해당 객실의 예약 가능한 시간대 가져오기
      * 
      * > 대실 예약 시 생성되는 모든 버튼은 13개 (idx 0 ~ idx 13) 로 예약 정보를 가져와 
@@ -505,9 +541,17 @@ async function fragmentGenerator(startIdx, roomIdInfo){
      *  const reserveSlot = [0,1,2,3,4,5];
      *  
      * */ 
-    const resp = await fetch(`/payment/reserve-info?roomId=${roomIdInfo}`);
-
+    const resp = await fetch(`/payment/reserve-info`, {
+      method : 'POST',
+      headers : {
+        'Content-Type' : 'application/json; charset=utf-8'
+      },
+      body : JSON.stringify(rsvdInfoPayload)
+    });
+    // 응답으로 예약 정보 확인
     const reservedSlots = await resp.json();
+
+
     // 확인
     console.log(`reserveSlots : ${reservedSlots}`);
 
