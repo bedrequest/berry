@@ -2,10 +2,7 @@ package com.berry.project.service.payment;
 
 import com.berry.project.dto.cupon.CuponDTO;
 import com.berry.project.dto.cupon.CuponTemplateDTO;
-import com.berry.project.dto.payment.MergePayloadDTO;
-import com.berry.project.dto.payment.PBPDTO;
-import com.berry.project.dto.payment.PaymentReceiptDTO;
-import com.berry.project.dto.payment.ReturnCancelsDTO;
+import com.berry.project.dto.payment.*;
 import com.berry.project.entity.cupon.Cupon;
 import com.berry.project.entity.cupon.CuponTemplate;
 import com.berry.project.entity.lodge.Room;
@@ -20,10 +17,12 @@ import com.berry.project.repository.user.UserRepository;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.*;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
@@ -307,16 +306,17 @@ public class PaymentServiceImpl implements PaymentService {
 
   /** 기존 예약 정보를 가져와 형식에 맞게 반환 */
   @Override
-  public int[] getRoomsReserveInfo(long roomId) {
+  public int[] getRoomsReserveInfo(RsvdInfoDTO rsvdInfoDTO) {
     // 초기화
     ArrayList<Integer> tempArr = new ArrayList<>();
+    // return 배열 초기화
+    int[] resultArr = {};
 
-    // 예약 정보 가져오기
-    List<Reservation> roomsReserveInfo = reservationRepository.findByRoomId(roomId);
+    // 예약 정보 가져오기 (해당 roomId 모든 예약 정보)
+    List<Reservation> roomsReserveInfo = reservationRepository.findByRoomId(rsvdInfoDTO.getRoomId());
 
     // 아무 예약 정보가 없는 경우
     if(roomsReserveInfo.isEmpty()){ return new int[] {-1}; }
-
 
     /** 예약 정보가 있는 경우 예약 정보에서 예약된 시간대를 추출하여 형식화
      *
@@ -329,75 +329,106 @@ public class PaymentServiceImpl implements PaymentService {
      *
      * */
     for(int i = 0; i < roomsReserveInfo.size(); i++){
-      /** 이용 시작/종료 시간
+      // 확인 (e.g., 2025-08-19T10:00+09:00)
+      log.info("roomsReserveInfo.get(i).getStartDate() 의 형식 : {}", roomsReserveInfo.get(i).getStartDate());
+
+      // 확인 (클라이언트의 날짜 형식)
+      log.info("rsvdInfoDTO 의 startDate : {}", rsvdInfoDTO.getStartDate());
+
+      /** 예약하려는 날짜와 겹치는 날짜의 경우에만 정보 가져오기 (년,월,일 까지만 비교)
        *
-       * > int startNum = Integer.parseInt(roomsReserveInfo.get(i).getStartDate()
-       *   .toString().substring(11,13));
-       *   // 확인
-       *   log.info("getRoomsReserveInfo(long roomId) 의 startNum : {}", startNum); 와
-       *
-       *   int endNum = Integer.parseInt(roomsReserveInfo.get(i).getEndDate()
-       *   .toString().substring(11,13));
-       *   // 확인
-       *   log.info("getRoomsReserveInfo(long roomId) 의 endNum : {}", endNum); 는
-       *
-       *   UTC 기준 시각으로 출력되어 예약 정보가 10:00 와 15:00 인 경우 startNum = 1, endNum = 5 가 됨
+       *  > 기존의 예약 리스트에서 현재 예약하려는 날짜와 겹치는 예약 정보만 가져와서 클라이언트의 startDate 의 년, 월, 일과 
+       *    서버 DB 의 startDate 의 년, 월, 일 비교하여 .isEqaul() 이 true 인 경우에만 timeSlots 을 채움
        *
        * */
-       // 이용 시작 시간
-      OffsetDateTime startDate
-          = roomsReserveInfo.get(i).getStartDate().withOffsetSameInstant(ZoneOffset.ofHours(9));
-
-      int startNum = startDate.getHour();
+       //  - 로컬존 (한국 시간) 으로 설정
+      ZoneId kstZone = ZoneId.of("Asia/Seoul");
+       // KST 로 변환 후 포맷팅
+      ZonedDateTime offsetDateTimeKST = roomsReserveInfo.get(i).getStartDate().atZoneSameInstant(kstZone);
        // 확인
-      log.info("getRoomsReserveInfo(long roomId) 의 startNum : {}", startNum);
+      log.info("offsetDateTimeKST : {}", offsetDateTimeKST);
+       // 변환
+      LocalDate infoLocalDate = offsetDateTimeKST.toLocalDate();
 
-       // 이용 종료 시간
-      OffsetDateTime endDate
-          = roomsReserveInfo.get(i).getEndDate().withOffsetSameInstant(ZoneOffset.ofHours(9));
+       // 클라이언트에서 예약일자 가져오기
+      LocalDate clientLocalDate = rsvdInfoDTO.getStartDate().atZoneSameInstant(ZoneOffset.ofHours(9)).toLocalDate();
 
-      int endNum = endDate.getHour();
-       // 확인
-      log.info("getRoomsReserveInfo(long roomId) 의 startNum : {}", endNum);
-
-      // 형식화를 위한 연산
-      int startSlot = startNum - 10;
-      int endSlot = endNum - 10;
+      // 확인 (infoLocalDate 와 clientLocalDate)
+      log.info("infoLocalDate : {}", infoLocalDate);
+      log.info("clientLocalDate : {}", clientLocalDate);
 
 
-      for(int j = startSlot; j <= endSlot; j++){
-        tempArr.add(j);
-      }
-    }
-    
-    /** 오름차순 정렬
-     *
-     *  > 내림 차순 정렬은 Comparator.reverseOrder()
-     * */
-    tempArr.sort(Comparator.naturalOrder());
+      if(clientLocalDate.isEqual(infoLocalDate)){
+        /** 이용 시작/종료 시간
+         *
+         * > int startNum = Integer.parseInt(roomsReserveInfo.get(i).getStartDate()
+         *   .toString().substring(11,13));
+         *   // 확인
+         *   log.info("getRoomsReserveInfo(long roomId) 의 startNum : {}", startNum); 와
+         *
+         *   int endNum = Integer.parseInt(roomsReserveInfo.get(i).getEndDate()
+         *   .toString().substring(11,13));
+         *   // 확인
+         *   log.info("getRoomsReserveInfo(long roomId) 의 endNum : {}", endNum); 는
+         *
+         *   UTC 기준 시각으로 출력되어 예약 정보가 10:00 와 15:00 인 경우 startNum = 1, endNum = 5 가 됨
+         *
+         * */
+         // 이용 시작 시간
+        OffsetDateTime startDate
+            = roomsReserveInfo.get(i).getStartDate().withOffsetSameInstant(ZoneOffset.ofHours(9));
 
-    
-    /** tempArr -> resultArr 
-     * 
-     *  > 방법 1) for 반복문을 이용하여 변환 
-     * 
-        int[] resultArr = new int[tempArr.size()];
-    
-        // 언박싱
-        for(int k = 0; k < tempArr.size(); k++){
-          resultArr[k] = tempArr.get(k);
+        int startNum = startDate.getHour();
+         // 확인
+        log.info("getRoomsReserveInfo(long roomId) 의 startNum : {}", startNum);
+
+         // 이용 종료 시간
+        OffsetDateTime endDate
+            = roomsReserveInfo.get(i).getEndDate().withOffsetSameInstant(ZoneOffset.ofHours(9));
+
+        int endNum = endDate.getHour();
+         // 확인
+        log.info("getRoomsReserveInfo(long roomId) 의 endNum : {}", endNum);
+
+        // 형식화를 위한 연산
+        int startSlot = startNum - 10;
+        int endSlot = endNum - 10;
+
+
+        for(int j = startSlot; j <= endSlot; j++){
+          tempArr.add(j);
         }
-     * 
-     * 
-     *  > 방법 2) stream() 사용
-     * 
-     * */ 
+      }
 
-    int[] resultArr 
-        = tempArr.stream()
-                 .mapToInt(Integer::intValue) // Integer -> int
-                 .toArray(); // int[] 로 변환 
-    
+      /** 오름차순 정렬
+       *
+       *  > 내림 차순 정렬은 Comparator.reverseOrder()
+       * */
+      tempArr.sort(Comparator.naturalOrder());
+
+
+      /** tempArr -> resultArr
+       *
+       *  > 방법 1) for 반복문을 이용하여 변환
+       *
+          int[] resultArr = new int[tempArr.size()];
+
+          // 언박싱
+          for(int k = 0; k < tempArr.size(); k++){
+            resultArr[k] = tempArr.get(k);
+          }
+       *
+       *
+       *  > 방법 2) stream() 사용
+       *
+       * */
+
+      resultArr
+          = tempArr.stream()
+                   .mapToInt(Integer::intValue) // Integer -> int
+                   .toArray(); // int[] 로 변환
+      }
+
     return resultArr;
   }
 
@@ -497,9 +528,14 @@ public class PaymentServiceImpl implements PaymentService {
   public CuponTemplateDTO getCuponTemplate(String cuponType) {
     int ctInfo = Integer.parseInt(cuponType);
 
-    CuponTemplate cuponTemplate = cuponTemplateRepository.findByCuponType(ctInfo).orElseThrow(()
-        -> new EntityNotFoundException("Can't found this Entity..!"));
+    Optional<CuponTemplate> cuponTemplate = cuponTemplateRepository.findByCuponType(ctInfo);
 
-    return convertCuponTemplatetoCuponTemplateDTO(cuponTemplate);
+    // return cuponTemplate.map(this::convertCuponTemplatetoCuponTemplateDTO).orElse(null); 로 축약 표현 가능
+    if(cuponTemplate.isPresent()){
+
+      return convertCuponTemplatetoCuponTemplateDTO(cuponTemplate.get());
+    }
+
+    return new CuponTemplateDTO();
   }
 }

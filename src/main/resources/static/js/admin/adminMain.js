@@ -50,7 +50,7 @@ fragInput.addEventListener('change', function () {
       // default 정렬
       case "cupon-delete": case "cupon-manage": case "qna-payment": case "qna-cancel": 
       case "qna-facilities": case "qna-service": case "qna-others": case "payment-completed":
-      case "payment-wait": case "payment-cancel": case "reservation-order": 
+      case "payment-wait": case "payment-cancel": case "reservation-order": case "reservation-lodge": 
       // 최신 순 정렬
       select.add(new Option('최신 순', 'LATEST'));
       break;

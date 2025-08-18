@@ -75,25 +75,26 @@
               </th:block>
               <!-- 쿠폰 보유시 -->
               <th:block th:if="${#lists.size(cuponList) > 0}">
-                <th:block th:each="cupon : ${cuponList}">
-                  <th:block th:switch="${cupon.cuponType}">
+                <th:block th:with="cuponList=${cuponList}">
+                    <script th:inline="javascript">
+                      const cuponList = [[${cuponList}]];
+                      console.log(cuponList);
+                    </script>
+
                     <ul class="cuponList-ul">
                       <!-- 첫 회원가입 쿠폰 -->
-                      <li th:case="1">
+                      <!--<li th:case="1">
                         신규 가입 할인 쿠폰 3,000 원
-                      </li>
-
-                      <!-- 등급업 쿠폰 - 실버 -->
-                      <li th:case="2">
-                        Silver 등급업 쿠폰 5,000 원
-                      </li>
-
+                      </li>-->
+                      <!-- 등급업 쿠폰 - 골드 -->
+                      <!--<li th:case="2">
+                        Gold 등급업 쿠폰 5,000 원
+                      </li>-->
                       <!-- 등급업 쿠폰 - 다이아 -->
-                      <li th:case="3">
+                      <!--<li th:case="3">
                         Platinum 등급업 쿠폰 5,000 원
-                      </li>
+                      </li>-->
                     </ul>
-                  </th:block>
                 </th:block>
               </th:block>
             </div>
@@ -647,6 +648,8 @@
 
   <!-- duorpeb, 결제 환불 -->
   <script th:src="@{/js/payment/paymentCancel.js}"></script>
+  <!-- duorpeb, 쿠폰 -->
+  <script th:src="@{/js/user/cuponList.js}"></script>
 </div>
 
 

@@ -72,7 +72,7 @@ public interface ReservationRepository extends JpaRepository<Reservation, Long>,
     /** findByRoomId(long roomId) - roomId 의 예약내역 조회
      *
      * */
-    @Query("SELECT r FROM Reservation r WHERE r.roomId = :roomId")
+    @Query("SELECT r FROM Reservation r WHERE r.roomId = :roomId and r.bookingStatus = 'DONE'")
     List<Reservation> findByRoomId(@Param("roomId") long roomId);
 
 
