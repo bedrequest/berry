@@ -405,6 +405,7 @@ public class UserServiceimpl implements UserService {
             .rentTime(room != null ? room.getRentTime() : null)
             .stayTime(room != null ? room.getStayTime() : null)
             // lodge
+            .lodgeId(lodge != null ? lodge.getLodgeId() : null)
             .lodgeName(lodge != null ? lodge.getLodgeName() : null)
             .lodgeAddr(lodge != null ? lodge.getLodgeAddr() : null)
             .lodgeType(lodge != null ? lodge.getLodgeType() : null)
