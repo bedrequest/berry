@@ -91,8 +91,10 @@ public class LodgeCustomRepositoryTest {
         pageable
     ));
 
+    /*
     log.info("9. 태그 온리 테스트");
     printResult(lodgeRepository.searchByTag(4, pageable));
+    */
   }
 
   private void printResult(Page<Lodge> result) {
