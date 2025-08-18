@@ -292,7 +292,7 @@ public interface PaymentService {
   int getCuponCnt(long userId);
 
   // 기존 예약 정보를 특정 형식으로 가져옴
-  int[] getRoomsReserveInfo(long roomId);
+  int[] getRoomsReserveInfo(RsvdInfoDTO rsvdInfoDTO);
 
   // userId 를 받아 customerKey 가져오기
   String getUserCustomerKey(long userId);

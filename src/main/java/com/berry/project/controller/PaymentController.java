@@ -4,6 +4,7 @@ import com.berry.project.api.TossApi;
 import com.berry.project.dto.cupon.CuponDTO;
 import com.berry.project.dto.cupon.CuponTemplateDTO;
 import com.berry.project.dto.payment.*;
+import com.berry.project.entity.cupon.Cupon;
 import com.berry.project.entity.lodge.Room;
 import com.berry.project.entity.user.User;
 import com.berry.project.handler.payment.TossPaymentsAPIHandler;
@@ -13,6 +14,7 @@ import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -296,11 +298,14 @@ public class PaymentController {
   /** "@GetMapping("/reserve-info") - 대실 예약 시 이미 예약된 대실 시간 가져오기
    *
    * */
-  @GetMapping("/reserve-info")
+  @PostMapping("/reserve-info")
   @ResponseBody
-  public int[] reserveInfo(@RequestParam(name="roomId") long roomId){
+  public int[] reserveInfo(@RequestBody RsvdInfoDTO rsvdInfoDTO){
     // 초기화
-    int[] reservedSlots = paymentservice.getRoomsReserveInfo(roomId);
+    int[] reservedSlots = paymentservice.getRoomsReserveInfo(rsvdInfoDTO);
+
+    // 확인
+    log.info("reservedSlots : {}", reservedSlots);
 
     return reservedSlots;
   }
@@ -486,18 +491,24 @@ public class PaymentController {
     return result;
   }
 
-  /** cuponInfo() - 쿠폰 타입으로 쿠폰 정보 조회 */
+  /** cuponInfo() - 쿠폰 타입으로 쿠폰 정보 조회
+   *
+   *  > .json 으로 응답을 받기 위해서는 null 로 return X 해서는 안되기에 ResponseEntity<T> 를 사용하여 상태 코드를 반환하고
+   *    JS 에서는 resp.ok 일 때만 (응답이 성공일때만), json 으로 파싱
+   *
+   * */
   @GetMapping("/cupon-info")
   @ResponseBody
-  public CuponTemplateDTO cuponInfo(@RequestParam(name="cupon-type") String cuponType){
-    try {
-      return paymentservice.getCuponTemplate(cuponType);
-    }
-      // CuponTemplate 에 해당 CuponType 과 일치하는 Record 가 없는 경우
-      catch (EntityNotFoundException e) {
+  public ResponseEntity<CuponTemplateDTO> cuponInfo(@RequestParam(name="cupon-type") String cuponType){
 
-        log.warn("CuponTemplate not found for cuponType: {}", cuponType);
-        return null;
+    CuponTemplateDTO cuponTemplateDTO = paymentservice.getCuponTemplate(cuponType);
+
+    // CuponTemplate 에 해당 CuponType 과 일치하는 Record 가 없는 경우
+    if(cuponTemplateDTO == null){
+      return ResponseEntity.notFound().build();
     }
+
+    // CuponTemplate 에 해당 CuponType 과 일치하는 Record 가 있는 경우
+    return ResponseEntity.ok(cuponTemplateDTO);
   }
 }
